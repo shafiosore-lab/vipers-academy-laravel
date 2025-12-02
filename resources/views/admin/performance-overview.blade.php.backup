@@ -1,0 +1,887 @@
+@extends('layouts.admin')
+
+@section('title', __('Performance Overview - Vipers Academy Admin'))
+
+@section('content')
+<!-- Page Header -->
+<div class="page-header">
+    <div>
+        <h1 class="page-title">{{ __('Performance Overview') }}</h1>
+        <div class="page-breadcrumb">
+            <a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a>
+            <span>{{ __('Performance Overview') }}</span>
+        </div>
+    </div>
+    <div class="d-flex gap-2">
+        <button onclick="window.print()" class="btn btn-outline-secondary">
+            <i class="fas fa-print me-2"></i>{{ __('Print Report') }}
+        </button>
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>{{ __('Back to Dashboard') }}
+        </a>
+    </div>
+</div>
+
+<!-- Academy Performance Dashboard - Modern ERP Table -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-gradient-primary text-white border-0">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h4 class="mb-0 fw-bold">
+                        <i class="fas fa-chart-line me-2"></i>{{ __('Academy Performance Overview - ERP Dashboard') }}
+                    </h4>
+                    <div class="text-white-50 small">
+                        <i class="fas fa-clock me-1"></i>{{ __('Live Data - Updated: ') . now()->format('H:i:s') }}
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-modern mb-0">
+                        <thead class="table-header">
+                            <tr>
+                                <th class="category-col"><i class="fas fa-tags me-2"></i>{{ __('Category') }}</th>
+                                <th class="count-col text-center"><i class="fas fa-hashtag me-2"></i>{{ __('Count/Value') }}</th>
+                                <th class="status-col text-center"><i class="fas fa-info-circle me-2"></i>{{ __('Status/Details') }}</th>
+                                <th class="description-col"><i class="fas fa-file-alt me-2"></i>{{ __('Description') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- PLAYER REGISTRATION METRICS -->
+                            <tr class="section-header players-bg">
+                                <td colspan="4" class="fw-bold">
+                                    <div class="d-flex align-items-center">
+                                        <div class="section-icon me-3">
+                                            <i class="fas fa-users"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">{{ __('Player Registration & Demographics') }}</h6>
+                                            <small class="text-muted">{{ __('Academy enrollment, status & demographic breakdown') }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-users text-primary me-2"></i>{{ __('Total Players') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-primary fw-bold">{{ $totalPlayers }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="status-badges">
+                                        <span class="badge bg-success badge-compact">{{ $activePlayers }} active</span>
+                                        <span class="badge bg-warning badge-compact">{{ $pendingPlayers }} pending</span>
+                                        <span class="badge bg-secondary badge-compact">{{ $inactivePlayers }} inactive</span>
+                                    </div>
+                                </td>
+                                <td class="description-cell">{{ __('Total registered academy players across all statuses') }}</td>
+                            </tr>
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-child text-info me-2"></i>{{ __('Youth Players (U-17 & Below)') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-info fw-bold">{{ $youthPlayers }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-info badge-modern">{{ number_format(($youthPlayers / max($totalPlayers, 1)) * 100, 1) }}% of total</span>
+                                </td>
+                                <td class="description-cell">{{ __('Players in youth development programs (U-17 and below)') }}</td>
+                            </tr>
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-user-tie text-success me-2"></i>{{ __('Senior Players') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-success fw-bold">{{ $seniorPlayers }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-success badge-modern">{{ number_format(($seniorPlayers / max($totalPlayers, 1)) * 100, 1) }}% of total</span>
+                                </td>
+                                <td class="description-cell">{{ __('Senior level players in professional development') }}</td>
+                            </tr>
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-venus-mars text-warning me-2"></i>{{ __('Gender Distribution') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-warning fw-bold">{{ $malePlayers + $femalePlayers }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="gender-badges">
+                                        <span class="badge bg-primary badge-compact">{{ $malePlayers }} male</span>
+                                        <span class="badge bg-danger badge-compact">{{ $femalePlayers }} female</span>
+                                    </div>
+                                </td>
+                                <td class="description-cell">{{ __('Gender diversity in player registration') }}</td>
+                            </tr>
+
+                            <!-- PERFORMANCE & ATHLETIC METRICS -->
+                            <tr class="section-header performance-bg">
+                                <td colspan="4" class="fw-bold">
+                                    <div class="d-flex align-items-center">
+                                        <div class="section-icon me-3">
+                                            <i class="fas fa-trophy"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">{{ __('Performance & Athletic Metrics') }}</h6>
+                                            <small class="text-muted">{{ __('On-field performance, statistics & achievements') }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-futbol text-danger me-2"></i>{{ __('Total Goals Scored') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-danger fw-bold">{{ $totalGoals }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="performance-badges">
+                                        <span class="badge bg-info badge-compact">{{ $totalAssists }} assists</span>
+                                        <span class="badge bg-success badge-compact">{{ number_format($totalGoals / max($totalMatches, 1), 2) }} goals/match</span>
+                                    </div>
+                                </td>
+                                <td class="description-cell">{{ __('Total goals scored by academy players in official matches') }}</td>
+                            </tr>
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-calendar-check text-success me-2"></i>{{ __('Total Matches Played') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-success fw-bold">{{ $totalMatches }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-success badge-modern">{{ __('Official matches') }}</span>
+                                </td>
+                                <td class="description-cell">{{ __('Total official matches participated in by academy players') }}</td>
+                            </tr>
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-star text-warning me-2"></i>{{ __('Performance Ratings') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-warning fw-bold">{{ number_format($averageRating ?? 0, 2) }}/10</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="rating-badges">
+                                        <span class="badge bg-warning badge-compact">{{ $highPerformers }} high performers</span>
+                                        <span class="badge bg-info badge-compact">≥8.0 rating</span>
+                                    </div>
+                                </td>
+                                <td class="description-cell">{{ __('Average performance rating and high performer count') }}</td>
+                            </tr>
+
+                            <!-- ACADEMIC PERFORMANCE METRICS -->
+                            <tr class="section-header academic-bg">
+                                <td colspan="4" class="fw-bold">
+                                    <div class="d-flex align-items-center">
+                                        <div class="section-icon me-3">
+                                            <i class="fas fa-graduation-cap"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">{{ __('Academic Performance') }}</h6>
+                                            <small class="text-muted">{{ __('Educational achievements & academic tracking') }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-award text-success me-2"></i>{{ __('Academic Performance Distribution') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-success fw-bold">{{ number_format($averageAcademicGPA ?? 0, 2) }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="academic-badges">
+                                        <span class="badge bg-success badge-compact">{{ $excellentAcademic }} excellent</span>
+                                        <span class="badge bg-info badge-compact">{{ $goodAcademic }} good</span>
+                                        <span class="badge bg-warning badge-compact">{{ $averageAcademic }} average</span>
+                                        <span class="badge bg-danger badge-compact">{{ $poorAcademic }} poor</span>
+                                    </div>
+                                </td>
+                                <td class="description-cell">{{ __('Average GPA and performance distribution across academic levels') }}</td>
+                            </tr>
+
+                            <!-- CONTRACT & CAREER DEVELOPMENT -->
+                            <tr class="section-header contract-bg">
+                                <td colspan="4" class="fw-bold">
+                                    <div class="d-flex align-items-center">
+                                        <div class="section-icon me-3">
+                                            <i class="fas fa-file-contract"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">{{ __('Contract & Career Development') }}</h6>
+                                            <small class="text-muted">{{ __('Professional contracts, trials & career progression') }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-handshake text-primary me-2"></i>{{ __('Professional Contracts') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-primary fw-bold">{{ $playersWithContracts }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="contract-badges">
+                                        <span class="badge bg-primary badge-compact">{{ $nationalContracts }} national</span>
+                                        <span class="badge bg-success badge-compact">{{ $internationalContracts }} international</span>
+                                    </div>
+                                </td>
+                                <td class="description-cell">{{ __('Players with signed professional contracts') }}</td>
+                            </tr>
+
+
+                            <!-- INTERNATIONAL & ELIGIBILITY -->
+                            <tr class="section-header international-bg">
+                                <td colspan="4" class="fw-bold">
+                                    <div class="d-flex align-items-center">
+                                        <div class="section-icon me-3">
+                                            <i class="fas fa-globe"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">{{ __('International Eligibility & Compliance') }}</h6>
+                                            <small class="text-muted">{{ __('FIFA registration, international play & compliance') }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-flag text-success me-2"></i>{{ __('FIFA Registered Players') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-success fw-bold">{{ $fifaRegistered }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-success badge-modern">{{ number_format(($fifaRegistered / max($totalPlayers, 1)) * 100, 1) }}% registered</span>
+                                </td>
+                                <td class="description-cell">{{ __('Players registered with FIFA for international play') }}</td>
+                            </tr>
+
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-plane text-primary me-2"></i>{{ __('International Eligible') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-primary fw-bold">{{ $internationalPlayers }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-primary badge-modern">{{ __('Ready for international competitions') }}</span>
+                                </td>
+                                <td class="description-cell">{{ __('Players eligible for international competitions') }}</td>
+                            </tr>
+
+                            <!-- HEALTH & ATTENTION METRICS -->
+                            <tr class="section-header health-bg">
+                                <td colspan="4" class="fw-bold">
+                                    <div class="d-flex align-items-center">
+                                        <div class="section-icon me-3">
+                                            <i class="fas fa-heartbeat"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">{{ __('Health & Player Welfare') }}</h6>
+                                            <small class="text-muted">{{ __('Injury tracking, follow-ups & player care') }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-exclamation-triangle text-danger me-2"></i>{{ __('Players Needing Attention') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-danger fw-bold">{{ $playersNeedingAttention }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-danger badge-modern">{{ __('Require immediate follow-up') }}</span>
+                                </td>
+                                <td class="description-cell">{{ __('Players flagged for immediate attention or intervention') }}</td>
+                            </tr>
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-clock text-warning me-2"></i>{{ __('Overdue Follow-ups') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-warning fw-bold">{{ $overdueFollowUps }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-warning badge-modern">{{ __('>30 days since last check') }}</span>
+                                </td>
+                                <td class="description-cell">{{ __('Players who haven't had follow-up sessions in over 30 days') }}</td>
+                            </tr>
+
+
+                            <!-- PARTNERSHIP METRICS -->
+                            <tr class="section-header partnership-bg">
+                                <td colspan="4" class="fw-bold">
+                                    <div class="d-flex align-items-center">
+                                        <div class="section-icon me-3">
+                                            <i class="fas fa-handshake"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">{{ __('Partnership & Business Development') }}</h6>
+                                            <small class="text-muted">{{ __('Business relationships, sponsorships & collaborations') }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-building text-primary me-2"></i>{{ __('Total Partners') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-primary fw-bold">{{ $totalPartners }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="partnership-badges">
+                                        <span class="badge bg-success badge-compact">{{ $activePartners }} active</span>
+                                        <span class="badge bg-warning badge-compact">{{ $pendingPartners }} pending</span>
+                                        <span class="badge bg-secondary badge-compact">{{ $inactivePartners }} inactive</span>
+                                    </div>
+                                </td>
+                                <td class="description-cell">{{ __('Total partnership relationships across all statuses') }}</td>
+                            </tr>
+
+                            <!-- PROGRAM MANAGEMENT -->
+                            <tr class="section-header program-bg">
+                                <td colspan="4" class="fw-bold">
+                                    <div class="d-flex align-items-center">
+                                        <div class="section-icon me-3">
+                                            <i class="fas fa-football-ball"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">{{ __('Program Management') }}</h6>
+                                            <small class="text-muted">{{ __('Training programs, schedules & curriculum') }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-calendar-alt text-success me-2"></i>{{ __('Training Programs') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-success fw-bold">{{ $totalPrograms }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="program-badges">
+                                        <span class="badge bg-success badge-compact">{{ $activePrograms }} active programs</span>
+                                        <span class="badge bg-info badge-compact">{{ $upcomingPrograms }} upcoming programs</span>
+                                    </div>
+                                </td>
+                                <td class="description-cell">{{ __('Total training programs by age group category') }}</td>
+                            </tr>
+
+                            <!-- FINANCIAL OVERVIEW -->
+                            <tr class="section-header finance-bg">
+                                <td colspan="4" class="fw-bold">
+                                    <div class="d-flex align-items-center">
+                                        <div class="section-icon me-3">
+                                            <i class="fas fa-dollar-sign"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">{{ __('Financial Overview') }}</h6>
+                                            <small class="text-muted">{{ __('Revenue, payments & financial performance') }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-chart-line text-success me-2"></i>{{ __('Total Revenue') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-success fw-bold">KES {{ number_format($totalRevenue, 0) }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-success badge-modern">{{ __('All time revenue') }}</span>
+                                </td>
+                                <td class="description-cell">{{ __('Total revenue generated from all sources') }}</td>
+                            </tr>
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-calendar text-info me-2"></i>{{ __('Monthly Revenue') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-info fw-bold">KES {{ number_format($monthlyRevenue, 0) }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-info badge-modern">{{ __('Current month') }}</span>
+                                </td>
+                                <td class="description-cell">{{ __('Revenue generated in the current month') }}</td>
+                            </tr>
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-clock text-warning me-2"></i>{{ __('Pending Payments') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-warning fw-bold">KES {{ number_format($pendingPayments, 0) }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-warning badge-modern">{{ __('Awaiting payment') }}</span>
+                                </td>
+                                <td class="description-cell">{{ __('Outstanding payments yet to be received') }}</td>
+                            </tr>
+
+                            <!-- CONTENT & MEDIA -->
+                            <tr class="section-header content-bg">
+                                <td colspan="4" class="fw-bold">
+                                    <div class="d-flex align-items-center">
+                                        <div class="section-icon me-3">
+                                            <i class="fas fa-newspaper"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">{{ __('Content & Media Management') }}</h6>
+                                            <small class="text-muted">{{ __('News, gallery & digital content performance') }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-newspaper text-info me-2"></i>{{ __('Published News Articles') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-info fw-bold">{{ $publishedNews }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-info badge-modern">{{ __('Published content') }}</span>
+                                </td>
+                                <td class="description-cell">{{ __('Total published news articles and updates') }}</td>
+                            </tr>
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-images text-success me-2"></i>{{ __('Gallery Images') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-success fw-bold">{{ $totalGallery }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-success badge-modern">{{ __('Media assets') }}</span>
+                                </td>
+                                <td class="description-cell">{{ __('Total images in the academy gallery') }}</td>
+                            </tr>
+
+                            <!-- SYSTEM HEALTH & OPERATIONS -->
+                            <tr class="section-header system-bg">
+                                <td colspan="4" class="fw-bold">
+                                    <div class="d-flex align-items-center">
+                                        <div class="section-icon me-3">
+                                            <i class="fas fa-server"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">{{ __('System Health & Operations') }}</h6>
+                                            <small class="text-muted">{{ __('E-commerce, orders & system performance') }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="data-row">
+                                <td class="metric-name">
+                                    <i class="fas fa-shopping-cart text-primary me-2"></i>{{ __('Total Orders') }}
+                                </td>
+                                <td class="text-center">
+                                    <span class="metric-value text-primary fw-bold">{{ $totalOrders }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="order-badges">
+                                        <span class="badge bg-success badge-compact">{{ $completedOrders }} completed</span>
+                                        <span class="badge bg-warning badge-compact">{{ $pendingOrders }} pending</span>
+                                    </div>
+                                </td>
+                                <td class="description-cell">{{ __('Total merchandise orders processed') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div class="stat-card-icon primary">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div>
+                    <div class="stat-card-value">{{ $totalPlayers }}</div>
+                    <div class="stat-card-label">{{ __('Total Players') }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div class="stat-card-icon success">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div>
+                    <div class="stat-card-value">{{ $highPerformers }}</div>
+                    <div class="stat-card-label">{{ __('High Performers') }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div class="stat-card-icon warning">
+                    <i class="fas fa-futbol"></i>
+                </div>
+                <div>
+                    <div class="stat-card-value">{{ $totalGoals }}</div>
+                    <div class="stat-card-label">{{ __('Total Goals') }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stat-card">
+            <div class="stat-card-header">
+                <div class="stat-card-icon info">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <div>
+                    <div class="stat-card-value">{{ $activePartners }}</div>
+                    <div class="stat-card-label">{{ __('Active Partners') }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@push('styles')
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border: 1px solid #e8e8e8;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-card-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .stat-card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    .stat-card-icon.primary { background: #fff5f0; color: #ea1c4d; }
+    .stat-card-icon.success { background: #f0fdf4; color: #059669; }
+    .stat-card-icon.warning { background: #fffbeb; color: #f59e0b; }
+    .stat-card-icon.info { background: #f0f9ff; color: #0891b2; }
+
+    .stat-card-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 4px;
+    }
+
+    .stat-card-label {
+        font-size: 13px;
+        color: #666;
+        font-weight: 500;
+    }
+
+    /* Modern Table Styles */
+    .table-modern {
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .table-header {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border: none;
+    }
+
+    .table-header th {
+        border: none;
+        padding: 1.25rem 1rem;
+        font-weight: 700;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #495057;
+        position: relative;
+    }
+
+    .table-header th::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #ea1c4d, #65c16e);
+        transition: width 0.3s ease;
+    }
+
+    .table-header th:hover::after {
+        width: 80%;
+    }
+
+    .section-header {
+        background: linear-gradient(135deg, rgba(234, 28, 77, 0.1) 0%, rgba(234, 28, 77, 0.05) 100%);
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .section-header:hover {
+        background: linear-gradient(135deg, rgba(234, 28, 77, 0.15) 0%, rgba(234, 28, 77, 0.08) 100%);
+        transform: translateX(2px);
+    }
+
+    .partnership-bg {
+        background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+        border-left: 4px solid #ea1c4d;
+    }
+
+    .performance-bg {
+        background: linear-gradient(135deg, #e8f5e8 0%, #fff3e0 100%);
+        border-left: 4px solid #65c16e;
+    }
+
+    .players-bg {
+        background: linear-gradient(135deg, #f3e5f5 0%, #fce4ec 100%);
+        border-left: 4px solid #9c27b0;
+    }
+
+    .academic-bg {
+        background: linear-gradient(135deg, #fff3e0 0%, #fef3c7 100%);
+        border-left: 4px solid #f59e0b;
+    }
+
+    .contract-bg {
+        background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+        border-left: 4px solid #3b82f6;
+    }
+
+    .international-bg {
+        background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+        border-left: 4px solid #10b981;
+    }
+
+    .health-bg {
+        background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+        border-left: 4px solid #ef4444;
+    }
+
+    .program-bg {
+        background: linear-gradient(135deg, #f3e8ff 0%, #faf5ff 100%);
+        border-left: 4px solid #8b5cf6;
+    }
+
+    .finance-bg {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        border-left: 4px solid #0284c7;
+    }
+
+    .content-bg {
+        background: linear-gradient(135deg, #fdf4ff 0%, #faf5ff 100%);
+        border-left: 4px solid #a855f7;
+    }
+
+    .system-bg {
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        border-left: 4px solid #64748b;
+    }
+
+    .section-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .partnership-bg .section-icon {
+        background: linear-gradient(135deg, #ea1c4d, #d0173f);
+        color: white;
+    }
+
+    .performance-bg .section-icon {
+        background: linear-gradient(135deg, #65c16e, #4caf50);
+        color: white;
+    }
+
+    .players-bg .section-icon {
+        background: linear-gradient(135deg, #9c27b0, #7b1fa2);
+        color: white;
+    }
+
+    .data-row {
+        transition: all 0.2s ease;
+        border: none;
+    }
+
+    .data-row:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+        transform: translateX(1px);
+    }
+
+    .data-row:nth-child(even) {
+        background-color: rgba(248, 249, 250, 0.3);
+    }
+
+    .data-row:hover:nth-child(even) {
+        background-color: rgba(0, 0, 0, 0.04);
+    }
+
+    .category-col {
+        width: 25%;
+        min-width: 200px;
+    }
+
+    .count-col {
+        width: 15%;
+        min-width: 100px;
+    }
+
+    .status-col {
+        width: 25%;
+        min-width: 150px;
+    }
+
+    .description-col {
+        width: 35%;
+        min-width: 200px;
+    }
+
+    .metric-name {
+        font-weight: 600;
+        color: #495057;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .metric-value {
+        font-size: 1.5rem;
+        font-weight: 800;
+        display: block;
+        text-align: center;
+        padding: 0.5rem 0;
+    }
+
+    .description-cell {
+        color: #6c757d;
+        font-size: 0.875rem;
+        line-height: 1.4;
+    }
+
+    .badge-modern {
+        font-size: 0.75rem;
+        padding: 0.375rem 0.75rem;
+        border-radius: 20px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .badge-compact {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+    }
+
+    .progress-modern {
+        height: 6px;
+        border-radius: 3px;
+    }
+
+    .contract-badges {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        align-items: center;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1200px) {
+        .category-col, .description-col {
+            width: auto;
+            min-width: 150px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .table-responsive {
+            font-size: 0.875rem;
+        }
+
+        .metric-value {
+            font-size: 1.25rem;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+        }
+
+        .section-icon i {
+            font-size: 14px;
+        }
+
+        .category-col, .count-col, .status-col, .description-col {
+            padding: 0.75rem 0.5rem;
+        }
+    }
+
+    /* Print styles */
+    @media print {
+        .page-header, .btn, .card-header {
+            display: none !important;
+        }
+
+        .card {
+            border: 1px solid #000 !important;
+            box-shadow: none !important;
+        }
+
+        .table th, .table td {
+            border: 1px solid #000 !important;
+        }
+    }
+</style>
+@endpush

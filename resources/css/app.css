@@ -1,0 +1,11 @@
+@import './player-cards.css';
+@import './hero-section.css';
+@import './stats-dashboard.css';
+@import './timeline.css';
+@import './related-players.css';
+@import './academy-excellence.css';
+@import './slim-filter-bar.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
