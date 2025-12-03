@@ -30,9 +30,14 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 
 // Players
-Route::get('/players', [PlayerController::class, 'index'])->name('players');
-Route::get('/eliteplayers', [PlayerController::class, 'elite'])->name('eliteplayers');
+Route::get('/players', [PlayerController::class, 'index'])->name('players.index');
+Route::get('/players/{id}/stats', [PlayerController::class, 'stats'])->name('players.stats');
 Route::get('/players/{id}', [PlayerController::class, 'show'])->name('home.player.show');
+
+// Admin route to sync players from gallery
+Route::get('/players/sync-gallery', [PlayerController::class, 'syncPlayersFromGallery'])
+    ->name('players.sync')
+    ->middleware(['auth', 'admin']);
 
 // Programs
 Route::get('/programs', [ProgramController::class, 'index'])->name('programs');

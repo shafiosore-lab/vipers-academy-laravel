@@ -2,247 +2,165 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Player;
+use Illuminate\Http\Request;
 
 class PlayerController extends Controller
 {
-    public function index(Request $request)
+    /**
+     * Display a listing of all players organized by category
+     */
+    public function index()
     {
-        $query = Player::query();
+        // Automatically sync players from gallery before displaying
+        $this->autoSyncPlayersFromGallery();
 
-        // Filter by position
-        if ($request->filled('position')) {
-            $query->where('position', $request->position);
-        }
-
-        // Filter by group/age
-        if ($request->filled('group')) {
-            switch ($request->group) {
-                case 'u10':
-                    $query->where('age', '<=', 10);
-                    break;
-                case 'u13':
-                    $query->whereBetween('age', [11, 13]);
-                    break;
-                case 'u15':
-                    $query->whereBetween('age', [14, 15]);
-                    break;
-                case 'u17':
-                    $query->whereBetween('age', [16, 17]);
-                    break;
-                case 'senior':
-                    $query->where('age', '>=', 18);
-                    break;
-            }
-        }
-
-        // Filter by status
-        if ($request->filled('status')) {
-            switch ($request->status) {
-                case 'featured':
-                    $query->where('performance_rating', '>=', 9.0);
-                    break;
-                case 'new':
-                    $query->where('registration_status', 'Active');
-                    break;
-                case 'academy':
-                    $query->where('current_level', 'like', '%academy%');
-                    break;
-                case 'injured':
-                    // For now, just show all - injury status not implemented
-                    break;
-                case 'transfer':
-                    $query->where('transfer_status', 'Available');
-                    break;
-            }
-        }
-
-        $players = $query->paginate(24); // 24 players per page
-
-        // Get random players for mega menu decorations
-        $randomPlayers = Player::inRandomOrder()->take(4)->get();
-        $decorativePlayers = [
-            'positions' => [
-                'above' => Player::where('position', 'forward')->inRandomOrder()->first() ?? Player::inRandomOrder()->first(),
-                'below' => Player::where('position', 'midfielder')->inRandomOrder()->first() ?? Player::inRandomOrder()->first(),
-            ],
-            'teams' => [
-                'above' => Player::whereBetween('age', [16, 17])->inRandomOrder()->first() ?? Player::inRandomOrder()->first(),
-                'below' => Player::whereBetween('age', [14, 15])->inRandomOrder()->first() ?? Player::inRandomOrder()->first(),
-            ],
-            'highlights' => [
-                'above' => Player::where('performance_rating', '>=', 9.0)->inRandomOrder()->first() ?? Player::inRandomOrder()->first(),
-                'below' => Player::where('registration_status', 'Active')->inRandomOrder()->first() ?? Player::inRandomOrder()->first(),
-            ]
+        // Get all players and organize by category
+        $categories = [
+            'under-13' => Player::where('category', 'under-13')->orderedByPositionAndAge()->get(),
+            'under-15' => Player::where('category', 'under-15')->orderedByPositionAndAge()->get(),
+            'under-17' => Player::where('category', 'under-17')->orderedByPositionAndAge()->get(),
+            'senior' => Player::where('category', 'senior')->orderedByPositionAndAge()->get(),
         ];
 
-        return view('website.players', compact('players', 'randomPlayers', 'decorativePlayers'));
-    }
-
-    public function elite(Request $request)
-    {
-        // Elite players: high performance rating, senior team, or featured status
-        $query = Player::query();
-
-        // Elite criteria: high performance rating (>= 8.5) OR senior team OR featured
-        $query->where(function ($q) {
-            $q->where('performance_rating', '>=', 8.5)
-              ->orWhere('age', '>=', 18)
-              ->orWhere('current_level', 'like', '%senior%')
-              ->orWhere('current_level', 'like', '%professional%');
+        // Remove empty categories
+        $categories = array_filter($categories, function($players) {
+            return $players->isNotEmpty();
         });
 
-        // Position filter
-        if ($request->filled('position')) {
-            $query->where('position', $request->position);
-        }
-
-        // Category filter
-        if ($request->filled('category')) {
-            switch ($request->category) {
-                case 'rising':
-                    $query->where('registration_status', 'Active')
-                          ->where('age', '<=', 21);
-                    break;
-                case 'legends':
-                    $query->where('age', '>=', 25)
-                          ->where('performance_rating', '>=', 9.0);
-                    break;
-                case 'youth':
-                    $query->whereBetween('age', [16, 20]);
-                    break;
-                case 'free':
-                    $query->where('transfer_status', 'Available');
-                    break;
-            }
-        }
-
-        // Sort options
-        if ($request->filled('sort')) {
-            switch ($request->sort) {
-                case 'rating':
-                    $query->orderBy('performance_rating', 'desc');
-                    break;
-                case 'goals':
-                    $query->orderBy('goals', 'desc');
-                    break;
-                case 'assists':
-                    $query->orderBy('assists', 'desc');
-                    break;
-                default:
-                    $query->orderBy('performance_rating', 'desc');
-            }
-        } else {
-            $query->orderBy('performance_rating', 'desc');
-        }
-
-        $players = $query->paginate(24); // 24 players per page
-
-        // Get random elite players for decorations
-        $randomPlayers = Player::where('performance_rating', '>=', 8.0)
-            ->inRandomOrder()
-            ->take(4)
-            ->get();
-
-        $decorativePlayers = [
-            'positions' => [
-                'above' => Player::where('performance_rating', '>=', 8.5)
-                    ->where('position', 'forward')
-                    ->inRandomOrder()
-                    ->first() ?? Player::where('performance_rating', '>=', 8.0)->inRandomOrder()->first(),
-                'below' => Player::where('performance_rating', '>=', 8.5)
-                    ->where('position', 'midfielder')
-                    ->inRandomOrder()
-                    ->first() ?? Player::where('performance_rating', '>=', 8.0)->inRandomOrder()->first(),
-            ],
-            'teams' => [
-                'above' => Player::where('performance_rating', '>=', 8.5)
-                    ->where('age', '>=', 18)
-                    ->inRandomOrder()
-                    ->first() ?? Player::where('performance_rating', '>=', 8.0)->inRandomOrder()->first(),
-                'below' => Player::where('performance_rating', '>=', 8.5)
-                    ->whereBetween('age', [16, 17])
-                    ->inRandomOrder()
-                    ->first() ?? Player::where('performance_rating', '>=', 8.0)->inRandomOrder()->first(),
-            ],
-            'highlights' => [
-                'above' => Player::where('performance_rating', '>=', 9.0)
-                    ->inRandomOrder()
-                    ->first() ?? Player::where('performance_rating', '>=', 8.5)->inRandomOrder()->first(),
-                'below' => Player::where('performance_rating', '>=', 8.5)
-                    ->where('registration_status', 'Active')
-                    ->inRandomOrder()
-                    ->first() ?? Player::where('performance_rating', '>=', 8.0)->inRandomOrder()->first(),
-            ]
-        ];
-
-        return view('website.players', compact('players', 'randomPlayers', 'decorativePlayers'));
+        return view('players.index', compact('categories'));
     }
 
-    public function show($id)
+    /**
+     * Display player statistics
+     */
+    public function stats($id)
     {
         $player = Player::findOrFail($id);
-
-        // Get all players for dropdown navigation
-        $players = Player::orderBy('name')->get();
-
-        // Get related players by position
-        $relatedPlayers = Player::where('id', '!=', $player->id)
-            ->where('position', $player->position)
-            ->take(4)
-            ->get();
-
-        // Get previous and next players for navigation
-        $previousPlayer = Player::where('id', '<', $player->id)
-            ->orderBy('id', 'desc')
-            ->first();
-
-        $nextPlayer = Player::where('id', '>', $player->id)
-            ->orderBy('id', 'asc')
-            ->first();
-
-        return view('website.player_detail', compact('player', 'players', 'relatedPlayers', 'previousPlayer', 'nextPlayer'));
+        return view('players.stats', compact('player'));
     }
 
-    public function rankings(Request $request)
+    /**
+     * Sync players from the players folder
+     * This reads all images from public/assets/img/players and creates/updates player records
+     */
+    public function syncPlayersFromGallery()
     {
-        $query = Player::query();
+        $syncedCount = $this->autoSyncPlayersFromGallery();
+        return redirect()->route('players.index')->with('success', "Synced {$syncedCount} players from gallery");
+    }
 
-        // Filter by position if specified
-        if ($request->filled('position')) {
-            $query->where('position', $request->position);
+    /**
+     * Auto sync players from gallery (called internally)
+     * Returns the number of players synced
+     */
+    private function autoSyncPlayersFromGallery()
+    {
+        $playersPath = public_path('assets/img/players');
+
+        if (!is_dir($playersPath)) {
+            return 0;
         }
 
-        // Order by performance rating descending
-        $players = $query->orderBy('performance_rating', 'desc')
-                         ->orderBy('goals', 'desc')
-                         ->orderBy('assists', 'desc')
-                         ->get();
+        $files = scandir($playersPath);
+        $syncedCount = 0;
+        $existingPlayers = [];
 
-        // Get top performers for highlights
-        $topPerformers = Player::orderBy('performance_rating', 'desc')
-                              ->take(5)
-                              ->get();
+        foreach ($files as $file) {
+            // Skip directories and hidden files
+            if ($file === '.' || $file === '..' || is_dir($playersPath . '/' . $file)) {
+                continue;
+            }
 
-        // Get statistics
-        $totalPlayers = Player::count();
-        $avgRating = Player::avg('performance_rating');
-        $topRating = Player::max('performance_rating');
+            // Check if it's an image file
+            $extension = pathinfo($file, PATHINFO_EXTENSION);
+            if (!in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+                continue;
+            }
 
-        // Position distribution
-        $positionStats = Player::select('position')
-                              ->selectRaw('COUNT(*) as count, AVG(performance_rating) as avg_rating')
-                              ->groupBy('position')
-                              ->get();
+            // Parse filename: firstname-lastname-category-position-age.jpg
+            $filename = pathinfo($file, PATHINFO_FILENAME);
 
-        return view('website.players', compact(
-            'players',
-            'topPerformers',
-            'totalPlayers',
-            'avgRating',
-            'topRating',
-            'positionStats'
-        ))->with('pageTitle', 'Player Rankings');
+            // Remove .jpg if present in filename (for double extensions)
+            $filename = str_replace('.jpg', '', $filename);
+
+            $parts = explode('-', $filename);
+
+            if (count($parts) < 5) {
+                continue; // Skip files that don't match the format
+            }
+
+            $firstName = ucfirst($parts[0]);
+            $lastName = ucfirst($parts[1]);
+            $categoryRaw = strtolower($parts[2]);
+            $position = strtolower($parts[3]);
+            $age = (int) $parts[4];
+
+            // Normalize category
+            $categoryMap = [
+                'under13' => 'under-13',
+                'under15' => 'under-15',
+                'under17' => 'under-17',
+                'seniour' => 'senior',
+                'senior' => 'senior'
+            ];
+
+            $category = $categoryMap[$categoryRaw] ?? $categoryRaw;
+
+            // Validate category and position
+            if (!in_array($category, ['under-13', 'under-15', 'under-17', 'senior'])) {
+                continue;
+            }
+
+            if (!in_array($position, ['goalkeeper', 'defender', 'midfielder', 'striker'])) {
+                continue;
+            }
+
+            // Check if player exists
+            $existingPlayer = Player::where('first_name', $firstName)
+                ->where('last_name', $lastName)
+                ->where('category', $category)
+                ->first();
+
+            if ($existingPlayer) {
+                // Update existing
+                $existingPlayer->update([
+                    'name' => "$firstName $lastName",
+                    'position' => $position,
+                    'age' => $age,
+                    'image_path' => $file,
+                    'program_id' => 1,
+                    'registration_status' => 'Active',
+                    'approval_type' => 'full',
+                    'documents_completed' => true,
+                ]);
+                $player = $existingPlayer;
+            } else {
+                // Create new
+                $player = Player::create([
+                    'first_name' => $firstName,
+                    'last_name' => $lastName,
+                    'category' => $category,
+                    'name' => "$firstName $lastName",
+                    'position' => $position,
+                    'age' => $age,
+                    'image_path' => $file,
+                    'program_id' => 1,
+                    'registration_status' => 'Active',
+                    'approval_type' => 'full',
+                    'documents_completed' => true,
+                ]);
+            }
+
+            $existingPlayers[] = $player->id;
+            $syncedCount++;
+        }
+
+        // Remove players from database whose images no longer exist
+        if (!empty($existingPlayers)) {
+            Player::whereNotIn('id', $existingPlayers)->delete();
+        }
+
+        return $syncedCount;
     }
 }

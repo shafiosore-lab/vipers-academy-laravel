@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Player extends Model
 {
@@ -14,141 +13,114 @@ class Player extends Model
         'name',
         'first_name',
         'last_name',
-        'age',
+        'category',
         'position',
+        'age',
+        'jersey_number',
+        'image_path',
         'bio',
-        'achievements',
-        'photo',
-        'program_id',
-        'date_of_birth',
-        'place_of_birth',
-        'nationality',
-        'gender',
-        'address',
-        'city',
-        'country',
-        'postal_code',
-        'phone',
-        'email',
-        'emergency_contact_name',
-        'emergency_contact_phone',
-        'emergency_contact_relationship',
-        'father_name',
-        'father_id_number',
-        'father_phone',
-        'father_occupation',
-        'mother_name',
-        'mother_id_number',
-        'mother_phone',
-        'mother_occupation',
-        'guardian_name',
-        'guardian_phone',
-        'guardian_relationship',
-        'guardian_consent_form',
-        'participation_agreement',
-        'data_consent_form',
-        'safeguarding_policy_acknowledged',
-        'accommodation_provided',
-        'accommodation_details',
-        'age_group',
-        'training_schedule',
-        'competition_plan',
-        'guardian_id_document',
-        'player_id_document',
-        'previous_domicile',
-        'relocation_reason',
-        'medical_conditions',
-        'allergies',
-        'blood_type',
-        'medical_insurance_provider',
-        'medical_insurance_number',
-        'last_medical_checkup',
-        'medications',
-        'height_cm',
-        'weight_kg',
-        'dominant_foot',
-        'fifa_registration_number',
-        'license_type',
-        'registration_date',
-        'previous_clubs',
-        'transfer_status',
-        'contract_status',
-        'school_name',
-        'school_grade',
-        'academic_performance',
-        'academic_gpa',
-        'academic_notes',
-        'passport_photo',
-        'birth_certificate',
-        'medical_certificate',
-        'school_certificate',
-        'registration_status',
-        'admin_notes',
-        'contract_start_date',
-        'contract_end_date',
-        'approval_type',
-        'temporary_approval_granted_at',
-        'temporary_approval_expires_at',
-        'temporary_approval_notes',
-        'documents_completed',
-        'partner_id',
-        'matches_played',
-        'goals_scored',
+        'goals',
         'assists',
-        'performance_rating',
-        'performance_notes',
-        'last_follow_up',
-        'follow_up_notes',
-        'needs_attention',
-        'attention_reason',
-        'development_stage',
-        'international_eligible',
-        'has_professional_contract',
-        'contract_team',
-        'contract_type',
-        'milestones',
-        'academy_join_date',
-        'current_level',
-        'preferred_position',
-        'image', // Added for view compatibility
+        'appearances',
+        'yellow_cards',
+        'red_cards',
+        'program_id',
+        'registration_status',
+        'approval_type',
+        'documents_completed'
     ];
 
-    protected $casts = [
-        'date_of_birth' => 'date',
-        'last_medical_checkup' => 'date',
-        'registration_date' => 'date',
-        'contract_start_date' => 'date',
-        'contract_end_date' => 'date',
-        'academy_join_date' => 'date',
-        'temporary_approval_granted_at' => 'datetime',
-        'temporary_approval_expires_at' => 'datetime',
-        'last_follow_up' => 'date',
-        'milestones' => 'array',
-        'safeguarding_policy_acknowledged' => 'boolean',
-        'accommodation_provided' => 'boolean',
-        'documents_completed' => 'boolean',
-        'needs_attention' => 'boolean',
-        'international_eligible' => 'boolean',
-        'has_professional_contract' => 'boolean',
-        'height_cm' => 'decimal:2',
-        'weight_kg' => 'decimal:2',
-        'performance_rating' => 'decimal:2',
-        'academic_gpa' => 'decimal:2',
+    // Position order for sorting
+    const POSITION_ORDER = [
+        'goalkeeper' => 1,
+        'defender' => 2,
+        'midfielder' => 3,
+        'striker' => 4
     ];
 
-    public function program(): BelongsTo
+    // Category order
+    const CATEGORY_ORDER = [
+        'under-13' => 1,
+        'under-15' => 2,
+        'under-17' => 3,
+        'senior' => 4
+    ];
+
+    /**
+     * Get full name
+     */
+    public function getFullNameAttribute()
     {
-        return $this->belongsTo(Program::class);
+        if ($this->first_name && $this->last_name) {
+            return "{$this->first_name} {$this->last_name}";
+        }
+        return $this->name;
     }
 
-    public function partner(): BelongsTo
+    /**
+     * Get position order for sorting
+     */
+    public function getPositionOrderAttribute()
     {
-        return $this->belongsTo(User::class, 'partner_id');
+        return self::POSITION_ORDER[strtolower($this->position)] ?? 999;
     }
 
-    // Accessor for jersey_number (assuming it's not in DB, maybe derived)
-    public function getJerseyNumberAttribute()
+    /**
+     * Get category order for sorting
+     */
+    public function getCategoryOrderAttribute()
     {
-        return $this->id % 100; // Placeholder, adjust as needed
+        return self::CATEGORY_ORDER[strtolower($this->category)] ?? 999;
+    }
+
+    /**
+     * Get formatted category name
+     */
+    public function getFormattedCategoryAttribute()
+    {
+        return ucwords(str_replace('-', ' ', $this->category));
+    }
+
+    /**
+     * Get formatted position name
+     */
+    public function getFormattedPositionAttribute()
+    {
+        return ucfirst($this->position);
+    }
+
+    /**
+     * Get image URL
+     */
+    public function getImageUrlAttribute()
+    {
+        if ($this->image_path && file_exists(public_path('assets/img/players/' . $this->image_path))) {
+            return asset('assets/img/players/' . $this->image_path);
+        }
+        return null;
+    }
+
+    /**
+     * Scope to order players by position then age
+     */
+    public function scopeOrderedByPositionAndAge($query)
+    {
+        return $query->orderByRaw("
+            CASE LOWER(position)
+                WHEN 'goalkeeper' THEN 1
+                WHEN 'defender' THEN 2
+                WHEN 'midfielder' THEN 3
+                WHEN 'striker' THEN 4
+                ELSE 999
+            END
+        ")->orderBy('age', 'asc');
+    }
+
+    /**
+     * Scope to filter by category
+     */
+    public function scopeCategory($query, $category)
+    {
+        return $query->where('category', $category);
     }
 }
