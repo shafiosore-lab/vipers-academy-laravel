@@ -186,10 +186,13 @@
 
         .navbar-content {
             height: 100%;
-            display: flex;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
             align-items: center;
             gap: var(--space-2xl);
             padding: 0 5%;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         /* Logo */
@@ -237,8 +240,10 @@
 
         /* Search */
         .search-wrapper {
-            flex: 1;
+            grid-column: 2;
+            justify-self: center;
             max-width: 600px;
+            width: 100%;
         }
 
         .search-form {
@@ -279,12 +284,13 @@
 
         /* Navigation Links */
         .nav-links {
+            grid-column: 3;
+            justify-self: end;
             display: flex;
             list-style: none;
             gap: var(--space-sm);
             margin: 0;
             padding: 0;
-            margin-left: auto;
         }
 
         .nav-links a {
@@ -311,6 +317,8 @@
             padding: var(--space-sm);
             flex-direction: column;
             gap: 4px;
+            grid-column: 3;
+            justify-self: end;
         }
 
         .mobile-toggle span {
@@ -466,14 +474,25 @@
                 --navbar-height: 64px;
             }
 
-            .nav-links,
+            .navbar-content {
+                grid-template-columns: auto 1fr;
+                gap: var(--space-lg);
+            }
+
             .search-wrapper {
+                grid-column: 2;
+                max-width: none;
+            }
+
+            .nav-links,
+            .mobile-toggle {
                 display: none;
             }
 
             .mobile-toggle {
                 display: flex;
-                margin-left: auto;
+                grid-column: 2;
+                justify-self: end;
             }
 
             body {
@@ -515,6 +534,19 @@
 
             .main-navbar {
                 top: 0;
+            }
+
+            .navbar-content {
+                grid-template-columns: auto auto;
+                gap: var(--space-md);
+            }
+
+            .search-wrapper {
+                display: none;
+            }
+
+            .mobile-toggle {
+                grid-column: 2;
             }
 
             .brand-text {
