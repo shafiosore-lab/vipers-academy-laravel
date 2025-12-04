@@ -4,18 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Player;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class PlayerController extends Controller
 {
     /**
      * Display a listing of all players organized by category
+     * Automatically syncs before displaying
      */
     public function index()
     {
-        // Automatically sync players from gallery before displaying
+        // Auto-sync players from gallery on every page load
         $this->autoSyncPlayersFromGallery();
 
-        // Get all players and organize by category
+        // Get all players organized by category
         $categories = [
             'under-13' => Player::where('category', 'under-13')->orderedByPositionAndAge()->get(),
             'under-15' => Player::where('category', 'under-15')->orderedByPositionAndAge()->get(),
@@ -33,139 +36,225 @@ class PlayerController extends Controller
 
     /**
      * Display player statistics
+     * Auto-sync before showing stats
      */
     public function stats($id)
     {
+        // Sync to ensure we have latest data
+        $this->autoSyncPlayersFromGallery();
+
         $player = Player::findOrFail($id);
         return view('players.stats', compact('player'));
     }
 
     /**
-     * Sync players from the players folder
-     * This reads all images from public/assets/img/players and creates/updates player records
+     * Manual sync endpoint (optional - for admin use)
      */
     public function syncPlayersFromGallery()
     {
-        $syncedCount = $this->autoSyncPlayersFromGallery();
-        return redirect()->route('players.index')->with('success', "Synced {$syncedCount} players from gallery");
+        $result = $this->autoSyncPlayersFromGallery();
+
+        return redirect()->route('players.index')->with('success',
+            "Synced {$result['synced']} players. Added: {$result['added']}, Updated: {$result['updated']}, Removed: {$result['removed']}"
+        );
     }
 
     /**
-     * Auto sync players from gallery (called internally)
-     * Returns the number of players synced
+     * Auto sync players from gallery folder
+     * This runs automatically whenever the player pages are accessed
+     *
+     * @return array Statistics about the sync operation
      */
     private function autoSyncPlayersFromGallery()
     {
         $playersPath = public_path('assets/img/players');
+        $stats = [
+            'synced' => 0,
+            'added' => 0,
+            'updated' => 0,
+            'removed' => 0,
+        ];
 
-        if (!is_dir($playersPath)) {
-            return 0;
+        // Check if directory exists
+        if (!File::isDirectory($playersPath)) {
+            Log::warning("Players directory not found: {$playersPath}");
+            return $stats;
         }
 
-        $files = scandir($playersPath);
-        $syncedCount = 0;
-        $existingPlayers = [];
+        // Get all image files from directory
+        $files = File::files($playersPath);
+        $validPlayerIds = [];
 
         foreach ($files as $file) {
-            // Skip directories and hidden files
-            if ($file === '.' || $file === '..' || is_dir($playersPath . '/' . $file)) {
-                continue;
-            }
+            $filename = $file->getFilename();
 
-            // Check if it's an image file
-            $extension = pathinfo($file, PATHINFO_EXTENSION);
-            if (!in_array(strtolower($extension), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+            // Only process image files
+            $extension = strtolower($file->getExtension());
+            if (!in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
                 continue;
             }
 
             // Parse filename: firstname-lastname-category-position-age.jpg
-            // Use pathinfo to get filename without extension, then remove any remaining .jpg
-            $filename = pathinfo($file, PATHINFO_FILENAME);
-            $filename = preg_replace('/\.jpg.*$/', '', $filename); // Remove .jpg and anything after it
+            $filenameParts = pathinfo($filename, PATHINFO_FILENAME);
+            $filenameParts = preg_replace('/\.jpg.*$/i', '', $filenameParts);
 
-            $parts = explode('-', $filename);
+            $parts = explode('-', $filenameParts);
 
+            // Validate format
             if (count($parts) < 5) {
-                continue; // Skip files that don't match the format
-            }
-
-            $firstName = ucfirst($parts[0]);
-            $lastName = ucfirst($parts[1]);
-            $categoryRaw = strtolower($parts[2]);
-            $position = strtolower($parts[3]);
-            $age = (int) $parts[4];
-
-            // Normalize category
-            $categoryMap = [
-                'under13' => 'under-13',
-                'under-13' => 'under-13',
-                'under15' => 'under-15',
-                'under-15' => 'under-15',
-                'under17' => 'under-17',
-                'under-17' => 'under-17',
-                'seniour' => 'senior',
-                'senior' => 'senior'
-            ];
-
-            $category = $categoryMap[$categoryRaw] ?? $categoryRaw;
-
-            // Normalize position to lowercase
-            $position = strtolower($position);
-
-            // Validate category and position
-            if (!in_array($category, ['under-13', 'under-15', 'under-17', 'senior'])) {
+                Log::warning("Invalid player filename format: {$filename}");
                 continue;
             }
 
-            if (!in_array($position, ['goalkeeper', 'defender', 'midfielder', 'striker'])) {
+            // Extract player data
+            $firstName = ucfirst(trim($parts[0]));
+            $lastName = ucfirst(trim($parts[1]));
+            $categoryRaw = strtolower(trim($parts[2]));
+            $positionRaw = strtolower(trim($parts[3]));
+            $age = (int) trim($parts[4]);
+
+            // Normalize category
+            $category = $this->normalizeCategory($categoryRaw);
+
+            // Normalize position
+            $position = $this->normalizePosition($positionRaw);
+
+            // Validate data
+            if (!$category || !$position || $age <= 0) {
+                Log::warning("Invalid player data in filename: {$filename}");
                 continue;
             }
 
             // Check if player exists
-            $existingPlayer = Player::where('first_name', $firstName)
+            $player = Player::where('first_name', $firstName)
                 ->where('last_name', $lastName)
                 ->where('category', $category)
                 ->first();
 
-            if ($existingPlayer) {
-                // Update existing
-                $existingPlayer->update([
-                    'name' => "$firstName $lastName",
-                    'position' => $position,
-                    'age' => $age,
-                    'image_path' => $file,
-                    'program_id' => 1,
-                    'registration_status' => 'Active',
-                    'approval_type' => 'full',
-                    'documents_completed' => true,
-                ]);
-                $player = $existingPlayer;
+            $playerData = [
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'name' => "{$firstName} {$lastName}",
+                'category' => $category,
+                'position' => $position,
+                'age' => $age,
+                'image_path' => $filename,
+                'program_id' => 1,
+                'registration_status' => 'Active',
+                'approval_type' => 'full',
+                'documents_completed' => true,
+            ];
+
+            if ($player) {
+                // Update existing player
+                $player->update($playerData);
+                $stats['updated']++;
+                $validPlayerIds[] = $player->id;
             } else {
-                // Create new
-                $player = Player::create([
-                    'first_name' => $firstName,
-                    'last_name' => $lastName,
-                    'category' => $category,
-                    'name' => "$firstName $lastName",
-                    'position' => $position,
-                    'age' => $age,
-                    'image_path' => $file,
-                    'program_id' => 1,
-                    'registration_status' => 'Active',
-                    'approval_type' => 'full',
-                    'documents_completed' => true,
-                ]);
+                // Create new player
+                $newPlayer = Player::create($playerData);
+                $stats['added']++;
+                $validPlayerIds[] = $newPlayer->id;
             }
 
-            $existingPlayers[] = $player->id;
-            $syncedCount++;
+            $stats['synced']++;
         }
 
-        // Remove players from database whose images no longer exist
-        if (!empty($existingPlayers)) {
-            Player::whereNotIn('id', $existingPlayers)->delete();
+        // Remove players whose images no longer exist
+        if (!empty($validPlayerIds)) {
+            $deletedCount = Player::whereNotIn('id', $validPlayerIds)->delete();
+            $stats['removed'] = $deletedCount;
+        } else {
+            // If no valid players found, optionally delete all
+            // Uncomment if you want to remove all players when folder is empty
+            // $stats['removed'] = Player::count();
+            // Player::truncate();
         }
 
-        return $syncedCount;
+        return $stats;
+    }
+
+    /**
+     * Normalize category name
+     *
+     * @param string $categoryRaw
+     * @return string|null
+     */
+    private function normalizeCategory($categoryRaw)
+    {
+        $categoryMap = [
+            'under13' => 'under-13',
+            'under-13' => 'under-13',
+            'u13' => 'under-13',
+            'under15' => 'under-15',
+            'under-15' => 'under-15',
+            'u15' => 'under-15',
+            'under17' => 'under-17',
+            'under-17' => 'under-17',
+            'u17' => 'under-17',
+            'seniour' => 'senior',
+            'senior' => 'senior',
+            'sen' => 'senior',
+        ];
+
+        $normalized = $categoryMap[$categoryRaw] ?? null;
+
+        // Validate against allowed categories
+        if (!in_array($normalized, ['under-13', 'under-15', 'under-17', 'senior'])) {
+            return null;
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * Normalize position name
+     *
+     * @param string $positionRaw
+     * @return string|null
+     */
+    private function normalizePosition($positionRaw)
+    {
+        $positionMap = [
+            'goalkeeper' => 'goalkeeper',
+            'gk' => 'goalkeeper',
+            'keeper' => 'goalkeeper',
+            'defender' => 'defender',
+            'def' => 'defender',
+            'defence' => 'defender',
+            'midfielder' => 'midfielder',
+            'mid' => 'midfielder',
+            'midfield' => 'midfielder',
+            'striker' => 'striker',
+            'str' => 'striker',
+            'forward' => 'striker',
+            'attacker' => 'striker',
+        ];
+
+        $normalized = $positionMap[$positionRaw] ?? null;
+
+        // Validate against allowed positions
+        if (!in_array($normalized, ['goalkeeper', 'defender', 'midfielder', 'striker'])) {
+            return null;
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * Force sync endpoint - clears all players and re-syncs from gallery
+     */
+    public function forceSync()
+    {
+        // Clear all existing players first
+        $clearedCount = Player::count();
+        Player::truncate();
+
+        // Re-sync from gallery
+        $result = $this->autoSyncPlayersFromGallery();
+
+        return redirect()->route('players.index')->with('success',
+            "Force sync completed! Cleared {$clearedCount} existing players, then synced {$result['synced']} players from gallery. Added: {$result['added']}, Updated: {$result['updated']}, Removed: {$result['removed']}"
+        );
     }
 }

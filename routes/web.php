@@ -39,6 +39,11 @@ Route::get('/players/sync-gallery', [PlayerController::class, 'syncPlayersFromGa
     ->name('players.sync')
     ->middleware(['auth', 'admin']);
 
+// Force sync route (clears all players and re-syncs)
+Route::get('/players/force-sync', [PlayerController::class, 'forceSync'])
+    ->name('players.force-sync')
+    ->middleware(['auth', 'admin']);
+
 // Programs
 Route::get('/programs', [ProgramController::class, 'index'])->name('programs');
 Route::get('/programs/{id}', [ProgramController::class, 'show'])->name('program_detail');
