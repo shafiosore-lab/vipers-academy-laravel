@@ -79,10 +79,9 @@ class PlayerController extends Controller
             }
 
             // Parse filename: firstname-lastname-category-position-age.jpg
+            // Use pathinfo to get filename without extension, then remove any remaining .jpg
             $filename = pathinfo($file, PATHINFO_FILENAME);
-
-            // Remove .jpg if present in filename (for double extensions)
-            $filename = str_replace('.jpg', '', $filename);
+            $filename = preg_replace('/\.jpg.*$/', '', $filename); // Remove .jpg and anything after it
 
             $parts = explode('-', $filename);
 
@@ -99,13 +98,19 @@ class PlayerController extends Controller
             // Normalize category
             $categoryMap = [
                 'under13' => 'under-13',
+                'under-13' => 'under-13',
                 'under15' => 'under-15',
+                'under-15' => 'under-15',
                 'under17' => 'under-17',
+                'under-17' => 'under-17',
                 'seniour' => 'senior',
                 'senior' => 'senior'
             ];
 
             $category = $categoryMap[$categoryRaw] ?? $categoryRaw;
+
+            // Normalize position to lowercase
+            $position = strtolower($position);
 
             // Validate category and position
             if (!in_array($category, ['under-13', 'under-15', 'under-17', 'senior'])) {
