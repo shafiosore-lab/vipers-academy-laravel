@@ -13,17 +13,6 @@
     </div>
 
     <!-- Decorative Elements -->
-    <div class="hero-decoration">
-        <div class="floating-ball ball-1">
-            <i class="fas fa-futbol"></i>
-        </div>
-        <div class="floating-ball ball-2">
-            <i class="fas fa-futbol"></i>
-        </div>
-        <div class="floating-ball ball-3">
-            <i class="fas fa-futbol"></i>
-        </div>
-    </div>
 
     <!-- Main Hero Content -->
     <div class="container position-relative">
@@ -115,7 +104,7 @@
                         <!-- Image Section -->
                         <div class="program-image">
                             <div class="program-image-container">
-                                <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80"
+                                <img src="{{ asset('assets/img/gallery/kids.jpeg.jpeg') }}"
                                     alt="Weekend Football & Life-Skills Program - Students training on football field with life skills activities"
                                     class="program-img" loading="lazy">
 
