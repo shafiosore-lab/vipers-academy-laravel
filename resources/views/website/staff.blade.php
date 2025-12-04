@@ -5,62 +5,14 @@
 
 @section('content')
 <!-- Hero Section -->
-<section class="leadership-hero">
-    <div class="hero-background">
-        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
-             alt="Modern African office workspace representing innovation and leadership in Kenyan football development"
-             loading="lazy">
-    </div>
-    <div class="hero-overlay"></div>
-    <div class="container">
-        <div class="hero-content">
-            <h1 class="hero-title">Our Leadership Team</h1>
-            <p class="hero-subtitle">Visionary leaders driving excellence in Kenyan football development</p>
-            <div class="hero-accent"></div>
-        </div>
-    </div>
-</section>
 
-<!-- Statistics Section -->
-<section class="stats-section">
-    <div class="container">
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-number" data-target="500">0</div>
-                    <div class="stat-label">Players Developed</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-trophy"></i>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-number" data-target="50">0</div>
-                    <div class="stat-label">Pro Graduates</div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="fas fa-handshake"></i>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-number" data-target="12">0</div>
-                    <div class="stat-label">Global Partnerships</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+
 
 <!-- Team Roles Section -->
 <section class="roles-section">
     <div class="container">
         <div class="section-header">
-            <h2 class="section-title">Leadership Structure</h2>
+            <h2 class="section-title">Staff</h2>
             <p class="section-subtitle">Our expert team brings diverse skills and experience to guide our mission</p>
         </div>
         <div class="roles-grid">

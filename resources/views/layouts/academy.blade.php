@@ -569,7 +569,7 @@
     <nav class="main-navbar">
         <div class="navbar-content">
             <a class="navbar-brand" href="{{ route('home') }}">
-                <img src="{{ asset('assets/img/logo/vps.png') }}" alt="Vipers Academy" class="logo-image">
+                <img src="{{ asset('assets/img/logo/vps.jpeg') }}" alt="Vipers Academy" class="logo-image">
                 <div class="brand-text">
                     <span class="brand-name">Mumias Vipers Academy</span>
                     <span class="brand-tagline">Excellence in Football</span>

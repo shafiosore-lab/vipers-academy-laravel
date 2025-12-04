@@ -46,7 +46,7 @@ class NewsController extends Controller
         // Check if there are more articles
         $hasMoreArticles = $articles->count() > 12; // Assuming pagination
 
-        return view('news', compact(
+        return view('website.news', compact(
             'news',
             'totalArticles',
             'monthlyArticles',
@@ -85,7 +85,7 @@ class NewsController extends Controller
             ->orderBy('count', 'desc')
             ->get();
 
-        return view('news_detail', compact('newsItem', 'relatedNews', 'latestNews', 'categories'));
+        return view('website.news_detail', compact('newsItem', 'relatedNews', 'latestNews', 'categories'));
     }
 
     public function search(Request $request)
@@ -122,7 +122,7 @@ class NewsController extends Controller
         $articles = $news->skip(1);
         $hasMoreArticles = false; // No pagination for search
 
-        return view('news', compact(
+        return view('website.news', compact(
             'news',
             'totalArticles',
             'monthlyArticles',
@@ -167,7 +167,7 @@ class NewsController extends Controller
         // Check if there are more articles
         $hasMoreArticles = $articles->count() > 12;
 
-        return view('news', compact(
+        return view('website.news', compact(
             'news',
             'totalArticles',
             'monthlyArticles',

@@ -25,7 +25,7 @@
                             <!-- Logo & Title -->
                             <div class="logo-section mb-4">
                                 <div class="logo-wrapper mb-3">
-                                    <img src="{{ asset('assets/img/logo/vps.png') }}" alt="Vipers Academy Logo" class="hero-logo" />
+                                    <img src="{{ asset('assets/img/logo/vps.jpeg') }}" alt="Vipers Academy Logo" class="hero-logo" />
                                 </div>
                                 <h1 class="hero-title">Vipers Academy</h1>
                                 <p class="hero-subtitle">Excellence in Motion</p>

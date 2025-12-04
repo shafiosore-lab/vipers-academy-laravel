@@ -14,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'check.status' => \App\Http\Middleware\CheckUserStatus::class,
             'admin.session' => \App\Http\Middleware\AdminSession::class,
+            'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'player' => \App\Http\Middleware\PlayerMiddleware::class,
+            'partner' => \App\Http\Middleware\PartnerMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

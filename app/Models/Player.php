@@ -123,4 +123,20 @@ class Player extends Model
     {
         return $query->where('category', $category);
     }
+
+    /**
+     * Get the program that the player belongs to
+     */
+    public function program()
+    {
+        return $this->belongsTo(Program::class);
+    }
+
+    /**
+     * Get the partner organization that manages this player
+     */
+    public function partner()
+    {
+        return $this->belongsTo(User::class, 'partner_id');
+    }
 }

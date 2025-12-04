@@ -91,7 +91,7 @@
                                     <div class="score-display-large">
                                         <div class="team-large">
                                             <div class="team-logo-large">
-                                                <img src="{{ asset('assets/img/logo/vps.png') }}" alt="Vipers Academy" class="img-fluid">
+                                                <img src="{{ asset('assets/img/logo/vps.jpeg') }}" alt="Vipers Academy" class="img-fluid">
                                             </div>
                                             <div class="team-name-large">Vipers Academy</div>
                                             <div class="score-large {{ $match->vipers_score > $match->opponent_score ? 'winner' : '' }}">

@@ -438,7 +438,7 @@
                                 <div class="fixture-teams">
                                     <div class="fixture-team">
                                         <div class="team-logo">
-                                            <img src="{{ asset('assets/img/logo/vps.png') }}" alt="Vipers">
+                                            <img src="{{ asset('assets/img/logo/vps.jpeg') }}" alt="Vipers">
                                         </div>
                                         <div class="team-name">Vipers Academy</div>
                                     </div>
@@ -505,7 +505,7 @@
                             <div class="result-teams">
                                 <div class="result-team">
                                     <div class="team-logo">
-                                        <img src="{{ asset('assets/img/logo/vps.png') }}" alt="Vipers">
+                                        <img src="{{ asset('assets/img/logo/vps.jpeg') }}" alt="Vipers">
                                     </div>
                                     <div class="team-name">Vipers Academy</div>
                                 </div>

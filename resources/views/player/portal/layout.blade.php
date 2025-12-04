@@ -823,7 +823,7 @@
         <div class="taskbar-inner">
             <!-- Logo -->
             <a href="{{ route('player.portal.dashboard') }}" class="taskbar-logo">
-                <img src="{{ asset('assets/img/logo/vps.png') }}" alt="Vipers Academy Logo">
+                <img src="{{ asset('assets/img/logo/vps.jpeg') }}" alt="Vipers Academy Logo">
                 <div>
                     <div class="taskbar-brand">Vipers Academy</div>
                     <div class="taskbar-tagline">Player Portal</div>

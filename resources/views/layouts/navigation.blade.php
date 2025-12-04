@@ -4,7 +4,7 @@
       <!-- Logo -->
       <div class="flex-shrink-0">
         <a href="{{ route('home') }}" class="flex items-center">
-          <img src="{{ asset('assets/img/logo/vps.png') }}" alt="Vipers" class="h-8 w-8">
+          <img src="{{ asset('assets/img/logo/vps.jpeg') }}" alt="Vipers" class="h-8 w-8">
           <span class="ml-2 text-xl font-bold text-gray-800">Vipers</span>
         </a>
       </div>

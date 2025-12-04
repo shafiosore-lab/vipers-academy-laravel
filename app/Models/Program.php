@@ -25,4 +25,20 @@ class Program extends Model
         'end_date' => 'datetime',
         'fees' => 'decimal:2',
     ];
+
+    /**
+     * Get the players enrolled in this program
+     */
+    public function players()
+    {
+        return $this->hasMany(Player::class);
+    }
+
+    /**
+     * Get the program enrollments for this program
+     */
+    public function enrollments()
+    {
+        return $this->hasMany(ProgramEnrollment::class);
+    }
 }

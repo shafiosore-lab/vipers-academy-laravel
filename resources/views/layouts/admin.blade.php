@@ -727,7 +727,7 @@
 
             <!-- Brand -->
             <a href="{{ route('admin.dashboard') }}" class="admin-brand">
-                <img src="{{ asset('assets/img/logo/vps.png') }}" alt="Vipers Academy Logo" class="admin-logo">
+                <img src="{{ asset('assets/img/logo/vps.jpeg') }}" alt="Vipers Academy Logo" class="admin-logo">
                 <div class="admin-brand-text">
                     <h5>Vipers Academy</h5>
                     <small>{{ __('Admin Panel') }}</small>

@@ -71,7 +71,7 @@
                 <!-- Logo -->
                 <div class="logo-section">
                     <a href="{{ url('/') }}" class="logo-link" title="Click here to go back to main page">
-                        <img src="{{ asset('assets/img/logo/vps.png') }}" alt="Vipers Academy Merchandise" class="logo-img">
+                        <img src="{{ asset('assets/img/logo/vps.jpeg') }}" alt="Vipers Academy Merchandise" class="logo-img">
                         <div class="logo-text">
                             <span class="brand-name">Vipers Academy</span>
                             <span class="brand-tag">Official Merchandise</span>
