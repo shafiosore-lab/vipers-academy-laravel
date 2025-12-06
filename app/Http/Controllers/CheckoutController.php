@@ -55,7 +55,7 @@ class CheckoutController extends Controller
 
         $total = $subtotal + $shipping + $tax - $discount;
 
-        return view('checkout', compact(
+        return view('product.checkout', compact(
             'cartItems',
             'subtotal',
             'shipping',
@@ -352,7 +352,7 @@ class CheckoutController extends Controller
         // For guest orders, we'll need to verify via session or token
         // (This is a simplified version - in production, implement secure guest order access)
 
-        return view('checkout.payment', compact('order'));
+        return view('product.checkout.payment', compact('order'));
     }
 
     /**
@@ -408,7 +408,7 @@ class CheckoutController extends Controller
             abort(403);
         }
 
-        return view('checkout.success', compact('order'));
+        return view('product.checkout.success', compact('order'));
     }
 
     // Private helper methods

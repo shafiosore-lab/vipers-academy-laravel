@@ -72,7 +72,7 @@ class CartController extends Controller
         }
 
         // Show cart with authentication options for guests
-        return view('cart', compact('cartItems', 'cartTotal', 'cartCount'));
+        return view('product.cart', compact('cartItems', 'cartTotal', 'cartCount'));
     }
 
     /**
@@ -88,7 +88,8 @@ class CartController extends Controller
             return route('partner.dashboard');
         }
 
-        return route('dashboard');
+        // For visitors and other user types, redirect to home
+        return route('home');
     }
 
     /**
@@ -356,18 +357,10 @@ class CartController extends Controller
     /**
      * Remove Item from Cart
      */
-    public function removeFromCart(Request $request)
+    public function remove(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'cart_id' => 'required|exists:carts,id',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->returnCartError($validator->errors());
-        }
-
         try {
-            $cartItem = Cart::findOrFail($request->cart_id);
+            $cartItem = Cart::findOrFail($id);
 
             if (!$this->canModifyCartItem($cartItem)) {
                 throw new \Exception('Unauthorized access to cart item.');
