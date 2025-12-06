@@ -41,6 +41,10 @@
                             <div class="text-white fw-semibold small">{{ now()->format('M d, Y') }}</div>
                             <div class="text-white-50 x-small">{{ now()->format('l') }}</div>
                         </div>
+                        <!-- Refresh Button -->
+                        <button class="header-action-btn" onclick="refreshDashboard()" title="Refresh Dashboard">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -311,29 +315,47 @@
                 </div>
                 <div class="card-body">
                     <div class="statistic-item">
-                        <div class="stat-number">{{ \App\Models\Document::sum(\DB::raw('COALESCE((
-                            SELECT SUM(download_count)
-                            FROM user_documents ud
-                            WHERE ud.document_id = documents.id
-                        ), 0)')) }}</div>
+                        <div class="stat-number">
+                            @try
+                                {{ \App\Models\Document::sum(\DB::raw('COALESCE((
+                                    SELECT SUM(download_count)
+                                    FROM user_documents ud
+                                    WHERE ud.document_id = documents.id
+                                ), 0)')) }}
+                            @catch
+                                0
+                            @endtry
+                        </div>
                         <div class="stat-label">Total Downloads</div>
                         <div class="progress" style="height: 4px;">
                             <div class="progress-bar bg-info" style="width: 100%"></div>
                         </div>
                     </div>
                     <div class="statistic-item">
-                        <div class="stat-number">{{ \App\Models\Document::sum(\DB::raw('COALESCE((
-                            SELECT COUNT(*)
-                            FROM user_documents ud
-                            WHERE ud.document_id = documents.id AND ud.status = "signed"
-                        ), 0)')) }}</div>
+                        <div class="stat-number">
+                            @try
+                                {{ \App\Models\Document::sum(\DB::raw('COALESCE((
+                                    SELECT COUNT(*)
+                                    FROM user_documents ud
+                                    WHERE ud.document_id = documents.id AND ud.status = "signed"
+                                ), 0)')) }}
+                            @catch
+                                0
+                            @endtry
+                        </div>
                         <div class="stat-label">Completed Signatures</div>
                         <div class="progress" style="height: 4px;">
                             <div class="progress-bar bg-success" style="width: 100%"></div>
                         </div>
                     </div>
                     <div class="statistic-item">
-                        <div class="stat-number">{{ \App\Models\UserDocument::expiringSoon(7)->count() }}</div>
+                        <div class="stat-number">
+                            @try
+                                {{ \App\Models\UserDocument::expiringSoon(7)->count() }}
+                            @catch
+                                0
+                            @endtry
+                        </div>
                         <div class="stat-label">Expiring This Week</div>
                         <div class="progress" style="height: 4px;">
                             <div class="progress-bar bg-warning" style="width: 100%"></div>
@@ -406,6 +428,21 @@
             <div class="action-content">
                 <div class="action-title">Add News</div>
                 <div class="action-description">Publish academy news</div>
+            </div>
+            <div class="action-arrow">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <a href="{{ route('admin.website-players.create') }}" class="action-card">
+            <div class="action-icon bg-info">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="action-content">
+                <div class="action-title">Add Website Player</div>
+                <div class="action-description">Upload player images</div>
             </div>
             <div class="action-arrow">
                 <i class="fas fa-arrow-right"></i>
@@ -635,20 +672,7 @@
 @endif
 @endsection
 
-@php
-    $currentYear = date('Y');
-    $playerRegistrations = [];
-    $programCreations = [];
-
-    for ($month = 1; $month <= 12; $month++) {
-        $startDate = date("$currentYear-$month-01");
-        $endDate = date("$currentYear-$month-t");
-        $playerRegistrations[] = \App\Models\Player::whereBetween('created_at', [$startDate, $endDate])->count();
-        $programCreations[] = \App\Models\Program::whereBetween('created_at', [$startDate, $endDate])->count();
-    }
-
-    $monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-@endphp
+<!-- Removed monthLabels and registration data as metric cards were removed -->
 
 @push('styles')
 <style>
@@ -1628,78 +1652,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Sparkline Charts
-    const sparklineOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: { enabled: false } },
-        scales: { x: { display: false }, y: { display: false } },
-        elements: { line: { borderWidth: 2 }, point: { radius: 0 } }
-    };
-
-    // Players Sparkline
-    new Chart(document.getElementById('playersSparkline'), {
-        type: 'line',
-        data: {
-            labels: @json($monthLabels),
-            datasets: [{
-                data: @json($playerRegistrations),
-                borderColor: '#3b82f6',
-                backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: sparklineOptions
-    });
-
-    // Programs Sparkline
-    new Chart(document.getElementById('programsSparkline'), {
-        type: 'line',
-        data: {
-            labels: @json($monthLabels),
-            datasets: [{
-                data: @json($programCreations),
-                borderColor: '#10b981',
-                backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: sparklineOptions
-    });
-
-    // Partners Sparkline
-    new Chart(document.getElementById('partnersSparkline'), {
-        type: 'line',
-        data: {
-            labels: @json($monthLabels),
-            datasets: [{
-                data: [5, 8, 6, 9, 12, 15, 13, 18, 22, 25, 28, 30],
-                borderColor: '#a855f7',
-                backgroundColor: 'rgba(168, 85, 247, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: sparklineOptions
-    });
-
-    // News Sparkline
-    new Chart(document.getElementById('newsSparkline'), {
-        type: 'line',
-        data: {
-            labels: @json($monthLabels),
-            datasets: [{
-                data: [2, 4, 3, 6, 5, 8, 7, 9, 11, 10, 13, 15],
-                borderColor: '#f97316',
-                backgroundColor: 'rgba(249, 115, 22, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: sparklineOptions
-    });
+    // Sparkline Charts - Removed as metric cards were removed
 
     // Global Search
     const searchInput = document.getElementById('globalSearch');

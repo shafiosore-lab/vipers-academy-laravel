@@ -1,17 +1,14 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="csrf_token_here">
     <title>Login - Vipers Academy</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -28,150 +25,185 @@
             height: 100vh;
             width: 100vw;
             overflow: hidden;
-            background: #1a1a1a;
-        }
-
-        .login-container {
-            height: 100vh;
-            width: 100vw;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-        }
-
-        /* Left Side - Image */
-        .image-section {
-            position: relative;
-            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
             display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-direction: column;
+            background: #ffffff;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 0.75rem 2rem;
+            border-bottom: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .header h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        /* Main Container */
+        .login-container {
+            display: flex;
+            flex: 1;
+            width: 100vw;
             overflow: hidden;
         }
 
-        .image-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
-            opacity: 0.3;
-        }
-
-        .logo-content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            color: white;
-            padding: 2rem;
-        }
-
-        .logo-content i {
-            font-size: 80px;
-            margin-bottom: 1rem;
-            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .logo-content h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .logo-content p {
-            font-size: 1.2rem;
-            opacity: 0.95;
-        }
-
-        /* Right Side - Form */
-        .form-section {
-            background: white;
+        /* Left Section - Image (50% width) */
+        .left-section {
+            width: 50vw;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 1.5rem 1.5rem 1.5rem 2rem;
+        }
+
+        .image-wrapper {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .player-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg,
+                rgba(40, 167, 69, 0.25) 0%,
+                rgba(32, 201, 151, 0.15) 50%,
+                rgba(40, 167, 69, 0.25) 100%);
+        }
+
+        /* Right Section - Content (50% width) */
+        .right-section {
+            width: 50vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem 2rem 1.5rem 1.5rem;
         }
 
         .form-wrapper {
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem;
         }
 
         .form-header {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
         }
 
         .form-header h2 {
-            color: #28a745;
-            font-size: 1.8rem;
+            color: #1f2937;
+            font-size: 1.35rem;
             font-weight: 700;
             margin-bottom: 0.25rem;
         }
 
         .form-header p {
-            color: #6c757d;
-            font-size: 0.95rem;
+            color: #6b7280;
+            font-size: 0.8rem;
         }
 
         .alert {
-            padding: 0.75rem;
-            border-radius: 6px;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
+            padding: 0.6rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            font-size: 0.775rem;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
         }
 
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.3rem;
             font-weight: 600;
-            color: #333;
-            font-size: 0.9rem;
+            color: #374151;
+            font-size: 0.775rem;
         }
 
         .form-control {
             width: 100%;
-            padding: 0.65rem 0.75rem;
-            border: 2px solid #dee2e6;
-            border-radius: 6px;
-            font-size: 0.95rem;
+            padding: 0.6rem 0.8rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 0.85rem;
             transition: all 0.2s;
+            background: #f9fafb;
         }
 
         .form-control:focus {
             border-color: #28a745;
             box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
             outline: none;
+            background: white;
         }
 
-        .form-text {
-            display: none;
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+
+        .invalid-feedback {
+            display: block;
+            color: #dc3545;
+            font-size: 0.725rem;
+            margin-top: 0.2rem;
         }
 
         .checkbox-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
-            font-size: 0.85rem;
+            margin-bottom: 0.9rem;
+            font-size: 0.75rem;
         }
 
         .checkbox-row label {
             display: flex;
             align-items: center;
-            color: #6c757d;
+            color: #6b7280;
             cursor: pointer;
-            font-weight: 400;
+            font-weight: 500;
         }
 
         .checkbox-row input[type="checkbox"] {
-            margin-right: 0.4rem;
+            margin-right: 0.35rem;
             accent-color: #28a745;
+            width: 13px;
+            height: 13px;
         }
 
         .forgot-password {
@@ -183,40 +215,55 @@
 
         .forgot-password:hover {
             color: #218838;
+            text-decoration: underline;
         }
 
         .btn-login {
             width: 100%;
-            padding: 0.7rem;
+            padding: 0.65rem;
             background: linear-gradient(135deg, #28a745, #20c997);
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             color: white;
-            font-size: 1rem;
+            font-size: 0.875rem;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            margin-bottom: 1rem;
+            transition: all 0.3s;
+            margin-bottom: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
         }
 
         .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
         }
 
         .divider {
             text-align: center;
             position: relative;
-            margin: 1rem 0;
+            margin: 0.85rem 0;
         }
 
         .divider span {
             background: white;
-            padding: 0 0.75rem;
-            color: #6c757d;
-            font-size: 0.85rem;
+            padding: 0 0.6rem;
+            color: #9ca3af;
+            font-size: 0.75rem;
             position: relative;
             z-index: 1;
+            font-weight: 500;
         }
 
         .divider::before {
@@ -226,30 +273,30 @@
             left: 0;
             right: 0;
             height: 1px;
-            background: #dee2e6;
+            background: #e5e7eb;
         }
 
         .social-buttons {
             display: flex;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
+            gap: 0.6rem;
+            margin-bottom: 0.85rem;
         }
 
         .social-btn {
             flex: 1;
-            padding: 0.6rem;
-            border: 2px solid #dee2e6;
+            padding: 0.5rem;
+            border: 2px solid #e5e7eb;
             background: white;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            color: #6c757d;
+            gap: 0.35rem;
+            color: #6b7280;
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.775rem;
             font-weight: 500;
         }
 
@@ -257,17 +304,18 @@
             border-color: #28a745;
             color: #28a745;
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         .register-link {
             text-align: center;
-            padding-top: 1rem;
-            border-top: 1px solid #dee2e6;
-            font-size: 0.9rem;
+            padding-top: 0.85rem;
+            border-top: 1px solid #e5e7eb;
+            font-size: 0.775rem;
         }
 
         .register-link span {
-            color: #6c757d;
+            color: #6b7280;
         }
 
         .register-link a {
@@ -281,62 +329,133 @@
             text-decoration: underline;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
+        /* Footer */
+        .footer {
+            background: white;
+            padding: 0.65rem 2rem;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+        }
+
+        .footer p {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
             .login-container {
-                grid-template-columns: 1fr;
-                grid-template-rows: 35vh 65vh;
+                flex-direction: column;
+                overflow-y: auto;
             }
 
-            .logo-content h1 {
-                font-size: 2rem;
+            .left-section,
+            .right-section {
+                width: 100%;
             }
 
-            .logo-content i {
-                font-size: 60px;
-            }
-
-            .form-section {
+            .left-section {
                 padding: 1.5rem;
+                min-height: 300px;
+            }
+
+            .right-section {
+                padding: 1.5rem;
+            }
+
+            .form-wrapper {
+                max-width: 100%;
             }
         }
 
-        @media (max-height: 700px) {
-            .form-group {
-                margin-bottom: 0.75rem;
+        @media (max-width: 768px) {
+            .header {
+                padding: 0.65rem 1.5rem;
             }
 
-            .form-header {
-                margin-bottom: 1rem;
+            .header h1 {
+                font-size: 1.15rem;
             }
 
-            .logo-content i {
-                font-size: 60px;
+            .left-section {
+                padding: 1.25rem;
+                min-height: 250px;
             }
 
-            .logo-content h1 {
-                font-size: 2rem;
+            .right-section {
+                padding: 1.25rem;
             }
 
-            .btn-login {
-                padding: 0.6rem;
+            .form-wrapper {
+                padding: 1.25rem;
+            }
+
+            .form-header h2 {
+                font-size: 1.25rem;
+            }
+
+            .social-buttons {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header {
+                padding: 0.6rem 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.05rem;
+            }
+
+            .footer {
+                padding: 0.6rem 1rem;
+            }
+
+            .footer p {
+                font-size: 0.75rem;
+            }
+
+            .left-section {
+                padding: 1rem;
+                min-height: 200px;
+            }
+
+            .right-section {
+                padding: 1rem;
+            }
+
+            .form-wrapper {
+                padding: 1.25rem;
+                border-radius: 14px;
+            }
+
+            .form-header h2 {
+                font-size: 1.2rem;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
+    <div class="header">
+        <h1>Vipers Academy</h1>
+    </div>
+
+    <!-- Main Content -->
     <div class="login-container">
-        <!-- Left Side: Brand -->
-        <div class="image-section">
-            <div class="logo-content">
-                <i class="fas fa-shield-alt"></i>
-                <h1>Vipers Academy</h1>
-                <p>Excellence in Football</p>
+        <!-- Left Section: Image (50% width) -->
+        <div class="left-section">
+            <div class="image-wrapper">
+                <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
+                     alt="Football Training"
+                     class="player-image">
+                <div class="image-overlay"></div>
             </div>
         </div>
 
-        <!-- Right Side: Login Form -->
-        <div class="form-section">
+        <!-- Right Section: Login Form (50% width) -->
+        <div class="right-section">
             <div class="form-wrapper">
                 <div class="form-header">
                     <h2>Welcome Back</h2>
@@ -344,33 +463,20 @@
                 </div>
 
                 <!-- Session Status -->
-                @if (session('status'))
-                    <div class="alert alert-success">
-                        {{ session('status') }}
-                    </div>
-                @endif
+                <div class="alert alert-success" style="display: none;" id="statusAlert"></div>
 
                 <!-- Validation Errors -->
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        @foreach ($errors->all() as $error)
-                            <div>{{ $error }}</div>
-                        @endforeach
-                    </div>
-                @endif
+                <div class="alert alert-danger" style="display: none;" id="errorAlert"></div>
 
-                <form method="POST" action="{{ route('login.post') }}">
+                <form method="POST" action="/login" id="loginForm">
                     @csrf
 
                     <!-- Email -->
                     <div class="form-group">
                         <label for="email">Email Address</label>
-                        <input id="email" type="email" name="email" value="{{ old('email') }}"
+                        <input id="email" type="email" name="email"
                                placeholder="your@email.com" required autofocus autocomplete="username"
-                               class="form-control @error('email') is-invalid @enderror">
-                        @error('email')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                               class="form-control">
                     </div>
 
                     <!-- Password -->
@@ -378,28 +484,23 @@
                         <label for="password">Password</label>
                         <input id="password" type="password" name="password"
                                placeholder="Enter your password" required autocomplete="current-password"
-                               class="form-control @error('password') is-invalid @enderror">
-                        @error('password')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                               class="form-control">
                     </div>
 
                     <!-- Remember & Forgot -->
                     <div class="checkbox-row">
                         <label for="remember_me">
-                            <input id="remember_me" type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}>
+                            <input id="remember_me" type="checkbox" name="remember">
                             Remember me
                         </label>
 
-                        @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}" class="forgot-password">
-                                Forgot Password?
-                            </a>
-                        @endif
+                        <a href="/password/reset" class="forgot-password">
+                            Forgot Password?
+                        </a>
                     </div>
 
                     <!-- Login Button -->
-                    <button type="submit" class="btn-login">
+                    <button type="submit" class="btn-login" id="loginBtn">
                         <i class="fas fa-sign-in-alt"></i> Sign In
                     </button>
 
@@ -421,14 +522,38 @@
                     <!-- Register Link -->
                     <div class="register-link">
                         <span>Don't have an account?</span>
-                        <a href="{{ route('register') }}">Sign Up</a>
+                        <a href="/register">Sign Up</a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Footer -->
+    <div class="footer">
+        <p>© Vipers 2025</p>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+
+        form.addEventListener('submit', function(e) {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                alert('Please fill in all fields');
+                e.preventDefault();
+                return;
+            }
+
+            // Show loading state
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
+            loginBtn.disabled = true;
+        });
+    });
+    </script>
 </body>
 </html>

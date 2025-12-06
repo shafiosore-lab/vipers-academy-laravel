@@ -21,7 +21,11 @@ use App\Http\Controllers\StandingsController;
 use App\Http\Controllers\MatchCenterController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\AchievementsController;
+use App\Http\Controllers\AnnouncementsController;
 use App\Http\Controllers\CareerController;
+use App\Http\Controllers\EventsController;
+use App\Http\Controllers\TrainingUpdatesController;
 
 // Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -29,20 +33,35 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // About
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 
+// Achievements
+Route::get('/achievements', [AchievementsController::class, 'index'])->name('achievements');
+
+// Events
+Route::get('/events', [EventsController::class, 'index'])->name('events');
+
+// Training Updates
+Route::get('/training-updates', [TrainingUpdatesController::class, 'index'])->name('training-updates');
+
+// Announcements
+Route::get('/announcements', [AnnouncementsController::class, 'index'])->name('announcements');
+
 // Players
 Route::get('/players', [PlayerController::class, 'index'])->name('players.index');
-Route::get('/players/{id}/stats', [PlayerController::class, 'stats'])->name('players.stats');
-Route::get('/players/{id}', [PlayerController::class, 'show'])->name('home.player.show');
+Route::get('/players/{id}/stats', [PlayerController::class, 'stats'])->name('players.stats')->where('id', '[0-9]+');
+Route::get('/players/{id}/overview', [PlayerController::class, 'overview'])->name('players.overview')->where('id', '[0-9]+');
+Route::get('/players/{id}/statistics', [PlayerController::class, 'statistics'])->name('players.statistics')->where('id', '[0-9]+');
+Route::get('/players/{id}/ai-insights', [PlayerController::class, 'aiInsights'])->name('players.ai-insights')->where('id', '[0-9]+');
+Route::get('/players/{id}/biography', [PlayerController::class, 'biography'])->name('players.biography')->where('id', '[0-9]+');
+Route::get('/players/{id}/career', [PlayerController::class, 'career'])->name('players.career')->where('id', '[0-9]+');
+Route::post('/players/{id}/record-stats', [PlayerController::class, 'recordGameStats'])->name('players.record-stats')->where('id', '[0-9]+');
+Route::get('/players/search', [PlayerController::class, 'searchPlayers'])->name('players.search');
+Route::get('/players/{id}', [PlayerController::class, 'show'])->name('home.player.show')->where('id', '[0-9]+');
 
 // Admin route to sync players from gallery
-Route::get('/players/sync-gallery', [PlayerController::class, 'syncPlayersFromGallery'])
-    ->name('players.sync')
+Route::get('/admin/players/sync-gallery', [App\Http\Controllers\Admin\AdminWebsitePlayerController::class, 'syncFromGallery'])
+    ->name('admin.players.sync-gallery')
     ->middleware(['auth', 'admin']);
 
-// Force sync route (clears all players and re-syncs)
-Route::get('/players/force-sync', [PlayerController::class, 'forceSync'])
-    ->name('players.force-sync')
-    ->middleware(['auth', 'admin']);
 
 // Programs
 Route::get('/programs', [ProgramController::class, 'index'])->name('programs');
@@ -122,8 +141,8 @@ Route::prefix('products')->name('products.')->group(function () {
 // Cart
 Route::prefix('cart')->name('cart.')->group(function () {
     Route::get('/', [CartController::class, 'index'])->name('index');
-    Route::get('/summary', [CartController::class, 'summary'])->name('summary');
-    Route::post('/add/{id}', [CartController::class, 'add'])->name('add');
+    Route::get('/summary', [CartController::class, 'getCartSummary'])->name('summary');
+    Route::post('/add', [CartController::class, 'addToCart'])->name('add');
     Route::put('/update/{id}', [CartController::class, 'update'])->name('update');
     Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('remove');
     Route::delete('/clear', [CartController::class, 'clearCart'])->name('clear');
@@ -189,6 +208,32 @@ Route::get('/installment/info', function() {
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login')->middleware('guest');
+
+Route::post('/login', function () {
+    $credentials = request()->only('email', 'password');
+
+    if (auth()->attempt($credentials)) {
+        request()->session()->regenerate();
+
+        $user = auth()->user();
+
+        // Redirect based on user type
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->isPlayer()) {
+            return redirect()->route('player.portal.dashboard');
+        } elseif ($user->isPartner()) {
+            return redirect()->route('partner.dashboard');
+        } else {
+            // Default redirect for visitors or other user types
+            return redirect()->intended('/');
+        }
+    }
+
+    return back()->withErrors([
+        'email' => 'The provided credentials do not match our records.',
+    ]);
+})->name('login.post')->middleware('guest')->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
 Route::post('/logout', function () {
     auth()->logout();
@@ -314,6 +359,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/coupons/{coupon}', [App\Http\Controllers\Admin\AdminCouponController::class, 'update'])->name('coupons.update');
     Route::delete('/coupons/{coupon}', [App\Http\Controllers\Admin\AdminCouponController::class, 'destroy'])->name('coupons.destroy');
 
+    // Website Players Management
+    Route::get('/website-players', [App\Http\Controllers\Admin\AdminWebsitePlayerController::class, 'index'])->name('website-players.index');
+    Route::get('/website-players/create', [App\Http\Controllers\Admin\AdminWebsitePlayerController::class, 'create'])->name('website-players.create');
+    Route::post('/website-players', [App\Http\Controllers\Admin\AdminWebsitePlayerController::class, 'store'])->name('website-players.store');
+    Route::get('/website-players/{websitePlayer}', [App\Http\Controllers\Admin\AdminWebsitePlayerController::class, 'show'])->name('website-players.show');
+    Route::get('/website-players/{websitePlayer}/edit', [App\Http\Controllers\Admin\AdminWebsitePlayerController::class, 'edit'])->name('website-players.edit');
+    Route::put('/website-players/{websitePlayer}', [App\Http\Controllers\Admin\AdminWebsitePlayerController::class, 'update'])->name('website-players.update');
+    Route::delete('/website-players/{websitePlayer}', [App\Http\Controllers\Admin\AdminWebsitePlayerController::class, 'destroy'])->name('website-players.destroy');
+
     // Image Upload
     Route::get('/image-upload', [App\Http\Controllers\Admin\ImageUploadController::class, 'index'])->name('image-upload');
     Route::post('/image-upload', [App\Http\Controllers\Admin\ImageUploadController::class, 'store'])->name('image-upload.store');
@@ -323,6 +377,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Compliance Report
     Route::get('/compliance/report', [App\Http\Controllers\Admin\DashboardController::class, 'complianceReport'])->name('compliance.report');
+});
+
+// API Routes for AJAX functionality
+Route::prefix('api')->name('api.')->group(function () {
+    Route::get('/news', [NewsController::class, 'apiIndex'])->name('news.index');
 });
 
 // Player Portal Routes
