@@ -313,6 +313,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/documents/{document}/edit', [App\Http\Controllers\Admin\AdminDocumentController::class, 'edit'])->name('documents.edit');
     Route::put('/documents/{document}', [App\Http\Controllers\Admin\AdminDocumentController::class, 'update'])->name('documents.update');
     Route::delete('/documents/{document}', [App\Http\Controllers\Admin\AdminDocumentController::class, 'destroy'])->name('documents.destroy');
+    Route::get('/documents/{document}/preview', [App\Http\Controllers\Admin\AdminDocumentController::class, 'preview'])->name('documents.preview');
+    Route::get('/documents/{document}/download', [App\Http\Controllers\Admin\AdminDocumentController::class, 'download'])->name('documents.download');
+    Route::get('/documents/statistics', [App\Http\Controllers\Admin\AdminDocumentController::class, 'statistics'])->name('documents.statistics');
+    Route::post('/documents/bulk', [App\Http\Controllers\Admin\AdminDocumentController::class, 'bulk'])->name('documents.bulk');
 
     // News Management
     Route::get('/news', [App\Http\Controllers\Admin\AdminNewsController::class, 'index'])->name('news.index');
@@ -380,8 +384,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/website-players/{websitePlayer}', [App\Http\Controllers\Admin\AdminWebsitePlayerController::class, 'destroy'])->name('website-players.destroy');
 
     // Image Upload
-    Route::get('/image-upload', [App\Http\Controllers\Admin\ImageUploadController::class, 'index'])->name('image-upload');
-    Route::post('/image-upload', [App\Http\Controllers\Admin\ImageUploadController::class, 'store'])->name('image-upload.store');
+    Route::get('/image-upload', [App\Http\Controllers\Admin\ImageUploadController::class, 'showUploadForm'])->name('image-upload');
+    Route::post('/image-upload', [App\Http\Controllers\Admin\ImageUploadController::class, 'upload'])->name('image-upload.store');
+    Route::get('/images', [App\Http\Controllers\Admin\ImageUploadController::class, 'getImages'])->name('images');
+    Route::delete('/images', [App\Http\Controllers\Admin\ImageUploadController::class, 'deleteImage'])->name('images.delete');
 
     // Performance Overview
     Route::get('/performance/overview', [App\Http\Controllers\Admin\DashboardController::class, 'performanceOverview'])->name('performance.overview');

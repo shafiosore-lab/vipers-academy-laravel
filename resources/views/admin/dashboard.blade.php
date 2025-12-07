@@ -642,34 +642,7 @@
     </div>
 </div>
 
-<!-- AI Insights -->
-@if(count($aiInsights) > 0)
-<div class="row g-4 mb-4">
-    <div class="col-12">
-        <div class="section-header-modern">
-            <h5 class="section-title">
-                <i class="fas fa-robot text-info"></i>
-                AI Insights & Recommendations
-            </h5>
-            <p class="section-subtitle">Smart suggestions based on your academy data</p>
-        </div>
-    </div>
-
-    @foreach($aiInsights as $insight)
-        <div class="col-lg-6">
-            <div class="insight-card insight-{{ $insight['type'] }}">
-                <div class="insight-icon">
-                    <i class="{{ $insight['icon'] }}"></i>
-                </div>
-                <div class="insight-content">
-                    <h6 class="insight-title">{{ $insight['title'] }}</h6>
-                    <p class="insight-message">{{ $insight['message'] }}</p>
-                </div>
-            </div>
-        </div>
-    @endforeach
-</div>
-@endif
+<!-- AI Insights - Removed as requested -->
 @endsection
 
 <!-- Removed monthLabels and registration data as metric cards were removed -->

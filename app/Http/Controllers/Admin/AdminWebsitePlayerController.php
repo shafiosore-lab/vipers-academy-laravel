@@ -164,7 +164,7 @@ class AdminWebsitePlayerController extends Controller
     /**
      * Perform the actual sync operation
      */
-    protected function performSync($silent = false)
+    public function performSync($silent = false)
     {
         $playersPath = public_path('assets/img/players');
 
