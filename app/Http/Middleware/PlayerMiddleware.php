@@ -29,6 +29,12 @@ class PlayerMiddleware
             return redirect()->route('login')->with('error', 'Your account is not active.');
         }
 
+        // Check if player exists and is approved
+        $player = Auth::user()->player;
+        if (!$player || !$player->isApproved()) {
+            return redirect('/')->with('error', 'Your account is pending approval. Please contact the academy administration.');
+        }
+
         return $next($request);
     }
 }

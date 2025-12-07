@@ -5,25 +5,7 @@
 @section('meta_description', 'Enroll in Vipers Academy football programs. Choose your program and start your journey to football excellence in Kenya.')
 
 @section('content')
-<!-- Hero Section -->
-<section class="enrollment-hero position-relative py-5 overflow-hidden">
-    <div class="hero-background position-absolute top-0 start-0 w-100 h-100"></div>
-    <div class="container position-relative">
-        <div class="row justify-content-center">
-            <div class="col-lg-10 col-xl-8">
-                <div class="text-center text-white" data-aos="fade-up" data-aos-duration="800">
-                    <div class="hero-icon mb-4">
-                        <i class="fas fa-graduation-cap fa-4x opacity-90"></i>
-                    </div>
-                    <h1 class="display-4 fw-bold mb-4 hero-title">Enroll in a Program</h1>
-                    <p class="lead fs-5 mb-0 opacity-90 hero-subtitle">
-                        Choose your program and start your journey to football excellence
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+
 
 <!-- Main Enrollment Section -->
 <section class="enrollment-section py-5">

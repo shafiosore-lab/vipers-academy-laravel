@@ -2,7 +2,8 @@
 
 @section('title', 'Vipers Academy - Professional Football Training & Development')
 
-@section('meta_description', 'Join Vipers Academy for world-class football training. Professional coaching, modern facilities, and comprehensive youth development programs.')
+@section('meta_description', 'Join Vipers Academy for world-class football training. Professional coaching, modern
+facilities, and comprehensive youth development programs.')
 
 @section('content')
 <!-- Hero Section -->
@@ -18,7 +19,8 @@
                         Develop Your <span class="text-white">Football Potential</span>
                     </h1>
                     <p class="lead mb-4 fs-5 opacity-90">
-                        Building Champions in Football, Academics & Technology. A holistic academy developing disciplined, skilled, and tech-enabled young athletes in Mumias.
+                        Building Champions in Football, Academics & Technology. A holistic academy developing
+                        disciplined, skilled, and tech-enabled young athletes in Mumias.
                     </p>
                     <div class="d-flex flex-column flex-sm-row gap-3 mb-4">
                         <a href="{{ route('programs') }}" class="btn btn-outline-light btn-lg px-4 py-3 fw-semibold">
@@ -52,9 +54,13 @@
 <section class="programs-preview py-5 bg-light">
     <div class="container">
         <div class="text-center mb-5" data-aos="fade-up">
-            <h2 class="display-5 fw-bold mb-3">Football + Academics + Technology</h2>
-            <p class="lead text-muted">Choose from our comprehensive range of football development programs</p>
+            <h2 class="display-5 fw-bold mb-3 text-black">
+                Football <span class="text-success">|</span> Academics <span class="text-success">|</span> Technology
+            </h2>
+            <p class="lead" style="color:#000;">Choose from our comprehensive range of football development programs
+            </p>
         </div>
+
 
         <div class="row g-4">
             <!-- Football Training -->
@@ -106,8 +112,10 @@
                         </div>
                         <ul class="list-unstyled mb-3">
                             <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i>Study discipline</li>
-                            <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i>CBC homework support</li>
-                            <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i>Life-skills coaching</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i>CBC homework support
+                            </li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i>Life-skills coaching
+                            </li>
                             <li class="mb-2"><i class="fas fa-check-circle text-warning me-2"></i>Behavior tracking</li>
                         </ul>
                         <div class="mb-3">
@@ -141,7 +149,8 @@
                             <li class="mb-2"><i class="fas fa-check-circle text-info me-2"></i>Computer basics</li>
                             <li class="mb-2"><i class="fas fa-check-circle text-info me-2"></i>Coding</li>
                             <li class="mb-2"><i class="fas fa-check-circle text-info me-2"></i>Digital safety</li>
-                            <li class="mb-2"><i class="fas fa-check-circle text-info me-2"></i>Tech creativity projects</li>
+                            <li class="mb-2"><i class="fas fa-check-circle text-info me-2"></i>Tech creativity projects
+                            </li>
                         </ul>
                         <div class="mb-3">
                             <small class="text-muted d-block mb-1">
@@ -173,10 +182,6 @@
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-4">
                         <div class="d-flex align-items-center mb-4">
-                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
-                                style="width: 50px; height: 50px;">
-                                <i class="fas fa-heart"></i>
-                            </div>
                             <div>
                                 <h5 class="mb-0 fw-bold text-primary">Why Parents Choose Vipers</h5>
                                 <small class="text-muted">Our Core Strengths</small>
@@ -184,19 +189,28 @@
                         </div>
                         <div class="row g-3">
                             <div class="col-md-4">
-                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Academic discipline & improved school performance</p>
-                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Safe supervised environment</p>
-                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Builds confidence & social skills</p>
+                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Academic discipline &
+                                    improved school performance</p>
+                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Safe supervised
+                                    environment</p>
+                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Builds confidence & social
+                                    skills</p>
                             </div>
                             <div class="col-md-4">
-                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Early exposure to computers and coding</p>
-                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Elite football development</p>
-                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Professional coaching & modern equipment</p>
+                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Early exposure to
+                                    computers and coding</p>
+                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Elite football development
+                                </p>
+                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Professional coaching &
+                                    modern equipment</p>
                             </div>
                             <div class="col-md-4">
-                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Affordable & flexible programs</p>
-                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Pathway to scholarships & opportunities</p>
-                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Talent identification & growth tracking</p>
+                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Affordable & flexible
+                                    programs</p>
+                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Pathway to scholarships &
+                                    opportunities</p>
+                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Talent identification &
+                                    growth tracking</p>
                             </div>
                         </div>
                     </div>
@@ -208,10 +222,7 @@
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-4">
                         <div class="d-flex align-items-center mb-4">
-                            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3"
-                                style="width: 50px; height: 50px;">
-                                <i class="fas fa-star"></i>
-                            </div>
+
                             <div>
                                 <h5 class="mb-0 fw-bold text-success">What Makes Us Different</h5>
                                 <small class="text-muted">Our Unique Approach</small>
@@ -219,19 +230,28 @@
                         </div>
                         <div class="row g-3">
                             <div class="col-md-4">
-                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Holistic approach: Football + Academics + Digital Skills</p>
-                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>CBC-aligned mentorship & character building</p>
-                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Tech integration with coding programs</p>
+                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Holistic approach:
+                                    Football + Academics + Digital Skills</p>
+                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>CBC-aligned mentorship &
+                                    character building</p>
+                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Tech integration with
+                                    coding programs</p>
                             </div>
                             <div class="col-md-4">
-                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Affordable for all families</p>
-                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Safe & structured environment</p>
-                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Tournaments & exchange programs</p>
+                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Affordable for all
+                                    families</p>
+                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Safe & structured
+                                    environment</p>
+                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Tournaments & exchange
+                                    programs</p>
                             </div>
                             <div class="col-md-4">
-                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Professional coaching staff</p>
-                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Advanced skill development</p>
-                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Proven track record of success</p>
+                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Professional coaching
+                                    staff</p>
+                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Advanced skill development
+                                </p>
+                                <p class="mb-2"><i class="fas fa-check text-success me-2"></i>Proven track record of
+                                    success</p>
                             </div>
                         </div>
                     </div>
@@ -248,48 +268,34 @@
             <div class="col-lg-6" data-aos="fade-right">
                 <h2 class="display-5 fw-bold mb-4">Trusted by Players & Parents</h2>
                 <div class="d-flex align-items-center mb-3">
-                    <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3"
-                        style="width: 50px; height: 50px;">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <div>
-                        <h4 class="mb-0 fw-bold">4.9/5</h4>
-                        <small class="text-muted">Average Rating</small>
-                    </div>
+
+
                 </div>
                 <div class="d-flex align-items-center mb-3">
-                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
-                        style="width: 50px; height: 50px;">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div>
-                        <h4 class="mb-0 fw-bold">500+</h4>
-                        <small class="text-muted">Happy Families</small>
-                    </div>
+
+
                 </div>
                 <div class="d-flex align-items-center">
-                    <div class="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center me-3"
-                        style="width: 50px; height: 50px;">
-                        <i class="fas fa-trophy"></i>
-                    </div>
-                    <div>
-                        <h4 class="mb-0 fw-bold">50+</h4>
-                        <small class="text-muted">Pro Graduates</small>
-                    </div>
+
+
                 </div>
             </div>
             <div class="col-lg-6" data-aos="fade-left">
                 <div class="card border-0 shadow">
                     <div class="card-body p-4">
                         <i class="fas fa-quote-left fa-2x text-primary opacity-25 mb-3"></i>
-                        <p class="lead mb-4">"Vipers Academy transformed my son's football career. The professional coaching and facilities are unmatched. He's now playing for a premier league team!"</p>
+                        <p class="lead mb-4">Vipers Academy transformed my son’s football career. Coming from Mumias, we
+                            never imagined he would earn a sports scholarship from high school all the way to
+                            university. The coaches believed in him, pushed him, and shaped him into a disciplined,
+                            confident athlete. We are forever grateful to Vipers Academy for opening doors we never
+                            thought possible</p>
                         <div class="d-flex align-items-center">
                             <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80"
                                 alt="Parent testimonial" class="rounded-circle me-3"
                                 style="width: 50px; height: 50px; object-fit: cover;">
                             <div>
-                                <h6 class="mb-0 fw-bold">Maria Johnson</h6>
-                                <small class="text-muted">Parent of U-16 Player</small>
+                                <h6 class="mb-0 fw-bold">Benard Owino</h6>
+                                <small class="text-muted">Parent of Senior team Player</small>
                             </div>
                         </div>
                     </div>
@@ -324,7 +330,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             counter.textContent = target.toLocaleString();
                             clearInterval(timer);
                         } else {
-                            counter.textContent = Math.floor(current).toLocaleString();
+                            counter.textContent = Math.floor(current)
+                                .toLocaleString();
                         }
                     }, step);
                 });

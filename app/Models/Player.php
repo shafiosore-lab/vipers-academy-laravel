@@ -27,10 +27,19 @@ class Player extends Model
         'program_id',
         'registration_status',
         'approval_type',
-        'documents_completed'
+        'documents_completed',
+        'temporary_approval_granted_at',
+        'temporary_approval_expires_at',
+        'temporary_approval_notes',
+        'partner_id',
+        'email'
     ];
 
-    // Position order for sorting
+    protected $casts = [
+        'temporary_approval_granted_at' => 'datetime',
+        'temporary_approval_expires_at' => 'datetime',
+    ];
+
     const POSITION_ORDER = [
         'goalkeeper' => 1,
         'defender' => 2,
@@ -38,7 +47,6 @@ class Player extends Model
         'striker' => 4
     ];
 
-    // Category order
     const CATEGORY_ORDER = [
         'under-13' => 1,
         'under-15' => 2,
@@ -46,9 +54,29 @@ class Player extends Model
         'senior' => 4
     ];
 
-    /**
-     * Get full name
-     */
+    // ==========================================
+    // RELATIONSHIPS
+    // ==========================================
+
+    public function program()
+    {
+        return $this->belongsTo(Program::class);
+    }
+
+    public function partner()
+    {
+        return $this->belongsTo(User::class, 'partner_id');
+    }
+
+    public function gameStatistics()
+    {
+        return $this->hasMany(GameStatistic::class);
+    }
+
+    // ==========================================
+    // ATTRIBUTES & ACCESSORS
+    // ==========================================
+
     public function getFullNameAttribute()
     {
         if ($this->first_name && $this->last_name) {
@@ -57,52 +85,38 @@ class Player extends Model
         return $this->name;
     }
 
-    /**
-     * Get position order for sorting
-     */
     public function getPositionOrderAttribute()
     {
         return self::POSITION_ORDER[strtolower($this->position)] ?? 999;
     }
 
-    /**
-     * Get category order for sorting
-     */
     public function getCategoryOrderAttribute()
     {
         return self::CATEGORY_ORDER[strtolower($this->category)] ?? 999;
     }
 
-    /**
-     * Get formatted category name
-     */
     public function getFormattedCategoryAttribute()
     {
         return ucwords(str_replace('-', ' ', $this->category));
     }
 
-    /**
-     * Get formatted position name
-     */
     public function getFormattedPositionAttribute()
     {
         return ucfirst($this->position);
     }
 
-    /**
-     * Get image URL
-     */
     public function getImageUrlAttribute()
     {
         if ($this->image_path && file_exists(public_path('assets/img/players/' . $this->image_path))) {
             return asset('assets/img/players/' . $this->image_path);
         }
-        return null;
+        return asset('assets/img/default-player.png');
     }
 
-    /**
-     * Scope to order players by position then age
-     */
+    // ==========================================
+    // QUERY SCOPES
+    // ==========================================
+
     public function scopeOrderedByPositionAndAge($query)
     {
         return $query->orderByRaw("
@@ -116,27 +130,141 @@ class Player extends Model
         ")->orderBy('age', 'asc');
     }
 
-    /**
-     * Scope to filter by category
-     */
     public function scopeCategory($query, $category)
     {
         return $query->where('category', $category);
     }
 
-    /**
-     * Get the program that the player belongs to
-     */
-    public function program()
+    public function scopeApproved($query)
     {
-        return $this->belongsTo(Program::class);
+        return $query->whereIn('approval_type', ['full', 'temporary']);
     }
 
-    /**
-     * Get the partner organization that manages this player
-     */
-    public function partner()
+    public function scopeFullyApproved($query)
     {
-        return $this->belongsTo(User::class, 'partner_id');
+        return $query->where('approval_type', 'full');
+    }
+
+    // ==========================================
+    // APPROVAL CHECKS
+    // ==========================================
+
+    public function isApproved()
+    {
+        return in_array($this->approval_type, ['full', 'temporary']);
+    }
+
+    public function isFullyApproved()
+    {
+        return $this->approval_type === 'full';
+    }
+
+    public function isTemporarilyApproved()
+    {
+        return $this->approval_type === 'temporary';
+    }
+
+    public function hasTemporaryApproval()
+    {
+        return $this->isTemporarilyApproved();
+    }
+
+    public function hasFullApproval()
+    {
+        return $this->isFullyApproved();
+    }
+
+    public function isTemporaryApprovalValid()
+    {
+        if ($this->approval_type !== 'temporary' || !$this->temporary_approval_expires_at) {
+            return false;
+        }
+
+        return now()->lessThanOrEqualTo($this->temporary_approval_expires_at);
+    }
+
+    public function isTemporaryApprovalExpired()
+    {
+        if ($this->approval_type !== 'temporary' || !$this->temporary_approval_expires_at) {
+            return false;
+        }
+
+        return now()->greaterThan($this->temporary_approval_expires_at);
+    }
+
+    public function getTemporaryApprovalDaysRemaining()
+    {
+        if ($this->approval_type !== 'temporary' || !$this->temporary_approval_expires_at) {
+            return 0;
+        }
+
+        $remaining = now()->diffInDays($this->temporary_approval_expires_at, false);
+        return max(0, $remaining);
+    }
+
+    // ==========================================
+    // APPROVAL MANAGEMENT
+    // ==========================================
+
+    public function grantFullApproval()
+    {
+        $this->update([
+            'approval_type' => 'full',
+            'temporary_approval_granted_at' => null,
+            'temporary_approval_expires_at' => null,
+            'temporary_approval_notes' => null,
+        ]);
+
+        return $this;
+    }
+
+    public function grantTemporaryApproval($notes = null)
+    {
+        $expiryDate = now()->addDays(7);
+
+        $this->update([
+            'approval_type' => 'temporary',
+            'temporary_approval_granted_at' => now(),
+            'temporary_approval_expires_at' => $expiryDate,
+            'temporary_approval_notes' => $notes,
+        ]);
+
+        return $this;
+    }
+
+    public function revokeApproval()
+    {
+        $this->update([
+            'approval_type' => 'none',
+            'temporary_approval_granted_at' => null,
+            'temporary_approval_expires_at' => null,
+            'temporary_approval_notes' => null,
+        ]);
+
+        return $this;
+    }
+
+    // ==========================================
+    // UTILITY METHODS
+    // ==========================================
+
+    public function canAccessPortal()
+    {
+        return $this->isApproved() && $this->isTemporaryApprovalValid();
+    }
+
+    public function needsDocumentCompletion()
+    {
+        return !$this->documents_completed;
+    }
+
+    public function getTotalGoals()
+    {
+        return $this->goals + ($this->gameStatistics->sum('goals_scored') ?? 0);
+    }
+
+    public function getTotalAssists()
+    {
+        return $this->assists + ($this->gameStatistics->sum('assists') ?? 0);
     }
 }

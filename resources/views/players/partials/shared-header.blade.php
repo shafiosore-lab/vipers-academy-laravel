@@ -5,6 +5,12 @@
 @if(!isset($player) || !$player)
     <div class="alert alert-danger">Error: Player data not available</div>
 @else
+    {{-- Authentication Check for Portal Users --}}
+    @php
+        $isAuthenticatedPlayer = auth()->check() && auth()->user()->isPlayer();
+        $isApprovedPlayer = $isAuthenticatedPlayer && auth()->user()->player && auth()->user()->player->isApproved();
+        $canAccessPortal = $isApprovedPlayer;
+    @endphp
     <div class="player-header">
         {{-- Player Photo --}}
         @if($player->image_path)

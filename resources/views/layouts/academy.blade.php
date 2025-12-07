@@ -592,6 +592,7 @@
                 <a href="{{ route('products.index') }}">Merchandise</a>
                 <a href="{{ route('careers.index') }}">Careers</a>
                 <a href="{{ route('gallery') }}">Gallery</a>
+                <a href="{{ route('contact') }}">Contact</a>
                 <a href="{{ route('login') }}">Log in</a>
                 <x-register-dropdown />
             </div>

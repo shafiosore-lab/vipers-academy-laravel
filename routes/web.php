@@ -262,6 +262,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/players/{player}', [App\Http\Controllers\Admin\AdminPlayerController::class, 'show'])->name('players.show');
     Route::get('/players/{player}/edit', [App\Http\Controllers\Admin\AdminPlayerController::class, 'edit'])->name('players.edit');
     Route::put('/players/{player}', [App\Http\Controllers\Admin\AdminPlayerController::class, 'update'])->name('players.update');
+    Route::put('/players/{player}/approve', [App\Http\Controllers\Admin\AdminPlayerController::class, 'approve'])->name('players.approve');
+    Route::post('/players/{player}/approve-temporary', [App\Http\Controllers\Admin\AdminPlayerController::class, 'approveTemporary'])->name('players.approve.temporary');
+    Route::put('/players/{player}/reject', [App\Http\Controllers\Admin\AdminPlayerController::class, 'reject'])->name('players.reject');
     Route::delete('/players/{player}', [App\Http\Controllers\Admin\AdminPlayerController::class, 'destroy'])->name('players.destroy');
     Route::post('/players/check-expired', [App\Http\Controllers\Admin\AdminPlayerController::class, 'checkExpiredApprovals'])->name('players.check.expired');
 

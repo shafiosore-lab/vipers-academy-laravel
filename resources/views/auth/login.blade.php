@@ -447,10 +447,11 @@
         <!-- Left Section: Image (50% width) -->
         <div class="left-section">
             <div class="image-wrapper">
-                <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
+                <img src="{{ asset('assets/img/gallery/sen.jpeg') }}"
                      alt="Football Training"
                      class="player-image">
-                <div class="image-overlay"></div>
+                <div class=""></div>
+
             </div>
         </div>
 
