@@ -39,7 +39,16 @@ class AdminProgramController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $data = $request->only(['title', 'age_group', 'description', 'schedule', 'duration', 'regular_fee', 'mumias_fee', 'mumias_discount_percentage']);
+        $data = [
+            'title' => $request->title,
+            'age_group' => $request->age_group,
+            'description' => $request->description,
+            'schedule' => $request->schedule,
+            'duration' => $request->duration,
+            'regular_fee' => $request->regular_fee,
+            'mumias_fee' => $request->mumias_fee,
+            'mumias_discount_percentage' => $request->mumias_discount_percentage,
+        ];
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('uploads/programs', 'public');

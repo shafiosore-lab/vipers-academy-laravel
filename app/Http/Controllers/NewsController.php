@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Models\News;
 
 class NewsController extends Controller
@@ -46,7 +47,7 @@ class NewsController extends Controller
         // Check if there are more articles
         $hasMoreArticles = $articles->count() > 12; // Assuming pagination
 
-        return view('website.news', compact(
+        return view('website.news.index', compact(
             'news',
             'totalArticles',
             'monthlyArticles',
@@ -85,7 +86,7 @@ class NewsController extends Controller
             ->orderBy('count', 'desc')
             ->get();
 
-        return view('website.news_detail', compact('newsItem', 'relatedNews', 'latestNews', 'categories'));
+        return view('website.news.show', compact('newsItem', 'relatedNews', 'latestNews', 'categories'));
     }
 
     public function search(Request $request)
@@ -122,7 +123,7 @@ class NewsController extends Controller
         $articles = $news->skip(1);
         $hasMoreArticles = false; // No pagination for search
 
-        return view('website.news', compact(
+        return view('website.news.index', compact(
             'news',
             'totalArticles',
             'monthlyArticles',
@@ -167,7 +168,7 @@ class NewsController extends Controller
         // Check if there are more articles
         $hasMoreArticles = $articles->count() > 12;
 
-        return view('website.news', compact(
+        return view('website.news.index', compact(
             'news',
             'totalArticles',
             'monthlyArticles',
@@ -192,5 +193,25 @@ class NewsController extends Controller
         // For now, we'll just return a success message
 
         return back()->with('success', 'Thank you for subscribing to our newsletter!');
+    }
+
+    /**
+     * Get category icon for display
+     */
+    private function getCategoryIcon($category)
+    {
+        $icons = [
+            'Achievements' => '🏆',
+            'Events' => '🎓',
+            'Training Updates' => '🏃',
+            'Announcements' => '📢',
+            'Match Reports' => '⚽',
+            'Player Updates' => '👤',
+            'Transfer News' => '🔄',
+            'General' => '📰',
+            'Other' => '📄'
+        ];
+
+        return $icons[$category] ?? '📰';
     }
 }

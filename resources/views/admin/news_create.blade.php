@@ -33,6 +33,26 @@
                                 </div>
 
                                 <div class="mb-3">
+                                    <label for="category" class="form-label">Category *</label>
+                                    <select class="form-control @error('category') is-invalid @enderror"
+                                            id="category" name="category" required>
+                                        <option value="">Select a category</option>
+                                        <option value="Academy News" {{ old('category') == 'Academy News' ? 'selected' : '' }}>Academy News</option>
+                                        <option value="Match Reports" {{ old('category') == 'Match Reports' ? 'selected' : '' }}>Match Reports</option>
+                                        <option value="Player Updates" {{ old('category') == 'Player Updates' ? 'selected' : '' }}>Player Updates</option>
+                                        <option value="Training Updates" {{ old('category') == 'Training Updates' ? 'selected' : '' }}>Training Updates</option>
+                                        <option value="Events" {{ old('category') == 'Events' ? 'selected' : '' }}>Events</option>
+                                        <option value="Announcements" {{ old('category') == 'Announcements' ? 'selected' : '' }}>Announcements</option>
+                                        <option value="Transfer News" {{ old('category') == 'Transfer News' ? 'selected' : '' }}>Transfer News</option>
+                                        <option value="Other" {{ old('category') == 'Other' ? 'selected' : '' }}>Other</option>
+                                    </select>
+                                    @error('category')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <div class="form-text">Select the appropriate category for this news article</div>
+                                </div>
+
+                                <div class="mb-3">
                                     <label for="content" class="form-label">Content *</label>
                                     <textarea class="form-control @error('content') is-invalid @enderror"
                                               id="content" name="content" rows="12" required>{{ old('content') }}</textarea>

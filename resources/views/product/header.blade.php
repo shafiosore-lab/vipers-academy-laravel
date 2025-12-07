@@ -127,7 +127,7 @@
                         </a>
                         @auth
                         <div class="dropdown-menu account-dropdown">
-                            <a href="{{ route('dashboard') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                            <a href="{{ Auth::user()->isAdmin() ? route('admin.dashboard') : (Auth::user()->isPlayer() ? route('player.portal.dashboard') : (Auth::user()->isPartner() ? route('partner.dashboard') : route('home'))) }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
                             <a href="{{ route('orders.index') }}"><i class="fas fa-box"></i> My Orders</a>
                             <a href="{{ route('profile.edit') }}"><i class="fas fa-user-cog"></i> Profile</a>
                             <a href="{{ route('wishlist.index') }}"><i class="fas fa-heart"></i> Wishlist</a>
@@ -1303,13 +1303,13 @@ function handleScroll() {
     const currentScrollY = window.scrollY;
     const scrollThreshold = 50; // Minimum scroll distance to trigger changes
 
-    console.log('handleScroll called - current:', currentScrollY, 'last:', lastScrollY);
+    // Handle scroll behavior
 
     const header = document.querySelector('.product-header');
     const topUtilityBar = document.querySelector('.top-utility-bar');
     const categoryNav = document.querySelector('.category-nav');
 
-    console.log('Elements found - header:', !!header, 'utility:', !!topUtilityBar, 'category:', !!categoryNav);
+    // Check if elements exist
 
     if (Math.abs(currentScrollY - lastScrollY) < scrollThreshold) {
         console.log('Scroll below threshold, ignoring');
@@ -1318,18 +1318,14 @@ function handleScroll() {
 
     if (currentScrollY > lastScrollY && currentScrollY > 100) {
         // Scrolling down - return to sticky position, fade out bars
-        console.log('Scrolling down - sticky position, fading out bars');
         header?.classList.remove('fixed-nav');
-        console.log('Removed fixed-nav class');
         topUtilityBar?.classList.add('fade-out');
         topUtilityBar?.setAttribute('aria-hidden', 'true');
         categoryNav?.classList.add('fade-out');
         categoryNav?.setAttribute('aria-hidden', 'true');
     } else if (currentScrollY < lastScrollY) {
         // Scrolling up - become fixed, fade in bars
-        console.log('Scrolling up - fixed position, fading in bars');
         header?.classList.add('fixed-nav');
-        console.log('Added fixed-nav class');
         topUtilityBar?.classList.remove('fade-out');
         topUtilityBar?.removeAttribute('aria-hidden');
         categoryNav?.classList.remove('fade-out');
@@ -1549,7 +1545,6 @@ let isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
 function initMegaMenuHandlers() {
     const megaTriggers = document.querySelectorAll('.mega-menu-trigger');
-    console.log('Initializing mega menu handlers, found triggers:', megaTriggers.length);
 
     megaTriggers.forEach((trigger, index) => {
         const megaMenu = trigger.querySelector('.mega-menu');
@@ -1564,7 +1559,6 @@ function initMegaMenuHandlers() {
             trigger.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('Touch device click - toggling mega menu');
 
                 // Close any other open mega menu
                 if (activeMegaMenu && activeMegaMenu !== megaMenu) {
@@ -1574,7 +1568,6 @@ function initMegaMenuHandlers() {
 
                 // Toggle current menu
                 const isVisible = megaMenu.style.display === 'block';
-                console.log('Current visibility:', isVisible);
                 megaMenu.style.display = isVisible ? 'none' : 'block';
                 megaMenu.style.visibility = isVisible ? 'hidden' : 'visible';
 
@@ -1585,7 +1578,6 @@ function initMegaMenuHandlers() {
                 } else {
                     megaMenu.classList.remove('active');
                     activeMegaMenu = null;
-                    console.log('Mega menu deactivated');
                 }
             });
 
@@ -1611,13 +1603,11 @@ function initMegaMenuHandlers() {
         } else {
             // Desktop hover handling (keep existing)
             trigger.addEventListener('mouseenter', function() {
-                console.log('Desktop hover enter - showing mega menu');
                 megaMenu.style.display = 'block';
                 megaMenu.style.visibility = 'visible';
             });
 
             trigger.addEventListener('mouseleave', function() {
-                console.log('Desktop hover leave - hiding mega menu');
                 megaMenu.style.display = 'none';
             });
         }

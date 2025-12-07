@@ -62,6 +62,9 @@ Route::get('/admin/players/sync-gallery', [App\Http\Controllers\Admin\AdminWebsi
     ->name('admin.players.sync-gallery')
     ->middleware(['auth', 'admin']);
 
+// Temporary route for syncing without auth (remove after use)
+Route::get('/sync-players', [App\Http\Controllers\Admin\AdminWebsitePlayerController::class, 'syncFromGallery']);
+
 
 // Programs
 Route::get('/programs', [ProgramController::class, 'index'])->name('programs');
@@ -255,8 +258,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Partners Management
     Route::get('/partners', [App\Http\Controllers\Admin\AdminPartnerController::class, 'index'])->name('partners.index');
+    Route::get('/partners/create', [App\Http\Controllers\Admin\AdminPartnerController::class, 'create'])->name('partners.create');
+    Route::post('/partners', [App\Http\Controllers\Admin\AdminPartnerController::class, 'store'])->name('partners.store');
     Route::get('/partners/{partner}', [App\Http\Controllers\Admin\AdminPartnerController::class, 'show'])->name('partners.show');
+    Route::get('/partners/{partner}/edit', [App\Http\Controllers\Admin\AdminPartnerController::class, 'edit'])->name('partners.edit');
     Route::put('/partners/{partner}', [App\Http\Controllers\Admin\AdminPartnerController::class, 'update'])->name('partners.update');
+    Route::put('/partners/{partner}/approve', [App\Http\Controllers\Admin\AdminPartnerController::class, 'approve'])->name('partners.approve');
+    Route::put('/partners/{partner}/reject', [App\Http\Controllers\Admin\AdminPartnerController::class, 'reject'])->name('partners.reject');
+    Route::delete('/partners/{partner}', [App\Http\Controllers\Admin\AdminPartnerController::class, 'destroy'])->name('partners.destroy');
 
     // Programs Management
     Route::get('/programs', [App\Http\Controllers\Admin\AdminProgramController::class, 'index'])->name('programs.index');
@@ -293,6 +302,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/standings/{standing}/edit', [App\Http\Controllers\Admin\AdminStandingsController::class, 'edit'])->name('standings.edit');
     Route::put('/standings/{standing}', [App\Http\Controllers\Admin\AdminStandingsController::class, 'update'])->name('standings.update');
     Route::delete('/standings/{standing}', [App\Http\Controllers\Admin\AdminStandingsController::class, 'destroy'])->name('standings.destroy');
+    Route::get('/standings/export', [App\Http\Controllers\Admin\AdminStandingsController::class, 'export'])->name('standings.export');
+    Route::post('/standings/bulk-import', [App\Http\Controllers\Admin\AdminStandingsController::class, 'bulkImport'])->name('standings.bulk-import');
 
     // Documents Management
     Route::get('/documents', [App\Http\Controllers\Admin\AdminDocumentController::class, 'index'])->name('documents.index');

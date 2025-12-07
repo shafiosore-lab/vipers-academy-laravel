@@ -525,7 +525,7 @@
                     </div>
                     <h6>No Recent Orders</h6>
                     <p class="text-muted mb-3">Your order history will appear here</p>
-                    <a href="{{ route('products') }}" class="btn btn-outline-primary btn-sm" target="_blank">Start Shopping</a>
+                    <a href="{{ route('products.index') }}" class="btn btn-outline-primary btn-sm" target="_blank">Start Shopping</a>
                 </div>
                 @endif
             </div>

@@ -92,6 +92,14 @@ class DashboardController extends Controller
             // Recent player registrations (for activity feed)
             $recentPlayers = Player::latest()->take(3)->get();
 
+            // Generate AI insights
+            $aiInsights = $this->generateAiInsights($totalPlayers, $highPerformers, $playersNeedingAttention);
+
+            // Chart data
+            $monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            $playerRegistrations = [12, 19, 3, 5, 2, 3, 9, 14, 7, 8, 15, 10]; // Sample data
+            $programCreations = [2, 4, 1, 3, 1, 2, 5, 8, 3, 4, 6, 3]; // Sample data
+
             return compact(
                 'totalPlayers', 'newPlayersThisMonth', 'playerGrowth', 'playersWithContracts',
                 'internationalPlayers', 'playersNeedingAttention', 'excellentAcademic',
@@ -99,7 +107,8 @@ class DashboardController extends Controller
                 'totalMatches', 'schools', 'developmentStages', 'recentFollowUps',
                 'topPerformers', 'totalPartners', 'activePartners', 'pendingPartners',
                 'totalPrograms', 'newProgramsThisMonth', 'programGrowth', 'totalNews',
-                'newsThisWeek', 'newsGrowth', 'recentPartners', 'recentPlayers'
+                'newsThisWeek', 'newsGrowth', 'recentPartners', 'recentPlayers', 'aiInsights',
+                'monthLabels', 'playerRegistrations', 'programCreations'
             );
         });
 

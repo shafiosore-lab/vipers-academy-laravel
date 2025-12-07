@@ -16,10 +16,11 @@ class RegisteredUserController extends Controller
 {
     /**
      * Display the registration view.
+     * Redirect to the main registration choice page for role-based registration.
      */
-    public function create(): View
+    public function create()
     {
-        return view('auth.register');
+        return redirect()->route('register');
     }
 
     /**
@@ -39,6 +40,8 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'user_type' => 'general',
+            'status' => 'active',
         ]);
 
         event(new Registered($user));

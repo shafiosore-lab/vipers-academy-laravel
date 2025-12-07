@@ -1434,7 +1434,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectedLeague = leagueFilter.value;
 
         // For now, just log - in a real implementation, this would filter the standings data
-        console.log('Filtering standings:', { season: selectedSeason, league: selectedLeague });
 
         // If different from current, redirect with new parameters
         const currentUrl = new URL(window.location);
@@ -1507,7 +1506,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (listView) listView.addEventListener('click', function() {
         // Implement list view logic
-        console.log('List view clicked');
     });
 
     // Initialize

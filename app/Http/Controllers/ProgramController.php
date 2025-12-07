@@ -19,7 +19,7 @@ class ProgramController extends Controller
             return $query->where('category', $category);
         })->get();
 
-        return view('website.programs', compact('programs', 'category'));
+        return view('website.programs.index', compact('programs', 'category'));
     }
 
     /**
@@ -28,7 +28,7 @@ class ProgramController extends Controller
     public function show($id)
     {
         $program = Program::findOrFail($id);
-        return view('website.program_detail', compact('program'));
+        return view('website.programs.show', compact('program'));
     }
 
     /**
@@ -37,7 +37,7 @@ class ProgramController extends Controller
     public function showEnrollmentForm()
     {
         $programs = Program::all();
-        return view('website.enroll', compact('programs'));
+        return view('website.enrollment.index', compact('programs'));
     }
 
     /**
@@ -68,7 +68,7 @@ class ProgramController extends Controller
      */
     public function showRegistrationChoice()
     {
-        return view('website.register_choice');
+        return view('website.register.index');
     }
 
     /**
@@ -76,7 +76,7 @@ class ProgramController extends Controller
      */
     public function registerPlayer()
     {
-        return view('website.register_player');
+        return view('website.register.player');
     }
 
     /**
@@ -88,11 +88,7 @@ class ProgramController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'age' => 'required|integer|min:6|max:18',
-            'date_of_birth' => 'required|date',
-            'parent_name' => 'required|string|max:255',
-            'parent_phone' => 'required|string',
-            'position' => 'nullable|string',
+            'terms_accepted' => 'required|accepted',
         ]);
 
         // Create player user
@@ -115,7 +111,7 @@ class ProgramController extends Controller
      */
     public function registerPartner()
     {
-        return view('website.register_partner');
+        return view('website.register.partner');
     }
 
     /**
@@ -124,17 +120,25 @@ class ProgramController extends Controller
     public function storePartner(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'organization' => 'required|string|max:255',
+            'organization_name' => 'required|string|max:255',
+            'organization_type' => 'required|string',
+            'contact_person' => 'required|string|max:255',
+            'contact_position' => 'required|string|max:255',
             'phone' => 'required|string',
+            'country' => 'required|string',
+            'city' => 'required|string',
             'address' => 'required|string',
+            'partnership_type' => 'required|string',
+            'expected_users' => 'required|integer|min:1',
+            'terms_accepted' => 'required|accepted',
+            'additional_requirements' => 'nullable|string',
         ]);
 
         // Create partner user
         $user = User::create([
-            'name' => $request->name,
+            'name' => $request->contact_person,
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'user_type' => 'partner',
@@ -160,7 +164,7 @@ class ProgramController extends Controller
 
         $title = $typeMap[$type] ?? 'Registration';
 
-        return view('website.registration_success', compact('title', 'type'));
+        return view('website.register.success', compact('title', 'type'));
     }
 
     /**
@@ -170,6 +174,6 @@ class ProgramController extends Controller
     {
         // This would typically show the logged-in user's enrollments
         // For now, return a placeholder view
-        return view('website.my_enrollments');
+        return view('website.enrollment.my-enrollments');
     }
 }

@@ -12,8 +12,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        \Log::info('Player count: ' . \App\Models\Player::count());
-        return view('website.home');
+        return view('website.home.index');
     }
 
     public function search(Request $request)
@@ -28,24 +27,24 @@ class HomeController extends Controller
         $programs = Program::where('title', 'LIKE', "%{$query}%")
                           ->orWhere('description', 'LIKE', "%{$query}%")
                           ->orWhere('age_group', 'LIKE', "%{$query}%")
-                          ->get();
+                          ->paginate(20);
 
         // Search in players
         $players = Player::where('name', 'LIKE', "%{$query}%")
                         ->orWhere('position', 'LIKE', "%{$query}%")
                         ->orWhere('nationality', 'LIKE', "%{$query}%")
-                        ->get();
+                        ->paginate(20);
 
         // Search in news
         $news = News::where('title', 'LIKE', "%{$query}%")
                    ->orWhere('content', 'LIKE', "%{$query}%")
                    ->orWhere('category', 'LIKE', "%{$query}%")
-                   ->get();
+                   ->paginate(20);
 
         // Search in gallery
         $gallery = Gallery::where('title', 'LIKE', "%{$query}%")
-                         ->get();
+                         ->paginate(20);
 
-        return view('website.search', compact('query', 'programs', 'players', 'news', 'gallery'));
+        return view('website.search.index', compact('query', 'programs', 'players', 'news', 'gallery'));
     }
 }

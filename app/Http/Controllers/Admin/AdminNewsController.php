@@ -30,10 +30,11 @@ class AdminNewsController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
+            'category' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $data = $request->all();
+        $data = $request->only(['title', 'content', 'category']);
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('uploads/news', 'public');
@@ -57,10 +58,11 @@ class AdminNewsController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
+            'category' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $data = $request->all();
+        $data = $request->only(['title', 'content', 'category']);
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('uploads/news', 'public');

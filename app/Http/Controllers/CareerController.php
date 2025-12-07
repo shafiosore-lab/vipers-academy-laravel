@@ -46,13 +46,13 @@ class CareerController extends Controller
         $locations = Job::where('status', 'open')->distinct()->pluck('location')->sort();
         $departments = Job::where('status', 'open')->whereNotNull('department')->distinct()->pluck('department')->sort();
 
-        return view('website.careers', compact('jobs', 'types', 'locations', 'departments'));
+        return view('website.careers.index', compact('jobs', 'types', 'locations', 'departments'));
     }
 
     public function show($id)
     {
         $job = Job::where('status', 'open')->findOrFail($id);
-        return view('website.job_detail', compact('job'));
+        return view('website.careers.show', compact('job'));
     }
 
     public function store(Request $request, $jobId)
@@ -86,6 +86,6 @@ class CareerController extends Controller
 
     public function applicationSuccess()
     {
-        return view('website.application_success');
+        return view('website.careers.success');
     }
 }

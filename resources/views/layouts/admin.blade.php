@@ -10,7 +10,7 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,24 +23,22 @@
 
     <style>
         :root {
-            --primary-red: #ea1c4d;
+            --primary: #ea1c4d;
             --primary-dark: #c0173f;
-            --secondary-color: #65c16e;
-            --success-color: #059669;
-            --warning-color: #fbc761;
-            --danger-color: #dc2626;
-            --info-color: #0891b2;
-            --dark-color: #1a1a1a;
-            --light-color: #f7f7f7;
-            --border-color: #e8e8e8;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            /* Override Bootstrap colors */
-            --bs-warning: #fbc761;
-            --bs-warning-rgb: 251, 199, 97;
-            --bs-success: #65c16e;
-            --bs-success-rgb: 101, 193, 110;
+            --secondary: #65c16e;
+            --accent: #fbc761;
+            --danger: #dc2626;
+            --info: #0891b2;
+            --dark: #1a1a1a;
+            --gray-900: #333;
+            --gray-600: #666;
+            --gray-300: #e8e8e8;
+            --bg-light: #f7f7f7;
+            --white: #fff;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            --transition: 0.2s ease;
         }
 
         * {
@@ -52,27 +50,25 @@
         body {
             font-family: 'Roboto', sans-serif;
             font-size: 16px;
-            background-color: #FFFFFF;
-            color: #333333;
+            background: var(--white);
+            color: var(--gray-900);
             overflow-x: hidden;
         }
 
-        /* Typography Rules */
         h1, h2, h3, h4, h5, h6 {
-            font-family: 'Roboto', sans-serif;
             font-weight: 700;
             line-height: 1.2;
-            color: #333333;
+            color: var(--gray-900);
         }
 
-        h1 { font-size: 30px; color: #ea1c4d; }
+        h1 { font-size: 30px; color: var(--primary); }
         h2 { font-size: 22px; }
         h3 { font-size: 16px; }
 
-        /* ==================== TOP HEADER BAR ==================== */
+        /* Top Header */
         .top-header {
-            background: #fff;
-            border-bottom: 1px solid var(--border-color);
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-300);
             height: 60px;
             position: fixed;
             top: 0;
@@ -89,6 +85,7 @@
             padding: 0 2rem;
         }
 
+        /* Brand */
         .admin-brand {
             display: flex;
             align-items: center;
@@ -107,7 +104,7 @@
         .admin-brand-text h5 {
             font-size: 18px;
             font-weight: 700;
-            color: var(--primary-red);
+            color: var(--primary);
             margin: 0;
             line-height: 1.2;
         }
@@ -119,7 +116,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* Search Bar */
+        /* Search */
         .admin-search {
             flex: 1;
             max-width: 500px;
@@ -128,16 +125,16 @@
 
         .admin-search-form {
             display: flex;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--gray-300);
             border-radius: 6px;
             overflow: hidden;
             background: #f8f9fa;
-            transition: all 0.3s;
+            transition: var(--transition);
         }
 
         .admin-search-form:focus-within {
-            border-color: var(--primary-red);
-            background: white;
+            border-color: var(--primary);
+            background: var(--white);
             box-shadow: 0 0 0 3px rgba(234, 28, 77, 0.1);
         }
 
@@ -156,14 +153,14 @@
             color: #999;
             padding: 0 16px;
             cursor: pointer;
-            transition: color 0.2s;
+            transition: var(--transition);
         }
 
         .admin-search-btn:hover {
-            color: var(--primary-red);
+            color: var(--primary);
         }
 
-        /* Top Header Actions */
+        /* Header Actions */
         .header-actions {
             display: flex;
             align-items: center;
@@ -177,26 +174,26 @@
             border-radius: 50%;
             background: #f8f9fa;
             border: none;
-            color: #666;
+            color: var(--gray-600);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             position: relative;
-            transition: all 0.2s;
+            transition: var(--transition);
         }
 
         .header-action-btn:hover {
-            background: var(--primary-red);
-            color: white;
+            background: var(--primary);
+            color: var(--white);
         }
 
         .notification-badge {
             position: absolute;
             top: -2px;
             right: -2px;
-            background: #dc2626;
-            color: white;
+            background: var(--danger);
+            color: var(--white);
             border-radius: 50%;
             width: 18px;
             height: 18px;
@@ -205,27 +202,28 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid white;
+            border: 2px solid var(--white);
         }
 
         .language-selector {
             background: #f8f9fa;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--gray-300);
             border-radius: 6px;
-            color: #666;
+            color: var(--gray-600);
             font-size: 13px;
             padding: 8px 12px;
             outline: none;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: var(--transition);
         }
 
         .language-selector:hover,
         .language-selector:focus {
-            border-color: var(--primary-red);
-            background: white;
+            border-color: var(--primary);
+            background: var(--white);
         }
 
+        /* User Menu */
         .admin-user-menu {
             display: flex;
             align-items: center;
@@ -234,7 +232,7 @@
             background: #f8f9fa;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: var(--transition);
             margin-left: 12px;
         }
 
@@ -246,11 +244,11 @@
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-red), var(--secondary-color));
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: var(--white);
             font-size: 14px;
             font-weight: 600;
         }
@@ -264,7 +262,7 @@
         .admin-user-name {
             font-size: 13px;
             font-weight: 600;
-            color: #333;
+            color: var(--gray-900);
         }
 
         .admin-user-role {
@@ -272,18 +270,18 @@
             color: #999;
         }
 
-        /* ==================== SIDEBAR ==================== */
+        /* Sidebar */
         .admin-sidebar {
-            background: white;
+            background: var(--white);
             width: 260px;
             position: fixed;
             top: 60px;
             left: 0;
             bottom: 0;
-            border-right: 1px solid var(--border-color);
+            border-right: 1px solid var(--gray-300);
             overflow-y: auto;
             z-index: 1030;
-            transition: all 0.3s;
+            transition: var(--transition);
         }
 
         .admin-sidebar::-webkit-scrollbar {
@@ -291,7 +289,7 @@
         }
 
         .admin-sidebar::-webkit-scrollbar-thumb {
-            background: #e8e8e8;
+            background: var(--gray-300);
             border-radius: 3px;
         }
 
@@ -318,24 +316,24 @@
             display: flex;
             align-items: center;
             padding: 10px 12px;
-            color: #666;
+            color: var(--gray-600);
             text-decoration: none;
             border-radius: 6px;
             margin-bottom: 4px;
             font-size: 14px;
             font-weight: 500;
-            transition: all 0.2s;
+            transition: var(--transition);
             position: relative;
         }
 
         .sidebar-nav-link:hover {
             background: #f8f9fa;
-            color: var(--primary-red);
+            color: var(--primary);
         }
 
         .sidebar-nav-link.active {
             background: #fff5f0;
-            color: var(--primary-red);
+            color: var(--primary);
             font-weight: 600;
         }
 
@@ -347,7 +345,7 @@
             transform: translateY(-50%);
             width: 3px;
             height: 20px;
-            background: var(--primary-red);
+            background: var(--primary);
             border-radius: 0 3px 3px 0;
         }
 
@@ -359,8 +357,8 @@
 
         .sidebar-nav-badge {
             margin-left: auto;
-            background: #dc2626;
-            color: white;
+            background: var(--danger);
+            color: var(--white);
             font-size: 10px;
             font-weight: 600;
             padding: 2px 6px;
@@ -369,7 +367,7 @@
             text-align: center;
         }
 
-        /* ==================== MAIN CONTENT ==================== */
+        /* Main Content */
         .admin-main {
             margin-left: 260px;
             margin-top: 60px;
@@ -377,179 +375,8 @@
             min-height: calc(100vh - 60px);
         }
 
-        /* Page Header */
-        .page-header {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow-sm);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .page-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #1a1a1a;
-            margin: 0;
-        }
-
-        .page-breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            color: #999;
-            margin-top: 4px;
-        }
-
-        .page-breadcrumb a {
-            color: #999;
-            text-decoration: none;
-        }
-
-        .page-breadcrumb a:hover {
-            color: var(--primary-orange);
-        }
-
-        /* Stats Cards */
-        .stat-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s;
-            border: 1px solid var(--border-color);
-        }
-
-        .stat-card:hover {
-            box-shadow: var(--shadow);
-            transform: translateY(-2px);
-        }
-
-        .stat-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-        }
-
-        .stat-card-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        .stat-card-icon.primary { background: #fff5f0; color: var(--primary-orange); }
-        .stat-card-icon.success { background: #f0fdf4; color: #65c16e; }
-        .stat-card-icon.warning { background: #fffbeb; color: #fbc761; }
-        .stat-card-icon.info { background: #f0f9ff; color: #0891b2; }
-
-        .stat-card-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: #1a1a1a;
-            margin-bottom: 4px;
-        }
-
-        .stat-card-label {
-            font-size: 13px;
-            color: #999;
-            font-weight: 500;
-        }
-
-        .stat-card-trend {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 12px;
-            font-weight: 600;
-            padding: 4px 8px;
-            border-radius: 6px;
-            margin-top: 8px;
-        }
-
-        .stat-card-trend.up {
-            background: #f0fdf4;
-            color: #059669;
-        }
-
-        .stat-card-trend.down {
-            background: #fef2f2;
-            color: #dc2626;
-        }
-
-        /* Content Card */
-        .content-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: var(--shadow-sm);
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-        }
-
-        .content-card-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .content-card-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin: 0;
-        }
-
-        .content-card-body {
-            padding: 1.5rem;
-        }
-
-        /* Buttons */
-        .btn-alibaba {
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.2s;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-alibaba-primary {
-            background: var(--primary-orange);
-            color: white;
-        }
-
-        .btn-alibaba-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow);
-        }
-
-        .btn-alibaba-outline {
-            background: white;
-            color: var(--primary-orange);
-            border: 1px solid var(--primary-orange);
-        }
-
-        .btn-alibaba-outline:hover {
-            background: var(--primary-orange);
-            color: white;
-        }
-
         /* Alerts */
-        .alert-alibaba {
+        .alert-custom {
             border-radius: 8px;
             padding: 1rem 1.25rem;
             border: 1px solid transparent;
@@ -559,33 +386,27 @@
             gap: 12px;
         }
 
-        .alert-alibaba i {
+        .alert-custom i {
             font-size: 18px;
         }
 
-        .alert-alibaba.success {
+        .alert-custom.success {
             background: #f0fdf4;
             border-color: #bbf7d0;
-            color: #059669;
+            color: var(--secondary);
         }
 
-        .alert-alibaba.error {
+        .alert-custom.error {
             background: #fef2f2;
             border-color: #fecaca;
-            color: #dc2626;
-        }
-
-        .alert-alibaba.info {
-            background: #f0f9ff;
-            border-color: #bae6fd;
-            color: #0891b2;
+            color: var(--danger);
         }
 
         /* Footer */
         .admin-footer {
             margin-top: 3rem;
             padding: 1.5rem 0;
-            border-top: 1px solid var(--border-color);
+            border-top: 1px solid var(--gray-300);
         }
 
         .admin-footer-content {
@@ -609,7 +430,7 @@
         }
 
         .admin-footer-links a:hover {
-            color: var(--primary-orange);
+            color: var(--primary);
         }
 
         /* Mobile Toggle */
@@ -617,13 +438,42 @@
             display: none;
             background: none;
             border: none;
-            color: #666;
+            color: var(--gray-600);
             font-size: 20px;
             cursor: pointer;
             margin-right: 1rem;
         }
 
-        /* ==================== RESPONSIVE ==================== */
+        /* Dropdown */
+        .dropdown-menu {
+            border-radius: 8px;
+            border: 1px solid var(--gray-300);
+            box-shadow: var(--shadow-lg);
+            padding: 0.5rem;
+        }
+
+        .dropdown-item {
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .dropdown-item:hover {
+            background: #f8f9fa;
+            color: var(--primary);
+        }
+
+        .dropdown-header {
+            font-size: 12px;
+            font-weight: 600;
+            color: #999;
+            padding: 8px 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Responsive */
         @media (max-width: 992px) {
             .admin-sidebar {
                 left: -260px;
@@ -667,14 +517,6 @@
                 padding: 1rem;
             }
 
-            .page-header {
-                padding: 1rem;
-            }
-
-            .page-title {
-                font-size: 20px;
-            }
-
             .admin-user-info {
                 display: none;
             }
@@ -682,35 +524,6 @@
             .header-actions {
                 gap: 8px;
             }
-        }
-
-        /* Dropdown Menu */
-        .dropdown-menu {
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow-lg);
-            padding: 0.5rem;
-        }
-
-        .dropdown-item {
-            border-radius: 6px;
-            padding: 8px 12px;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        .dropdown-item:hover {
-            background: #f8f9fa;
-            color: var(--primary-orange);
-        }
-
-        .dropdown-header {
-            font-size: 12px;
-            font-weight: 600;
-            color: #999;
-            padding: 8px 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
     </style>
 
@@ -720,33 +533,28 @@
     <!-- Top Header -->
     <header class="top-header">
         <div class="container-fluid">
-            <!-- Mobile Toggle -->
             <button class="mobile-sidebar-toggle" id="mobileSidebarToggle">
                 <i class="fas fa-bars"></i>
             </button>
 
-            <!-- Brand -->
             <a href="{{ route('admin.dashboard') }}" class="admin-brand">
-                <img src="{{ asset('assets/img/logo/vps.jpeg') }}" alt="Vipers Academy Logo" class="admin-logo">
+                <img src="{{ asset('assets/img/logo/vps.jpeg') }}" alt="Vipers Academy" class="admin-logo">
                 <div class="admin-brand-text">
                     <h5>Vipers Academy</h5>
                     <small>{{ __('Admin Panel') }}</small>
                 </div>
             </a>
 
-            <!-- Search -->
             <div class="admin-search">
                 <form class="admin-search-form" action="{{ route('search') }}" method="GET">
-                    <input type="search" name="q" class="admin-search-input" placeholder="{{ __('Search players, programs, news...') }}" required>
+                    <input type="search" name="q" class="admin-search-input" placeholder="{{ __('Search...') }}" required>
                     <button type="submit" class="admin-search-btn">
                         <i class="fas fa-search"></i>
                     </button>
                 </form>
             </div>
 
-            <!-- Header Actions -->
             <div class="header-actions">
-                <!-- Language Selector -->
                 <select class="language-selector">
                     <option value="en" {{ app()->getLocale() === 'en' ? 'selected' : '' }}>🇬🇧 EN</option>
                     <option value="es" {{ app()->getLocale() === 'es' ? 'selected' : '' }}>🇪🇸 ES</option>
@@ -754,7 +562,6 @@
                     <option value="sw" {{ app()->getLocale() === 'sw' ? 'selected' : '' }}>🇰🇪 SW</option>
                 </select>
 
-                <!-- Notifications -->
                 <div class="dropdown">
                     <button class="header-action-btn" type="button" data-bs-toggle="dropdown">
                         <i class="fas fa-bell"></i>
@@ -772,7 +579,7 @@
                             <li>
                                 <a class="dropdown-item" href="{{ route('admin.players.index') }}">
                                     <i class="fas fa-user-plus text-success me-2"></i>
-                                    <span class="small">{{ \App\Models\Player::where('registration_status', 'Pending')->count() }} {{ __('pending player registrations') }}</span>
+                                    {{ \App\Models\Player::where('registration_status', 'Pending')->count() }} {{ __('pending registrations') }}
                                 </a>
                             </li>
                         @endif
@@ -780,27 +587,24 @@
                             <li>
                                 <a class="dropdown-item" href="{{ route('admin.partners.index') }}">
                                     <i class="fas fa-handshake text-primary me-2"></i>
-                                    <span class="small">{{ \App\Models\User::where('user_type', 'partner')->where('status', 'pending')->count() }} {{ __('partnership applications') }}</span>
+                                    {{ \App\Models\User::where('user_type', 'partner')->where('status', 'pending')->count() }} {{ __('partnership applications') }}
                                 </a>
                             </li>
                         @endif
                         @if($totalNotifications === 0)
-                            <li class="dropdown-item text-center text-muted small">{{ __('No new notifications') }}</li>
+                            <li class="dropdown-item text-center text-muted">{{ __('No notifications') }}</li>
                         @endif
                     </ul>
                 </div>
 
-                <!-- Image Upload -->
-                <button class="header-action-btn" title="{{ __('Upload Images') }}" onclick="window.location.href='{{ route('admin.image-upload') }}'">
+                <button class="header-action-btn" onclick="window.location.href='{{ route('admin.image-upload') }}'">
                     <i class="fas fa-images"></i>
                 </button>
 
-                <!-- Help -->
-                <button class="header-action-btn" title="{{ __('Help') }}">
+                <button class="header-action-btn">
                     <i class="fas fa-question-circle"></i>
                 </button>
 
-                <!-- User Menu -->
                 <div class="dropdown">
                     <div class="admin-user-menu" data-bs-toggle="dropdown">
                         <div class="admin-user-avatar">
@@ -838,124 +642,84 @@
     <aside class="admin-sidebar" id="adminSidebar">
         <nav class="sidebar-nav">
             <div class="nav-section-title">{{ __('Main Menu') }}</div>
-
             <a href="{{ route('admin.dashboard') }}" class="sidebar-nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                <i class="fas fa-th-large"></i>
-                <span>{{ __('Dashboard') }}</span>
+                <i class="fas fa-th-large"></i>{{ __('Dashboard') }}
             </a>
 
             <div class="nav-section-title">{{ __('Management') }}</div>
-
             <a href="{{ route('admin.players.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.players.*') ? 'active' : '' }}">
-                <i class="fas fa-users"></i>
-                <span>{{ __('Players') }}</span>
+                <i class="fas fa-users"></i>{{ __('Players') }}
                 @if(\App\Models\Player::where('registration_status', 'Pending')->count() > 0)
                     <span class="sidebar-nav-badge">{{ \App\Models\Player::where('registration_status', 'Pending')->count() }}</span>
                 @endif
             </a>
-
             <a href="{{ route('admin.partners.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.partners.*') ? 'active' : '' }}">
-                <i class="fas fa-handshake"></i>
-                <span>{{ __('Partners') }}</span>
+                <i class="fas fa-handshake"></i>{{ __('Partners') }}
                 @if(\App\Models\User::where('user_type', 'partner')->where('status', 'pending')->count() > 0)
                     <span class="sidebar-nav-badge">{{ \App\Models\User::where('user_type', 'partner')->where('status', 'pending')->count() }}</span>
                 @endif
             </a>
-
             <a href="{{ route('admin.programs.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.programs.*') ? 'active' : '' }}">
-                <i class="fas fa-football-ball"></i>
-                <span>{{ __('Programs') }}</span>
+                <i class="fas fa-football-ball"></i>{{ __('Programs') }}
             </a>
-
             <a href="{{ route('admin.game-statistics.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.game-statistics.*') ? 'active' : '' }}">
-                <i class="fas fa-chart-bar"></i>
-                <span>{{ __('Game Statistics') }}</span>
+                <i class="fas fa-chart-bar"></i>{{ __('Game Statistics') }}
             </a>
-
             <a href="{{ route('admin.matches.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.matches.*') ? 'active' : '' }}">
-                <i class="fas fa-futbol"></i>
-                <span>{{ __('Matches') }}</span>
+                <i class="fas fa-futbol"></i>{{ __('Matches') }}
             </a>
-
             <a href="{{ route('admin.standings.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.standings.*') ? 'active' : '' }}">
-                <i class="fas fa-trophy"></i>
-                <span>{{ __('Standings') }}</span>
+                <i class="fas fa-trophy"></i>{{ __('Standings') }}
             </a>
 
             <div class="nav-section-title">{{ __('Content') }}</div>
-
             <a href="{{ route('admin.documents.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.documents.*') ? 'active' : '' }}">
-                <i class="fas fa-file-alt"></i>
-                <span>{{ __('Document Management') }}</span>
+                <i class="fas fa-file-alt"></i>{{ __('Documents') }}
             </a>
-
             <a href="{{ route('admin.news.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.news.*') ? 'active' : '' }}">
-                <i class="fas fa-newspaper"></i>
-                <span>{{ __('News') }}</span>
+                <i class="fas fa-newspaper"></i>{{ __('News') }}
             </a>
-
             <a href="{{ route('admin.gallery.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.gallery.*') ? 'active' : '' }}">
-                <i class="fas fa-images"></i>
-                <span>{{ __('Gallery') }}</span>
+                <i class="fas fa-images"></i>{{ __('Gallery') }}
             </a>
-
             <a href="{{ route('admin.products.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
-                <i class="fas fa-shopping-bag"></i>
-                <span>{{ __('Merchandise') }}</span>
+                <i class="fas fa-shopping-bag"></i>{{ __('Merchandise') }}
             </a>
 
             <div class="nav-section-title">{{ __('Commerce') }}</div>
-
             <a href="{{ route('admin.orders.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
-                <i class="fas fa-shopping-cart"></i>
-                <span>{{ __('Orders') }}</span>
+                <i class="fas fa-shopping-cart"></i>{{ __('Orders') }}
                 @if(\App\Models\Order::where('order_status', 'pending')->count() > 0)
                     <span class="sidebar-nav-badge">{{ \App\Models\Order::where('order_status', 'pending')->count() }}</span>
                 @endif
             </a>
-
             <a href="{{ route('admin.payments.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.payments.*') ? 'active' : '' }}">
-                <i class="fas fa-credit-card"></i>
-                <span>{{ __('Payments') }}</span>
+                <i class="fas fa-credit-card"></i>{{ __('Payments') }}
                 @if(\App\Models\Payment::pending()->count() > 0)
                     <span class="sidebar-nav-badge">{{ \App\Models\Payment::pending()->count() }}</span>
                 @endif
             </a>
-
             <a href="{{ route('admin.payments.financial-report') }}" class="sidebar-nav-link {{ request()->routeIs('admin.payments.financial-report') ? 'active' : '' }}">
-                <i class="fas fa-chart-line"></i>
-                <span>{{ __('Financial Report') }}</span>
+                <i class="fas fa-chart-line"></i>{{ __('Financial Report') }}
             </a>
-
             <a href="{{ route('admin.image-upload') }}" class="sidebar-nav-link {{ request()->routeIs('admin.image-upload') ? 'active' : '' }}">
-                <i class="fas fa-upload"></i>
-                <span>{{ __('Image Upload') }}</span>
+                <i class="fas fa-upload"></i>{{ __('Image Upload') }}
             </a>
 
             <div class="nav-section-title">{{ __('Analytics') }}</div>
-
             <a href="{{ route('admin.performance.overview') }}" class="sidebar-nav-link {{ request()->routeIs('admin.performance.overview') ? 'active' : '' }}">
-                <i class="fas fa-chart-line"></i>
-                <span>{{ __('Overview') }}</span>
+                <i class="fas fa-chart-line"></i>{{ __('Overview') }}
             </a>
-
-            <a href="{{ route('admin.payments.financial-report') }}" class="sidebar-nav-link {{ request()->routeIs('admin.payments.financial-report') ? 'active' : '' }}">
-                <i class="fas fa-chart-bar"></i>
-                <span>{{ __('Financial Reports') }}</span>
-            </a>
-
             <a href="{{ route('admin.compliance.report') }}" class="sidebar-nav-link {{ request()->routeIs('admin.compliance.report') ? 'active' : '' }}">
-                <i class="fas fa-shield-alt"></i>
-                <span>{{ __('Compliance Report') }}</span>
+                <i class="fas fa-shield-alt"></i>{{ __('Compliance') }}
             </a>
         </nav>
     </aside>
 
     <!-- Main Content -->
     <main class="admin-main">
-        <!-- Alerts -->
         @if(session('success'))
-            <div class="alert-alibaba success">
+            <div class="alert-custom success">
                 <i class="fas fa-check-circle"></i>
                 <div>{{ session('success') }}</div>
                 <button type="button" class="btn-close ms-auto" onclick="this.parentElement.remove()"></button>
@@ -963,7 +727,7 @@
         @endif
 
         @if(session('error'))
-            <div class="alert-alibaba error">
+            <div class="alert-custom error">
                 <i class="fas fa-exclamation-circle"></i>
                 <div>{{ session('error') }}</div>
                 <button type="button" class="btn-close ms-auto" onclick="this.parentElement.remove()"></button>
@@ -971,7 +735,7 @@
         @endif
 
         @if($errors->any())
-            <div class="alert-alibaba error">
+            <div class="alert-custom error">
                 <i class="fas fa-exclamation-triangle"></i>
                 <div>
                     <strong>{{ __('Please fix the following errors:') }}</strong>
@@ -987,14 +751,13 @@
 
         @yield('content')
 
-        <!-- Footer -->
         <footer class="admin-footer">
             <div class="container-fluid">
                 <div class="admin-footer-content">
                     <div>&copy; {{ date('Y') }} Vipers Academy. {{ __('All rights reserved.') }}</div>
                     <div class="admin-footer-links">
-                        <a href="#">{{ __('Privacy Policy') }}</a>
-                        <a href="#">{{ __('Terms of Service') }}</a>
+                        <a href="#">{{ __('Privacy') }}</a>
+                        <a href="#">{{ __('Terms') }}</a>
                         <a href="#">{{ __('Support') }}</a>
                     </div>
                 </div>
@@ -1002,44 +765,32 @@
         </footer>
     </main>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Custom JavaScript -->
     <script>
         // Mobile sidebar toggle
-        document.getElementById('mobileSidebarToggle').addEventListener('click', function() {
+        document.getElementById('mobileSidebarToggle').addEventListener('click', () => {
             document.getElementById('adminSidebar').classList.toggle('show');
         });
 
-        // Close sidebar when clicking outside on mobile
-        document.addEventListener('click', function(event) {
+        // Close sidebar on outside click
+        document.addEventListener('click', (e) => {
             const sidebar = document.getElementById('adminSidebar');
             const toggle = document.getElementById('mobileSidebarToggle');
-
-            if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
+            if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
                 sidebar.classList.remove('show');
             }
         });
 
-        // Auto-hide alerts after 5 seconds
-        setTimeout(function() {
-            const alerts = document.querySelectorAll('.alert-alibaba');
-            alerts.forEach(function(alert) {
-                if (alert.querySelector('.btn-close')) {
-                    alert.remove();
-                }
-            });
+        // Auto-hide alerts
+        setTimeout(() => {
+            document.querySelectorAll('.alert-custom').forEach(alert => alert.remove());
         }, 5000);
 
-        // Language selector functionality
+        // Language selector
         document.querySelector('.language-selector').addEventListener('change', function() {
-            const selectedLang = this.value;
-            // Here you would typically make an AJAX request to change language
-            console.log('Language changed to:', selectedLang);
+            console.log('Language:', this.value);
         });
-
-
     </script>
 
     @stack('scripts')

@@ -57,7 +57,7 @@ class MatchCenterController extends Controller
             'goals_scored' => FootballMatch::completed()->sum('vipers_score'),
         ];
 
-        return view('website.match_center', compact(
+        return view('website.matches.index', compact(
             'matches',
             'friendlies',
             'pastMatches',
@@ -79,6 +79,6 @@ class MatchCenterController extends Controller
             ->take(4)
             ->get();
 
-        return view('website.match_detail', compact('match', 'relatedMatches'));
+        return view('website.matches.show', compact('match', 'relatedMatches'));
     }
 }

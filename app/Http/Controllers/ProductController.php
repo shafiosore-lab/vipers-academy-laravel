@@ -34,7 +34,7 @@ class ProductController extends Controller
         $newProducts = Product::where('is_active', true)->where('category', 'new')->latest()->take(8)->get();
         $oldProducts = Product::where('is_active', true)->where('category', 'old')->latest()->take(8)->get();
 
-        return view('website.products', compact('products', 'newProducts', 'oldProducts', 'totalProducts'));
+        return view('product.index', compact('products', 'newProducts', 'oldProducts', 'totalProducts'));
     }
 
     public function category($category)
@@ -56,7 +56,7 @@ class ProductController extends Controller
         $newProducts = Product::where('is_active', true)->where('category', 'new')->latest()->take(8)->get();
         $oldProducts = Product::where('is_active', true)->where('category', 'old')->latest()->take(8)->get();
 
-        return view('website.products', compact('products', 'newProducts', 'oldProducts', 'totalProducts', 'category'));
+        return view('product.index', compact('products', 'newProducts', 'oldProducts', 'totalProducts', 'category'));
     }
 
     public function search(Request $request)
@@ -80,7 +80,7 @@ class ProductController extends Controller
         $newProducts = Product::where('is_active', true)->where('category', 'new')->latest()->take(8)->get();
         $oldProducts = Product::where('is_active', true)->where('category', 'old')->latest()->take(8)->get();
 
-        return view('website.products', compact('products', 'newProducts', 'oldProducts', 'totalProducts', 'search'));
+        return view('product.index', compact('products', 'newProducts', 'oldProducts', 'totalProducts', 'search'));
     }
 
     public function suggestions(Request $request)
@@ -118,7 +118,7 @@ class ProductController extends Controller
             ->take(4)
             ->get();
 
-        return view('website.product_detail', compact('product', 'relatedProducts'));
+        return view('product.show', compact('product', 'relatedProducts'));
     }
 
     /**
@@ -170,7 +170,7 @@ class ProductController extends Controller
         $cartTotal = Cart::getCartTotal();
         $cartCount = Cart::getCartCount();
 
-        return view('website.cart', compact('cartItems', 'cartTotal', 'cartCount'));
+        return view('cart', compact('cartItems', 'cartTotal', 'cartCount'));
     }
 
     /**

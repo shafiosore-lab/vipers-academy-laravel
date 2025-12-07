@@ -3,258 +3,216 @@
 namespace App\Http\Controllers;
 
 use App\Models\Player;
+use App\Models\WebsitePlayer;
+use App\Models\PlayerGameStats;
+use App\Services\AiStatisticsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
 
 class PlayerController extends Controller
 {
     /**
-     * Display a listing of all players organized by category
-     * Automatically syncs before displaying
+     * Display all players grouped by category
      */
     public function index()
     {
-        // Auto-sync players from gallery on every page load
-        $this->autoSyncPlayersFromGallery();
-
-        // Get all players organized by category
-        $categories = [
-            'under-13' => Player::where('category', 'under-13')->orderedByPositionAndAge()->get(),
-            'under-15' => Player::where('category', 'under-15')->orderedByPositionAndAge()->get(),
-            'under-17' => Player::where('category', 'under-17')->orderedByPositionAndAge()->get(),
-            'senior' => Player::where('category', 'senior')->orderedByPositionAndAge()->get(),
-        ];
-
-        // Remove empty categories
-        $categories = array_filter($categories, function($players) {
-            return $players->isNotEmpty();
-        });
+        // Get website players grouped by category
+        $categories = WebsitePlayer::orderBy('category')
+            ->orderBy('last_name')
+            ->get()
+            ->groupBy('category');
 
         return view('players.index', compact('categories'));
     }
 
     /**
-     * Display player statistics
-     * Auto-sync before showing stats
+     * Show player statistics - redirect to overview for better modularity
      */
     public function stats($id)
     {
-        // Sync to ensure we have latest data
-        $this->autoSyncPlayersFromGallery();
-
-        $player = Player::findOrFail($id);
-        return view('players.stats', compact('player'));
+        return redirect()->route('players.overview', $id);
     }
 
     /**
-     * Manual sync endpoint (optional - for admin use)
+     * Show player overview
      */
-    public function syncPlayersFromGallery()
+    public function overview($id)
     {
-        $result = $this->autoSyncPlayersFromGallery();
+        $player = WebsitePlayer::findOrFail($id);
+        $allPlayers = WebsitePlayer::orderBy('last_name')->orderBy('first_name')->get();
 
-        return redirect()->route('players.index')->with('success',
-            "Synced {$result['synced']} players. Added: {$result['added']}, Updated: {$result['updated']}, Removed: {$result['removed']}"
-        );
+        return view('players.overview', compact('player', 'allPlayers'));
     }
 
     /**
-     * Auto sync players from gallery folder
-     * This runs automatically whenever the player pages are accessed
-     *
-     * @return array Statistics about the sync operation
+     * Show player statistics
      */
-    private function autoSyncPlayersFromGallery()
+    public function statistics($id)
     {
-        $playersPath = public_path('assets/img/players');
-        $stats = [
-            'synced' => 0,
-            'added' => 0,
-            'updated' => 0,
-            'removed' => 0,
-        ];
+        $player = WebsitePlayer::findOrFail($id);
+        $allPlayers = WebsitePlayer::orderBy('last_name')->orderBy('first_name')->get();
 
-        // Check if directory exists
-        if (!File::isDirectory($playersPath)) {
-            Log::warning("Players directory not found: {$playersPath}");
-            return $stats;
-        }
-
-        // Get all image files from directory
-        $files = File::files($playersPath);
-        $validPlayerIds = [];
-
-        foreach ($files as $file) {
-            $filename = $file->getFilename();
-
-            // Only process image files
-            $extension = strtolower($file->getExtension());
-            if (!in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
-                continue;
-            }
-
-            // Parse filename: firstname-lastname-category-position-age.jpg
-            $filenameParts = pathinfo($filename, PATHINFO_FILENAME);
-            $filenameParts = preg_replace('/\.jpg.*$/i', '', $filenameParts);
-
-            $parts = explode('-', $filenameParts);
-
-            // Validate format
-            if (count($parts) < 5) {
-                Log::warning("Invalid player filename format: {$filename}");
-                continue;
-            }
-
-            // Extract player data
-            $firstName = ucfirst(trim($parts[0]));
-            $lastName = ucfirst(trim($parts[1]));
-            $categoryRaw = strtolower(trim($parts[2]));
-            $positionRaw = strtolower(trim($parts[3]));
-            $age = (int) trim($parts[4]);
-
-            // Normalize category
-            $category = $this->normalizeCategory($categoryRaw);
-
-            // Normalize position
-            $position = $this->normalizePosition($positionRaw);
-
-            // Validate data
-            if (!$category || !$position || $age <= 0) {
-                Log::warning("Invalid player data in filename: {$filename}");
-                continue;
-            }
-
-            // Check if player exists
-            $player = Player::where('first_name', $firstName)
-                ->where('last_name', $lastName)
-                ->where('category', $category)
-                ->first();
-
-            $playerData = [
-                'first_name' => $firstName,
-                'last_name' => $lastName,
-                'name' => "{$firstName} {$lastName}",
-                'category' => $category,
-                'position' => $position,
-                'age' => $age,
-                'image_path' => $filename,
-                'program_id' => 1,
-                'registration_status' => 'Active',
-                'approval_type' => 'full',
-                'documents_completed' => true,
-            ];
-
-            if ($player) {
-                // Update existing player
-                $player->update($playerData);
-                $stats['updated']++;
-                $validPlayerIds[] = $player->id;
-            } else {
-                // Create new player
-                $newPlayer = Player::create($playerData);
-                $stats['added']++;
-                $validPlayerIds[] = $newPlayer->id;
-            }
-
-            $stats['synced']++;
-        }
-
-        // Remove players whose images no longer exist
-        if (!empty($validPlayerIds)) {
-            $deletedCount = Player::whereNotIn('id', $validPlayerIds)->delete();
-            $stats['removed'] = $deletedCount;
-        } else {
-            // If no valid players found, optionally delete all
-            // Uncomment if you want to remove all players when folder is empty
-            // $stats['removed'] = Player::count();
-            // Player::truncate();
-        }
-
-        return $stats;
+        return view('players.statistics', compact('player', 'allPlayers'));
     }
 
     /**
-     * Normalize category name
-     *
-     * @param string $categoryRaw
-     * @return string|null
+     * Show player AI insights
      */
-    private function normalizeCategory($categoryRaw)
+    public function aiInsights($id)
     {
-        $categoryMap = [
-            'under13' => 'under-13',
-            'under-13' => 'under-13',
-            'u13' => 'under-13',
-            'under15' => 'under-15',
-            'under-15' => 'under-15',
-            'u15' => 'under-15',
-            'under17' => 'under-17',
-            'under-17' => 'under-17',
-            'u17' => 'under-17',
-            'seniour' => 'senior',
-            'senior' => 'senior',
-            'sen' => 'senior',
-        ];
+        $player = WebsitePlayer::findOrFail($id);
 
-        $normalized = $categoryMap[$categoryRaw] ?? null;
-
-        // Validate against allowed categories
-        if (!in_array($normalized, ['under-13', 'under-15', 'under-17', 'senior'])) {
-            return null;
-        }
-
-        return $normalized;
+        return view('players.ai-insights', compact('player'));
     }
 
     /**
-     * Normalize position name
-     *
-     * @param string $positionRaw
-     * @return string|null
+     * Show player biography
      */
-    private function normalizePosition($positionRaw)
+    public function biography($id)
     {
-        $positionMap = [
-            'goalkeeper' => 'goalkeeper',
-            'gk' => 'goalkeeper',
-            'keeper' => 'goalkeeper',
-            'defender' => 'defender',
-            'def' => 'defender',
-            'defence' => 'defender',
-            'midfielder' => 'midfielder',
-            'mid' => 'midfielder',
-            'midfield' => 'midfielder',
-            'striker' => 'striker',
-            'str' => 'striker',
-            'forward' => 'striker',
-            'attacker' => 'striker',
-        ];
+        $player = WebsitePlayer::findOrFail($id);
 
-        $normalized = $positionMap[$positionRaw] ?? null;
-
-        // Validate against allowed positions
-        if (!in_array($normalized, ['goalkeeper', 'defender', 'midfielder', 'striker'])) {
-            return null;
-        }
-
-        return $normalized;
+        return view('players.biography', compact('player'));
     }
 
     /**
-     * Force sync endpoint - clears all players and re-syncs from gallery
+     * Show player career
      */
-    public function forceSync()
+    public function career($id)
     {
-        // Clear all existing players first
-        $clearedCount = Player::count();
-        Player::truncate();
+        $player = WebsitePlayer::findOrFail($id);
 
-        // Re-sync from gallery
-        $result = $this->autoSyncPlayersFromGallery();
+        return view('players.career', compact('player'));
+    }
 
-        return redirect()->route('players.index')->with('success',
-            "Force sync completed! Cleared {$clearedCount} existing players, then synced {$result['synced']} players from gallery. Added: {$result['added']}, Updated: {$result['updated']}, Removed: {$result['removed']}"
-        );
+    /**
+     * Show player details
+     */
+    public function show($id)
+    {
+        $player = WebsitePlayer::findOrFail($id);
+        return view('players.show', compact('player'));
+    }
+
+
+
+
+
+    /**
+     * Record comprehensive game statistics for a website player
+     */
+    public function recordGameStats(Request $request, $id)
+    {
+        // Validate basic required fields
+        $request->validate([
+            'player_id' => 'required|integer|exists:website_players,id',
+            'game_date' => 'required|date|before_or_equal:today',
+            'opponent_team' => 'required|string|max:255',
+            'minutes_played' => 'required|integer|min:0|max:120',
+            'tournament' => 'nullable|string|max:255',
+            'goals_scored' => 'nullable|integer|min:0',
+            'assists' => 'nullable|integer|min:0',
+            'shots_on_target' => 'nullable|integer|min:0',
+            'passes_completed' => 'nullable|integer|min:0',
+            'tackles' => 'nullable|integer|min:0',
+            'interceptions' => 'nullable|integer|min:0',
+            'saves' => 'nullable|integer|min:0',
+            'rating' => 'nullable|numeric|min:0|max:10',
+            'yellow_cards' => 'nullable|integer|min:0|max:2',
+            'red_cards' => 'nullable|integer|min:0|max:1',
+            'game_summary' => 'nullable|string|max:1000',
+        ]);
+
+        $player = WebsitePlayer::findOrFail($request->player_id);
+
+        // Handle AI-powered statistics extraction if enabled
+        $gameStats = $request->except(['_token', 'player_id']);
+        if ($request->has('use_ai_extraction') && !empty($request->game_summary)) {
+            $aiService = new AiStatisticsService();
+            $aiStats = $aiService->extractStatisticsFromSummary($request->game_summary);
+
+            // Merge AI-extracted stats with manual input (manual input takes precedence)
+            $gameStats = array_merge($aiStats, array_filter($gameStats));
+        }
+
+        // Create game statistics record
+        $gameRecord = PlayerGameStats::create([
+            'player_id' => $player->id,
+            'game_date' => $request->game_date,
+            'minutes_played' => $request->minutes_played,
+            'opponent_team' => $request->opponent_team,
+            'tournament' => $request->tournament,
+            'goals_scored' => $gameStats['goals_scored'] ?? 0,
+            'assists' => $gameStats['assists'] ?? 0,
+            'shots_on_target' => $gameStats['shots_on_target'] ?? 0,
+            'passes_completed' => $gameStats['passes_completed'] ?? 0,
+            'tackles' => $gameStats['tackles'] ?? 0,
+            'interceptions' => $gameStats['interceptions'] ?? 0,
+            'saves' => $gameStats['saves'] ?? 0,
+            'rating' => $gameStats['rating'] ?? null,
+            'yellow_cards' => $gameStats['yellow_cards'] ?? 0,
+            'red_cards' => $gameStats['red_cards'] ?? 0,
+            'game_summary' => $request->game_summary,
+        ]);
+
+        // Recalculate cumulative statistics
+        $player->recalculateCumulativeStats();
+
+        // Check if this is an AJAX request
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Game statistics recorded successfully!',
+                'player' => $player->fresh()->toArray(),
+                'game_record' => $gameRecord->toArray()
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Game statistics recorded successfully!');
+    }
+
+    /**
+     * Search players for AJAX requests
+     */
+    public function searchPlayers(Request $request)
+    {
+        $query = $request->get('q', '');
+        $limit = $request->get('limit', 10);
+
+        $players = WebsitePlayer::query()
+            ->when($query, function ($q) use ($query) {
+                $q->where(function ($subQuery) use ($query) {
+                    $subQuery->where('first_name', 'like', "%{$query}%")
+                            ->orWhere('last_name', 'like', "%{$query}%")
+                            ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$query}%"]);
+                });
+            })
+            ->orderBy('last_name')
+            ->orderBy('first_name')
+            ->limit($limit)
+            ->get()
+            ->map(function ($player) {
+                return [
+                    'id' => $player->id,
+                    'text' => $player->full_name . ' - ' . ucfirst($player->position) . ' (' . $player->formatted_category . ')',
+                    'first_name' => $player->first_name,
+                    'last_name' => $player->last_name,
+                    'position' => $player->position,
+                    'category' => $player->category,
+                ];
+            });
+
+        return response()->json(['results' => $players]);
+    }
+
+    /**
+     * Show player rankings
+     */
+    public function rankings()
+    {
+        $topScorers = WebsitePlayer::orderBy('goals', 'desc')->take(10)->get();
+        $topAssists = WebsitePlayer::orderBy('assists', 'desc')->take(10)->get();
+
+        return view('players.rankings', compact('topScorers', 'topAssists'));
     }
 }

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Vipers Academy - Professional Football Training')</title>
     <meta name="description" content="@yield('meta_description', 'Join Vipers Academy for world-class football training')">
 
@@ -584,14 +585,14 @@
     <div class="top-bar">
         <div class="top-bar-content">
             <div class="top-bar-left">
-                <span><i class="fas fa-phone me-1"></i> +254 700 000 000</span>
+                <span><i class="fas fa-phone me-1"></i> +254 716 305 905</span>
                 <span><i class="fas fa-envelope me-1"></i> info@vipersacademy.com</span>
             </div>
             <div class="top-bar-right">
-                <a href="{{ route('gallery') }}">Gallery</a>
                 <a href="{{ route('products.index') }}">Merchandise</a>
+                <a href="{{ route('careers.index') }}">Careers</a>
+                <a href="{{ route('gallery') }}">Gallery</a>
                 <a href="{{ route('login') }}">Log in</a>
-                <a href="#">Help Center</a>
                 <x-register-dropdown />
             </div>
         </div>
@@ -616,9 +617,9 @@
             </div>
 
             <ul class="nav-links">
+                 <li><a href="{{ route('about') }}">About</a></li>
                 <li><a href="{{ route('players.index') }}">Players</a></li>
                 <li><a href="{{ route('programs') }}">Programs</a></li>
-                <li><a href="{{ route('about') }}">About</a></li>
                 <li><a href="{{ route('news') }}">News</a></li>
                 <li><a href="{{ route('staff') }}">Staff</a></li>
             </ul>
@@ -635,6 +636,7 @@
     <div class="mobile-menu" id="mobileMenu">
         <ul class="mobile-nav-links">
             <li><a href="{{ route('home') }}">Home</a></li>
+            <li><a href="{{ route('register') }}">Register</a></li>
             <li><a href="{{ route('about') }}">About</a></li>
             <li><a href="{{ route('programs') }}">Programs</a></li>
             <li><a href="{{ route('players.index') }}">Players</a></li>
@@ -643,7 +645,7 @@
             <li><a href="{{ route('gallery') }}">Gallery</a></li>
             <li><a href="{{ route('contact') }}">Contact</a></li>
             <li><a href="{{ route('login') }}">Sign In</a></li>
-            <li><a href="{{ route('register') }}"><strong>Register</strong></a></li>
+
         </ul>
     </div>
 
@@ -676,7 +678,7 @@
                             <li><a href="{{ route('home') }}">Home</a></li>
                             <li><a href="{{ route('about') }}">About Us</a></li>
                             <li><a href="{{ route('programs') }}">Programs</a></li>
-                            <li><a href="{{ route('gallery') }}">Gallery</a></li>
+                            <li><a href="{{ route('news') }}">News</a></li>
                             <li><a href="{{ route('contact') }}">Contact</a></li>
                         </ul>
                     </div>
@@ -686,10 +688,10 @@
                     <div class="footer-section">
                         <h5>Programs</h5>
                         <ul class="footer-links">
-                            <li><a href="#">Youth Development</a></li>
-                            <li><a href="#">Training</a></li>
-                            <li><a href="#">Goalkeeper Academy</a></li>
-                            <li><a href="#">Summer Camps</a></li>
+                            <li><a href="{{ route('programs') }}">Weekend football</a></li>
+                            <li><a href="{{ route('programs') }}">Long Holiday Camp</a></li>
+                            <li><a href="{{ route('programs') }}">Computer</a></li>
+
                         </ul>
                     </div>
                 </div>
@@ -698,7 +700,7 @@
                     <div class="footer-section">
                         <h5>Contact Us</h5>
                         <p>
-                            <i class="fas fa-phone me-2"></i> +254 700 000 000<br>
+                            <i class="fas fa-phone me-2"></i> +254 716 305 905<br>
                             <i class="fas fa-envelope me-2"></i> info@vipersacademy.com<br>
                             <i class="fas fa-map-marker-alt me-2"></i> Mumias, Kenya
                         </p>

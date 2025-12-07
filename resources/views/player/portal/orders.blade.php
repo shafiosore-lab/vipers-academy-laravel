@@ -183,7 +183,7 @@
                     </div>
                     <h4>No Orders Yet</h4>
                     <p>You haven't placed any orders yet. Start exploring our products to make your first purchase!</p>
-                    <a href="{{ route('products') }}" class="btn btn-primary" target="_blank">
+                    <a href="{{ route('products.index') }}" class="btn btn-primary" target="_blank">
                         <i class="fas fa-shopping-cart me-1"></i>Browse Products
                     </a>
                 </div>
@@ -210,7 +210,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('products') }}" class="quick-action-card" target="_blank">
+                <a href="{{ route('products.index') }}" class="quick-action-card" target="_blank">
                     <div class="action-icon">
                         <i class="fas fa-store"></i>
                     </div>
