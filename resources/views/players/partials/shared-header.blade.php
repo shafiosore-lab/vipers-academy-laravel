@@ -28,7 +28,7 @@
 
             {{-- Player Details --}}
             <div class="player-details">
-                <h1 class="player-name">{{ $player->name ?? 'Player Name' }}</h1>
+                <h1 class="player-name">{{ $player->full_name ?? 'Player Name' }}</h1>
                 <p class="player-position">
                     {{ ucfirst($player->position ?? 'Position') }}
                     @if($player->jersey_number)
@@ -95,32 +95,191 @@
         }
     };
 
-    // Initialize Radar Chart
+    // Initialize Radar Chart with Position-Specific Data
     function initPlayerRadarChart() {
         const canvas = document.getElementById('playerRadarChart');
         if (!canvas || canvas.chart) return; // Prevent duplicate initialization
 
-        // Player stats from backend
-        const stats = {
-            position: '{{ strtolower($player->position ?? "unknown") }}',
-            goals: {{ $player->goals ?? 0 }},
-            assists: {{ $player->assists ?? 0 }},
-            appearances: {{ $player->appearances ?? 0 }},
-            age: {{ $player->age ?? 20 }},
-            yellowCards: {{ $player->yellow_cards ?? 0 }}
-        };
+        const playerPosition = '{{ strtoupper($player->position ?? "ST") }}';
+        let labels = [];
+        let data = [];
+        let tooltips = {};
 
-        // Calculate skills
-        const skills = PlayerSkills.calculate(stats);
+        // Position-specific radar attributes using advanced stats
+        switch (playerPosition) {
+            case 'GK':
+                labels = ['Shot Stopping', 'Distribution', 'Aerial Ability', 'Command Area', 'Handling', 'Positioning'];
+                data = [
+                    {{ $player->shot_stopping ?? 0 }},
+                    {{ $player->distribution ?? 0 }},
+                    {{ $player->aerial_ability ?? 0 }},
+                    {{ $player->command_area ?? 0 }},
+                    {{ $player->handling ?? 0 }},
+                    {{ $player->positioning ?? 75 }}
+                ];
+                tooltips = {
+                    'Shot Stopping': `Save %: {{ number_format($player->save_percentage ?? 0, 1) }}%`,
+                    'Distribution': `Distribution accuracy: {{ number_format($player->distribution_accuracy ?? 0, 1) }}%`,
+                    'Aerial Ability': `Clean sheets: {{ $player->clean_sheets ?? 0 }}`,
+                    'Command Area': `High claims: {{ $player->high_claims ?? 0 }}`,
+                    'Handling': `Saves: {{ $player->saves ?? 0 }}`,
+                    'Positioning': 'Defensive positioning skill'
+                };
+                break;
+
+            case 'CB':
+                labels = ['Tackling', 'Interceptions', 'Aerial Ability', 'Positioning', 'Strength', 'Passing'];
+                data = [
+                    {{ $player->tackling ?? 0 }},
+                    {{ $player->interceptions ?? 0 }},
+                    {{ $player->aerial_ability ?? 0 }},
+                    {{ $player->positioning ?? 0 }},
+                    {{ $player->strength ?? 0 }},
+                    {{ $player->passing ?? 0 }}
+                ];
+                tooltips = {
+                    'Tackling': `Tackles won: {{ $player->tackles_won ?? 0 }}`,
+                    'Interceptions': `Interceptions: {{ $player->interceptions ?? 0 }}`,
+                    'Aerial Ability': `Aerial duels won: {{ $player->aerial_duels_won ?? 0 }}`,
+                    'Positioning': `Clearances: {{ $player->clearances ?? 0 }}`,
+                    'Strength': `Ball recoveries: {{ $player->ball_recoveries ?? 0 }}`,
+                    'Passing': `Pass accuracy: {{ number_format($player->passing_accuracy ?? 0, 1) }}%`
+                };
+                break;
+
+            case 'LB':
+            case 'RB':
+                labels = ['Pace', 'Crossing', 'Dribbling', 'Tackling', 'Positioning', 'Stamina'];
+                data = [
+                    {{ $player->pace ?? 0 }},
+                    {{ $player->crossing ?? 0 }},
+                    {{ $player->dribbling ?? 0 }},
+                    {{ $player->tackling ?? 0 }},
+                    {{ $player->positioning ?? 0 }},
+                    {{ $player->stamina ?? 0 }}
+                ];
+                tooltips = {
+                    'Pace': `Progressive runs: {{ $player->progressive_runs ?? 0 }}`,
+                    'Crossing': `Cross accuracy: {{ number_format($player->cross_accuracy ?? 0, 1) }}%`,
+                    'Dribbling': `Dribbles completed: {{ $player->dribbles_completed ?? 0 }}`,
+                    'Tackling': `Tackles won: {{ $player->tackles_won ?? 0 }}`,
+                    'Positioning': `Interceptions: {{ $player->interceptions ?? 0 }}`,
+                    'Stamina': `Defensive duels: {{ $player->defensive_duels_won ?? 0 }}`
+                };
+                break;
+
+            case 'CDM':
+                labels = ['Tackling', 'Interceptions', 'Positioning', 'Passing', 'Vision', 'Stamina'];
+                data = [
+                    {{ $player->tackling ?? 0 }},
+                    {{ $player->interceptions ?? 0 }},
+                    {{ $player->positioning ?? 0 }},
+                    {{ $player->passing ?? 0 }},
+                    {{ $player->vision ?? 0 }},
+                    {{ $player->stamina ?? 0 }}
+                ];
+                tooltips = {
+                    'Tackling': `Tackles won: {{ $player->tackles_won ?? 0 }}`,
+                    'Interceptions': `Interceptions: {{ $player->interceptions ?? 0 }}`,
+                    'Positioning': `Ball recoveries: {{ $player->ball_recoveries ?? 0 }}`,
+                    'Passing': `Pass accuracy: {{ number_format($player->passing_accuracy ?? 0, 1) }}%`,
+                    'Vision': `Progressive passes: {{ $player->progressive_passes ?? 0 }}`,
+                    'Stamina': `Duels won: {{ $player->duels_won ?? 0 }}`
+                };
+                break;
+
+            case 'CM':
+                labels = ['Passing', 'Vision', 'Tackling', 'Positioning', 'Stamina', 'Decisions'];
+                data = [
+                    {{ $player->passing ?? 0 }},
+                    {{ $player->vision ?? 0 }},
+                    {{ $player->tackling ?? 0 }},
+                    {{ $player->positioning ?? 0 }},
+                    {{ $player->stamina ?? 0 }},
+                    {{ $player->decisions ?? 0 }}
+                ];
+                tooltips = {
+                    'Passing': `Pass accuracy: {{ number_format($player->passing_accuracy ?? 0, 1) }}%`,
+                    'Vision': `Key passes: {{ $player->key_passes ?? 0 }}`,
+                    'Tackling': `Tackles won: {{ $player->tackles_won ?? 0 }}`,
+                    'Positioning': `Interceptions: {{ $player->interceptions ?? 0 }}`,
+                    'Stamina': `Ball progressions: {{ $player->ball_progressions ?? 0 }}`,
+                    'Decisions': `xA: {{ number_format($player->expected_assists ?? 0, 1) }}`
+                };
+                break;
+
+            case 'CAM':
+                labels = ['Passing', 'Vision', 'Dribbling', 'Finishing', 'Technique', 'Flair'];
+                data = [
+                    {{ $player->passing ?? 0 }},
+                    {{ $player->vision ?? 0 }},
+                    {{ $player->dribbling ?? 0 }},
+                    {{ $player->finishing ?? 0 }},
+                    {{ $player->technique ?? 0 }},
+                    {{ $player->flair ?? 0 }}
+                ];
+                tooltips = {
+                    'Passing': `Key passes: {{ $player->key_passes ?? 0 }}`,
+                    'Vision': `Chances created: {{ $player->chances_created ?? 0 }}`,
+                    'Dribbling': `Dribbles completed: {{ $player->dribbles_completed ?? 0 }}`,
+                    'Finishing': `xG: {{ number_format($player->expected_goals ?? 0, 1) }}`,
+                    'Technique': `Through balls: {{ $player->through_balls ?? 0 }}`,
+                    'Flair': `Goals: {{ $player->goals ?? 0 }}`
+                };
+                break;
+
+            case 'LW':
+            case 'RW':
+                labels = ['Pace', 'Crossing', 'Dribbling', 'Finishing', 'Technique', 'Balance'];
+                data = [
+                    {{ $player->pace ?? 0 }},
+                    {{ $player->crossing ?? 0 }},
+                    {{ $player->dribbling ?? 0 }},
+                    {{ $player->finishing ?? 0 }},
+                    {{ $player->technique ?? 0 }},
+                    {{ $player->balance ?? 0 }}
+                ];
+                tooltips = {
+                    'Pace': `Progressive runs: {{ $player->progressive_runs ?? 0 }}`,
+                    'Crossing': `Cross accuracy: {{ number_format($player->cross_accuracy ?? 0, 1) }}%`,
+                    'Dribbling': `Dribbles completed: {{ $player->dribbles_completed ?? 0 }}`,
+                    'Finishing': `Shots on target: {{ $player->shots_on_target ?? 0 }}`,
+                    'Technique': `Key passes: {{ $player->key_passes ?? 0 }}`,
+                    'Balance': `xA: {{ number_format($player->expected_assists ?? 0, 1) }}`
+                };
+                break;
+
+            case 'ST':
+            case 'CF':
+            default:
+                labels = ['Finishing', 'Positioning', 'Aerial Ability', 'Pace', 'Strength', 'Technique'];
+                data = [
+                    {{ $player->finishing ?? 0 }},
+                    {{ $player->positioning ?? 0 }},
+                    {{ $player->aerial_ability ?? 0 }},
+                    {{ $player->pace ?? 0 }},
+                    {{ $player->strength ?? 0 }},
+                    {{ $player->technique ?? 0 }}
+                ];
+                tooltips = {
+                    'Finishing': `Conversion rate: {{ number_format($player->shot_conversion_rate ?? 0, 2) }}`,
+                    'Positioning': `Touches in box: {{ $player->touches_in_box ?? 0 }}`,
+                    'Aerial Ability': `Aerial duels won: {{ $player->aerial_duels_won ?? 0 }}`,
+                    'Pace': `Big chances scored: {{ $player->big_chances_scored ?? 0 }}`,
+                    'Strength': `Hold-up play: {{ $player->hold_up_play_success ?? 0 }}`,
+                    'Technique': `xG: {{ number_format($player->expected_goals ?? 0, 1) }}`
+                };
+                break;
+        }
 
         // Chart configuration
         const config = {
             type: 'radar',
             data: {
-                labels: ['Shooting', 'Passing', 'Speed', 'Defense', 'Stamina'],
+                labels: labels,
                 datasets: [{
-                    label: 'Player Skills',
-                    data: [skills.shooting, skills.passing, skills.speed, skills.defense, skills.stamina],
+                    label: '{{ $player->full_name }} Skills',
+                    data: data,
                     borderWidth: 2,
                     borderColor: '#ea1c4d',
                     backgroundColor: 'rgba(234, 28, 77, 0.1)',
@@ -145,29 +304,23 @@
                         displayColors: false,
                         callbacks: {
                             label: (context) => {
-                                const tooltips = {
-                                    'Shooting': `Based on ${stats.goals} goals, ${stats.assists} assists`,
-                                    'Passing': `Based on ${stats.assists} assists and playmaking`,
-                                    'Speed': `Age-adjusted: ${stats.age} years old`,
-                                    'Defense': `Based on ${stats.yellowCards} yellow cards, ${stats.appearances} matches`,
-                                    'Stamina': `Based on ${stats.appearances} total appearances`
-                                };
                                 const value = Math.round(context.parsed.r);
-                                return [`${context.label}: ${value}/100`, tooltips[context.label]];
+                                const tooltipText = tooltips[context.label] || '';
+                                return [`${context.label}: ${value}/100`, tooltipText];
                             }
                         }
                     }
                 },
                 scales: {
                     r: {
-                        min: 0,
+                        beginAtZero: true,
                         max: 100,
                         ticks: { display: false, stepSize: 20 },
                         grid: { color: 'rgba(0, 0, 0, 0.1)', circular: true },
                         angleLines: { display: false },
                         pointLabels: {
                             color: '#64748b',
-                            font: { size: 12, weight: 'bold', family: 'Poppins' }
+                            font: { size: 11, weight: 'bold', family: 'Poppins' }
                         }
                     }
                 }

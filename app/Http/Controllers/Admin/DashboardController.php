@@ -232,7 +232,7 @@ class DashboardController extends Controller
         ));
     }
 
-    public function generateComplianceReport()
+    public function complianceReport()
     {
         // Get compliance data
         $totalPlayers = Player::count();

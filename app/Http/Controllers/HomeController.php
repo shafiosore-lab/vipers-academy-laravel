@@ -12,6 +12,20 @@ class HomeController extends Controller
 {
     public function index()
     {
+        // Check if user is authenticated and redirect to appropriate dashboard
+        if (auth()->check()) {
+            $user = auth()->user();
+
+            if ($user->isAdmin()) {
+                return redirect()->route('admin.dashboard');
+            } elseif ($user->isPlayer()) {
+                return redirect()->route('player.portal.dashboard');
+            } elseif ($user->isPartner()) {
+                return redirect()->route('partner.dashboard');
+            }
+        }
+
+        // For guests or unrecognized user types, show the home page
         return view('website.home.index');
     }
 

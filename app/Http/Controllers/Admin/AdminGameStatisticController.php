@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\GameStatistic;
-use App\Models\Player;
+use App\Models\PlayerGameStats;
+use App\Models\WebsitePlayer;
 use App\Services\AiStatisticsService;
 use Illuminate\Http\Request;
 
@@ -19,29 +19,29 @@ class AdminGameStatisticController extends Controller
 
     public function index()
     {
-        $statistics = GameStatistic::with('player')->latest()->paginate(20);
+        $statistics = PlayerGameStats::with('player')->latest()->paginate(20);
         return view('admin.game_statistics', compact('statistics'));
     }
 
     public function create()
     {
-        $players = Player::select('id', 'name', 'position')->orderBy('name')->get();
+        $players = WebsitePlayer::select('id', 'first_name', 'last_name', 'position')->orderBy('last_name')->orderBy('first_name')->get();
         return view('admin.game_statistic_create', compact('players'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'player_id' => 'required|exists:players,id',
-            'game_date' => 'required|date',
-            'opponent' => 'required|string|max:255',
+            'player_id' => 'required|exists:website_players,id',
+            'game_date' => 'required|date|before_or_equal:today',
+            'opponent_team' => 'required|string|max:255',
             'tournament' => 'nullable|string|max:255',
-            'game_summary' => 'nullable|string',
+            'minutes_played' => 'required|integer|min:0|max:120',
+            'game_summary' => 'nullable|string|max:1000',
             'use_ai' => 'boolean',
             // Manual stats fields
             'goals_scored' => 'nullable|integer|min:0',
             'assists' => 'nullable|integer|min:0',
-            'minutes_played' => 'nullable|integer|min:0|max:120',
             'shots_on_target' => 'nullable|integer|min:0',
             'passes_completed' => 'nullable|integer|min:0',
             'tackles' => 'nullable|integer|min:0',
@@ -52,72 +52,69 @@ class AdminGameStatisticController extends Controller
             'rating' => 'nullable|numeric|min:0|max:10',
         ]);
 
-        $data = $request->only([
-            'player_id', 'game_date', 'opponent', 'tournament',
-            'goals_scored', 'assists', 'minutes_played', 'shots_on_target',
-            'passes_completed', 'tackles', 'interceptions', 'saves',
-            'yellow_cards', 'red_cards', 'rating'
-        ]);
+        $player = WebsitePlayer::findOrFail($request->player_id);
 
-        // If AI processing is requested and game summary is provided
-        if ($request->boolean('use_ai') && $request->filled('game_summary')) {
+        // Handle AI-powered statistics extraction if enabled
+        $gameStats = $request->except(['_token', 'player_id']);
+        if ($request->has('use_ai') && !empty($request->game_summary)) {
             $aiStats = $this->aiService->extractStatisticsFromSummary($request->game_summary);
-            $data = array_merge($data, $aiStats);
-            $data['ai_generated'] = true;
-            $data['game_summary'] = $request->game_summary;
-        } else {
-            $data['ai_generated'] = false;
-            $data['game_summary'] = $request->game_summary;
+
+            // Merge AI-extracted stats with manual input (manual input takes precedence)
+            $gameStats = array_merge($aiStats, array_filter($gameStats));
         }
 
-        // Set defaults for null values
-        $data = array_merge([
-            'goals_scored' => 0,
-            'assists' => 0,
-            'minutes_played' => 0,
-            'shots_on_target' => 0,
-            'passes_completed' => 0,
-            'tackles' => 0,
-            'interceptions' => 0,
-            'saves' => 0,
-            'yellow_cards' => 0,
-            'red_cards' => 0,
-        ], $data);
+        // Create game statistics record
+        PlayerGameStats::create([
+            'player_id' => $player->id,
+            'game_date' => $request->game_date,
+            'minutes_played' => $request->minutes_played,
+            'opponent_team' => $request->opponent_team,
+            'tournament' => $request->tournament,
+            'goals_scored' => $gameStats['goals_scored'] ?? 0,
+            'assists' => $gameStats['assists'] ?? 0,
+            'shots_on_target' => $gameStats['shots_on_target'] ?? 0,
+            'passes_completed' => $gameStats['passes_completed'] ?? 0,
+            'tackles' => $gameStats['tackles'] ?? 0,
+            'interceptions' => $gameStats['interceptions'] ?? 0,
+            'saves' => $gameStats['saves'] ?? 0,
+            'rating' => $gameStats['rating'] ?? null,
+            'yellow_cards' => $gameStats['yellow_cards'] ?? 0,
+            'red_cards' => $gameStats['red_cards'] ?? 0,
+            'game_summary' => $request->game_summary,
+        ]);
 
-        GameStatistic::create($data);
-
-        // Update player's cumulative statistics
-        $this->updatePlayerStats($request->player_id);
+        // Recalculate cumulative statistics
+        $player->recalculateCumulativeStats();
 
         return redirect()->route('admin.game-statistics.index')->with('success', 'Game statistics added successfully.');
     }
 
     public function show($id)
     {
-        $statistic = GameStatistic::with('player')->findOrFail($id);
+        $statistic = PlayerGameStats::with('player')->findOrFail($id);
         return view('admin.game_statistic_show', compact('statistic'));
     }
 
     public function edit($id)
     {
-        $statistic = GameStatistic::findOrFail($id);
-        $players = Player::select('id', 'name', 'position')->orderBy('name')->get();
+        $statistic = PlayerGameStats::findOrFail($id);
+        $players = WebsitePlayer::select('id', 'first_name', 'last_name', 'position')->orderBy('last_name')->orderBy('first_name')->get();
         return view('admin.game_statistic_edit', compact('statistic', 'players'));
     }
 
     public function update(Request $request, $id)
     {
-        $statistic = GameStatistic::findOrFail($id);
+        $statistic = PlayerGameStats::findOrFail($id);
 
         $request->validate([
-            'player_id' => 'required|exists:players,id',
-            'game_date' => 'required|date',
-            'opponent' => 'required|string|max:255',
+            'player_id' => 'required|exists:website_players,id',
+            'game_date' => 'required|date|before_or_equal:today',
+            'opponent_team' => 'required|string|max:255',
             'tournament' => 'nullable|string|max:255',
-            'game_summary' => 'nullable|string',
+            'minutes_played' => 'required|integer|min:0|max:120',
+            'game_summary' => 'nullable|string|max:1000',
             'goals_scored' => 'nullable|integer|min:0',
             'assists' => 'nullable|integer|min:0',
-            'minutes_played' => 'nullable|integer|min:0|max:120',
             'shots_on_target' => 'nullable|integer|min:0',
             'passes_completed' => 'nullable|integer|min:0',
             'tackles' => 'nullable|integer|min:0',
@@ -128,67 +125,53 @@ class AdminGameStatisticController extends Controller
             'rating' => 'nullable|numeric|min:0|max:10',
         ]);
 
-        $data = $request->only([
-            'player_id', 'game_date', 'opponent', 'tournament',
-            'goals_scored', 'assists', 'minutes_played', 'shots_on_target',
-            'passes_completed', 'tackles', 'interceptions', 'saves',
-            'yellow_cards', 'red_cards', 'rating', 'game_summary'
+        $player = WebsitePlayer::findOrFail($request->player_id);
+
+        // Handle AI-powered statistics extraction if enabled
+        $gameStats = $request->except(['_token', 'player_id']);
+        if ($request->has('use_ai') && !empty($request->game_summary)) {
+            $aiStats = $this->aiService->extractStatisticsFromSummary($request->game_summary);
+
+            // Merge AI-extracted stats with manual input (manual input takes precedence)
+            $gameStats = array_merge($aiStats, array_filter($gameStats));
+        }
+
+        $statistic->update([
+            'player_id' => $player->id,
+            'game_date' => $request->game_date,
+            'minutes_played' => $request->minutes_played,
+            'opponent_team' => $request->opponent_team,
+            'tournament' => $request->tournament,
+            'goals_scored' => $gameStats['goals_scored'] ?? 0,
+            'assists' => $gameStats['assists'] ?? 0,
+            'shots_on_target' => $gameStats['shots_on_target'] ?? 0,
+            'passes_completed' => $gameStats['passes_completed'] ?? 0,
+            'tackles' => $gameStats['tackles'] ?? 0,
+            'interceptions' => $gameStats['interceptions'] ?? 0,
+            'saves' => $gameStats['saves'] ?? 0,
+            'rating' => $gameStats['rating'] ?? null,
+            'yellow_cards' => $gameStats['yellow_cards'] ?? 0,
+            'red_cards' => $gameStats['red_cards'] ?? 0,
+            'game_summary' => $request->game_summary,
         ]);
 
-        // Set defaults for null values
-        $data = array_merge([
-            'goals_scored' => 0,
-            'assists' => 0,
-            'minutes_played' => 0,
-            'shots_on_target' => 0,
-            'passes_completed' => 0,
-            'tackles' => 0,
-            'interceptions' => 0,
-            'saves' => 0,
-            'yellow_cards' => 0,
-            'red_cards' => 0,
-        ], $data);
-
-        $statistic->update($data);
-
-        // Update player's cumulative statistics
-        $this->updatePlayerStats($request->player_id);
+        // Recalculate cumulative statistics
+        $player->recalculateCumulativeStats();
 
         return redirect()->route('admin.game-statistics.index')->with('success', 'Game statistics updated successfully.');
     }
 
     public function destroy($id)
     {
-        $statistic = GameStatistic::findOrFail($id);
-        $playerId = $statistic->player_id;
+        $statistic = PlayerGameStats::findOrFail($id);
+        $player = $statistic->player;
 
         $statistic->delete();
 
-        // Update player's cumulative statistics
-        $this->updatePlayerStats($playerId);
+        // Recalculate cumulative statistics
+        $player->recalculateCumulativeStats();
 
         return redirect()->route('admin.game-statistics.index')->with('success', 'Game statistics deleted successfully.');
     }
 
-    /**
-     * Update player's cumulative statistics based on all their game statistics
-     */
-    private function updatePlayerStats($playerId)
-    {
-        $player = Player::findOrFail($playerId);
-
-        $stats = GameStatistic::where('player_id', $playerId)->get();
-
-        $totalMatches = $stats->count();
-        $totalGoals = $stats->sum('goals_scored');
-        $totalAssists = $stats->sum('assists');
-        $averageRating = $stats->avg('rating');
-
-        $player->update([
-            'matches_played' => $totalMatches,
-            'goals_scored' => $totalGoals,
-            'assists' => $totalAssists,
-            'performance_rating' => $averageRating ? round($averageRating, 2) : null,
-        ]);
-    }
 }

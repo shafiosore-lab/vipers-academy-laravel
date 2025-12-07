@@ -169,9 +169,20 @@ Route::prefix('orders')->name('orders.')->group(function () {
     })->name('track');
 });
 
-// Dashboard
+// Dashboard - Redirect based on user role
 Route::get('/dashboard', function() {
-    return view('website.dashboard');
+    $user = auth()->user();
+
+    if ($user->isAdmin()) {
+        return redirect()->route('admin.dashboard');
+    } elseif ($user->isPlayer()) {
+        return redirect()->route('player.portal.dashboard');
+    } elseif ($user->isPartner()) {
+        return redirect()->route('partner.dashboard');
+    } else {
+        // Default redirect for visitors or other user types
+        return redirect()->route('home');
+    }
 })->middleware('auth')->name('dashboard');
 
 // Profile
@@ -238,10 +249,7 @@ Route::post('/login', function () {
     ]);
 })->name('login.post')->middleware('guest')->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
-Route::post('/logout', function () {
-    auth()->logout();
-    return redirect('/');
-})->name('logout');
+// Logout route removed - using auth.php logout route instead
 
 // Admin Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {

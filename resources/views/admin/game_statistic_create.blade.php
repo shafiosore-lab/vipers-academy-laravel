@@ -34,10 +34,7 @@
                                             <option value="{{ $player->id }}"
                                                     data-position="{{ $player->position }}"
                                                     {{ old('player_id') == $player->id ? 'selected' : '' }}>
-                                                {{ $player->name }} - {{ $player->position }}
-                                                @if($player->first_name && $player->last_name)
-                                                    ({{ $player->first_name }} {{ $player->last_name }})
-                                                @endif
+                                                {{ $player->full_name }} - {{ ucfirst($player->position) }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -73,11 +70,11 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="opponent" class="form-label">Opponent Team *</label>
-                                    <input type="text" class="form-control @error('opponent') is-invalid @enderror"
-                                           id="opponent" name="opponent" value="{{ old('opponent') }}"
+                                    <label for="opponent_team" class="form-label">Opponent Team *</label>
+                                    <input type="text" class="form-control @error('opponent_team') is-invalid @enderror"
+                                           id="opponent_team" name="opponent_team" value="{{ old('opponent_team') }}"
                                            placeholder="e.g., Manchester United, Arsenal FC" required>
-                                    @error('opponent')
+                                    @error('opponent_team')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>

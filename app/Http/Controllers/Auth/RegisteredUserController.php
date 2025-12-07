@@ -20,7 +20,8 @@ class RegisteredUserController extends Controller
      */
     public function create()
     {
-        return redirect()->route('register');
+        // Redirect to the program registration choice page
+        return redirect('/register');
     }
 
     /**
