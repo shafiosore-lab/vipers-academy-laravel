@@ -65,8 +65,14 @@
                                         </span>
                                     @endif
                                 </div>
-                                <div class="avatar-circle bg-white text-success d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; border-radius: 50%;">
-                                    <i class="fas fa-building fa-2x"></i>
+                                <div class="d-flex flex-column align-items-end gap-2">
+                                    <!-- View Website Button -->
+                                    <a href="{{ route('home') }}" class="btn btn-outline-light btn-sm" target="_blank">
+                                        <i class="fas fa-external-link-alt me-1"></i>View Website
+                                    </a>
+                                    <div class="avatar-circle bg-white text-success d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; border-radius: 50%;">
+                                        <i class="fas fa-building fa-2x"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>

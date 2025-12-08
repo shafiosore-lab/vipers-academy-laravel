@@ -21,6 +21,13 @@
                 Your profile is pending approval. You'll have full access once approved by our team.
             </div>
             @endif
+
+            <!-- View Website Button -->
+            <div class="text-end mb-3">
+                <a href="{{ route('home') }}" class="btn btn-outline-light btn-sm" target="_blank">
+                    <i class="fas fa-external-link-alt me-1"></i>View Website
+                </a>
+            </div>
         </div>
 
         <div class="player-quick-card">
