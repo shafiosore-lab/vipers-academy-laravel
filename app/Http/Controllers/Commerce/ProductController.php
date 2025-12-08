@@ -34,7 +34,7 @@ class ProductController extends \App\Http\Controllers\Controller
         $newProducts = Product::where('is_active', true)->where('category', 'new')->latest()->take(8)->get();
         $oldProducts = Product::where('is_active', true)->where('category', 'old')->latest()->take(8)->get();
 
-        return view('product.index', compact('products', 'newProducts', 'oldProducts', 'totalProducts'));
+        return view('website.products.index', compact('products', 'newProducts', 'oldProducts', 'totalProducts'));
     }
 
     public function category($category)
@@ -56,7 +56,7 @@ class ProductController extends \App\Http\Controllers\Controller
         $newProducts = Product::where('is_active', true)->where('category', 'new')->latest()->take(8)->get();
         $oldProducts = Product::where('is_active', true)->where('category', 'old')->latest()->take(8)->get();
 
-        return view('product.index', compact('products', 'newProducts', 'oldProducts', 'totalProducts', 'category'));
+        return view('website.products.index', compact('products', 'newProducts', 'oldProducts', 'totalProducts', 'category'));
     }
 
     public function search(Request $request)
@@ -80,7 +80,7 @@ class ProductController extends \App\Http\Controllers\Controller
         $newProducts = Product::where('is_active', true)->where('category', 'new')->latest()->take(8)->get();
         $oldProducts = Product::where('is_active', true)->where('category', 'old')->latest()->take(8)->get();
 
-        return view('product.index', compact('products', 'newProducts', 'oldProducts', 'totalProducts', 'search'));
+        return view('website.products.index', compact('products', 'newProducts', 'oldProducts', 'totalProducts', 'search'));
     }
 
     public function suggestions(Request $request)
@@ -118,7 +118,7 @@ class ProductController extends \App\Http\Controllers\Controller
             ->take(4)
             ->get();
 
-        return view('product.show', compact('product', 'relatedProducts'));
+        return view('website.products.show', compact('product', 'relatedProducts'));
     }
 
     /**
@@ -170,7 +170,7 @@ class ProductController extends \App\Http\Controllers\Controller
         $cartTotal = Cart::getCartTotal();
         $cartCount = Cart::getCartCount();
 
-        return view('cart', compact('cartItems', 'cartTotal', 'cartCount'));
+        return view('website.products.cart', compact('cartItems', 'cartTotal', 'cartCount'));
     }
 
     /**

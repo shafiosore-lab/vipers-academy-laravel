@@ -140,7 +140,7 @@ class ProgramController extends Controller
             'organization_type' => 'required|string',
             'contact_person' => 'required|string|max:255',
             'contact_position' => 'required|string|max:255',
-            'phone' => 'required|string',
+            'phone' => 'required|string|unique:users',
             'country' => 'required|string',
             'city' => 'required|string',
             'address' => 'required|string',

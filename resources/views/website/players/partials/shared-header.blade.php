@@ -326,7 +326,7 @@
                         angleLines: { display: false },
                         pointLabels: {
                             color: '#64748b',
-                            font: { size: 11, weight: 'bold', family: 'Poppins' }
+                            font: { size: window.innerWidth < 768 ? 9 : 11, weight: 'bold', family: 'Poppins' }
                         }
                     }
                 }

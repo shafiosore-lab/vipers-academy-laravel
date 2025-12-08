@@ -34,19 +34,21 @@
         margin: auto;
     }
 
-    /* Header Section */
+    /* Player Header Card */
     .player-header {
-        display: flex;
+        display: grid;
+        grid-template-columns: 280px 1fr;
         gap: 30px;
-        align-items: center;
-        background: var(--card-bg);
+        background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
         padding: 30px;
         border-radius: var(--border-radius);
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
         border: 1px solid rgba(234, 28, 77, 0.2);
+        margin-bottom: 30px;
     }
 
+    /* Photo */
     .player-photo {
         width: 280px;
         height: 320px;
@@ -65,7 +67,15 @@
         color: var(--secondary-color);
     }
 
+    /* Info Section */
     .player-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 320px;
+    }
+
+    .player-details {
         flex: 1;
     }
 
@@ -94,10 +104,10 @@
 
     /* Navigation */
     .section-nav {
-        margin-top: 40px;
         display: flex;
         gap: 15px;
         flex-wrap: wrap;
+        margin-bottom: 30px;
     }
 
     .nav-link {
@@ -126,66 +136,119 @@
 
     /* Content Section */
     .content-section {
-        margin-top: 40px;
+        background: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: 30px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(234, 28, 77, 0.2);
     }
 
     /* Responsive Design */
     @media (max-width: 768px) {
+        .vipers-player-container {
+            padding: 20px 15px;
+        }
+
         .player-header {
-            flex-direction: column;
-            text-align: center;
+            grid-template-columns: 1fr;
+            padding: 25px;
+            gap: 25px;
         }
 
         .player-photo {
             width: 100%;
             max-width: 280px;
+            height: 280px;
+            margin: 0 auto;
+        }
+
+        .player-info {
+            min-height: auto;
         }
 
         .player-name {
             font-size: 32px;
+            text-align: center;
+        }
+
+        .player-position {
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .player-description {
+            text-align: center;
         }
 
         .section-nav {
             justify-content: center;
+            gap: 10px;
+        }
+
+        .nav-link {
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+
+        .content-section {
+            padding: 25px 20px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .vipers-player-container {
+            padding: 15px 10px;
+        }
+
+        .player-header {
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .player-photo {
+            max-width: 240px;
+            height: 240px;
+        }
+
+        .player-name {
+            font-size: 26px;
+        }
+
+        .player-position {
+            font-size: 16px;
+        }
+
+        .player-description {
+            font-size: 14px;
+        }
+
+        .section-nav {
+            gap: 8px;
+        }
+
+        .nav-link {
+            padding: 8px 16px;
+            font-size: 13px;
+            flex: 1;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .content-section {
+            padding: 20px 15px;
         }
     }
 </style>
 
 <div class="vipers-player-container">
     <div class="player-profile">
-        <!-- Header -->
-        <div class="player-header">
-            @if($player->image_path)
-                <img src="{{ asset('assets/img/players/' . $player->image_path) }}"
-                     alt="{{ $player->name }}"
-                     class="player-photo">
-            @else
-                <div class="player-photo player-photo-placeholder">
-                    <span>{{ substr($player->first_name ?? 'P', 0, 1) }}{{ substr($player->last_name ?? 'L', 0, 1) }}</span>
-                </div>
-            @endif
-
-            <div class="player-info">
-                <div class="player-details">
-                    <h1 class="player-name">{{ $player->name ?? 'Player Name' }}</h1>
-                    <p class="player-position">
-                        {{ ucfirst($player->position ?? 'Position') }}
-                        @if($player->jersey_number)
-                            • Jersey #{{ $player->jersey_number }}
-                        @endif
-                    </p>
-                    <p class="player-description">
-                        {{ $player->bio ?? 'A dynamic player known for exceptional skills and dedication on the field.' }}
-                    </p>
-                </div>
-            </div>
-        </div>
+        @include('website.players.partials.shared-header', ['player' => $player])
 
         <!-- Navigation -->
         <div class="section-nav">
             <a href="{{ route('players.overview', $player->id) }}" class="nav-link">Overview</a>
             <a href="{{ route('players.statistics', $player->id) }}" class="nav-link">Statistics</a>
-            <a href="{{ route('players.ai-insights', $player->id) }}" class="nav-link">AI Insights</a>
+            <a href="{{ route('players.ai-insights', $player->id) }}" class="nav-link">Insights</a>
             <a href="{{ route('players.biography', $player->id) }}" class="nav-link">Biography</a>
             <a href="{{ route('players.career', $player->id) }}" class="nav-link active">Career</a>
         </div>

@@ -357,7 +357,7 @@ function initSkillsRadar() {
                     },
                     pointLabels: {
                         font: {
-                            size: 11
+                            size: window.innerWidth < 768 ? 9 : 11
                         }
                     }
                 }
@@ -399,5 +399,47 @@ function initSkillsRadar() {
 .legend-text {
     font-size: 14px;
     color: var(--text-medium);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .radar-chart-container {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .radar-chart-container canvas {
+        max-width: 250px;
+        height: 250px;
+        margin: 0 auto;
+        display: block;
+    }
+
+    .radar-legend {
+        padding: 12px;
+    }
+
+    .legend-text {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .radar-chart-container {
+        padding: 10px;
+    }
+
+    .radar-chart-container canvas {
+        max-width: 200px;
+        height: 200px;
+    }
+
+    .radar-legend {
+        padding: 10px;
+    }
+
+    .legend-text {
+        font-size: 12px;
+    }
 }
 </style>

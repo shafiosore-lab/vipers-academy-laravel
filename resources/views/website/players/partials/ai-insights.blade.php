@@ -527,7 +527,7 @@
 
             <div style="line-height: 1.7;">
                 @foreach($analysis as $paragraph)
-                    <p style="color: #64748b; margin-bottom: 12px; margin: 0 0 12px 0;">
+                    <p style="color: #64748b; margin-bottom: 12px; margin: 0 0 12px 0; word-wrap: break-word; overflow-wrap: break-word;">
                         {!! $paragraph !!}
                     </p>
                 @endforeach
