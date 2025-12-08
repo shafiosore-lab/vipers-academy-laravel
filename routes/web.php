@@ -282,6 +282,40 @@ Route::post('/login', function () {
 
 // Logout route removed - using auth.php logout route instead
 
+Route::post('/login', function () {
+    $credentials = request()->only('email', 'password');
+
+    if (auth()->attempt($credentials)) {
+        request()->session()->regenerate();
+
+        $user = auth()->user();
+
+        // Redirect based on user type
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        } elseif ($user->isPlayer()) {
+            // Check if player exists and is approved
+            $player = $user->player;
+            if ($player && $player->isApproved()) {
+                return redirect()->route('player.portal.dashboard');
+            } else {
+                // Player not approved or doesn't exist
+                auth()->logout();
+                return redirect('/')->with('error', 'Your player account is pending approval. Please contact the academy administration.');
+            }
+        } elseif ($user->isPartner()) {
+            return redirect()->route('partner.dashboard');
+        } else {
+            // Default redirect for visitors or other user types
+            return redirect()->intended('/');
+        }
+    }
+
+    return back()->withErrors([
+        'email' => 'The provided credentials do not match our records.',
+    ]);
+})->name('login.post')->middleware('guest');
+
 // Social Authentication Routes
 Route::get('/auth/google', [App\Http\Controllers\Auth\SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('/auth/google/callback', [App\Http\Controllers\Auth\SocialAuthController::class, 'handleGoogleCallback']);
