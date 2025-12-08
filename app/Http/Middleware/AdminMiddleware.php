@@ -20,13 +20,18 @@ class AdminMiddleware
             return redirect()->route('login')->with('error', 'Please login to access this area.');
         }
 
-        if (!Auth::user()->isAdmin()) {
+        $user = Auth::user();
+
+        // Check if user has any admin role
+        $adminRoles = ['super-admin', 'marketing-admin', 'scouting-admin', 'operations-admin', 'coaching-admin', 'finance-admin'];
+        if (!$user->hasAnyRole($adminRoles)) {
             abort(403, 'Access denied. Admin privileges required.');
         }
 
-        if (!Auth::user()->isActive()) {
+        // Check if user is approved
+        if (!$user->isApproved()) {
             Auth::logout();
-            return redirect()->route('login')->with('error', 'Your account is not active.');
+            return redirect('/')->with('error', 'Your account is pending approval. Please contact the academy administration.');
         }
 
         return $next($request);

@@ -20,13 +20,17 @@ class PartnerMiddleware
             return redirect()->route('login')->with('error', 'Please login to access this area.');
         }
 
-        if (!Auth::user()->isPartner()) {
+        $user = Auth::user();
+
+        // Check if user has any partner-related role
+        $partnerRoles = ['partner-marketing', 'partner-scouting', 'partner-operations'];
+        if (!$user->isPartner() && !$user->hasAnyRole($partnerRoles)) {
             abort(403, 'Access denied. Partner privileges required.');
         }
 
-        if (!Auth::user()->isActive()) {
-            Auth::logout();
-            return redirect()->route('login')->with('error', 'Your account is not active.');
+        // Check if user is approved
+        if (!$user->isApproved()) {
+            return redirect('/')->with('error', 'Your account is pending approval. Please contact the academy administration.');
         }
 
         return $next($request);

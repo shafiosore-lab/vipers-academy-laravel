@@ -512,10 +512,10 @@
 
                     <!-- Social Login -->
                     <div class="social-buttons">
-                        <a href="#" class="social-btn">
+                        <a href="{{ route('auth.google') }}" class="social-btn">
                             <i class="fab fa-google"></i> Google
                         </a>
-                        <a href="#" class="social-btn">
+                        <a href="{{ route('auth.facebook') }}" class="social-btn">
                             <i class="fab fa-facebook-f"></i> Facebook
                         </a>
                     </div>

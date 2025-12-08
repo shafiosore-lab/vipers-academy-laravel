@@ -176,9 +176,9 @@
 </section>
 
 <!-- Modals -->
-@include('programs.modals.weekend-program')
-@include('programs.modals.holiday-camp')
-@include('programs.modals.coding-classes')
+@include('website.programs.modals.weekend-program')
+@include('website.programs.modals.holiday-camp')
+@include('website.programs.modals.coding-classes')
 
 @endsection
 

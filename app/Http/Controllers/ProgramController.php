@@ -91,19 +91,33 @@ class ProgramController extends Controller
             'terms_accepted' => 'required|accepted',
         ]);
 
-        // Create player user
+        // Split name into first and last
+        $nameParts = explode(' ', $request->name, 2);
+        $firstName = $nameParts[0] ?? '';
+        $lastName = $nameParts[1] ?? '';
+
+        // Create player user with pending status
         $user = User::create([
-            'name' => $request->name,
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'name' => $request->name, // Keep for compatibility
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'user_type' => 'player',
-            'status' => 'active',
+            'approval_status' => 'pending',
         ]);
 
+        // Assign player role
+        $playerRole = \App\Models\Role::where('slug', 'player')->first();
+        if ($playerRole) {
+            $user->assignRole($playerRole);
+        }
+
+        // Auto-login the user
         auth()->login($user);
 
         return redirect()->route('registration.success', 'player')
-                        ->with('success', 'Player registration successful!');
+                        ->with('success', 'Player registration submitted for approval!');
     }
 
     /**
@@ -136,15 +150,41 @@ class ProgramController extends Controller
             'additional_requirements' => 'nullable|string',
         ]);
 
-        // Create partner user
+        // Split contact_person into first and last
+        $nameParts = explode(' ', $request->contact_person, 2);
+        $firstName = $nameParts[0] ?? '';
+        $lastName = $nameParts[1] ?? '';
+
+        // Create partner user with pending status
         $user = User::create([
-            'name' => $request->contact_person,
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'name' => $request->contact_person, // Keep for compatibility
             'email' => $request->email,
+            'phone' => $request->phone,
             'password' => bcrypt($request->password),
             'user_type' => 'partner',
-            'status' => 'pending',
+            'approval_status' => 'pending',
+            'partner_details' => [
+                'organization_name' => $request->organization_name,
+                'organization_type' => $request->organization_type,
+                'contact_position' => $request->contact_position,
+                'country' => $request->country,
+                'city' => $request->city,
+                'address' => $request->address,
+                'partnership_type' => $request->partnership_type,
+                'expected_users' => $request->expected_users,
+                'additional_requirements' => $request->additional_requirements,
+            ],
         ]);
 
+        // Assign partner role (generic partner role, can be upgraded later)
+        $partnerRole = \App\Models\Role::where('slug', 'partner-marketing')->first(); // Default partner role
+        if ($partnerRole) {
+            $user->assignRole($partnerRole);
+        }
+
+        // Auto-login the user
         auth()->login($user);
 
         return redirect()->route('registration.success', 'partner')
@@ -156,15 +196,39 @@ class ProgramController extends Controller
      */
     public function showRegistrationSuccess($type)
     {
-        $typeMap = [
-            'program' => 'Program Enrollment',
-            'player' => 'Player Registration',
-            'partner' => 'Partner Registration',
+        $typeData = [
+            'program' => [
+                'title' => 'Program Enrollment Successful!',
+                'message' => 'Welcome to Vipers Academy Programs!',
+                'description' => 'Your enrollment has been submitted successfully. Our team will review your application and contact you within 24-48 hours.',
+                'color' => '#10b981',
+                'icon' => 'fas fa-graduation-cap'
+            ],
+            'player' => [
+                'title' => 'Player Registration Submitted!',
+                'message' => 'Welcome to Vipers Academy!',
+                'description' => 'Your player registration has been submitted for approval. You will receive an email notification once your account is approved. You can log in to check your approval status.',
+                'color' => '#8b5cf6',
+                'icon' => 'fas fa-futbol'
+            ],
+            'partner' => [
+                'title' => 'Partner Registration Submitted!',
+                'message' => 'Thank you for your interest in partnering with Vipers Academy!',
+                'description' => 'Your partnership application has been submitted for review. Our team will contact you within 24-48 hours to discuss next steps and approve your account.',
+                'color' => '#f59e0b',
+                'icon' => 'fas fa-handshake'
+            ],
         ];
 
-        $title = $typeMap[$type] ?? 'Registration';
+        $data = $typeData[$type] ?? [
+            'title' => 'Registration Successful!',
+            'message' => 'Welcome!',
+            'description' => 'Your registration has been processed successfully.',
+            'color' => '#6b7280',
+            'icon' => 'fas fa-check-circle'
+        ];
 
-        return view('website.register.success', compact('title', 'type'));
+        return view('website.register.success', compact('data', 'type'));
     }
 
     /**

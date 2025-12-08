@@ -2,30 +2,32 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\HelpController;
+use App\Http\Controllers\Website\HomeController;
+use App\Http\Controllers\Commerce\ProductController;
+use App\Http\Controllers\Commerce\CartController;
+use App\Http\Controllers\Commerce\OrderController;
+use App\Http\Controllers\Website\HelpController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AddressController;
-use App\Http\Controllers\WishlistController;
-use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\InstallmentController;
-use App\Http\Controllers\PlayerController;
+use App\Http\Controllers\Commerce\WishlistController;
+use App\Http\Controllers\Commerce\CheckoutController;
+use App\Http\Controllers\Commerce\InstallmentController;
+use App\Http\Controllers\Website\PlayerController;
 use App\Http\Controllers\ProgramController;
-use App\Http\Controllers\NewsController;
-use App\Http\Controllers\GalleryController;
-use App\Http\Controllers\StaffController;
-use App\Http\Controllers\StandingsController;
-use App\Http\Controllers\MatchCenterController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\AboutController;
-use App\Http\Controllers\AchievementsController;
-use App\Http\Controllers\AnnouncementsController;
-use App\Http\Controllers\CareerController;
-use App\Http\Controllers\EventsController;
-use App\Http\Controllers\TrainingUpdatesController;
+use App\Http\Controllers\Website\NewsController;
+use App\Http\Controllers\Website\GalleryController;
+use App\Http\Controllers\Website\StaffController;
+use App\Http\Controllers\Website\StandingsController;
+use App\Http\Controllers\Website\MatchCenterController;
+use App\Http\Controllers\Website\ContactController;
+use App\Http\Controllers\Website\AboutController;
+use App\Http\Controllers\Website\AchievementsController;
+use App\Http\Controllers\Website\AnnouncementsController;
+use App\Http\Controllers\Website\CareerController;
+use App\Http\Controllers\Website\EventsController;
+use App\Http\Controllers\Website\TrainingUpdatesController;
+use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\DocumentUploadController;
 
 // Home
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -156,6 +158,27 @@ Route::prefix('cart')->name('cart.')->group(function () {
     Route::post('/register/visitor', [CartController::class, 'visitorRegister'])->name('register.visitor');
 });
 
+// Document Upload System
+Route::middleware('auth')->prefix('documents')->name('documents.')->group(function () {
+    // Official academy documents (existing)
+    Route::get('/', [DocumentController::class, 'index'])->name('index');
+    Route::get('/{documentId}', [DocumentController::class, 'show'])->name('show');
+    Route::get('/{documentId}/download', [DocumentController::class, 'download'])->name('download');
+    Route::post('/{documentId}/sign', [DocumentController::class, 'sign'])->name('sign');
+    Route::post('/{documentId}/track-view', [DocumentController::class, 'trackView'])->name('track-view');
+    Route::get('/required/status', [DocumentController::class, 'getRequiredDocuments'])->name('required.status');
+    Route::get('/expiring/status', [DocumentController::class, 'getExpiringDocuments'])->name('expiring.status');
+
+    // User document uploads (new)
+    Route::prefix('upload')->name('upload.')->group(function () {
+        Route::get('/', [DocumentUploadController::class, 'index'])->name('index');
+        Route::get('/create/{documentType}', [DocumentUploadController::class, 'create'])->name('create');
+        Route::post('/store/{documentType}', [DocumentUploadController::class, 'store'])->name('store');
+        Route::get('/download/{documentId}', [DocumentUploadController::class, 'download'])->name('download');
+        Route::delete('/delete/{documentId}', [DocumentUploadController::class, 'destroy'])->name('destroy');
+    });
+});
+
 // Help Center
 Route::get('/help', function() {
     return view('help.center');
@@ -235,7 +258,15 @@ Route::post('/login', function () {
         if ($user->isAdmin()) {
             return redirect()->route('admin.dashboard');
         } elseif ($user->isPlayer()) {
-            return redirect()->route('player.portal.dashboard');
+            // Check if player exists and is approved
+            $player = $user->player;
+            if ($player && $player->isApproved()) {
+                return redirect()->route('player.portal.dashboard');
+            } else {
+                // Player not approved or doesn't exist
+                auth()->logout();
+                return redirect('/')->with('error', 'Your player account is pending approval. Please contact the academy administration.');
+            }
         } elseif ($user->isPartner()) {
             return redirect()->route('partner.dashboard');
         } else {
@@ -250,6 +281,12 @@ Route::post('/login', function () {
 })->name('login.post')->middleware('guest')->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
 // Logout route removed - using auth.php logout route instead
+
+// Social Authentication Routes
+Route::get('/auth/google', [App\Http\Controllers\Auth\SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('/auth/google/callback', [App\Http\Controllers\Auth\SocialAuthController::class, 'handleGoogleCallback']);
+Route::get('/auth/facebook', [App\Http\Controllers\Auth\SocialAuthController::class, 'redirectToFacebook'])->name('auth.facebook');
+Route::get('/auth/facebook/callback', [App\Http\Controllers\Auth\SocialAuthController::class, 'handleFacebookCallback']);
 
 // Admin Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -395,6 +432,19 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/website-players/{websitePlayer}', [App\Http\Controllers\Admin\AdminWebsitePlayerController::class, 'update'])->name('website-players.update');
     Route::delete('/website-players/{websitePlayer}', [App\Http\Controllers\Admin\AdminWebsitePlayerController::class, 'destroy'])->name('website-players.destroy');
 
+    // User Approvals
+    Route::get('/approvals', [App\Http\Controllers\Admin\AdminUserApprovalController::class, 'index'])->name('approvals.index');
+    Route::get('/approvals/{user}', [App\Http\Controllers\Admin\AdminUserApprovalController::class, 'show'])->name('approvals.show');
+    Route::post('/approvals/{user}/approve', [App\Http\Controllers\Admin\AdminUserApprovalController::class, 'approve'])->name('approvals.approve');
+    Route::post('/approvals/{user}/reject', [App\Http\Controllers\Admin\AdminUserApprovalController::class, 'reject'])->name('approvals.reject');
+
+    // Document Approvals
+    Route::get('/approvals/documents/pending', [App\Http\Controllers\Admin\AdminUserApprovalController::class, 'pendingDocuments'])->name('approvals.documents.pending');
+    Route::post('/approvals/documents/{document}/approve', [App\Http\Controllers\Admin\AdminUserApprovalController::class, 'approveDocument'])->name('approvals.documents.approve');
+    Route::post('/approvals/documents/{document}/reject', [App\Http\Controllers\Admin\AdminUserApprovalController::class, 'rejectDocument'])->name('approvals.documents.reject');
+    Route::post('/approvals/documents/bulk-approve', [App\Http\Controllers\Admin\AdminUserApprovalController::class, 'bulkApproveDocuments'])->name('approvals.documents.bulk-approve');
+    Route::get('/approvals/documents/{document}/download', [App\Http\Controllers\Admin\AdminUserApprovalController::class, 'downloadDocument'])->name('approvals.documents.download');
+
     // Image Upload
     Route::get('/image-upload', [App\Http\Controllers\Admin\ImageUploadController::class, 'showUploadForm'])->name('image-upload');
     Route::post('/image-upload', [App\Http\Controllers\Admin\ImageUploadController::class, 'upload'])->name('image-upload.store');
@@ -415,21 +465,21 @@ Route::prefix('api')->name('api.')->group(function () {
 
 // Player Portal Routes
 Route::middleware(['auth', 'player'])->prefix('player-portal')->name('player.portal.')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\PlayerPortalController::class, 'dashboard'])->name('dashboard');
-    Route::get('/profile', [App\Http\Controllers\PlayerPortalController::class, 'profile'])->name('profile');
-    Route::put('/profile', [App\Http\Controllers\PlayerPortalController::class, 'updateProfile'])->name('profile.update');
-    Route::get('/programs', [App\Http\Controllers\PlayerPortalController::class, 'programs'])->name('programs');
-    Route::get('/training', [App\Http\Controllers\PlayerPortalController::class, 'training'])->name('training');
-    Route::get('/schedule', [App\Http\Controllers\PlayerPortalController::class, 'schedule'])->name('schedule');
-    Route::get('/resources', [App\Http\Controllers\PlayerPortalController::class, 'resources'])->name('resources');
-    Route::get('/orders', [App\Http\Controllers\PlayerPortalController::class, 'orders'])->name('orders');
-    Route::get('/communication', [App\Http\Controllers\PlayerPortalController::class, 'communication'])->name('communication');
-    Route::get('/support', [App\Http\Controllers\PlayerPortalController::class, 'support'])->name('support');
+    Route::get('/dashboard', [App\Http\Controllers\Player\PlayerPortalController::class, 'dashboard'])->name('dashboard');
+    Route::get('/profile', [App\Http\Controllers\Player\PlayerPortalController::class, 'profile'])->name('profile');
+    Route::put('/profile', [App\Http\Controllers\Player\PlayerPortalController::class, 'updateProfile'])->name('profile.update');
+    Route::get('/programs', [App\Http\Controllers\Player\PlayerPortalController::class, 'programs'])->name('programs');
+    Route::get('/training', [App\Http\Controllers\Player\PlayerPortalController::class, 'training'])->name('training');
+    Route::get('/schedule', [App\Http\Controllers\Player\PlayerPortalController::class, 'schedule'])->name('schedule');
+    Route::get('/resources', [App\Http\Controllers\Player\PlayerPortalController::class, 'resources'])->name('resources');
+    Route::get('/orders', [App\Http\Controllers\Player\PlayerPortalController::class, 'orders'])->name('orders');
+    Route::get('/communication', [App\Http\Controllers\Player\PlayerPortalController::class, 'communication'])->name('communication');
+    Route::get('/support', [App\Http\Controllers\Player\PlayerPortalController::class, 'support'])->name('support');
 });
 
 // Partner Routes (if needed)
 Route::middleware(['auth', 'partner'])->prefix('partner')->name('partner.')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\PartnerController::class, 'dashboard'])->name('dashboard');
-    Route::get('/players', [App\Http\Controllers\PartnerController::class, 'players'])->name('players');
-    Route::get('/analytics', [App\Http\Controllers\PartnerController::class, 'analytics'])->name('analytics');
+    Route::get('/dashboard', [App\Http\Controllers\Partner\PartnerController::class, 'dashboard'])->name('dashboard');
+    Route::get('/players', [App\Http\Controllers\Partner\PartnerController::class, 'players'])->name('players');
+    Route::get('/analytics', [App\Http\Controllers\Partner\PartnerController::class, 'analytics'])->name('analytics');
 });

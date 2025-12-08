@@ -567,7 +567,7 @@
                         <i class="fas fa-bell"></i>
                         @php
                             $totalNotifications = \App\Models\Player::where('registration_status', 'Pending')->count() +
-                                                 \App\Models\User::where('user_type', 'partner')->where('status', 'pending')->count();
+                                                 \App\Models\User::where('user_type', 'partner')->where('approval_status', 'pending')->count();
                         @endphp
                         @if($totalNotifications > 0)
                             <span class="notification-badge">{{ $totalNotifications }}</span>
@@ -583,11 +583,11 @@
                                 </a>
                             </li>
                         @endif
-                        @if(\App\Models\User::where('user_type', 'partner')->where('status', 'pending')->count() > 0)
+                        @if(\App\Models\User::where('user_type', 'partner')->where('approval_status', 'pending')->count() > 0)
                             <li>
                                 <a class="dropdown-item" href="{{ route('admin.partners.index') }}">
                                     <i class="fas fa-handshake text-primary me-2"></i>
-                                    {{ \App\Models\User::where('user_type', 'partner')->where('status', 'pending')->count() }} {{ __('partnership applications') }}
+                                    {{ \App\Models\User::where('user_type', 'partner')->where('approval_status', 'pending')->count() }} {{ __('partnership applications') }}
                                 </a>
                             </li>
                         @endif
@@ -655,8 +655,8 @@
             </a>
             <a href="{{ route('admin.partners.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.partners.*') ? 'active' : '' }}">
                 <i class="fas fa-handshake"></i>{{ __('Partners') }}
-                @if(\App\Models\User::where('user_type', 'partner')->where('status', 'pending')->count() > 0)
-                    <span class="sidebar-nav-badge">{{ \App\Models\User::where('user_type', 'partner')->where('status', 'pending')->count() }}</span>
+                @if(\App\Models\User::where('user_type', 'partner')->where('approval_status', 'pending')->count() > 0)
+                    <span class="sidebar-nav-badge">{{ \App\Models\User::where('user_type', 'partner')->where('approval_status', 'pending')->count() }}</span>
                 @endif
             </a>
             <a href="{{ route('admin.programs.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.programs.*') ? 'active' : '' }}">

@@ -69,8 +69,8 @@ class DashboardController extends Controller
 
             // Partner insights data
             $totalPartners = User::where('user_type', 'partner')->count();
-            $activePartners = User::where('user_type', 'partner')->where('status', 'active')->count();
-            $pendingPartners = User::where('user_type', 'partner')->where('status', 'pending')->count();
+            $activePartners = User::where('user_type', 'partner')->where('approval_status', 'approved')->count();
+            $pendingPartners = User::where('user_type', 'partner')->where('approval_status', 'pending')->count();
 
             // Additional metrics for dashboard
             $totalPrograms = Program::count();
@@ -166,9 +166,9 @@ class DashboardController extends Controller
 
         // ===== PARTNERSHIP METRICS =====
         $totalPartners = User::where('user_type', 'partner')->count();
-        $activePartners = User::where('user_type', 'partner')->where('status', 'active')->count();
-        $pendingPartners = User::where('user_type', 'partner')->where('status', 'pending')->count();
-        $inactivePartners = User::where('user_type', 'partner')->where('status', 'inactive')->count();
+        $activePartners = User::where('user_type', 'partner')->where('approval_status', 'approved')->count();
+        $pendingPartners = User::where('user_type', 'partner')->where('approval_status', 'pending')->count();
+        $inactivePartners = User::where('user_type', 'partner')->where('approval_status', 'rejected')->count();
 
         // ===== PROGRAM METRICS =====
         $totalPrograms = \App\Models\Program::count();

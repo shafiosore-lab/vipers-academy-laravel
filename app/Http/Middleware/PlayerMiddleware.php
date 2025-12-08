@@ -20,19 +20,22 @@ class PlayerMiddleware
             return redirect()->route('login')->with('error', 'Please login to access this area.');
         }
 
-        if (!Auth::user()->isPlayer()) {
+        $user = Auth::user();
+
+        // Check if user has player role
+        if (!$user->hasRole('player')) {
             abort(403, 'Access denied. Player privileges required.');
         }
 
-        if (!Auth::user()->isActive()) {
-            Auth::logout();
-            return redirect()->route('login')->with('error', 'Your account is not active.');
+        // Check if user is approved
+        if (!$user->isApproved()) {
+            return redirect('/')->with('error', 'Your account is pending approval. Please contact the academy administration.');
         }
 
         // Check if player exists and is approved
-        $player = Auth::user()->player;
+        $player = $user->player;
         if (!$player || !$player->isApproved()) {
-            return redirect('/')->with('error', 'Your account is pending approval. Please contact the academy administration.');
+            return redirect('/')->with('error', 'Your player profile is pending approval. Please contact the academy administration.');
         }
 
         return $next($request);

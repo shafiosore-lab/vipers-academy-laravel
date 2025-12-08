@@ -30,7 +30,7 @@ facilities, and comprehensive youth development programs.')
                             Learn More
                         </a>
                     </div>
-                    <div class="trust-indicators d-flex align-items-center gap-4 flex-wrap">
+                    {{-- <div class="trust-indicators d-flex align-items-center gap-4 flex-wrap">
                         <div class="d-flex align-items-center text-white">
                             <i class="fas fa-star text-warning me-1"></i>
                             <span class="fw-semibold">4.9/5 Rating</span>
@@ -43,7 +43,7 @@ facilities, and comprehensive youth development programs.')
                             <i class="fas fa-trophy text-primary me-1"></i>
                             <span class="fw-semibold">Pro Graduates</span>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -68,10 +68,7 @@ facilities, and comprehensive youth development programs.')
                 <div class="program-card card border-0 shadow-sm h-100">
                     <div class="card-body p-4">
                         <div class="d-flex align-items-center mb-3">
-                            <div class="program-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3"
-                                style="width: 50px; height: 50px;">
-                                <i class="fas fa-futbol"></i>
-                            </div>
+
                             <div>
                                 <h5 class="card-title mb-0 fw-bold">Football Training</h5>
                                 <small class="text-muted">Professional Skills Development</small>
@@ -101,10 +98,7 @@ facilities, and comprehensive youth development programs.')
                 <div class="program-card card border-0 shadow-sm h-100">
                     <div class="card-body p-4">
                         <div class="d-flex align-items-center mb-3">
-                            <div class="program-icon bg-warning text-white rounded-circle d-flex align-items-center justify-content-center me-3"
-                                style="width: 50px; height: 50px;">
-                                <i class="fas fa-graduation-cap"></i>
-                            </div>
+
                             <div>
                                 <h5 class="card-title mb-0 fw-bold">Academic Mentorship</h5>
                                 <small class="text-muted">CBC-Aligned Support</small>
@@ -136,10 +130,7 @@ facilities, and comprehensive youth development programs.')
                 <div class="program-card card border-0 shadow-sm h-100">
                     <div class="card-body p-4">
                         <div class="d-flex align-items-center mb-3">
-                            <div class="program-icon bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-3"
-                                style="width: 50px; height: 50px;">
-                                <i class="fas fa-laptop-code"></i>
-                            </div>
+
                             <div>
                                 <h5 class="card-title mb-0 fw-bold">Digital Skills</h5>
                                 <small class="text-muted">Technology Integration</small>

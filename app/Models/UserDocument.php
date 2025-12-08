@@ -10,26 +10,38 @@ class UserDocument extends Model
     protected $fillable = [
         'user_id',
         'document_id',
+        'document_type',
+        'file_path',
+        'file_name',
+        'mime_type',
+        'file_size',
         'status',
         'viewed_at',
         'signed_at',
         'downloaded_at',
+        'uploaded_at',
         'expires_at',
         'download_count',
         'is_mandatory_for_user',
         'signature_path',
         'user_metadata',
         'notes',
+        'review_notes',
+        'reviewed_at',
+        'reviewed_by',
     ];
 
     protected $casts = [
         'viewed_at' => 'datetime',
         'signed_at' => 'datetime',
         'downloaded_at' => 'datetime',
+        'uploaded_at' => 'datetime',
         'expires_at' => 'datetime',
+        'reviewed_at' => 'datetime',
         'is_mandatory_for_user' => 'boolean',
         'user_metadata' => 'array',
         'download_count' => 'integer',
+        'file_size' => 'integer',
     ];
 
     /**
