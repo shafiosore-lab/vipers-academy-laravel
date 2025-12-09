@@ -3,5 +3,5 @@
 @section('title', 'Merchandise - Vipers Academy')
 
 @section('content')
-@include('product.product_grid')
+@include('website.products.product_grid')
 @endsection

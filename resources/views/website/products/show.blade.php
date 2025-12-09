@@ -3,5 +3,5 @@
 @section('title', $product->name . ' - Vipers Merchandise')
 
 @section('content')
-@include('product.product_detail_sections')
+@include('website.products.product_detail_sections')
 @endsection
