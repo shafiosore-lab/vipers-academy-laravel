@@ -132,7 +132,7 @@
                     <option value="">{{ __('All Types') }}</option>
                     <option value="registration_fee" {{ request('type') == 'registration_fee' ? 'selected' : '' }}>{{ __('Registration') }}</option>
                     <option value="program_fee" {{ request('type') == 'program_fee' ? 'selected' : '' }}>{{ __('Program') }}</option>
-                    <option value="merchandise" {{ request('type') == 'merchandise' ? 'selected' : '' }}>{{ __('Merchandise') }}</option>
+
                     <option value="donation" {{ request('type') == 'donation' ? 'selected' : '' }}>{{ __('Donation') }}</option>
                 </select>
                 <select name="payer_type" class="form-select" style="width: 150px;">

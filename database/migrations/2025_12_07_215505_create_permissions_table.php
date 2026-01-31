@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('slug')->unique();
             $table->string('description')->nullable();
-            $table->string('module')->nullable(); // e.g., 'users', 'players', 'partners', 'reports'
+            $table->string('module')->nullable();
             $table->timestamps();
         });
     }
@@ -29,3 +29,4 @@ return new class extends Migration
         Schema::dropIfExists('permissions');
     }
 };
+

@@ -5,6 +5,7 @@
 @import './related-players.css';
 @import './academy-excellence.css';
 @import './slim-filter-bar.css';
+@import './blog-styles.css';
 
 @tailwind base;
 @tailwind components;

@@ -156,7 +156,7 @@ class PartnerController extends \App\Http\Controllers\Controller
         $data['registration_status'] = 'Pending'; // All partner players start as pending
 
         // Create full name from first and last name
-        $data['name'] = $data['first_name'] . ' ' . $data['last_name'];
+        $data['full_name'] = $data['first_name'] . ' ' . $data['last_name'];
 
         // Calculate age from date of birth
         if (isset($data['date_of_birth'])) {
@@ -246,7 +246,7 @@ class PartnerController extends \App\Http\Controllers\Controller
         $data = $request->all();
 
         // Update full name from first and last name
-        $data['name'] = $data['first_name'] . ' ' . $data['last_name'];
+        $data['full_name'] = $data['first_name'] . ' ' . $data['last_name'];
 
         // Recalculate age from date of birth
         if (isset($data['date_of_birth'])) {
@@ -326,7 +326,7 @@ class PartnerController extends \App\Http\Controllers\Controller
             // CSV data
             foreach ($players as $player) {
                 fputcsv($file, [
-                    $player->name,
+                    $player->full_name,
                     $player->position,
                     $player->age,
                     $player->registration_status,

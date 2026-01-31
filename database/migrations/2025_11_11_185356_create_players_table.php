@@ -19,7 +19,14 @@ return new class extends Migration
             $table->text('bio')->nullable();
             $table->text('achievements')->nullable();
             $table->string('photo')->nullable();
-            $table->foreignId('program_id')->constrained()->onDelete('cascade');
+            $table->boolean('has_professional_contract')->default(false);
+            $table->string('contract_team')->nullable();
+            $table->string('contract_type')->nullable();
+            $table->text('milestones')->nullable();
+            $table->date('academy_join_date')->nullable();
+            $table->string('current_level')->nullable();
+            $table->string('preferred_position')->nullable();
+            $table->unsignedBigInteger('program_id')->nullable();
             $table->timestamps();
         });
     }
@@ -32,3 +39,4 @@ return new class extends Migration
         Schema::dropIfExists('players');
     }
 };
+

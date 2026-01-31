@@ -22,9 +22,11 @@ class AdminMiddleware
 
         $user = Auth::user();
 
-        // Check if user has any admin role
+        // Check if user has any admin role or is staff with appropriate permissions
         $adminRoles = ['super-admin', 'marketing-admin', 'scouting-admin', 'operations-admin', 'coaching-admin', 'finance-admin'];
-        if (!$user->hasAnyRole($adminRoles)) {
+        $staffRoles = ['coach', 'assistant_coach']; // Staff roles that should have basic admin access
+
+        if (!$user->hasAnyRole($adminRoles) && !$user->hasAnyRole($staffRoles)) {
             abort(403, 'Access denied. Admin privileges required.');
         }
 

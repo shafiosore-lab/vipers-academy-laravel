@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('customer_phone')->nullable();
             $table->text('shipping_address')->nullable();
             $table->text('billing_address')->nullable();
-            $table->json('order_items'); // Store product details, quantities, prices
+            $table->json('order_items');
             $table->decimal('subtotal', 10, 2);
             $table->decimal('tax_amount', 10, 2)->default(0);
             $table->decimal('shipping_cost', 10, 2)->default(0);
@@ -49,3 +49,4 @@ return new class extends Migration
         Schema::dropIfExists('orders');
     }
 };
+

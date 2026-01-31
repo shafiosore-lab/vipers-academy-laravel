@@ -98,7 +98,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <a href="{{ route('enroll') }}" class="btn btn-success">Enroll Now</a>
+                        <a href="{{ route('enrol') }}" class="btn btn-success">Enroll Now</a>
             </div>
         </div>
     </div>

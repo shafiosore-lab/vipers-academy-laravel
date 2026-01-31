@@ -52,3 +52,4 @@ return new class extends Migration
         Schema::rename('website_uploaded_players', 'website_players');
     }
 };
+

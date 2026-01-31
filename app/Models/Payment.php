@@ -12,6 +12,8 @@ class Payment extends Model
         'payment_reference',
         'transaction_id',
         'user_id',
+        'guardian_id',
+        'player_id',
         'payer_type',
         'payer_id',
         'payment_type',
@@ -25,6 +27,7 @@ class Payment extends Model
         'notes',
         'paid_at',
         'due_date',
+        'month_applied_to',
     ];
 
     protected $casts = [
@@ -43,6 +46,16 @@ class Payment extends Model
     public function payer(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function guardian(): BelongsTo
+    {
+        return $this->belongsTo(Guardian::class);
+    }
+
+    public function player(): BelongsTo
+    {
+        return $this->belongsTo(Player::class);
     }
 
     // Scopes

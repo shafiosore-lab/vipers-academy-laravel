@@ -14,11 +14,11 @@ class AdminUserSeeder extends Seeder
     {
         // Admin User
         $adminUser = \App\Models\User::updateOrCreate(
-            ['email' => 'admin@mumiasvipers.com'],
+            ['email' => 'info@mumiasvipers.com'],
             [
-                'name' => 'Admin User',
-                'first_name' => 'Admin',
-                'last_name' => 'User',
+                'name' => 'Mumias Vipers Admin',
+                'first_name' => 'Mumias',
+                'last_name' => 'Vipers',
                 'password' => bcrypt('password'),
                 'user_type' => 'admin',
                 'approval_status' => 'approved',

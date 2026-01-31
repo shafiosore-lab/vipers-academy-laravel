@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('top_scorers', function (Blueprint $table) {
             $table->id();
-            $table->string('season', 20); // e.g., "2024/25"
+            $table->string('season', 20);
             $table->string('league_name');
             $table->string('player_name');
             $table->string('player_image')->nullable();
@@ -27,7 +27,7 @@ return new class extends Migration
             $table->integer('minutes_played')->default(0);
             $table->integer('shots_on_target')->default(0);
             $table->integer('shots_total')->default(0);
-            $table->decimal('shot_accuracy', 5, 2)->nullable(); // percentage
+            $table->decimal('shot_accuracy', 5, 2)->nullable();
             $table->integer('penalties_scored')->default(0);
             $table->integer('penalties_missed')->default(0);
             $table->integer('free_kicks')->default(0);
@@ -38,7 +38,7 @@ return new class extends Migration
             $table->integer('outside_box')->default(0);
             $table->string('nationality')->nullable();
             $table->integer('age')->nullable();
-            $table->string('player_position')->default('Forward'); // Forward, Midfielder, etc.
+            $table->string('player_position')->default('Forward');
             $table->boolean('is_vipers_player')->default(false);
             $table->text('notes')->nullable();
             $table->timestamps();
@@ -57,3 +57,4 @@ return new class extends Migration
         Schema::dropIfExists('top_scorers');
     }
 };
+

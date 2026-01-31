@@ -7,6 +7,27 @@
     <title>@yield('title', 'Vipers Academy - Professional Football Training')</title>
     <meta name="description" content="@yield('meta_description', 'Join Vipers Academy for world-class football training')">
 
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="@yield('og:title', 'Vipers Academy - Professional Football Training')">
+    <meta property="og:description" content="@yield('og:description', 'Join Vipers Academy for world-class football training')">
+    <meta property="og:image" content="@yield('og:image', asset('assets/img/logo/vps.jpeg'))">
+    <meta property="og:url" content="@yield('og:url', url()->current())">
+    <meta property="og:type" content="@yield('og:type', 'website')">
+    <meta property="og:site_name" content="@yield('og:site_name', 'Vipers Academy')">
+    <meta property="og:locale" content="@yield('og:locale', 'en_US')">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="@yield('twitter:card', 'summary_large_image')">
+    <meta name="twitter:title" content="@yield('twitter:title', 'Vipers Academy - Professional Football Training')">
+    <meta name="twitter:description" content="@yield('twitter:description', 'Join Vipers Academy for world-class football training')">
+    <meta name="twitter:image" content="@yield('twitter:image', asset('assets/img/logo/vps.jpeg'))">
+
+    <!-- Article Schema Meta Tags -->
+    <meta property="article:published_time" content="@yield('article:published_time')">
+    <meta property="article:author" content="@yield('article:author')">
+    <meta property="article:section" content="@yield('article:section')">
+    <meta property="article:tag" content="@yield('article:tag')">
+
     <!-- Fonts & Libraries -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -205,8 +226,8 @@
         }
 
         .logo-image {
-            width: 60px;
-            height: 60px;
+            width: 90px;
+            height: 90px;
             object-fit: contain;
             transition: transform var(--duration-normal);
         }
@@ -216,8 +237,8 @@
         }
 
         .main-navbar.shrink .logo-image {
-            width: 48px;
-            height: 48px;
+            width: 70px;
+            height: 70px;
         }
 
         .brand-text {
@@ -254,29 +275,32 @@
             overflow: hidden;
             background: var(--white);
             box-shadow: var(--shadow-sm);
+            height: 44px;
         }
 
         .search-input {
             flex: 1;
             border: none;
-            padding: 12px 16px;
-            font-size: 0.875rem;
+            padding: 8px 12px;
+            font-size: 0.8rem;
             outline: none;
         }
 
         .search-input::placeholder {
             color: var(--gray-600);
+            font-size: 0.75rem;
         }
 
         .search-btn {
             background: var(--primary);
             color: var(--white);
             border: none;
-            padding: 12px 24px;
-            font-size: 0.875rem;
+            padding: 8px 16px;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
             transition: background var(--duration-fast);
+            white-space: nowrap;
         }
 
         .search-btn:hover {
@@ -295,9 +319,9 @@
         }
 
         .nav-links a {
-            padding: 10px 18px;
+            padding: 8px 12px;
             color: var(--gray-900);
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             font-weight: 600;
             border-radius: var(--radius-sm);
             transition: all var(--duration-fast);
@@ -369,10 +393,11 @@
 
         .mobile-nav-links a {
             display: block;
-            padding: 16px 5%;
+            padding: 12px 5%;
             color: var(--gray-900);
             border-bottom: 1px solid var(--gray-200);
             transition: all var(--duration-fast);
+            font-size: 0.9rem;
         }
 
         .mobile-nav-links a:hover {
@@ -382,80 +407,49 @@
 
         /* ==================== FOOTER ==================== */
         .footer {
-            background: var(--black);
+            background: linear-gradient(135deg, var(--black) 0%, #1a1a1a 100%);
             color: var(--gray-600);
-            padding: var(--space-xl) 0 var(--space-md);
+            padding: 0.75rem 0 0.5rem;
+            position: relative;
         }
 
-        .footer-section h5 {
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, var(--primary) 50%, transparent 100%);
+            opacity: 0.3;
+        }
+
+        .footer-content {
+            padding: 0;
+        }
+
+        .footer-title {
             color: var(--primary);
-            font-size: 1rem;
+            font-size: 0.875rem;
             font-weight: 600;
-            margin-bottom: var(--space-md);
+            margin-bottom: 0.25rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .footer-section p {
-            font-size: 0.875rem;
-            line-height: 1.8;
-            margin-bottom: var(--space-md);
-        }
-
-        .footer-links {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .footer-links li {
-            margin-bottom: var(--space-xs);
-        }
-
-        .footer-links a {
+        .footer-text {
+            font-size: 0.75rem;
+            line-height: 1.4;
             color: var(--gray-600);
-            font-size: 0.875rem;
-            transition: all var(--duration-fast);
+            margin: 0 auto 0.5rem;
+            max-width: 600px;
         }
 
-        .footer-links a:hover {
-            color: var(--primary);
-            padding-left: var(--space-xs);
-        }
-
-        .footer-social {
-            display: flex;
-            gap: var(--space-md);
-            margin-top: var(--space-md);
-        }
-
-        .footer-social a {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--gray-700);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--white);
-            transition: all var(--duration-normal);
-        }
-
-        .footer-social a:hover {
-            background: var(--primary);
-            transform: translateY(-3px);
-        }
-
-        .footer-bottom {
-            padding: var(--space-md) 0 0;
-            margin-top: var(--space-md);
-            border-top: 1px solid var(--gray-700);
-            text-align: center;
-            font-size: 0.8125rem;
-        }
-
-        .footer-bottom a {
-            color: var(--primary);
+        .footer-copyright {
+            font-size: 0.7rem;
+            color: var(--gray-700);
+            letter-spacing: 0.3px;
+            margin-bottom: 0;
         }
 
         /* ==================== RESPONSIVE ==================== */
@@ -465,8 +459,15 @@
             }
 
             .nav-links a {
-                padding: 10px 12px;
-                font-size: 0.8125rem;
+                padding: 8px 10px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .nav-links a {
+                padding: 8px 12px;
+                font-size: 0.8rem;
             }
         }
 
@@ -565,7 +566,31 @@
             }
 
             .footer-section {
-                margin-bottom: var(--space-lg);
+                margin-bottom: var(--space-sm);
+            }
+
+            .footer {
+                padding: 0.75rem 0 0.5rem;
+            }
+
+            .footer-section h5 {
+                font-size: 0.8rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .footer-section p {
+                font-size: 0.75rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .footer-links a {
+                font-size: 0.75rem;
+            }
+
+            .footer-bottom {
+                font-size: 0.7rem;
+                padding: 0.5rem 0 0;
+                margin-top: 0.75rem;
             }
         }
 
@@ -589,7 +614,6 @@
                 <span><i class="fas fa-envelope me-1"></i> info@vipersacademy.com</span>
             </div>
             <div class="top-bar-right">
-                <a href="{{ route('products.index') }}">Merchandise</a>
                 <a href="{{ route('careers.index') }}">Careers</a>
                 <a href="{{ route('gallery') }}">Gallery</a>
                 <a href="{{ route('contact') }}">Contact</a>
@@ -621,7 +645,8 @@
                  <li><a href="{{ route('about') }}">About</a></li>
                 <li><a href="{{ route('players.index') }}">Players</a></li>
                 <li><a href="{{ route('programs') }}">Programs</a></li>
-                <li><a href="{{ route('news') }}">News</a></li>
+                <li><a href="{{ route('merchandise') }}">Merchandise</a></li>
+                <li><a href="{{ route('blog') }}">Blog</a></li>
                 <li><a href="{{ route('staff') }}">Staff</a></li>
             </ul>
 
@@ -637,11 +662,12 @@
     <div class="mobile-menu" id="mobileMenu">
         <ul class="mobile-nav-links">
             <li><a href="{{ route('home') }}">Home</a></li>
-            <li><a href="{{ route('register') }}">Register</a></li>
+            <li><a href="{{ route('enrol') }}">Enroll</a></li>
             <li><a href="{{ route('about') }}">About</a></li>
             <li><a href="{{ route('programs') }}">Programs</a></li>
+            <li><a href="{{ route('merchandise') }}">Merchandise</a></li>
             <li><a href="{{ route('players.index') }}">Players</a></li>
-            <li><a href="{{ route('news') }}">News</a></li>
+            <li><a href="{{ route('blog') }}">Blog</a></li>
             <li><a href="{{ route('staff') }}">Staff</a></li>
             <li><a href="{{ route('gallery') }}">Gallery</a></li>
             <li><a href="{{ route('contact') }}">Contact</a></li>
@@ -657,60 +683,15 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-lg-4 col-md-6">
-                    <div class="footer-section">
-                        <h5><i class="fas fa-futbol me-2"></i>Vipers Academy</h5>
-                        <p>Building the future of African football through world-class training and commitment to excellence.</p>
-                        <div class="footer-social">
-                            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-2 col-md-6">
-                    <div class="footer-section">
-                        <h5>Quick Links</h5>
-                        <ul class="footer-links">
-                            <li><a href="{{ route('home') }}">Home</a></li>
-                            <li><a href="{{ route('about') }}">About Us</a></li>
-                            <li><a href="{{ route('programs') }}">Programs</a></li>
-                            <li><a href="{{ route('news') }}">News</a></li>
-                            <li><a href="{{ route('contact') }}">Contact</a></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="col-lg-2 col-md-6">
-                    <div class="footer-section">
-                        <h5>Programs</h5>
-                        <ul class="footer-links">
-                            <li><a href="{{ route('programs') }}">Weekend football</a></li>
-                            <li><a href="{{ route('programs') }}">Long Holiday Camp</a></li>
-                            <li><a href="{{ route('programs') }}">Computer</a></li>
-
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6">
-                    <div class="footer-section">
-                        <h5>Contact Us</h5>
-                        <p>
-                            <i class="fas fa-phone me-2"></i> +254 716 305 905<br>
-                            <i class="fas fa-envelope me-2"></i> info@vipersacademy.com<br>
-                            <i class="fas fa-map-marker-alt me-2"></i> Mumias, Kenya
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                © {{ date('Y') }} <a href="{{ route('home') }}">Vipers Academy</a>. All rights reserved.
+        <div class="container text-center">
+            <div class="footer-content">
+                <h6 class="footer-title mb-2">Vipers Academy</h6>
+                <p class="footer-text mb-2 small px-3">
+                    Building the future of African football through world-class training and commitment to excellence.
+                </p>
+                <p class="footer-copyright mb-0 small">
+                    2026 Vipers Academy. All rights reserved.
+                </p>
             </div>
         </div>
     </footer>

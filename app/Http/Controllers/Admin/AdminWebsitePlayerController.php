@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Player;
 use App\Models\WebsitePlayer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class AdminWebsitePlayerController extends Controller
 {
@@ -14,7 +16,7 @@ class AdminWebsitePlayerController extends Controller
      */
     public function index()
     {
-        $players = WebsitePlayer::orderBy('category')->orderBy('last_name')->get();
+        $players = WebsitePlayer::orderBy('category')->orderBy('last_name')->paginate(12);
         return view('admin.website-players.index', compact('players'));
     }
 
@@ -36,16 +38,17 @@ class AdminWebsitePlayerController extends Controller
             'last_name' => 'required|string|max:255',
             'category' => 'required|string',
             'position' => 'required|string',
-            'age' => 'required|integer|min:6|max:25',
+            'age' => 'required|integer|min:1',
             'jersey_number' => 'nullable|integer',
             'bio' => 'nullable|string',
+            'youtube_url' => 'nullable|url',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // Increased to 5MB
         ]);
 
         $data = $request->all();
 
         if ($request->hasFile('image')) {
-            $filename = strtolower($request->first_name . '-' . $request->last_name . '-' . $request->category . '-' . $request->position . '-' . $request->age . '.jpg');
+            $filename = strtolower($request->first_name . '-' . $request->last_name . '-' . $request->position . '.jpg');
             $imagePath = public_path('assets/img/players/' . $filename);
 
             // Process and compress the image
@@ -54,7 +57,10 @@ class AdminWebsitePlayerController extends Controller
             $data['image_path'] = $filename;
         }
 
-        WebsitePlayer::create($data);
+        $websitePlayer = WebsitePlayer::create($data);
+
+        // Sync to internal player management
+        $this->syncToPlayerManagement($websitePlayer);
 
         return redirect()->route('admin.website-players.index')->with('success', 'Player added to website successfully.');
     }
@@ -85,12 +91,9 @@ class AdminWebsitePlayerController extends Controller
             'last_name' => 'required|string|max:255',
             'category' => 'required|string',
             'position' => 'required|string',
-            'age' => 'required|integer|min:6|max:25',
+            'age' => 'required|integer|min:1',
             'jersey_number' => 'nullable|integer',
             'bio' => 'nullable|string',
-            'goals' => 'nullable|integer|min:0',
-            'assists' => 'nullable|integer|min:0',
-            'appearances' => 'nullable|integer|min:0',
             'yellow_cards' => 'nullable|integer|min:0',
             'red_cards' => 'nullable|integer|min:0',
             'youtube_url' => 'nullable|url',
@@ -105,7 +108,7 @@ class AdminWebsitePlayerController extends Controller
                 unlink(public_path('assets/img/players/' . $websitePlayer->image_path));
             }
 
-            $filename = strtolower($request->first_name . '-' . $request->last_name . '-' . $request->category . '-' . $request->position . '-' . $request->age . '.jpg');
+            $filename = strtolower($request->first_name . '-' . $request->last_name . '-' . $request->position . '.jpg');
             $imagePath = public_path('assets/img/players/' . $filename);
 
             // Process and compress the image
@@ -115,6 +118,9 @@ class AdminWebsitePlayerController extends Controller
         }
 
         $websitePlayer->update($data);
+
+        // Sync to internal player management
+        $this->syncToPlayerManagement($websitePlayer);
 
         return redirect()->route('admin.website-players.index')->with('success', 'Player updated successfully.');
     }
@@ -152,6 +158,58 @@ class AdminWebsitePlayerController extends Controller
     }
 
     /**
+     * Sync website player to internal player management system
+     */
+    private function syncToPlayerManagement(WebsitePlayer $websitePlayer)
+    {
+        \Log::info('AdminWebsitePlayerController@syncToPlayerManagement: Starting sync', [
+            'website_player_id' => $websitePlayer->id,
+            'name' => $websitePlayer->full_name
+        ]);
+
+        // Check if player already exists
+        $player = Player::where('first_name', $websitePlayer->first_name)
+            ->where('last_name', $websitePlayer->last_name)
+            ->first();
+
+        if ($player) {
+            // Update existing player
+            $player->update([
+                'position' => $websitePlayer->position,
+                'jersey_number' => $websitePlayer->jersey_number,
+                'image_path' => $websitePlayer->image_path,
+                'bio' => $websitePlayer->bio,
+            ]);
+            \Log::info('AdminWebsitePlayerController@syncToPlayerManagement: Updated existing player', [
+                'player_id' => $player->id
+            ]);
+        } else {
+            // Create new player with minimal info
+            $player = Player::create([
+                'first_name' => $websitePlayer->first_name,
+                'last_name' => $websitePlayer->last_name,
+                'full_name' => $websitePlayer->first_name . ' ' . $websitePlayer->last_name,
+                'position' => $websitePlayer->position,
+                'age' => $websitePlayer->age,
+                'category' => $websitePlayer->category,
+                'jersey_number' => $websitePlayer->jersey_number,
+                'image_path' => $websitePlayer->image_path,
+                'bio' => $websitePlayer->bio,
+                'registration_status' => 'Active',
+                'approval_type' => 'full', // Website players are approved
+            ]);
+            \Log::info('AdminWebsitePlayerController@syncToPlayerManagement: Created new player', [
+                'player_id' => $player->id
+            ]);
+        }
+
+        // Link the website player to the internal player
+        $websitePlayer->update(['player_id' => $player->id]);
+
+        \Log::info('AdminWebsitePlayerController@syncToPlayerManagement: Sync completed');
+    }
+
+    /**
      * Sync players from gallery images
      */
     public function syncFromGallery()
@@ -171,6 +229,7 @@ class AdminWebsitePlayerController extends Controller
         // Check if directory exists
         if (!File::exists($playersPath)) {
             File::makeDirectory($playersPath, 0755, true);
+            \Log::info('AdminWebsitePlayerController@performSync: Players directory created');
             return [
                 'added' => 0,
                 'updated' => 0,
@@ -184,6 +243,10 @@ class AdminWebsitePlayerController extends Controller
         $addedCount = 0;
         $updatedCount = 0;
 
+        \Log::info('AdminWebsitePlayerController@performSync: Starting sync', [
+            'image_files_count' => count($imageFiles)
+        ]);
+
         foreach ($imageFiles as $file) {
             // Only process image files
             if (!in_array(strtolower($file->getExtension()), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
@@ -194,11 +257,14 @@ class AdminWebsitePlayerController extends Controller
             $playerData = $this->parseFilename($filename);
 
             if (!$playerData) {
+                \Log::warning('AdminWebsitePlayerController@performSync: Invalid filename', [
+                    'filename' => $filename
+                ]);
                 continue; // Skip invalid filenames
             }
 
-            // Check if player exists
-            $player = Player::where('first_name', $playerData['first_name'])
+            // Check if player exists - FIX: Use WebsitePlayer model
+            $player = WebsitePlayer::where('first_name', $playerData['first_name'])
                 ->where('last_name', $playerData['last_name'])
                 ->where('category', $playerData['category'])
                 ->first();
@@ -210,30 +276,44 @@ class AdminWebsitePlayerController extends Controller
                 $player->update([
                     'position' => $playerData['position'],
                     'age' => $playerData['age'],
-                    'image_url' => $imageUrl,
+                    'image_path' => $file->getFilename(),
                 ]);
                 $updatedCount++;
+                \Log::info('AdminWebsitePlayerController@performSync: Updated website player', [
+                    'player_id' => $player->id,
+                    'name' => $player->full_name
+                ]);
             } else {
-                // Create new player
-                $player = Player::create([
+                // Create new player - FIX: Create WebsitePlayer, not Player
+                $player = WebsitePlayer::create([
                     'first_name' => $playerData['first_name'],
                     'last_name' => $playerData['last_name'],
                     'category' => $playerData['category'],
                     'position' => $playerData['position'],
                     'age' => $playerData['age'],
-                    'image_url' => $imageUrl,
+                    'image_path' => $file->getFilename(),
                     'jersey_number' => null, // Can be set manually later
                 ]);
                 $addedCount++;
+                \Log::info('AdminWebsitePlayerController@performSync: Created website player', [
+                    'player_id' => $player->id,
+                    'name' => $player->full_name
+                ]);
             }
 
             $syncedPlayerIds[] = $player->id;
         }
 
-        // Remove players whose images no longer exist
-        $removedCount = Player::whereNotIn('id', $syncedPlayerIds)->delete();
+        // Remove players whose images no longer exist - FIX: Use WebsitePlayer
+        $removedCount = WebsitePlayer::whereNotIn('id', $syncedPlayerIds)->delete();
 
         $message = $this->buildSyncMessage($addedCount, $updatedCount, $removedCount);
+
+        \Log::info('AdminWebsitePlayerController@performSync: Sync completed', [
+            'added' => $addedCount,
+            'updated' => $updatedCount,
+            'removed' => $removedCount
+        ]);
 
         return [
             'added' => $addedCount,

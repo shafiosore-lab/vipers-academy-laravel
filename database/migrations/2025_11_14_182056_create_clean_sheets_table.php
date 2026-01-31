@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('clean_sheets', function (Blueprint $table) {
             $table->id();
-            $table->string('season', 20); // e.g., "2024/25"
+            $table->string('season', 20);
             $table->string('league_name');
             $table->string('goalkeeper_name');
             $table->string('goalkeeper_image')->nullable();
@@ -22,10 +22,10 @@ return new class extends Migration
             $table->integer('position')->default(0);
             $table->integer('clean_sheets')->default(0);
             $table->integer('appearances')->default(0);
-            $table->decimal('clean_sheet_percentage', 5, 2)->nullable(); // percentage
+            $table->decimal('clean_sheet_percentage', 5, 2)->nullable();
             $table->integer('saves')->default(0);
             $table->integer('goals_conceded')->default(0);
-            $table->decimal('save_percentage', 5, 2)->nullable(); // percentage
+            $table->decimal('save_percentage', 5, 2)->nullable();
             $table->integer('penalties_saved')->default(0);
             $table->integer('penalties_faced')->default(0);
             $table->integer('minutes_played')->default(0);
@@ -35,7 +35,7 @@ return new class extends Migration
             $table->string('nationality')->nullable();
             $table->integer('age')->nullable();
             $table->decimal('height_cm', 5, 2)->nullable();
-            $table->string('dominant_hand')->default('Right'); // Right, Left
+            $table->string('dominant_hand')->default('Right');
             $table->boolean('is_vipers_player')->default(false);
             $table->text('notes')->nullable();
             $table->timestamps();
@@ -54,3 +54,4 @@ return new class extends Migration
         Schema::dropIfExists('clean_sheets');
     }
 };
+

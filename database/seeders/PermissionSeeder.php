@@ -14,11 +14,11 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         // User Management
-        Permission::create(['name' => 'View Users', 'slug' => 'view-users', 'module' => 'users']);
-        Permission::create(['name' => 'Create Users', 'slug' => 'create-users', 'module' => 'users']);
-        Permission::create(['name' => 'Edit Users', 'slug' => 'edit-users', 'module' => 'users']);
-        Permission::create(['name' => 'Delete Users', 'slug' => 'delete-users', 'module' => 'users']);
-        Permission::create(['name' => 'Approve Users', 'slug' => 'approve-users', 'module' => 'users']);
+        Permission::updateOrCreate(['slug' => 'view-users'], ['name' => 'View Users', 'module' => 'users']);
+        Permission::updateOrCreate(['slug' => 'create-users'], ['name' => 'Create Users', 'module' => 'users']);
+        Permission::updateOrCreate(['slug' => 'edit-users'], ['name' => 'Edit Users', 'module' => 'users']);
+        Permission::updateOrCreate(['slug' => 'delete-users'], ['name' => 'Delete Users', 'module' => 'users']);
+        Permission::updateOrCreate(['slug' => 'approve-users'], ['name' => 'Approve Users', 'module' => 'users']);
 
         // Player Management
         Permission::create(['name' => 'View Players', 'slug' => 'view-players', 'module' => 'players']);
@@ -68,12 +68,6 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'Process Payments', 'slug' => 'process-payments', 'module' => 'finance']);
         Permission::create(['name' => 'View Financial Reports', 'slug' => 'view-financial-reports', 'module' => 'finance']);
 
-        // Products & E-commerce
-        Permission::create(['name' => 'View Products', 'slug' => 'view-products', 'module' => 'products']);
-        Permission::create(['name' => 'Create Products', 'slug' => 'create-products', 'module' => 'products']);
-        Permission::create(['name' => 'Edit Products', 'slug' => 'edit-products', 'module' => 'products']);
-        Permission::create(['name' => 'Delete Products', 'slug' => 'delete-products', 'module' => 'products']);
-
         // Orders Management
         Permission::create(['name' => 'View Orders', 'slug' => 'view-orders', 'module' => 'orders']);
         Permission::create(['name' => 'Process Orders', 'slug' => 'process-orders', 'module' => 'orders']);
@@ -104,5 +98,31 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'View Player Portal', 'slug' => 'view-player-portal', 'module' => 'players']);
         Permission::create(['name' => 'Update Player Profile', 'slug' => 'update-player-profile', 'module' => 'players']);
         Permission::create(['name' => 'View Training Data', 'slug' => 'view-training-data', 'module' => 'players']);
+
+        // Session Management (CRITICAL for Assistant Coach)
+        Permission::create(['name' => 'Start Training Session', 'slug' => 'start_training_session', 'module' => 'sessions']);
+        Permission::create(['name' => 'End Training Session', 'slug' => 'end_training_session', 'module' => 'sessions']);
+        Permission::create(['name' => 'Mark Attendance', 'slug' => 'mark_attendance', 'module' => 'attendance']);
+        Permission::create(['name' => 'Clock Player In', 'slug' => 'clock_player_in', 'module' => 'attendance']);
+        Permission::create(['name' => 'Clock Player Out', 'slug' => 'clock_player_out', 'module' => 'attendance']);
+        Permission::create(['name' => 'Add Session Notes', 'slug' => 'add_session_notes', 'module' => 'sessions']);
+        Permission::create(['name' => 'View Attendance History', 'slug' => 'view_attendance_history', 'module' => 'attendance']);
+
+        // Team Management
+        Permission::create(['name' => 'Create Team', 'slug' => 'create_team', 'module' => 'teams']);
+        Permission::create(['name' => 'Edit Team', 'slug' => 'edit_team', 'module' => 'teams']);
+        Permission::create(['name' => 'Assign Players to Team', 'slug' => 'assign_players_to_team', 'module' => 'teams']);
+
+        // Communication
+        Permission::create(['name' => 'Send Bulk Messages', 'slug' => 'send_bulk_messages', 'module' => 'communication']);
+        Permission::create(['name' => 'Send Team Messages', 'slug' => 'send_team_messages', 'module' => 'communication']);
+        Permission::create(['name' => 'Approve Announcements', 'slug' => 'approve_announcements', 'module' => 'communication']);
+
+        // Reports
+        Permission::create(['name' => 'Generate Reports', 'slug' => 'generate_reports', 'module' => 'reports']);
+        Permission::create(['name' => 'Export Reports', 'slug' => 'export_reports', 'module' => 'reports']);
+
+        // System Administration
+        Permission::create(['name' => 'Manage Roles & Permissions', 'slug' => 'manage_roles_permissions', 'module' => 'system']);
     }
 }

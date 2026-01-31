@@ -1,7 +1,7 @@
 @extends('layouts.academy')
 
-@section('title', 'About Us - Vipers Academy Kenya')
-@section('meta_description', 'Learn about Vipers Academy, founded in 2017, building the next generation of elite Kenyan footballers.')
+@section('title', 'About Us - Mumias Vipers Academy')
+@section('meta_description', 'Mumias Vipers Academy is a community-based youth development organization using football to unlock education, discipline, and opportunity. Over 20 players on high school sports scholarships.')
 
 @section('content')
 <style>
@@ -9,7 +9,6 @@
         --primary: #ea1c4d;
         --primary-dark: #c0173f;
         --dark: #1a1a1a;
-        --gray-900: #333;
         --gray-600: #6b7280;
         --gray-300: #e5e7eb;
         --white: #ffffff;
@@ -21,169 +20,139 @@
         --transition: 0.3s ease;
     }
 
-    /* Container */
     .about-container {
         max-width: 1200px;
-        margin: 0 auto;
+        margin: auto;
         padding: 20px;
     }
 
-    /* Hero Section */
     .hero-section {
         text-align: center;
-        padding: 40px 20px 30px;
-        margin-bottom: 50px;
+        padding: 50px 20px;
     }
 
     .hero-section h1 {
-        font-size: clamp(2rem, 4vw, 2.5rem);
-        color: var(--dark);
+        font-size: clamp(2.2rem, 4vw, 2.8rem);
+        font-weight: 800;
         margin-bottom: 15px;
-        font-weight: 700;
+        color: #000;
     }
 
     .hero-section p {
+        max-width: 780px;
+        margin: auto;
         font-size: 1.1rem;
         color: var(--gray-600);
-        max-width: 700px;
-        margin: 0 auto;
-        line-height: 1.6;
+        line-height: 1.7;
     }
 
-    /* Stats */
     .stats-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
         gap: 20px;
-        margin: 30px auto 0;
-        max-width: 600px;
+        max-width: 700px;
+        margin: 35px auto 0;
     }
 
     .stat-card {
         background: var(--white);
-        padding: 25px 15px;
+        padding: 25px;
         border-radius: var(--radius);
-        text-align: center;
         border: 1px solid var(--gray-300);
+        text-align: center;
         transition: var(--transition);
     }
 
     .stat-card:hover {
+        transform: translateY(-4px);
         border-color: var(--primary);
         box-shadow: var(--shadow);
-        transform: translateY(-2px);
     }
 
     .stat-number {
-        font-size: 2.2rem;
-        font-weight: 700;
+        font-size: 2.3rem;
+        font-weight: 800;
         color: var(--primary);
-        margin-bottom: 5px;
     }
 
     .stat-label {
         font-size: 0.9rem;
         color: var(--gray-600);
-        font-weight: 500;
     }
 
-    /* CTA Button */
     .cta-button {
         display: inline-block;
-        padding: 14px 32px;
+        margin: 25px 8px 0;
+        padding: 14px 34px;
         background: var(--primary);
-        color: var(--white);
-        text-decoration: none;
+        color: white;
         border-radius: 8px;
+        text-decoration: none;
         font-weight: 600;
-        font-size: 1rem;
         transition: var(--transition);
-        margin-top: 20px;
+    }
+
+    .cta-button.secondary {
+        background: #222;
     }
 
     .cta-button:hover {
-        background: var(--primary-dark);
         transform: translateY(-2px);
         box-shadow: var(--shadow-lg);
     }
 
-    /* Section Base */
     .section {
-        background: var(--white);
-        padding: 50px 30px;
+        background: white;
+        padding: 55px 30px;
         border-radius: var(--radius);
-        margin-bottom: 30px;
+        margin-bottom: 35px;
         border: 1px solid var(--gray-300);
     }
 
     .section-title {
-        font-size: 1.9rem;
-        color: var(--dark);
-        margin-bottom: 20px;
         text-align: center;
-        font-weight: 700;
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 20px;
     }
 
     .section-description {
-        font-size: 1.05rem;
-        color: var(--gray-600);
         text-align: center;
-        max-width: 800px;
-        margin: 0 auto 35px;
-        line-height: 1.7;
+        max-width: 850px;
+        margin: auto auto 40px;
+        color: var(--gray-600);
+        line-height: 1.8;
     }
 
-    /* Features Grid */
-    .features-grid {
+    .features-grid,
+    .values-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
-        margin-top: 30px;
+        gap: 25px;
     }
 
     .feature-card {
         background: var(--bg-pink);
         padding: 25px;
+        border-left: 4px solid var(--primary);
         border-radius: 10px;
-        border-left: 3px solid var(--primary);
-        transition: var(--transition);
-    }
-
-    .feature-card:hover {
-        background: #fce7e7;
-        transform: translateX(5px);
-    }
-
-    .feature-icon {
-        font-size: 2rem;
-        margin-bottom: 12px;
     }
 
     .feature-card h3 {
-        font-size: 1.2rem;
-        color: var(--dark);
-        margin-bottom: 8px;
-        font-weight: 600;
+        margin-bottom: 10px;
     }
 
-    .feature-card p {
-        font-size: 1rem;
-        color: var(--gray-600);
-        line-height: 1.6;
-    }
-
-    /* Timeline */
     .timeline {
+        max-width: 750px;
+        margin: auto;
+        padding-left: 35px;
         position: relative;
-        padding-left: 40px;
-        max-width: 700px;
-        margin: 0 auto;
     }
 
     .timeline::before {
         content: '';
         position: absolute;
-        left: 12px;
+        left: 10px;
         top: 0;
         bottom: 0;
         width: 2px;
@@ -191,8 +160,8 @@
     }
 
     .timeline-item {
-        position: relative;
         margin-bottom: 30px;
+        position: relative;
         padding-left: 25px;
     }
 
@@ -200,268 +169,176 @@
         content: '';
         position: absolute;
         left: -35px;
-        top: 3px;
+        top: 4px;
         width: 14px;
         height: 14px;
         border-radius: 50%;
         background: var(--primary);
-        border: 2px solid var(--white);
-        box-shadow: 0 0 0 2px var(--primary);
     }
 
     .timeline-year {
-        font-size: 1.4rem;
-        font-weight: 700;
+        font-weight: 800;
         color: var(--primary);
-        margin-bottom: 6px;
+        font-size: 1.3rem;
     }
 
-    .timeline-content {
-        font-size: 1rem;
-        color: var(--gray-600);
-        line-height: 1.6;
-    }
-
-    /* Professional Values Section */
     .values-section {
-        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        background: linear-gradient(135deg, #f8f9fa, #fff);
         padding: 60px 30px;
         border-radius: var(--radius);
         border: 1px solid var(--gray-300);
     }
 
-    .values-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 30px;
-        max-width: 1000px;
-        margin: 0 auto;
-    }
-
     .value-card {
-        background: var(--white);
-        padding: 35px 25px;
+        background: white;
+        padding: 30px;
         border-radius: var(--radius);
         box-shadow: var(--shadow);
-        border: 1px solid var(--gray-300);
-        transition: var(--transition);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .value-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, var(--primary), var(--primary-dark));
-        transform: scaleX(0);
-        transition: var(--transition);
-    }
-
-    .value-card:hover {
-        transform: translateY(-8px);
-        box-shadow: var(--shadow-lg);
-        border-color: var(--primary);
-    }
-
-    .value-card:hover::before {
-        transform: scaleX(1);
+        text-align: center;
     }
 
     .value-icon {
-        width: 70px;
-        height: 70px;
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 20px;
         font-size: 2rem;
-        color: var(--white);
-        box-shadow: 0 4px 15px rgba(234, 28, 77, 0.3);
+        margin-bottom: 15px;
+        color: var(--primary);
     }
 
-    .value-title {
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: var(--dark);
-        margin-bottom: 12px;
-        text-align: center;
-    }
-
-    .value-description {
-        font-size: 1rem;
-        color: var(--gray-600);
-        line-height: 1.7;
-        text-align: center;
-    }
-
-    /* Responsive */
     @media (max-width: 768px) {
-        .about-container {
-            padding: 15px;
-        }
-
-        .section {
-            padding: 35px 20px;
-        }
-
-        .values-section {
-            padding: 45px 20px;
-        }
-
-        .timeline {
-            padding-left: 30px;
-        }
-
-        .timeline-item {
-            padding-left: 20px;
-        }
-
-        .values-grid,
-        .features-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .stat-number {
-            font-size: 2rem;
-        }
-
-        .value-icon {
-            width: 60px;
-            height: 60px;
-            font-size: 1.7rem;
-        }
-
-        .value-title {
-            font-size: 1.25rem;
-        }
+        .section { padding: 40px 20px; }
     }
 </style>
 
 <div class="about-container">
-    <!-- Hero Section -->
+
+    <!-- HERO -->
     <section class="hero-section">
-        <h1>Built for Champions</h1>
-        <p>Founded in 2017, Vipers Academy is shaping the future of Kenyan football through elite coaching, discipline, and a development-first approach.</p>
+        <h1>Using Football to Unlock Education & Opportunity</h1>
+        <p>
+            Founded in 2017, Mumias Vipers Academy is a community-based youth development organization
+            using football to build discipline, life skills, and access to education —
+            with <strong>over 20 players currently on high school sports scholarships</strong>.
+        </p>
 
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-number">2017</div>
-                <div class="stat-label">Year Founded</div>
+                <div class="stat-label">Founded</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number">500+</div>
-                <div class="stat-label">Players Trained</div>
+                <div class="stat-label">Youth Served</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number">50+</div>
-                <div class="stat-label">Pro Graduates</div>
+                <div class="stat-label">Scholarship Beneficiaries</div>
             </div>
         </div>
 
-        <a href="{{ route('register') }}" class="cta-button">Join Vipers Academy</a>
+        <a href="{{ route('enrol') }}" class="cta-button">Enroll a Player</a>
+        <a href="{{ route('contact') }}" class="cta-button secondary">Partner With Us</a>
     </section>
 
-    <!-- Who We Are -->
+    <!-- WHO WE ARE -->
     <section class="section">
         <h2 class="section-title">Who We Are</h2>
         <p class="section-description">
-            Vipers Academy is a modern football development institution committed to raising disciplined, skilled, and mentally strong players. We integrate structured training, character building, sports science principles, and academic balance to prepare young athletes for elite performance.
+            Mumias Vipers Academy exists to ensure talented young people — regardless of background —
+            can access structured football, mentorship, and education.
+            Football is our tool; youth development is our mission.
         </p>
 
         <div class="features-grid">
             <div class="feature-card">
-                <div class="feature-icon">⚽</div>
-                <h3>Elite Player Development</h3>
-                <p>European-inspired technical, tactical, physical, and mental training.</p>
+                <h3>Structured Player Development</h3>
+                <p>Age-appropriate training focused on technical, physical, and mental growth.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">📘</div>
-                <h3>Discipline & Character</h3>
-                <p>Respect, leadership, teamwork, and emotional intelligence embedded in every session.</p>
+                <h3>Education First</h3>
+                <p>Training schedules respect school commitments and academic responsibility.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">🎓</div>
-                <h3>Education Friendly</h3>
-                <p>Training designed to complement school life and responsible academic focus.</p>
+                <h3>Life Skills & Discipline</h3>
+                <p>Leadership, respect, accountability, and emotional resilience.</p>
             </div>
         </div>
     </section>
 
-    <!-- Timeline -->
+    <!-- EDUCATION THROUGH SPORT -->
     <section class="section">
-        <h2 class="section-title">Our Journey Since 2017</h2>
+        <h2 class="section-title">Education Through Sport</h2>
+        <p class="section-description">
+            Football is not the final destination — education is.
+            Through talent, discipline, and mentorship,
+            <strong>over 20 Vipers players have secured high school sports scholarships</strong>,
+            easing financial burden on families and creating long-term opportunity.
+        </p>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>🎓 Sports Scholarships</h3>
+                <p>Direct pathways to secondary education through football performance.</p>
+            </div>
+            <div class="feature-card">
+                <h3>👨‍👩‍👦 Community Impact</h3>
+                <p>Strong parent engagement and reduced household education costs.</p>
+            </div>
+            <div class="feature-card">
+                <h3>📈 Measurable Outcomes</h3>
+                <p>Clear tracking of player progression and school placement.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- TIMELINE -->
+    <section class="section">
+        <h2 class="section-title">Our Journey</h2>
         <div class="timeline">
             <div class="timeline-item">
                 <div class="timeline-year">2017</div>
-                <div class="timeline-content">Vipers Academy officially founded with the goal of transforming grassroots football.</div>
+                <p>Founded as a grassroots initiative to nurture football talent and discipline.</p>
             </div>
             <div class="timeline-item">
                 <div class="timeline-year">2019</div>
-                <div class="timeline-content">Expanded to multiple training centers and introduced structured academy programs.</div>
+                <p>Expanded training programs and community engagement.</p>
             </div>
             <div class="timeline-item">
                 <div class="timeline-year">2021</div>
-                <div class="timeline-content">Developed the first batch of players progressing to national and club levels.</div>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-year">2023</div>
-                <div class="timeline-content">Launched junior development, holiday camps, and coaching education programs.</div>
+                <p>First players progressed to competitive clubs and secondary schools.</p>
             </div>
             <div class="timeline-item">
                 <div class="timeline-year">2024+</div>
-                <div class="timeline-content">Moving toward a fully equipped academy, sports science integration, and global partnerships.</div>
+                <p>20+ players on sports scholarships; expanding partnerships and facilities.</p>
             </div>
         </div>
     </section>
 
-    <!-- Professional Values -->
+    <!-- VALUES -->
     <section class="values-section">
         <h2 class="section-title">Our Core Values</h2>
-        <p class="section-description">
-            These principles guide everything we do, from training sessions to life lessons beyond the pitch.
-        </p>
 
         <div class="values-grid">
             <div class="value-card">
                 <div class="value-icon">🎯</div>
-                <h3 class="value-title">Discipline</h3>
-                <p class="value-description">
-                    We instill self-control, consistency, and accountability in every player, building champions on and off the field.
-                </p>
+                <h3>Discipline</h3>
+                <p>Consistency, responsibility, and self-control on and off the pitch.</p>
             </div>
-
             <div class="value-card">
                 <div class="value-icon">🤝</div>
-                <h3 class="value-title">Respect</h3>
-                <p class="value-description">
-                    Honoring teammates, coaches, opponents, and the game itself forms the foundation of our academy culture.
-                </p>
+                <h3>Respect</h3>
+                <p>For teammates, parents, coaches, and the wider community.</p>
             </div>
-
             <div class="value-card">
                 <div class="value-icon">💪</div>
-                <h3 class="value-title">Hard Work</h3>
-                <p class="value-description">
-                    Dedication, effort, and perseverance are non-negotiable. Success comes to those who consistently push their limits.
-                </p>
+                <h3>Hard Work</h3>
+                <p>Growth through commitment, effort, and perseverance.</p>
             </div>
-
             <div class="value-card">
-                <div class="value-icon">⭐</div>
-                <h3 class="value-title">Excellence</h3>
-                <p class="value-description">
-                    We pursue the highest standards in training, performance, and personal development, refusing to settle for mediocrity.
-                </p>
+                <div class="value-icon">🛡️</div>
+                <h3>Child Safety & Accountability</h3>
+                <p>Safe environments, parental involvement, and transparent operations.</p>
             </div>
         </div>
     </section>
+
 </div>
 @endsection

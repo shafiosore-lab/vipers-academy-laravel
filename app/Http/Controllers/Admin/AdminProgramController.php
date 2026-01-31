@@ -11,18 +11,18 @@ class AdminProgramController extends Controller
     public function index()
     {
         $programs = Program::all();
-        return view('admin.programs', compact('programs'));
+        return view('admin.programs.index', compact('programs'));
     }
 
     public function show($id)
     {
         $program = Program::findOrFail($id);
-        return view('admin.program_show', compact('program'));
+        return view('admin.programs.show', compact('program'));
     }
 
     public function create()
     {
-        return view('admin.program_create');
+        return view('admin.programs.create');
     }
 
     public function store(Request $request)
@@ -62,7 +62,7 @@ class AdminProgramController extends Controller
     public function edit($id)
     {
         $program = Program::findOrFail($id);
-        return view('admin.program_edit', compact('program'));
+        return view('admin.programs.edit', compact('program'));
     }
 
     public function update(Request $request, $id)

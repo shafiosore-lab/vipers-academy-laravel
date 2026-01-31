@@ -11,16 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('programs', function (Blueprint $table) {
-            $table->enum('status', ['active', 'inactive', 'upcoming', 'completed'])->default('active')->after('schedule');
-            $table->date('start_date')->nullable()->after('status');
-            $table->date('end_date')->nullable()->after('start_date');
-            $table->integer('max_participants')->nullable()->after('end_date');
-            $table->decimal('program_fee', 10, 2)->nullable()->after('max_participants');
-            $table->text('objectives')->nullable()->after('program_fee');
-            $table->string('difficulty_level')->nullable()->after('objectives');
-            $table->json('schedule_details')->nullable()->after('difficulty_level');
-        });
+        // Fields already added to main programs migration
     }
 
     /**
@@ -28,17 +19,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('programs', function (Blueprint $table) {
-            $table->dropColumn([
-                'status',
-                'start_date',
-                'end_date',
-                'max_participants',
-                'program_fee',
-                'objectives',
-                'difficulty_level',
-                'schedule_details'
-            ]);
-        });
+        // Fields are in main migration, no action needed
     }
 };
+

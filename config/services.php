@@ -52,4 +52,33 @@ return [
         'redirect' => env('FACEBOOK_REDIRECT_URI', env('APP_URL') . '/auth/facebook/callback'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Notification Services
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for SMS and WhatsApp notification services.
+    | Choose one provider and configure the credentials.
+    |
+    */
+
+    'twilio' => [
+        'sid' => env('TWILIO_SID'),
+        'token' => env('TWILIO_TOKEN'),
+        'whatsapp_from' => env('TWILIO_WHATSAPP_FROM'), // WhatsApp enabled number
+        'sms_from' => env('TWILIO_SMS_FROM'), // SMS enabled number
+    ],
+
+    'africas_talking' => [
+        'username' => env('AFRICAS_TALKING_USERNAME'),
+        'api_key' => env('AFRICAS_TALKING_API_KEY'),
+        'shortcode' => env('AFRICAS_TALKING_SHORTCODE'), // SMS sender ID
+        'sandbox' => env('AFRICAS_TALKING_SANDBOX', false),
+    ],
+
+    '360dialog' => [
+        'api_key' => env('360DIALOG_API_KEY'),
+        'phone_number_id' => env('360DIALOG_PHONE_NUMBER_ID'),
+    ],
+
 ];

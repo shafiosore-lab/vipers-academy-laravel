@@ -11,12 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('programs', function (Blueprint $table) {
-            $table->string('duration')->nullable()->after('schedule');
-            $table->decimal('regular_fee', 10, 2)->nullable()->after('duration');
-            $table->decimal('mumias_fee', 10, 2)->nullable()->after('regular_fee');
-            $table->integer('mumias_discount_percentage')->default(50)->after('mumias_fee');
-        });
+        // Fields already added to main programs migration
     }
 
     /**
@@ -24,8 +19,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('programs', function (Blueprint $table) {
-            $table->dropColumn(['duration', 'regular_fee', 'mumias_fee', 'mumias_discount_percentage']);
-        });
+        // Fields are in main migration, no action needed
     }
 };
+

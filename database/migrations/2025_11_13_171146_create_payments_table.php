@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('payment_reference')->unique();
             $table->string('transaction_id')->nullable()->unique();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->enum('payer_type', ['player', 'partner', 'customer']); // Who is making the payment
-            $table->unsignedBigInteger('payer_id'); // ID of the player/partner/customer
+            $table->enum('payer_type', ['player', 'partner', 'customer']);
+            $table->unsignedBigInteger('payer_id');
             $table->enum('payment_type', [
                 'registration_fee',
                 'subscription_fee',
@@ -34,13 +34,12 @@ return new class extends Migration
             $table->enum('payment_method', ['mpesa', 'card', 'bank_transfer', 'cash', 'cheque'])->default('mpesa');
             $table->enum('payment_status', ['pending', 'completed', 'failed', 'refunded', 'cancelled'])->default('pending');
             $table->enum('payment_gateway', ['mpesa', 'stripe', 'paypal', 'bank', 'cash'])->nullable();
-            $table->json('gateway_response')->nullable(); // Store gateway response data
+            $table->json('gateway_response')->nullable();
             $table->text('notes')->nullable();
             $table->timestamp('paid_at')->nullable();
             $table->timestamp('due_date')->nullable();
             $table->timestamps();
 
-            // Indexes for better performance
             $table->index(['payment_status', 'payment_type']);
             $table->index(['payer_type', 'payer_id']);
             $table->index(['created_at']);
@@ -56,3 +55,4 @@ return new class extends Migration
         Schema::dropIfExists('payments');
     }
 };
+

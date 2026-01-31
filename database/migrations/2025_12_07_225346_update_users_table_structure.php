@@ -12,40 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Split name into first_name and last_name
-            $table->string('first_name', 100)->after('id');
-            $table->string('last_name', 100)->after('first_name');
-
-            // Add phone field
-            $table->string('phone', 50)->nullable()->unique()->after('email');
-
             // Update user_type enum to include 'staff'
             $table->enum('user_type', ['admin', 'partner', 'staff', 'player'])->default('player')->change();
-
-            // Change status to approval_status
-            $table->dropColumn('status');
-            $table->enum('approval_status', ['pending', 'approved', 'rejected'])->default('pending')->after('user_type');
-
-            // Rename profile_image to profile_photo
-            $table->renameColumn('profile_image', 'profile_photo');
-
-            // Add last_login field
-            $table->timestamp('last_login')->nullable()->after('remember_token');
-
-            // Update foreign key names for consistency
-            $table->renameColumn('approved_by', 'approved_by_user_id');
-            $table->renameColumn('created_by_partner_id', 'partner_id');
-
-            // Drop old foreign keys and recreate with new names
-            $table->dropForeign(['approved_by']);
-            $table->dropForeign(['created_by_partner_id']);
-
-            $table->foreign('approved_by_user_id')->references('id')->on('users')->onDelete('set null');
-            $table->foreign('partner_id')->references('id')->on('users')->onDelete('set null');
-
-            // Remove player_id as we'll handle this through separate relationship
-            $table->dropForeign(['player_id']);
-            $table->dropColumn('player_id');
         });
     }
 

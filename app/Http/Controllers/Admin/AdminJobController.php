@@ -15,7 +15,7 @@ class AdminJobController extends Controller
     public function index()
     {
         $jobs = Job::latest()->get();
-        return view('admin.jobs', compact('jobs'));
+        return view('admin.jobs.index', compact('jobs'));
     }
 
     /**
@@ -23,7 +23,7 @@ class AdminJobController extends Controller
      */
     public function create()
     {
-        return view('admin.jobs_create');
+        return view('admin.jobs.create');
     }
 
     /**
@@ -54,7 +54,7 @@ class AdminJobController extends Controller
     public function show(string $id)
     {
         $job = Job::with('applications')->findOrFail($id);
-        return view('admin.jobs_show', compact('job'));
+        return view('admin.jobs.show', compact('job'));
     }
 
     /**
@@ -63,7 +63,7 @@ class AdminJobController extends Controller
     public function edit(string $id)
     {
         $job = Job::findOrFail($id);
-        return view('admin.jobs_edit', compact('job'));
+        return view('admin.jobs.edit', compact('job'));
     }
 
     /**

@@ -1,278 +1,370 @@
 @extends('layouts.academy')
 
+@section('title', $player->name . ' - Overview - Vipers Academy')
+
 @section('content')
-<style>
-    :root {
-        --primary: #ea1c4d;
-        --primary-light: #f05a7a;
-        --secondary: #65c16e;
-        --dark: #1e293b;
-        --gray: #64748b;
-        --medium: #374151;
-        --light: #f8fafc;
-        --radius-lg: 20px;
-        --radius-md: 15px;
-        --radius-sm: 10px;
-        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
-        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
-        --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.1);
-        --transition: all 0.3s ease;
-    }
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: 'Poppins', sans-serif;
-    }
-
-    /* Container */
-    .vipers-player-container {
-        background: linear-gradient(135deg, var(--light) 0%, #f1f5f9 50%, #e2e8f0 100%);
-        color: var(--dark);
-        padding: 40px 20px;
-        min-height: 100vh;
-    }
-
-    .player-profile {
-        max-width: 1150px;
-        margin: 0 auto;
-    }
-
-    /* Player Header Card */
-    .player-header {
-        display: flex;
-        gap: 30px;
-        align-items: center;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        padding: 30px;
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-lg);
-        border: 1px solid rgba(234, 28, 77, 0.2);
-    }
-
-    /* Photo */
-    .player-photo {
-        width: 280px;
-        height: 320px;
-        object-fit: cover;
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-md);
-        flex-shrink: 0;
-    }
-
-    .player-photo-placeholder {
-        background: linear-gradient(135deg, #1a3a1a 0%, #0a1f0a 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 60px;
-        font-weight: bold;
-        color: var(--secondary);
-    }
-
-    /* Info Section */
-    .player-info {
-        flex: 1;
-        position: relative;
-        padding-top: 140px;
-        min-height: 320px;
-    }
-
-    /* Radar Chart */
-    .player-radar-container {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 200px;
-        height: 200px;
-    }
-
-    .player-radar-container canvas {
-        width: 100% !important;
-        height: 100% !important;
-    }
-
-    /* Player Details */
-    .player-details {
-        position: relative;
-        z-index: 1;
-    }
-
-    .player-name {
-        font-size: 42px;
-        margin-bottom: 10px;
-        font-weight: 700;
-        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .player-position {
-        font-size: 20px;
-        color: var(--primary);
-        margin-bottom: 15px;
-        font-weight: 600;
-    }
-
-    .player-description {
-        color: var(--gray);
-        font-size: 16px;
-        line-height: 1.6;
-        max-width: 600px;
-    }
-
-    /* Navigation Tabs */
-    .section-nav {
-        margin-top: 40px;
-        display: flex;
-        gap: 15px;
-        flex-wrap: wrap;
-    }
-
-    .nav-link {
-        padding: 12px 30px;
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: var(--radius-sm);
-        text-decoration: none;
-        border: 2px solid transparent;
-        transition: var(--transition);
-        font-weight: 600;
-        color: var(--gray);
-        box-shadow: var(--shadow-sm);
-    }
-
-    .nav-link:hover {
-        border-color: var(--primary);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(234, 28, 77, 0.2);
-        color: var(--primary);
-    }
-
-    .nav-link.active {
-        border-color: var(--primary);
-        color: var(--primary);
-        background: rgba(234, 28, 77, 0.05);
-    }
-
-    /* Content Section */
-    .content-section {
-        margin-top: 40px;
-        animation: fadeIn 0.5s ease;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .player-header {
-            flex-direction: column;
-            text-align: center;
-        }
-
-        .player-photo {
-            width: 100%;
-            max-width: 280px;
-        }
-
-        .player-info {
-            padding-top: 160px;
-            width: 100%;
-        }
-
-        .player-radar-container {
-            width: 180px;
-            height: 180px;
-            left: 50%;
-            right: auto;
-            transform: translateX(-50%);
-        }
-
-        .player-name {
-            font-size: 32px;
-        }
-
-        .player-description {
-            max-width: 100%;
-        }
-
-        .section-nav {
-            justify-content: center;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .vipers-player-container {
-            padding: 20px 10px;
-        }
-
-        .player-header {
-            padding: 20px;
-        }
-
-        .player-info {
-            padding-top: 140px;
-        }
-
-        .player-radar-container {
-            width: 150px;
-            height: 150px;
-        }
-
-        .player-name {
-            font-size: 28px;
-        }
-
-        .player-position {
-            font-size: 18px;
-        }
-
-        .nav-link {
-            padding: 10px 20px;
-            font-size: 14px;
-        }
-    }
-</style>
+@include('website.players.partials.shared-styles')
 
 <div class="vipers-player-container">
     <div class="player-profile">
         @include('website.players.partials.shared-header', ['player' => $player])
 
         <!-- Navigation -->
-        <nav class="section-nav">
-            <a href="{{ route('players.biography', $player->id) }}"
-               class="nav-link {{ request()->routeIs('players.biography') ? 'active' : '' }}">
-                Biography
-            </a>
-            <a href="{{ route('players.statistics', $player->id) }}"
-               class="nav-link {{ request()->routeIs('players.statistics') ? 'active' : '' }}">
-                Statistics
-            </a>
-            <a href="{{ route('players.ai-insights', $player->id) }}"
-               class="nav-link {{ request()->routeIs('players.ai-insights') ? 'active' : '' }}">
-                AI Insights
-            </a>
-        </nav>
+        <div class="section-nav">
+            <a href="{{ route('players.overview', $player->id) }}" class="nav-link active">Overview</a>
+            <a href="{{ route('players.statistics', $player->id) }}" class="nav-link">Statistics</a>
+            <a href="{{ route('players.ai-insights', $player->id) }}" class="nav-link">AI Insights</a>
+            <a href="{{ route('players.biography', $player->id) }}" class="nav-link">Biography</a>
+            <a href="{{ route('players.career', $player->id) }}" class="nav-link">Career</a>
+        </div>
 
-        <!-- Content -->
+        <!-- Content Section - Player Overview -->
         <div class="content-section">
-            @include('website.players.partials.overview', ['player' => $player, 'allPlayers' => $allPlayers])
+            <!-- Quick Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">{{ $player->appearances ?? 0 }}</div>
+                    <div class="stat-label">Appearances</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ $player->goals ?? 0 }}</div>
+                    <div class="stat-label">Goals</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ $player->assists ?? 0 }}</div>
+                    <div class="stat-label">Assists</div>
+                </div>
+                @if($player->position === 'Goalkeeper')
+                <div class="stat-item">
+                    <div class="stat-value">{{ $player->clean_sheets ?? 0 }}</div>
+                    <div class="stat-label">Clean Sheets</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ $player->saves ?? 0 }}</div>
+                    <div class="stat-label">Saves</div>
+                </div>
+                @else
+                <div class="stat-item">
+                    <div class="stat-value">{{ $player->yellow_cards ?? 0 }}</div>
+                    <div class="stat-label">Yellow Cards</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{ $player->red_cards ?? 0 }}</div>
+                    <div class="stat-label">Red Cards</div>
+                </div>
+                @endif
+            </div>
+
+            <!-- Player Bio Summary -->
+            <div class="bio-section">
+                <h3 class="section-title">Player Profile</h3>
+                <div class="profile-grid">
+                    @if($player->age)
+                    <div class="profile-item">
+                        <strong>Age:</strong> {{ $player->age }} years
+                    </div>
+                    @endif
+                    @if($player->nationality)
+                    <div class="profile-item">
+                        <strong>Nationality:</strong> {{ $player->nationality }}
+                    </div>
+                    @endif
+                    @if($player->position)
+                    <div class="profile-item">
+                        <strong>Position:</strong> {{ ucfirst($player->position) }}
+                    </div>
+                    @endif
+                    @if($player->jersey_number)
+                    <div class="profile-item">
+                        <strong>Jersey Number:</strong> #{{ $player->jersey_number }}
+                    </div>
+                    @endif
+                    @if($player->height)
+                    <div class="profile-item">
+                        <strong>Height:</strong> {{ $player->height }}
+                    </div>
+                    @endif
+                    @if($player->weight)
+                    <div class="profile-item">
+                        <strong>Weight:</strong> {{ $player->weight }}
+                    </div>
+                    @endif
+                    @if($player->preferred_foot)
+                    <div class="profile-item">
+                        <strong>Preferred Foot:</strong> {{ ucfirst($player->preferred_foot) }}
+                    </div>
+                    @endif
+                    @if($player->created_at)
+                    <div class="profile-item">
+                        <strong>Joined Academy:</strong> {{ $player->created_at->format('M Y') }}
+                    </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Recent Performance -->
+            @if(isset($player->recentForm) && $player->recentForm->isNotEmpty())
+            <div class="bio-section">
+                <h3 class="section-title">Recent Form</h3>
+                <div class="recent-form">
+                    @foreach($player->recentForm as $match)
+                    <div class="form-indicator" title="{{ $match->competition ?? 'Match' }} - {{ $match->date->format('d M') }}">
+                        @if($match->result === 'W')
+                        <span class="form-win">W</span>
+                        @elseif($match->result === 'D')
+                        <span class="form-draw">D</span>
+                        @else
+                        <span class="form-loss">L</span>
+                        @endif
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
+            <!-- Key Highlights -->
+            @if($player->bio || $player->highlights)
+            <div class="bio-section">
+                <h3 class="section-title">Highlights</h3>
+                <ul class="highlights-list">
+                    @if($player->bio)
+                    <li>{{ Str::limit($player->bio, 200) }}</li>
+                    @endif
+                    @if(isset($player->highlights) && is_array($player->highlights))
+                    @foreach($player->highlights as $highlight)
+                    <li>{{ $highlight }}</li>
+                    @endforeach
+                    @endif
+                </ul>
+            </div>
+            @endif
+
+            <!-- Quick Links -->
+            <div class="quick-links">
+                <a href="{{ route('players.statistics', $player->id) }}" class="btn btn-primary">
+                    <i class="fas fa-chart-bar"></i> View Full Statistics
+                </a>
+                <a href="{{ route('players.biography', $player->id) }}" class="btn btn-secondary">
+                    <i class="fas fa-user"></i> Read Biography
+                </a>
+                <a href="{{ route('players.career', $player->id) }}" class="btn btn-secondary">
+                    <i class="fas fa-history"></i> Career History
+                </a>
+            </div>
         </div>
     </div>
 </div>
 
+<style>
+    /* Overview-specific styles */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+
+    .stat-item {
+        background: rgba(234, 28, 77, 0.05);
+        padding: 20px 15px;
+        border-radius: 15px;
+        text-align: center;
+        border: 1px solid rgba(234, 28, 77, 0.2);
+        transition: var(--transition);
+    }
+
+    .stat-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(234, 28, 77, 0.15);
+    }
+
+    .stat-value {
+        font-size: 32px;
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 13px;
+        color: var(--text-gray);
+        font-weight: 500;
+    }
+
+    .bio-section {
+        margin-bottom: 30px;
+    }
+
+    .bio-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        margin: 0 0 1rem 0;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid rgba(234, 28, 77, 0.2);
+        display: inline-block;
+    }
+
+    .profile-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .profile-item {
+        background: rgba(255, 255, 255, 0.8);
+        padding: 15px;
+        border-radius: 10px;
+        border-left: 4px solid var(--primary-color);
+        font-size: 0.95rem;
+    }
+
+    .profile-item strong {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .highlights-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .highlights-list li {
+        position: relative;
+        padding: 12px 0 12px 30px;
+        color: var(--text-medium);
+        line-height: 1.6;
+        border-bottom: 1px solid rgba(234, 28, 77, 0.1);
+    }
+
+    .highlights-list li:last-child {
+        border-bottom: none;
+    }
+
+    .highlights-list li:before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        top: 12px;
+        color: var(--secondary-color);
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    .quick-links {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 2px solid rgba(234, 28, 77, 0.1);
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .btn-primary {
+        background: var(--primary-gradient);
+        color: white;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(234, 28, 77, 0.3);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
+    }
+
+    .btn-secondary:hover {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .recent-form {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .form-indicator {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .form-win {
+        background: #10b981;
+        color: white;
+    }
+
+    .form-draw {
+        background: #f59e0b;
+        color: white;
+    }
+
+    .form-loss {
+        background: #ef4444;
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+        }
+
+        .stat-item {
+            padding: 15px 10px;
+        }
+
+        .profile-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .quick-links {
+            flex-direction: column;
+        }
+
+        .btn {
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .stats-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .profile-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
 @endsection

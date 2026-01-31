@@ -40,11 +40,5 @@ class Program extends Model
         return $this->hasMany(Player::class);
     }
 
-    /**
-     * Get the program enrollments for this program
-     */
-    public function enrollments()
-    {
-        return $this->hasMany(ProgramEnrollment::class);
-    }
+
 }

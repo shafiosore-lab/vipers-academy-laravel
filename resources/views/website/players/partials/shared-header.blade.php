@@ -20,7 +20,7 @@
         @else
             <div class="player-photo player-photo-placeholder">
                 <span>
-                    {{ substr($player->first_name ?? 'P', 0, 1) }}{{ substr($player->last_name ?? 'L', 0, 1) }}
+                    {{ substr($player->name ?? 'P', 0, 1) }}
                 </span>
             </div>
         @endif
@@ -34,12 +34,9 @@
 
             {{-- Player Details --}}
             <div class="player-details">
-                <h1 class="player-name">{{ $player->full_name ?? 'Player Name' }}</h1>
+                <h1 class="player-name">{{ $player->name }}</h1>
                 <p class="player-position">
                     {{ ucfirst($player->position ?? 'Position') }}
-                    @if($player->jersey_number)
-                        • Jersey #{{ $player->jersey_number }}
-                    @endif
                 </p>
                 @if($player->bio)
                     <p class="player-description">{{ $player->bio }}</p>
@@ -284,7 +281,7 @@
             data: {
                 labels: labels,
                 datasets: [{
-                    label: '{{ $player->full_name }} Skills',
+                    label: '{{ $player->name }} Skills',
                     data: data,
                     borderWidth: 2,
                     borderColor: '#ea1c4d',

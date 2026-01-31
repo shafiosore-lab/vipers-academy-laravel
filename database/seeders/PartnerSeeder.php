@@ -17,8 +17,10 @@ class PartnerSeeder extends Seeder
         // Create sample partners
         $partners = [
             [
-                'name' => 'Mumias Sugar Company',
-                'email' => 'partnership@mumiassugar.co.ke',
+		'first_name' => 'Mumias',
+    		'last_name'  => 'Sugar',
+'name' =>'Mumias Sugar',               
+'email' => 'partnership@mumiassugar.co.ke',
                 'password' => Hash::make('password'),
                 'user_type' => 'partner',
                 'status' => 'active',

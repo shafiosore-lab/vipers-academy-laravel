@@ -11,18 +11,18 @@ class AdminPlayerController extends Controller
     public function index()
     {
         $players = Player::all();
-        return view('admin.players', compact('players'));
+        return view('admin.players.index', compact('players'));
     }
 
     public function show($id)
     {
         $player = Player::findOrFail($id);
-        return view('admin.player_show', compact('player'));
+        return view('admin.players.show', compact('player'));
     }
 
     public function create()
     {
-        return view('admin.player_create');
+        return view('admin.players.create');
     }
 
     public function store(Request $request)
@@ -137,14 +137,19 @@ class AdminPlayerController extends Controller
         }
 
         // Create full name from first and last name
-        $data['name'] = $data['first_name'] . ' ' . $data['last_name'];
+        $data['full_name'] = $data['first_name'] . ' ' . $data['last_name'];
 
         // Calculate age from date of birth
         if (isset($data['date_of_birth'])) {
             $data['age'] = \Carbon\Carbon::parse($data['date_of_birth'])->age;
         }
 
-        Player::create($data);
+        $player = Player::create($data);
+
+        // Sync to website if fully approved
+        if ($player->isFullyApproved()) {
+            $this->syncToWebsite($player);
+        }
 
         return redirect()->route('admin.players.index')->with('success', 'Player registered successfully with FIFA compliance.');
     }
@@ -152,7 +157,7 @@ class AdminPlayerController extends Controller
     public function edit($id)
     {
         $player = Player::findOrFail($id);
-        return view('admin.player_edit', compact('player'));
+        return view('admin.players.edit', compact('player'));
     }
 
     public function update(Request $request, $id)
@@ -269,7 +274,7 @@ class AdminPlayerController extends Controller
         }
 
         // Update full name from first and last name
-        $data['name'] = $data['first_name'] . ' ' . $data['last_name'];
+        $data['full_name'] = $data['first_name'] . ' ' . $data['last_name'];
 
         // Recalculate age from date of birth
         if (isset($data['date_of_birth'])) {
@@ -277,6 +282,11 @@ class AdminPlayerController extends Controller
         }
 
         $player->update($data);
+
+        // Sync to website if fully approved
+        if ($player->isFullyApproved()) {
+            $this->syncToWebsite($player);
+        }
 
         return redirect()->route('admin.players.index')->with('success', 'Player updated successfully with FIFA compliance.');
     }
@@ -295,6 +305,9 @@ class AdminPlayerController extends Controller
     public function approve(Player $player)
     {
         $player->grantFullApproval();
+
+        // Sync to website since player is now approved
+        $this->syncToWebsite($player);
 
         return redirect()->back()->with('success', 'Player approved with full access successfully.');
     }
@@ -340,5 +353,61 @@ class AdminPlayerController extends Controller
         }
 
         return redirect()->back()->with('success', 'Checked and updated ' . $expiredPlayers->count() . ' expired temporary approvals.');
+    }
+
+    /**
+     * Sync approved player to website
+     */
+    private function syncToWebsite(Player $player)
+    {
+        \Log::info('AdminPlayerController@syncToWebsite: Starting sync', [
+            'player_id' => $player->id,
+            'name' => $player->full_name,
+            'approved' => $player->isFullyApproved()
+        ]);
+
+        // Only sync if player is fully approved
+        if (!$player->isFullyApproved()) {
+            \Log::info('AdminPlayerController@syncToWebsite: Player not fully approved, skipping sync');
+            return;
+        }
+
+        // Check if website player already exists
+        $websitePlayer = $player->websitePlayer;
+
+        if ($websitePlayer) {
+            // Update existing website player
+            $websitePlayer->update([
+                'first_name' => $player->first_name,
+                'last_name' => $player->last_name,
+                'category' => $player->category,
+                'position' => $player->position,
+                'age' => $player->age,
+                'jersey_number' => $player->jersey_number,
+                'image_path' => $player->image_path,
+                'bio' => $player->bio,
+            ]);
+            \Log::info('AdminPlayerController@syncToWebsite: Updated existing website player', [
+                'website_player_id' => $websitePlayer->id
+            ]);
+        } else {
+            // Create new website player
+            $websitePlayer = WebsitePlayer::create([
+                'first_name' => $player->first_name,
+                'last_name' => $player->last_name,
+                'category' => $player->category,
+                'position' => $player->position,
+                'age' => $player->age,
+                'jersey_number' => $player->jersey_number,
+                'image_path' => $player->image_path,
+                'bio' => $player->bio,
+                'player_id' => $player->id,
+            ]);
+            \Log::info('AdminPlayerController@syncToWebsite: Created new website player', [
+                'website_player_id' => $websitePlayer->id
+            ]);
+        }
+
+        \Log::info('AdminPlayerController@syncToWebsite: Sync completed');
     }
 }

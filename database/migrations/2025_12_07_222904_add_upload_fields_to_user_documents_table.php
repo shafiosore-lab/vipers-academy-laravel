@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('user_documents', function (Blueprint $table) {
             // Fields for user-uploaded documents
-            $table->string('document_type')->nullable()->after('document_id'); // Type of uploaded document (national_id, birth_certificate, etc.)
+            $table->string('document_type')->nullable()->after('document_id'); // Type of uploaded document (national_id, birth_certificate, etc.);
             $table->string('file_path')->nullable()->after('document_type'); // Path to uploaded file
             $table->string('file_name')->nullable()->after('file_path'); // Original filename
             $table->string('mime_type')->nullable()->after('file_name'); // File MIME type
@@ -70,3 +70,4 @@ return new class extends Migration
         });
     }
 };
+

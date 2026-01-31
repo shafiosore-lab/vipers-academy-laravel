@@ -183,29 +183,9 @@ class Coupon extends Model
 
     private function filterApplicableItems(array $cartItems): array
     {
-        if (!$this->applicable_products && !$this->applicable_categories) {
-            // No restrictions - all items applicable
-            return $cartItems;
-        }
-
-        return array_filter($cartItems, function($item) {
-            // Check specific products
-            if ($this->applicable_products) {
-                if (in_array($item['product_id'], $this->applicable_products)) {
-                    return true;
-                }
-            }
-
-            // Check categories
-            if ($this->applicable_categories) {
-                $product = \App\Models\Product::find($item['product_id']);
-                if ($product && in_array($product->category, $this->applicable_categories)) {
-                    return true;
-                }
-            }
-
-            return false;
-        });
+        // Since products are no longer available, all items are applicable
+        // This method is kept for compatibility but simplified
+        return $cartItems;
     }
 
     // Usage tracking

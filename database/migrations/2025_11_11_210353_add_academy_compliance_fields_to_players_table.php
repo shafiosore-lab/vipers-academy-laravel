@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('players', function (Blueprint $table) {
-            // Academy Compliance Fields (Additional to FIFA requirements)
+            // Academy Compliance Fields (Additional to FIFA requirements);
 
             // Guardian Consent and Legal Documents
             $table->string('guardian_consent_form')->nullable()->after('guardian_relationship');
@@ -33,7 +33,7 @@ return new class extends Migration
             $table->string('guardian_id_document')->nullable()->after('competition_plan');
             $table->string('player_id_document')->nullable()->after('guardian_id_document');
 
-            // Previous Domicile (for relocated players)
+            // Previous Domicile (for relocated players);
             $table->string('previous_domicile')->nullable()->after('player_id_document');
             $table->text('relocation_reason')->nullable()->after('previous_domicile');
         });
@@ -63,3 +63,4 @@ return new class extends Migration
         });
     }
 };
+

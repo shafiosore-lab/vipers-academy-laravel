@@ -13,26 +13,41 @@ return new class extends Migration
     {
         Schema::table('players', function (Blueprint $table) {
             // Add user_id relationship
-            $table->unsignedBigInteger('user_id')->nullable()->after('id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            if (!Schema::hasColumn('players', 'user_id')) {
+                $table->unsignedBigInteger('user_id')->nullable()->after('id');
+                $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            }
 
-            // Rename name to full_name
-            $table->renameColumn('name', 'full_name');
+            // Rename name to full_name if name exists
+            if (Schema::hasColumn('players', 'name')) {
+                $table->renameColumn('name', 'full_name');
+            }
 
             // Add missing fields
-            $table->date('dob')->nullable()->after('full_name');
-            $table->float('height')->nullable()->after('position');
-            $table->float('weight')->nullable()->after('height');
+            if (!Schema::hasColumn('players', 'dob')) {
+                $table->date('dob')->nullable()->after('last_name');
+            }
+            if (!Schema::hasColumn('players', 'height')) {
+                $table->float('height')->nullable()->after('position');
+            }
+            if (!Schema::hasColumn('players', 'weight')) {
+                $table->float('weight')->nullable()->after('height');
+            }
 
-            // Rename photo to website_image
-            $table->renameColumn('photo', 'website_image');
+            // Rename photo to website_image if photo exists
+            if (Schema::hasColumn('players', 'photo')) {
+                $table->renameColumn('photo', 'website_image');
+            }
 
             // Remove program_id as it's not in the required schema
-            $table->dropForeign(['program_id']);
-            $table->dropColumn('program_id');
+            if (Schema::hasColumn('players', 'program_id')) {
+                $table->dropColumn('program_id');
+            }
 
             // Remove achievements as it's not in the required schema
-            $table->dropColumn('achievements');
+            if (Schema::hasColumn('players', 'achievements')) {
+                $table->dropColumn('achievements');
+            }
         });
     }
 
@@ -56,3 +71,4 @@ return new class extends Migration
         });
     }
 };
+

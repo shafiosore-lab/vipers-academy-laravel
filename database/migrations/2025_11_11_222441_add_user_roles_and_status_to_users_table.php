@@ -12,10 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->enum('user_type', ['admin', 'player', 'partner'])->default('player')->after('email');
-            $table->enum('status', ['active', 'pending', 'suspended'])->default('pending')->after('user_type');
-            $table->foreignId('player_id')->nullable()->constrained('players')->onDelete('cascade')->after('status');
-            $table->json('partner_details')->nullable()->after('player_id');
+            if (!Schema::hasColumn('users', 'user_type')) {
+                $table->enum('user_type', ['admin', 'player', 'partner'])->default('player')->after('email');
+            }
+            if (!Schema::hasColumn('users', 'status')) {
+                $table->enum('status', ['active', 'pending', 'suspended'])->default('pending')->after('user_type');
+            }
+            if (!Schema::hasColumn('users', 'player_id')) {
+                $table->foreignId('player_id')->nullable()->constrained('players')->onDelete('cascade')->after('status');
+            }
+            if (!Schema::hasColumn('users', 'partner_details')) {
+                $table->json('partner_details')->nullable()->after('player_id');
+            }
         });
     }
 
@@ -30,3 +38,4 @@ return new class extends Migration
         });
     }
 };
+

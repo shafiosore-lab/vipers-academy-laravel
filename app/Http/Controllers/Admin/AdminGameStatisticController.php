@@ -20,13 +20,13 @@ class AdminGameStatisticController extends Controller
     public function index()
     {
         $statistics = PlayerGameStats::with('player')->latest()->paginate(20);
-        return view('admin.game_statistics', compact('statistics'));
+        return view('admin.game-statistics.index', compact('statistics'));
     }
 
     public function create()
     {
         $players = WebsitePlayer::select('id', 'first_name', 'last_name', 'position')->orderBy('last_name')->orderBy('first_name')->get();
-        return view('admin.game_statistic_create', compact('players'));
+        return view('admin.game-statistics.create', compact('players'));
     }
 
     public function store(Request $request)
@@ -92,14 +92,14 @@ class AdminGameStatisticController extends Controller
     public function show($id)
     {
         $statistic = PlayerGameStats::with('player')->findOrFail($id);
-        return view('admin.game_statistic_show', compact('statistic'));
+        return view('admin.game-statistics.show', compact('statistic'));
     }
 
     public function edit($id)
     {
         $statistic = PlayerGameStats::findOrFail($id);
         $players = WebsitePlayer::select('id', 'first_name', 'last_name', 'position')->orderBy('last_name')->orderBy('first_name')->get();
-        return view('admin.game_statistic_edit', compact('statistic', 'players'));
+        return view('admin.game-statistics.edit', compact('statistic', 'players'));
     }
 
     public function update(Request $request, $id)

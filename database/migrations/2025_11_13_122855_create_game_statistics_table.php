@@ -24,13 +24,13 @@ return new class extends Migration
             $table->integer('passes_completed')->default(0);
             $table->integer('tackles')->default(0);
             $table->integer('interceptions')->default(0);
-            $table->integer('saves')->default(0); // For goalkeepers
+            $table->integer('saves')->default(0);
             $table->integer('yellow_cards')->default(0);
             $table->integer('red_cards')->default(0);
-            $table->decimal('rating', 3, 2)->nullable(); // e.g., 7.5
-            $table->text('game_summary')->nullable(); // Text that can be processed by AI
+            $table->decimal('rating', 3, 2)->nullable();
+            $table->text('game_summary')->nullable();
             $table->boolean('ai_generated')->default(false);
-            $table->json('additional_stats')->nullable(); // For flexible additional statistics
+            $table->json('additional_stats')->nullable();
             $table->timestamps();
         });
     }
@@ -43,3 +43,4 @@ return new class extends Migration
         Schema::dropIfExists('game_statistics');
     }
 };
+

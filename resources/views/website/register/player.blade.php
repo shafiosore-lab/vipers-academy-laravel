@@ -3,7 +3,7 @@
 @section('title', 'Player Registration - Vipers Academy')
 
 @section('content')
-<div class="registration-compact">
+<div class="registration-compact" style="width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
     <!-- Hero Section -->
     <div class="hero-compact">
         <div class="hero-overlay"></div>
@@ -18,11 +18,11 @@
     </div>
 
     <!-- Registration Form -->
-    <div class="form-section">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-6">
-                    <div class="form-card">
+    <div class="form-section" style="padding-left: 0 !important; padding-right: 0 !important;">
+        <div class="container" style="max-width: none !important; padding-left: 0 !important; padding-right: 0 !important;">
+            <div class="row justify-content-center" style="margin-left: 0 !important; margin-right: 0 !important;">
+                <div class="col-lg-6" style="max-width: none !important; flex: 0 0 100% !important; padding-left: 0 !important; padding-right: 0 !important;">
+                    <div class="form-card" style="width: 100%; max-width: 600px; margin: 0 auto; border-radius: 0;">
                         <div class="form-header">
                             <div class="status-badge">
                                 <span class="status-dot"></span>
@@ -197,6 +197,12 @@
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     position: relative;
     overflow: hidden;
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
 }
 
 .registration-compact::before {
@@ -210,140 +216,31 @@
     opacity: 0.1;
 }
 
-/* Hero Section */
-.hero-compact {
-    padding: 60px 0 40px;
-    position: relative;
-    z-index: 2;
-}
-
-.hero-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg,
-        rgba(102, 126, 234, 0.1) 0%,
-        rgba(118, 75, 162, 0.1) 50%,
-        rgba(139, 92, 246, 0.1) 100%);
-}
-
-.hero-content {
-    position: relative;
-    z-index: 2;
-    color: white;
-}
-
-.hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    padding: 0.5rem 1rem;
-    border-radius: 50px;
-    margin-bottom: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.hero-badge i {
-    color: #fbbf24;
-    font-size: 1rem;
-}
-
-.hero-badge span {
-    font-weight: 600;
-    font-size: 0.9rem;
-    letter-spacing: 0.5px;
-}
-
-.hero-title {
-    font-size: 2.5rem;
-    font-weight: 800;
-    margin-bottom: 1rem;
-    line-height: 1.2;
-}
-
-.hero-title .highlight {
-    background: linear-gradient(135deg, #fbbf24, #f59e0b);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.hero-subtitle {
-    font-size: 1rem;
-    margin-bottom: 2rem;
-    opacity: 0.9;
-    line-height: 1.6;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* Features Grid */
-.features-compact {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-.feature-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.feature-item i {
-    color: #fbbf24;
-    font-size: 1.2rem;
-    width: 20px;
-}
-
-.feature-item span {
-    font-weight: 500;
-    font-size: 0.9rem;
-}
-
-/* Stats */
-.stats-compact {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-}
-
-.stat-item {
-    text-align: center;
-}
-
-.stat-number {
-    display: block;
-    font-size: 2rem;
-    font-weight: 800;
-    color: #fbbf24;
-    line-height: 1;
-}
-
-.stat-label {
-    display: block;
-    font-size: 0.8rem;
-    opacity: 0.9;
-    font-weight: 500;
-    margin-top: 0.25rem;
-}
-
-/* Form Section */
+/* Full Width Form Section */
 .form-section {
     padding: 40px 0 60px;
     position: relative;
     z-index: 2;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.form-section .container {
+    max-width: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.form-section .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.form-section .col-lg-6 {
+    max-width: none !important;
+    flex: 0 0 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
 }
 
 .form-card {
@@ -353,6 +250,11 @@
     padding: 2.5rem;
     position: relative;
     margin-top: -30px;
+    width: 100%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 0;
 }
 
 /* Form Header */

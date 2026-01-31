@@ -11,9 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('programs', function (Blueprint $table) {
-            $table->string('image')->nullable()->after('mumias_discount_percentage');
-        });
+        // Field already added to main programs migration
     }
 
     /**
@@ -21,8 +19,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('programs', function (Blueprint $table) {
-            //
-        });
+        // Field is in main migration, no action needed
     }
 };
+

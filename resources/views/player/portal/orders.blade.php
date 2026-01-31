@@ -15,8 +15,8 @@
                     </h1>
                     <p class="section-subtitle">View and manage your purchase history and order tracking</p>
                 </div>
-                <a href="{{ route('products') }}" class="btn btn-primary" target="_blank">
-                    <i class="fas fa-shopping-cart me-1"></i>Continue Shopping
+                <a href="{{ route('home') }}" class="btn btn-primary" target="_blank">
+                    <i class="fas fa-home me-1"></i>Back to Home
                 </a>
             </div>
 
@@ -182,9 +182,9 @@
                         <i class="fas fa-shopping-bag"></i>
                     </div>
                     <h4>No Orders Yet</h4>
-                    <p>You haven't placed any orders yet. Start exploring our products to make your first purchase!</p>
-                    <a href="{{ route('products.index') }}" class="btn btn-primary" target="_blank">
-                        <i class="fas fa-shopping-cart me-1"></i>Browse Products
+                    <p>You haven't placed any orders yet.</p>
+                    <a href="{{ route('home') }}" class="btn btn-primary" target="_blank">
+                        <i class="fas fa-home me-1"></i>Back to Home
                     </a>
                 </div>
             @endif
@@ -210,13 +210,13 @@
                     </div>
                 </a>
 
-                <a href="{{ route('products.index') }}" class="quick-action-card" target="_blank">
+                <a href="{{ route('home') }}" class="quick-action-card" target="_blank">
                     <div class="action-icon">
-                        <i class="fas fa-store"></i>
+                        <i class="fas fa-home"></i>
                     </div>
                     <div class="action-content">
-                        <h5>Browse Store</h5>
-                        <p>Explore our complete product catalog</p>
+                        <h5>Back to Home</h5>
+                        <p>Return to the main website</p>
                     </div>
                     <div class="action-arrow">
                         <i class="fas fa-arrow-right"></i>

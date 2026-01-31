@@ -30,6 +30,9 @@ class LoginController extends Controller
             // Redirect based on user type
             if ($user->isAdmin()) {
                 return redirect()->intended(route('admin.dashboard'));
+            } elseif ($user->isStaff()) {
+                // Staff users (coaches, etc.) get access to admin dashboard
+                return redirect()->intended(route('admin.dashboard'));
             } elseif ($user->isPlayer()) {
                 // Check if player exists and is approved
                 $player = $user->player;

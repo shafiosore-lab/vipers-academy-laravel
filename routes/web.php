@@ -3,18 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Website\HomeController;
-use App\Http\Controllers\Commerce\ProductController;
-use App\Http\Controllers\Commerce\CartController;
-use App\Http\Controllers\Commerce\OrderController;
 use App\Http\Controllers\Website\HelpController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AddressController;
-use App\Http\Controllers\Commerce\WishlistController;
-use App\Http\Controllers\Commerce\CheckoutController;
-use App\Http\Controllers\Commerce\InstallmentController;
 use App\Http\Controllers\Website\PlayerController;
 use App\Http\Controllers\ProgramController;
-use App\Http\Controllers\Website\NewsController;
+use App\Http\Controllers\Website\BlogController;
 use App\Http\Controllers\Website\GalleryController;
 use App\Http\Controllers\Website\StaffController;
 use App\Http\Controllers\Website\StandingsController;
@@ -57,7 +51,7 @@ Route::get('/players/{id}/biography', [PlayerController::class, 'biography'])->n
 Route::get('/players/{id}/career', [PlayerController::class, 'career'])->name('players.career')->where('id', '[0-9]+');
 Route::post('/players/{id}/record-stats', [PlayerController::class, 'recordGameStats'])->name('players.record-stats')->where('id', '[0-9]+');
 Route::get('/players/search', [PlayerController::class, 'searchPlayers'])->name('players.search');
-Route::get('/players/{id}', [PlayerController::class, 'show'])->name('home.player.show')->where('id', '[0-9]+');
+Route::get('/players/{id}', [PlayerController::class, 'show'])->name('players.show')->where('id', '[0-9]+');
 
 // Admin route to sync players from gallery
 Route::get('/admin/players/sync-gallery', [App\Http\Controllers\Admin\AdminWebsitePlayerController::class, 'syncFromGallery'])
@@ -71,21 +65,13 @@ Route::get('/sync-players', [App\Http\Controllers\Admin\AdminWebsitePlayerContro
 // Programs
 Route::get('/programs', [ProgramController::class, 'index'])->name('programs');
 Route::get('/programs/{id}', [ProgramController::class, 'show'])->name('program_detail');
-Route::get('/enroll', [ProgramController::class, 'showEnrollmentForm'])->name('enroll');
-Route::post('/enroll', [ProgramController::class, 'enroll'])->name('programs.enroll');
-Route::get('/register', [ProgramController::class, 'showRegistrationChoice'])->name('register');
-Route::get('/register/player', [ProgramController::class, 'registerPlayer'])->name('register.player');
-Route::post('/register/player', [ProgramController::class, 'storePlayer'])->name('register.player.store');
-Route::get('/register/partner', [ProgramController::class, 'registerPartner'])->name('register.partner');
-Route::post('/register/partner', [ProgramController::class, 'storePartner'])->name('register.partner.store');
-Route::get('/registration/success/{type}', [ProgramController::class, 'showRegistrationSuccess'])->name('registration.success');
-Route::get('/my-enrollments', [ProgramController::class, 'myEnrollments'])->middleware('auth')->name('enrollments');
+Route::get('/enroll', [App\Http\Controllers\Admin\AdminEnrollmentController::class, 'index'])->name('enrol');
+Route::post('/enroll', [App\Http\Controllers\Admin\AdminEnrollmentController::class, 'store'])->name('enrol.store');
 
-// News
-Route::get('/news', [NewsController::class, 'index'])->name('news');
-Route::get('/news/{id}', [NewsController::class, 'show'])->name('news.show');
-Route::get('/news/search', [NewsController::class, 'search'])->name('news.search');
-Route::post('/newsletter/subscribe', [NewsController::class, 'subscribeNewsletter'])->name('newsletter.subscribe');
+// Blog
+Route::get('/blog', [BlogController::class, 'index'])->name('blog');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+Route::post('/blog/newsletter/subscribe', [BlogController::class, 'subscribeNewsletter'])->name('blog.newsletter.subscribe');
 
 // Gallery
 Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery');
@@ -105,7 +91,7 @@ Route::get('/match-center', [MatchCenterController::class, 'index'])->name('matc
 Route::get('/match-center/{id}', [MatchCenterController::class, 'show'])->name('match-center.show');
 
 // Transfer News
-Route::get('/transfer-news', [NewsController::class, 'transfers'])->name('transfer-news');
+Route::get('/transfer-news', [BlogController::class, 'transfers'])->name('transfer-news');
 
 // Player Rankings
 Route::get('/player-rankings', [PlayerController::class, 'rankings'])->name('player-rankings');
@@ -116,6 +102,16 @@ Route::get('/statistics-hub', [StandingsController::class, 'statisticsHub'])->na
 // Contact
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+
+// Donate/Scholarship Support
+Route::get('/donate', function() {
+    return view('website.donate.index');
+})->name('donate');
+
+// Merchandise
+Route::get('/merchandise', function() {
+    return view('website.merchandise.index');
+})->name('merchandise');
 
 // Careers
 Route::get('/careers', [CareerController::class, 'index'])->name('careers.index');
@@ -134,29 +130,7 @@ Route::get('/search', function(Request $request) {
     return redirect()->route('home')->with('search', $query);
 })->name('search');
 
-// Products
-Route::prefix('products')->name('products.')->group(function () {
-    Route::get('/', [ProductController::class, 'index'])->name('index');
-    Route::get('/search', [ProductController::class, 'search'])->name('search');
-    Route::get('/suggestions', [ProductController::class, 'suggestions'])->name('suggestions');
-    Route::get('/category/{category}', [ProductController::class, 'category'])->name('category');
-    Route::get('/{id}', [ProductController::class, 'show'])->name('show');
-});
 
-// Cart
-Route::prefix('cart')->name('cart.')->group(function () {
-    Route::get('/', [CartController::class, 'index'])->name('index');
-    Route::get('/summary', [CartController::class, 'getCartSummary'])->name('summary');
-    Route::post('/add', [CartController::class, 'addToCart'])->name('add');
-    Route::put('/update/{id}', [CartController::class, 'update'])->name('update');
-    Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('remove');
-    Route::delete('/clear', [CartController::class, 'clearCart'])->name('clear');
-    Route::get('/status', [CartController::class, 'checkAuthStatus'])->name('status');
-    Route::post('/validate/email', [CartController::class, 'validateEmail'])->name('validate.email');
-    Route::post('/login/player', [CartController::class, 'playerLogin'])->name('login.player');
-    Route::post('/login/partner', [CartController::class, 'partnerLogin'])->name('login.partner');
-    Route::post('/register/visitor', [CartController::class, 'visitorRegister'])->name('register.visitor');
-});
 
 // Document Upload System
 Route::middleware('auth')->prefix('documents')->name('documents.')->group(function () {
@@ -184,12 +158,19 @@ Route::get('/help', function() {
     return view('help.center');
 })->name('help.center');
 
-// Orders
-Route::prefix('orders')->name('orders.')->group(function () {
-    Route::get('/', [OrderController::class, 'index'])->name('index')->middleware('auth');
-    Route::get('/track', function() {
-        return view('orders.track');
-    })->name('track');
+
+
+// Student Dashboard Routes
+Route::middleware(['auth'])->prefix('student')->name('student.')->group(function () {
+    Route::get('/dashboard', function() {
+        return view('student.dashboard');
+    })->name('dashboard');
+    Route::get('/learning', function() {
+        return view('student.learning');
+    })->name('learning');
+    Route::get('/profile', function() {
+        return view('student.profile');
+    })->name('profile');
 });
 
 // Dashboard - Redirect based on user role
@@ -200,6 +181,8 @@ Route::get('/dashboard', function() {
         return redirect()->route('admin.dashboard');
     } elseif ($user->isPlayer()) {
         return redirect()->route('player.portal.dashboard');
+    } elseif ($user->hasRole('student')) {
+        return redirect()->route('student.dashboard');
     } elseif ($user->isPartner()) {
         return redirect()->route('partner.dashboard');
     } else {
@@ -220,37 +203,16 @@ Route::middleware('auth')->prefix('addresses')->name('addresses.')->group(functi
     Route::get('/', [AddressController::class, 'index'])->name('index');
 });
 
-// Wishlist
-Route::middleware('auth')->prefix('wishlist')->name('wishlist.')->group(function () {
-    Route::get('/', [WishlistController::class, 'index'])->name('index');
-});
-
-// Checkout
-Route::middleware('auth')->prefix('checkout')->name('checkout.')->group(function () {
-    Route::get('/', [CheckoutController::class, 'index'])->name('index');
-    Route::post('/coupon/apply', [CheckoutController::class, 'applyCoupon'])->name('coupon.apply');
-    Route::delete('/coupon/remove', [CheckoutController::class, 'removeCoupon'])->name('coupon.remove');
-    Route::post('/process', [CheckoutController::class, 'process'])->name('process');
-    Route::get('/payment/{order}', [CheckoutController::class, 'payment'])->name('payment');
-    Route::post('/payment/{order}', [CheckoutController::class, 'processPayment'])->name('payment.process');
-    Route::get('/success/{order}', [CheckoutController::class, 'success'])->name('success');
-});
-
-// Installment Info
-Route::get('/installment/info', function() {
-    return view('installment.info');
-})->name('installment.info');
-
 // Additional Auth Routes
 Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->name('login')->middleware('guest');
 Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login.post')->middleware('guest');
 Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
-// Password Reset Routes
-Route::get('/password/reset', [App\Http\Controllers\Auth\PasswordResetLinkController::class, 'create'])->middleware('guest')->name('password.request');
-Route::post('/password/email', [App\Http\Controllers\Auth\PasswordResetLinkController::class, 'store'])->middleware('guest')->name('password.email');
-Route::get('/password/reset/{token}', [App\Http\Controllers\Auth\NewPasswordController::class, 'create'])->middleware('guest')->name('password.reset');
-Route::post('/password/reset', [App\Http\Controllers\Auth\NewPasswordController::class, 'store'])->middleware('guest')->name('password.store');
+// Password Reset Routes (handled by auth.php routes)
+// Route::get('/password/reset', [App\Http\Controllers\Auth\PasswordResetLinkController::class, 'create'])->middleware('guest')->name('password.request');
+// Route::post('/password/email', [App\Http\Controllers\Auth\PasswordResetLinkController::class, 'store'])->middleware('guest')->name('password.email');
+// Route::get('/password/reset/{token}', [App\Http\Controllers\Auth\NewPasswordController::class, 'create'])->middleware('guest')->name('password.reset');
+// Route::post('/password/reset', [App\Http\Controllers\Auth\NewPasswordController::class, 'store'])->middleware('guest')->name('password.store');
 
 // Social Authentication Routes
 Route::get('/auth/google', [App\Http\Controllers\Auth\SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
@@ -337,14 +299,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/documents/statistics', [App\Http\Controllers\Admin\AdminDocumentController::class, 'statistics'])->name('documents.statistics');
     Route::post('/documents/bulk', [App\Http\Controllers\Admin\AdminDocumentController::class, 'bulk'])->name('documents.bulk');
 
-    // News Management
-    Route::get('/news', [App\Http\Controllers\Admin\AdminNewsController::class, 'index'])->name('news.index');
-    Route::get('/news/create', [App\Http\Controllers\Admin\AdminNewsController::class, 'create'])->name('news.create');
-    Route::post('/news', [App\Http\Controllers\Admin\AdminNewsController::class, 'store'])->name('news.store');
-    Route::get('/news/{news}', [App\Http\Controllers\Admin\AdminNewsController::class, 'show'])->name('news.show');
-    Route::get('/news/{news}/edit', [App\Http\Controllers\Admin\AdminNewsController::class, 'edit'])->name('news.edit');
-    Route::put('/news/{news}', [App\Http\Controllers\Admin\AdminNewsController::class, 'update'])->name('news.update');
-    Route::delete('/news/{news}', [App\Http\Controllers\Admin\AdminNewsController::class, 'destroy'])->name('news.destroy');
+    // Blog Management
+    Route::get('/blog', [App\Http\Controllers\Admin\AdminBlogController::class, 'index'])->name('blog.index');
+    Route::get('/blog/create', [App\Http\Controllers\Admin\AdminBlogController::class, 'create'])->name('blog.create');
+    Route::post('/blog', [App\Http\Controllers\Admin\AdminBlogController::class, 'store'])->name('blog.store');
+    Route::get('/blog/{blog}', [App\Http\Controllers\Admin\AdminBlogController::class, 'show'])->name('blog.show');
+    Route::get('/blog/{blog}/edit', [App\Http\Controllers\Admin\AdminBlogController::class, 'edit'])->name('blog.edit');
+    Route::put('/blog/{blog}', [App\Http\Controllers\Admin\AdminBlogController::class, 'update'])->name('blog.update');
+    Route::delete('/blog/{blog}', [App\Http\Controllers\Admin\AdminBlogController::class, 'destroy'])->name('blog.destroy');
 
     // Gallery Management
     Route::get('/gallery', [App\Http\Controllers\Admin\AdminGalleryController::class, 'index'])->name('gallery.index');
@@ -355,19 +317,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/gallery/{gallery}', [App\Http\Controllers\Admin\AdminGalleryController::class, 'update'])->name('gallery.update');
     Route::delete('/gallery/{gallery}', [App\Http\Controllers\Admin\AdminGalleryController::class, 'destroy'])->name('gallery.destroy');
 
-    // Products Management
-    Route::get('/products', [App\Http\Controllers\Admin\AdminProductController::class, 'index'])->name('products.index');
-    Route::get('/products/create', [App\Http\Controllers\Admin\AdminProductController::class, 'create'])->name('products.create');
-    Route::post('/products', [App\Http\Controllers\Admin\AdminProductController::class, 'store'])->name('products.store');
-    Route::get('/products/{product}', [App\Http\Controllers\Admin\AdminProductController::class, 'show'])->name('products.show');
-    Route::get('/products/{product}/edit', [App\Http\Controllers\Admin\AdminProductController::class, 'edit'])->name('products.edit');
-    Route::put('/products/{product}', [App\Http\Controllers\Admin\AdminProductController::class, 'update'])->name('products.update');
-    Route::delete('/products/{product}', [App\Http\Controllers\Admin\AdminProductController::class, 'destroy'])->name('products.destroy');
 
-    // Orders Management
-    Route::get('/orders', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [App\Http\Controllers\Admin\OrderController::class, 'show'])->name('orders.show');
-    Route::put('/orders/{order}', [App\Http\Controllers\Admin\OrderController::class, 'update'])->name('orders.update');
 
     // Payments Management
     Route::get('/payments', [App\Http\Controllers\Admin\AdminPaymentController::class, 'index'])->name('payments.index');
@@ -384,14 +334,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/jobs/{job}', [App\Http\Controllers\Admin\AdminJobController::class, 'update'])->name('jobs.update');
     Route::delete('/jobs/{job}', [App\Http\Controllers\Admin\AdminJobController::class, 'destroy'])->name('jobs.destroy');
 
-    // Coupons Management
-    Route::get('/coupons', [App\Http\Controllers\Admin\AdminCouponController::class, 'index'])->name('coupons.index');
-    Route::get('/coupons/create', [App\Http\Controllers\Admin\AdminCouponController::class, 'create'])->name('coupons.create');
-    Route::post('/coupons', [App\Http\Controllers\Admin\AdminCouponController::class, 'store'])->name('coupons.store');
-    Route::get('/coupons/{coupon}', [App\Http\Controllers\Admin\AdminCouponController::class, 'show'])->name('coupons.show');
-    Route::get('/coupons/{coupon}/edit', [App\Http\Controllers\Admin\AdminCouponController::class, 'edit'])->name('coupons.edit');
-    Route::put('/coupons/{coupon}', [App\Http\Controllers\Admin\AdminCouponController::class, 'update'])->name('coupons.update');
-    Route::delete('/coupons/{coupon}', [App\Http\Controllers\Admin\AdminCouponController::class, 'destroy'])->name('coupons.destroy');
 
     // Website Players Management
     Route::get('/website-players', [App\Http\Controllers\Admin\AdminWebsitePlayerController::class, 'index'])->name('website-players.index');
@@ -401,6 +343,35 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/website-players/{websitePlayer}/edit', [App\Http\Controllers\Admin\AdminWebsitePlayerController::class, 'edit'])->name('website-players.edit');
     Route::put('/website-players/{websitePlayer}', [App\Http\Controllers\Admin\AdminWebsitePlayerController::class, 'update'])->name('website-players.update');
     Route::delete('/website-players/{websitePlayer}', [App\Http\Controllers\Admin\AdminWebsitePlayerController::class, 'destroy'])->name('website-players.destroy');
+
+    // Staff Management
+    Route::get('/staff', [App\Http\Controllers\Admin\AdminStaffController::class, 'index'])->name('staff.index');
+    Route::get('/staff/create', [App\Http\Controllers\Admin\AdminStaffController::class, 'create'])->name('staff.create');
+    Route::post('/staff', [App\Http\Controllers\Admin\AdminStaffController::class, 'store'])->name('staff.store');
+    Route::get('/staff/{staff}', [App\Http\Controllers\Admin\AdminStaffController::class, 'show'])->name('staff.show');
+    Route::get('/staff/{staff}/edit', [App\Http\Controllers\Admin\AdminStaffController::class, 'edit'])->name('staff.edit');
+    Route::put('/staff/{staff}', [App\Http\Controllers\Admin\AdminStaffController::class, 'update'])->name('staff.update');
+    Route::put('/staff/{staff}/activate', [App\Http\Controllers\Admin\AdminStaffController::class, 'activate'])->name('staff.activate');
+    Route::put('/staff/{staff}/deactivate', [App\Http\Controllers\Admin\AdminStaffController::class, 'deactivate'])->name('staff.deactivate');
+    Route::delete('/staff/{staff}', [App\Http\Controllers\Admin\AdminStaffController::class, 'destroy'])->name('staff.destroy');
+
+    // Attendance Management
+    Route::get('/attendance', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'index'])->name('attendance.index');
+    Route::get('/attendance/create', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'create'])->name('attendance.create');
+    Route::post('/attendance', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'store'])->name('attendance.store');
+    Route::get('/attendance/{attendance}', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'show'])->name('attendance.show');
+    Route::post('/attendance/{attendance}/check-in', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'checkIn'])->name('attendance.check-in');
+    Route::post('/attendance/{attendance}/check-out', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'checkOut'])->name('attendance.check-out');
+    Route::get('/attendance/export', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'showExportPage'])->name('attendance.export.page');
+    Route::get('/attendance/export/download', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'export'])->name('attendance.export');
+
+    // Training Sessions Management
+    Route::resource('training-sessions', App\Http\Controllers\Admin\TrainingSessionController::class);
+    Route::post('/training-sessions/{trainingSession}/start', [App\Http\Controllers\Admin\TrainingSessionController::class, 'start'])->name('training-sessions.start');
+    Route::post('/training-sessions/{trainingSession}/end', [App\Http\Controllers\Admin\TrainingSessionController::class, 'end'])->name('training-sessions.end');
+    Route::post('/training-sessions/{trainingSession}/admit-player', [App\Http\Controllers\Admin\TrainingSessionController::class, 'admitPlayer'])->name('training-sessions.admit-player');
+    Route::get('/training-sessions/{trainingSession}/live-data', [App\Http\Controllers\Admin\TrainingSessionController::class, 'liveData'])->name('training-sessions.live-data');
+    Route::get('/training-sessions/{trainingSession}/players-for-attendance', [App\Http\Controllers\Admin\TrainingSessionController::class, 'getPlayersForAttendance'])->name('training-sessions.players-for-attendance');
 
     // User Approvals
     Route::get('/approvals', [App\Http\Controllers\Admin\AdminUserApprovalController::class, 'index'])->name('approvals.index');
@@ -416,10 +387,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/approvals/documents/{document}/download', [App\Http\Controllers\Admin\AdminUserApprovalController::class, 'downloadDocument'])->name('approvals.documents.download');
 
     // Image Upload
-    Route::get('/image-upload', [App\Http\Controllers\Admin\ImageUploadController::class, 'showUploadForm'])->name('image-upload');
-    Route::post('/image-upload', [App\Http\Controllers\Admin\ImageUploadController::class, 'upload'])->name('image-upload.store');
-    Route::get('/images', [App\Http\Controllers\Admin\ImageUploadController::class, 'getImages'])->name('images');
-    Route::delete('/images', [App\Http\Controllers\Admin\ImageUploadController::class, 'deleteImage'])->name('images.delete');
+    Route::get('/image-upload', [App\Http\Controllers\Admin\AdminImageUploadController::class, 'showUploadForm'])->name('image-upload');
+    Route::post('/image-upload', [App\Http\Controllers\Admin\AdminImageUploadController::class, 'upload'])->name('image-upload.store');
+    Route::get('/images', [App\Http\Controllers\Admin\AdminImageUploadController::class, 'getImages'])->name('images');
+    Route::delete('/images', [App\Http\Controllers\Admin\AdminImageUploadController::class, 'deleteImage'])->name('images.delete');
 
     // Performance Overview
     Route::get('/performance/overview', [App\Http\Controllers\Admin\DashboardController::class, 'performanceOverview'])->name('performance.overview');
@@ -430,7 +401,49 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
 // API Routes for AJAX functionality
 Route::prefix('api')->name('api.')->group(function () {
-    Route::get('/news', [NewsController::class, 'apiIndex'])->name('news.index');
+    Route::get('/blog', [BlogController::class, 'apiIndex'])->name('blog.index');
+
+    // AI Insights API Routes
+    Route::prefix('ai-insights')->name('ai-insights.')->group(function () {
+        // System status
+        Route::get('/system/status', [App\Http\Controllers\Api\AiInsightsController::class, 'getSystemStatus'])
+            ->name('system.status');
+
+        // Player-specific routes
+        Route::prefix('players/{player}')->group(function () {
+            // Get all insights for a player
+            Route::get('/', [App\Http\Controllers\Api\AiInsightsController::class, 'getPlayerInsights'])
+                ->name('players.insights');
+
+            // Get specific insight type
+            Route::get('/{type}', [App\Http\Controllers\Api\AiInsightsController::class, 'getInsightByType'])
+                ->where('type', implode('|', ['strength', 'development', 'trend', 'style', 'prediction', 'comparison', 'recommendation', 'risk', 'opportunity']))
+                ->name('players.insights.type');
+
+            // Trigger insights refresh
+            Route::post('/refresh', [App\Http\Controllers\Api\AiInsightsController::class, 'refreshInsights'])
+                ->name('players.refresh');
+
+            // Get data freshness status
+            Route::get('/freshness/status', [App\Http\Controllers\Api\AiInsightsController::class, 'getDataFreshness'])
+                ->name('players.freshness');
+
+            // Get engagement metrics
+            Route::get('/metrics/engagement', [App\Http\Controllers\Api\AiInsightsController::class, 'getEngagementMetrics'])
+                ->name('players.metrics');
+
+            // Register data source
+            Route::post('/data-sources', [App\Http\Controllers\Api\AiInsightsController::class, 'registerDataSource'])
+                ->name('players.data-sources');
+        });
+
+        // Data source routes
+        Route::prefix('data-sources/{source}')->group(function () {
+            // Record data upload
+            Route::post('/upload', [App\Http\Controllers\Api\AiInsightsController::class, 'recordDataUpload'])
+                ->name('data-sources.upload');
+        });
+    });
 });
 
 // Player Portal Routes
@@ -452,4 +465,9 @@ Route::middleware(['auth', 'partner'])->prefix('partner')->name('partner.')->gro
     Route::get('/dashboard', [App\Http\Controllers\Partner\PartnerController::class, 'dashboard'])->name('dashboard');
     Route::get('/players', [App\Http\Controllers\Partner\PartnerController::class, 'players'])->name('players');
     Route::get('/analytics', [App\Http\Controllers\Partner\PartnerController::class, 'analytics'])->name('analytics');
+});
+Route::middleware(['auth', 'partner'])->prefix('partner')->name('partner.')->group(function () {
+Route::prefix('api')->name('api.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Player\PlayerPortalController::class, 'dashboard'])->name('dashboard');
+});
 });

@@ -61,7 +61,7 @@
                             <option value="">{{ __('Select Payment Type') }}</option>
                             <option value="registration_fee" {{ old('payment_type') == 'registration_fee' ? 'selected' : '' }}>{{ __('Registration Fee') }}</option>
                             <option value="program_fee" {{ old('payment_type') == 'program_fee' ? 'selected' : '' }}>{{ __('Program Fee') }}</option>
-                            <option value="merchandise" {{ old('payment_type') == 'merchandise' ? 'selected' : '' }}>{{ __('Merchandise') }}</option>
+
                             <option value="donation" {{ old('payment_type') == 'donation' ? 'selected' : '' }}>{{ __('Donation') }}</option>
                             <option value="sponsorship" {{ old('payment_type') == 'sponsorship' ? 'selected' : '' }}>{{ __('Sponsorship') }}</option>
                             <option value="other" {{ old('payment_type') == 'other' ? 'selected' : '' }}>{{ __('Other') }}</option>

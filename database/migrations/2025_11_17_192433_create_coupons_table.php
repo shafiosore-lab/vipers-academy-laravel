@@ -17,17 +17,17 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->enum('type', ['percentage', 'fixed_amount', 'free_shipping']);
-            $table->decimal('value', 10, 2); // % for percentage, amount for fixed
+            $table->decimal('value', 10, 2);
             $table->decimal('minimum_order_amount', 10, 2)->default(0);
-            $table->decimal('maximum_discount', 10, 2)->nullable(); // Max discount for % coupons
-            $table->integer('usage_limit')->nullable(); // NULL = unlimited
+            $table->decimal('maximum_discount', 10, 2)->nullable();
+            $table->integer('usage_limit')->nullable();
             $table->integer('usage_count')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamp('starts_at')->nullable();
             $table->timestamp('expires_at')->nullable();
-            $table->json('applicable_products')->nullable(); // Specific product IDs
-            $table->json('applicable_categories')->nullable(); // Specific categories
-            $table->json('user_restrictions')->nullable(); // Specific user IDs
+            $table->json('applicable_products')->nullable();
+            $table->json('applicable_categories')->nullable();
+            $table->json('user_restrictions')->nullable();
             $table->boolean('first_time_only')->default(false);
             $table->boolean('auto_apply')->default(false);
             $table->timestamps();
@@ -45,3 +45,4 @@ return new class extends Migration
         Schema::dropIfExists('coupons');
     }
 };
+

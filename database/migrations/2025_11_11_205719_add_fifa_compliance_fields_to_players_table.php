@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('players', function (Blueprint $table) {
-            // Personal Information (FIFA Required)
+            // Personal Information (FIFA Required);
             $table->string('first_name')->after('name');
             $table->string('last_name')->after('first_name');
             $table->date('date_of_birth')->nullable()->after('age');
@@ -42,7 +42,7 @@ return new class extends Migration
             $table->string('guardian_phone')->nullable()->after('guardian_name');
             $table->string('guardian_relationship')->nullable()->after('guardian_phone');
 
-            // Medical Information (FIFA Required)
+            // Medical Information (FIFA Required);
             $table->text('medical_conditions')->nullable()->after('guardian_relationship');
             $table->text('allergies')->nullable()->after('medical_conditions');
             $table->string('blood_type')->nullable()->after('allergies');
@@ -56,7 +56,7 @@ return new class extends Migration
             $table->decimal('weight_kg', 5, 2)->nullable()->after('height_cm');
             $table->enum('dominant_foot', ['Left', 'Right', 'Both'])->nullable()->after('weight_kg');
 
-            // Football Registration Information (FIFA Required)
+            // Football Registration Information (FIFA Required);
             $table->string('fifa_registration_number')->nullable()->after('dominant_foot');
             $table->string('license_type')->nullable()->after('fifa_registration_number');
             $table->date('registration_date')->nullable()->after('license_type');
@@ -105,3 +105,4 @@ return new class extends Migration
         });
     }
 };
+

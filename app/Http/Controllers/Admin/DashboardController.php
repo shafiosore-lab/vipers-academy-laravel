@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Player;
 use App\Models\Program;
-use App\Models\News;
+use App\Models\Blog;
 use App\Models\Gallery;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -18,8 +18,9 @@ class DashboardController extends Controller
         // Cache dashboard data for 5 minutes to improve performance
         $cacheKey = 'admin_dashboard_' . auth()->id();
         $cacheTime = 300; // 5 minutes
+        $cacheTags = ['admin_dashboard'];
 
-        $data = \Cache::remember($cacheKey, $cacheTime, function () {
+        $data = \Cache::tags($cacheTags)->remember($cacheKey, $cacheTime, function () {
             // Player insights data
             $totalPlayers = Player::count();
             $newPlayersThisMonth = Player::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count();
@@ -78,9 +79,9 @@ class DashboardController extends Controller
             $programsLastMonth = Program::whereBetween('created_at', [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()])->count();
             $programGrowth = $programsLastMonth > 0 ? round((($newProgramsThisMonth - $programsLastMonth) / $programsLastMonth) * 100, 1) : 0;
 
-            $totalNews = News::count();
-            $newsThisWeek = News::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count();
-            $newsLastWeek = News::whereBetween('created_at', [now()->subWeek()->startOfWeek(), now()->subWeek()->endOfWeek()])->count();
+            $totalNews = Blog::count();
+            $newsThisWeek = Blog::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count();
+            $newsLastWeek = Blog::whereBetween('created_at', [now()->subWeek()->startOfWeek(), now()->subWeek()->endOfWeek()])->count();
             $newsGrowth = $newsLastWeek > 0 ? round((($newsThisWeek - $newsLastWeek) / $newsLastWeek) * 100, 1) : 0;
 
             // Recent partner registrations
@@ -112,7 +113,7 @@ class DashboardController extends Controller
             );
         });
 
-        return view('admin.dashboard', $data);
+        return view('admin.dashboard.index', $data);
     }
 
     public function performanceOverview()
@@ -183,8 +184,8 @@ class DashboardController extends Controller
         $pendingPayments = \App\Models\Payment::pending()->sum('amount');
 
         // ===== NEWS & CONTENT METRICS =====
-        $totalNews = \App\Models\News::count();
-        $publishedNews = \App\Models\News::whereNotNull('published_at')
+        $totalNews = \App\Models\Blog::count();
+        $publishedNews = \App\Models\Blog::whereNotNull('published_at')
             ->where('published_at', '<=', now())
             ->count();
         $totalGallery = \App\Models\Gallery::count();

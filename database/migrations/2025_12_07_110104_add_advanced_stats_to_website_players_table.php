@@ -47,7 +47,7 @@ return new class extends Migration
             $table->decimal('hold_up_play_success', 5, 2)->default(0)->after('big_chances_missed');
             $table->integer('chance_creation')->default(0)->after('hold_up_play_success');
 
-            // Skills radar attributes (0-100 scale)
+            // Skills radar attributes (0-100 scale);
             $table->integer('shot_stopping')->default(0)->after('chance_creation');
             $table->integer('distribution')->default(0)->after('shot_stopping');
             $table->integer('command_area')->default(0)->after('distribution');
@@ -85,3 +85,4 @@ return new class extends Migration
         });
     }
 };
+

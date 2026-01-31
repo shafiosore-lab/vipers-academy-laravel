@@ -9,76 +9,39 @@ class WebsitePlayer extends Model
 {
     use HasFactory;
 
+    protected $table = 'website_uploaded_players';
+
     protected $fillable = [
         'first_name',
         'last_name',
         'category',
-        'position',
         'age',
+        'email',
+        'phone',
+        'position',
         'image_path',
-        'jersey_number',
         'bio',
+        'jersey_number',
         'goals',
         'assists',
         'appearances',
         'yellow_cards',
         'red_cards',
         'youtube_url',
-        // Advanced position-specific stats
-        'saves',
-        'clean_sheets',
-        'goals_conceded',
-        'save_percentage',
-        'distribution_accuracy',
-        'aerial_duels_won',
-        'clearances',
-        'blocks',
-        'tackles_won',
-        'interceptions',
-        'passing_accuracy',
-        'ball_recoveries',
-        'crosses_attempted',
-        'cross_accuracy',
-        'key_passes',
-        'dribbles_completed',
-        'progressive_runs',
-        'defensive_duels_won',
-        'progressive_passes',
-        'duels_won',
-        'expected_assists',
-        'shots',
-        'ball_progressions',
-        'expected_goals',
-        'chances_created',
-        'shots_on_target',
-        'through_balls',
-        'passes_into_final_third',
-        'shot_conversion_rate',
-        'touches_in_box',
-        'big_chances_scored',
-        'big_chances_missed',
-        'hold_up_play_success',
-        'chance_creation',
-        // Skills radar attributes
-        'shot_stopping',
-        'distribution',
-        'aerial_ability',
-        'command_area',
-        'handling',
-        'positioning',
-        'tackling',
-        'strength',
-        'pace',
-        'crossing',
-        'dribbling',
-        'stamina',
-        'passing',
-        'vision',
-        'decisions',
-        'finishing',
-        'technique',
-        'flair',
-        'balance',
+        'player_id',
+        // Biography fields
+        'date_of_birth',
+        'place_of_birth',
+        'raised_where',
+        'joined_date',
+        'passion',
+        'favorite_thing_about_academy',
+        'favorite_player',
+        'favorite_team',
+        'favorite_meal',
+        'hobbies',
+        'role_model',
+        'career_aspiration',
     ];
 
     /**
@@ -87,6 +50,14 @@ class WebsitePlayer extends Model
     public function getFullNameAttribute()
     {
         return "{$this->first_name} {$this->last_name}";
+    }
+
+    /**
+     * Get name (alias for full_name)
+     */
+    public function getNameAttribute()
+    {
+        return $this->full_name;
     }
 
     /**
@@ -122,6 +93,14 @@ class WebsitePlayer extends Model
     public function gameStats()
     {
         return $this->hasMany(PlayerGameStats::class, 'player_id');
+    }
+
+    /**
+     * Get the internal player record.
+     */
+    public function player()
+    {
+        return $this->belongsTo(Player::class);
     }
 
     /**

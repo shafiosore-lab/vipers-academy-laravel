@@ -872,9 +872,7 @@
                 </div>
 
                 <!-- Store Icon -->
-                <a href="{{ route('products.index') }}" class="cart-nav-link" title="Academy Store" target="_blank">
-                    <i class="fas fa-store"></i>
-                </a>
+
 
                 <!-- Cart Icon -->
                 <a href="{{ route('cart.index') }}" class="cart-nav-link" title="Shopping Cart">

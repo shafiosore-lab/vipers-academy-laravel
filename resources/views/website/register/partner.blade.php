@@ -3,47 +3,16 @@
 @section('title', 'Partner Registration - Vipers Academy')
 
 @section('content')
-<div class="container-fluid py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="card shadow-lg border-0">
+<div class="container-fluid py-5" style="padding-left: 0 !important; padding-right: 0 !important; max-width: none !important;">
+    <div class="row justify-content-center" style="margin-left: 0 !important; margin-right: 0 !important;">
+        <div class="col-lg-10" style="max-width: none !important; flex: 0 0 100% !important; padding-left: 0 !important; padding-right: 0 !important;">
+            <div class="card shadow-lg border-0" style="width: 100%; max-width: none; margin-left: 0; margin-right: 0; border-radius: 0; position: relative; left: 0; right: 0;">
                 <div class="card-header bg-gradient-success text-white text-center py-4">
                     <i class="fas fa-handshake fa-3x mb-3"></i>
                     <h2 class="mb-0">Become a Vipers Academy Partner</h2>
-                    <p class="mb-0 opacity-75">Join our network of elite football organizations</p>
                 </div>
 
-                <div class="card-body p-5">
-                    <!-- Partnership Benefits -->
-                    <div class="row mb-5">
-                        <div class="col-12">
-                            <h4 class="text-center mb-4 text-primary">Why Partner with Vipers Academy?</h4>
-                            <div class="row g-4">
-                                <div class="col-md-4">
-                                    <div class="text-center">
-                                        <i class="fas fa-users fa-3x text-success mb-3"></i>
-                                        <h5>Access to Talent Pool</h5>
-                                        <p class="text-muted">Connect with our network of scouts and player development programs</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="text-center">
-                                        <i class="fas fa-chart-line fa-3x text-info mb-3"></i>
-                                        <h5>Advanced Analytics</h5>
-                                        <p class="text-muted">Access to player performance data and scouting reports</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="text-center">
-                                        <i class="fas fa-certificate fa-3x text-warning mb-3"></i>
-                                        <h5>Certification Programs</h5>
-                                        <p class="text-muted">Joint certification and training programs for coaches and players</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                <div class="card-body p-5" style="padding: 2rem !important;">
                     <form action="{{ route('register.partner.store') }}" method="POST">
                         @csrf
 
@@ -295,7 +264,7 @@
 
                                 <div class="d-flex justify-center">
                                     <button type="submit" class="btn btn-success btn-lg px-5">
-                                        <i class="fas fa-paper-plane me-2"></i>Submit Partnership Application
+                                        <i class="fas fa-paper-plane me-2"></i>Submit
                                     </button>
                                 </div>
                             </div>
@@ -303,7 +272,7 @@
                     </form>
                 </div>
 
-                <div class="card-footer bg-light text-center py-3">
+                <div class="card-footer bg-light text-center py-3" style="border-radius: 0;">
                     <small class="text-muted">
                         Already have an account? <a href="{{ route('login') }}" class="text-primary">Sign In</a> |
                         Looking to join as a player? <a href="{{ route('register.player') }}" class="text-success">Player Registration</a>
@@ -316,6 +285,37 @@
 @endsection
 
 <style>
+    /* Full Width Partner Registration Form */
+    .container-fluid.py-5 {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        max-width: none !important;
+        width: 100%;
+    }
+
+    .row.justify-content-center {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    .col-lg-10 {
+        max-width: none !important;
+        flex: 0 0 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    .card.shadow-lg.border-0 {
+        width: 100% !important;
+        max-width: none !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        border-radius: 0 !important;
+        position: relative;
+        left: 0 !important;
+        right: 0 !important;
+    }
+
     .bg-gradient-success {
         background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
     }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('league_standings', function (Blueprint $table) {
             $table->id();
-            $table->string('season', 20); // e.g., "2024/25"
+            $table->string('season', 20);
             $table->string('league_name');
             $table->string('team_name');
             $table->string('team_logo')->nullable();
@@ -35,8 +35,8 @@ return new class extends Migration
             $table->integer('clean_sheets')->default(0);
             $table->integer('failed_to_score')->default(0);
             $table->decimal('points_per_game', 4, 2)->default(0);
-            $table->string('form')->nullable(); // e.g., "WWDWL" (last 5 matches)
-            $table->string('status')->default('active'); // active, relegated, promoted, etc.
+            $table->string('form')->nullable();
+            $table->string('status')->default('active');
             $table->text('notes')->nullable();
             $table->boolean('is_vipers_team')->default(false);
             $table->timestamps();
@@ -54,3 +54,4 @@ return new class extends Migration
         Schema::dropIfExists('league_standings');
     }
 };
+

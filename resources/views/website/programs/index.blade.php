@@ -4,32 +4,6 @@
 
 @section('content')
 
-<!-- Hero Section -->
-<section class="programs-hero">
-    <div class="hero-background">
-        <div class="hero-overlay"></div>
-    </div>
-
-    <div class="container position-relative">
-        <div class="row justify-content-center">
-            <div class="col-lg-10 col-xl-8">
-                <div class="hero-content text-center text-white" data-aos="fade-up">
-                    <h1 class="hero-title">Our Programs</h1>
-                    <p class="hero-subtitle">Choose the perfect program to develop your child's potential</p>
-
-                    <div class="hero-actions">
-                        <a href="#programs-section" class="btn btn-warning btn-lg">
-                            <i class="fas fa-search me-2"></i>Explore Programs
-                        </a>
-                        <a href="{{ route('enroll') }}" class="btn btn-outline-light btn-lg">
-                            Enroll Now
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- Programs Section -->
 <section id="programs-section" class="programs-section">
@@ -67,7 +41,7 @@
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#weekendProgramModal">
                                 <i class="fas fa-info-circle me-2"></i>Learn More
                             </button>
-                            <a href="{{ route('enroll') }}" class="btn btn-outline-primary">
+                            <a href="{{ route('enrol') }}" class="btn btn-outline-primary">
                                 <i class="fas fa-user-plus me-2"></i>Enroll Now
                             </a>
                         </div>
@@ -118,7 +92,7 @@
                             <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#holidayCampModal">
                                 <i class="fas fa-info-circle me-2"></i>Learn More
                             </button>
-                            <a href="{{ route('enroll') }}" class="btn btn-outline-warning">
+                            <a href="{{ route('enrol') }}" class="btn btn-outline-warning">
                                 <i class="fas fa-user-plus me-2"></i>Enroll Now
                             </a>
                         </div>
@@ -157,7 +131,7 @@
                             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#codingClassesModal">
                                 <i class="fas fa-info-circle me-2"></i>Learn More
                             </button>
-                            <a href="{{ route('enroll') }}" class="btn btn-outline-success">
+                            <a href="{{ route('enrol') }}" class="btn btn-outline-success">
                                 <i class="fas fa-user-plus me-2"></i>Enroll Now
                             </a>
                         </div>
@@ -184,65 +158,6 @@
 
 @push('styles')
 <style>
-/* Hero Section */
-.programs-hero {
-    position: relative;
-    min-height: 350px;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-}
-
-.hero-background {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(13, 71, 161, 0.9) 0%, rgba(25, 118, 210, 0.8) 100%);
-    z-index: 1;
-}
-
-.hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 30% 70%, rgba(255, 193, 7, 0.1) 0%, transparent 50%);
-}
-
-.hero-content {
-    position: relative;
-    z-index: 2;
-    padding: 40px 20px;
-}
-
-.hero-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-}
-
-.hero-subtitle {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
-    opacity: 0.95;
-}
-
-.hero-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.hero-actions .btn {
-    border-radius: 50px;
-    font-weight: 600;
-    padding: 0.75rem 2rem;
-    transition: all 0.3s ease;
-}
-
-.hero-actions .btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-}
-
 /* Programs Section */
 .programs-section {
     padding: 3rem 0;
@@ -406,19 +321,6 @@
 }
 
 @media (max-width: 768px) {
-    .hero-title {
-        font-size: 2rem;
-    }
-
-    .hero-subtitle {
-        font-size: 1.1rem;
-    }
-
-    .hero-actions {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
     .program-title {
         font-size: 1.5rem;
     }

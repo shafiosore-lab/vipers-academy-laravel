@@ -11,6 +11,7 @@ class Player extends Model
 
     protected $fillable = [
         'name',
+        'full_name',
         'first_name',
         'last_name',
         'category',
@@ -32,7 +33,14 @@ class Player extends Model
         'temporary_approval_expires_at',
         'temporary_approval_notes',
         'partner_id',
-        'email'
+        'guardian_id',
+        'email',
+        'parent_guardian_name',
+        'parent_phone',
+        'training_days',
+        'monthly_contribution',
+        'status',
+        'fee_category' // 'A' for 200, 'B' for 500
     ];
 
     protected $casts = [
@@ -73,6 +81,31 @@ class Player extends Model
         return $this->hasMany(GameStatistic::class);
     }
 
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
+    public function guardian()
+    {
+        return $this->belongsTo(Guardian::class);
+    }
+
+    public function monthlyBillings()
+    {
+        return $this->hasMany(MonthlyBilling::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    public function websitePlayer()
+    {
+        return $this->hasOne(WebsitePlayer::class);
+    }
+
     // ==========================================
     // ATTRIBUTES & ACCESSORS
     // ==========================================
@@ -82,7 +115,7 @@ class Player extends Model
         if ($this->first_name && $this->last_name) {
             return "{$this->first_name} {$this->last_name}";
         }
-        return $this->name;
+        return $this->full_name;
     }
 
     public function getPositionOrderAttribute()
@@ -266,5 +299,68 @@ class Player extends Model
     public function getTotalAssists()
     {
         return $this->assists + ($this->gameStatistics->sum('assists') ?? 0);
+    }
+
+    // Billing methods
+    public function getMonthlyFee()
+    {
+        return $this->fee_category === 'B' ? 500 : 200;
+    }
+
+    public function getCurrentOutstandingBalance()
+    {
+        $latestBilling = $this->monthlyBillings()->latest('month_year')->first();
+        return $latestBilling ? $latestBilling->outstanding_balance : 0;
+    }
+
+    public function createMonthlyBilling($monthYear)
+    {
+        $openingBalance = $this->getCurrentOutstandingBalance();
+        $monthlyFee = $this->getMonthlyFee();
+
+        return $this->monthlyBillings()->create([
+            'month_year' => $monthYear,
+            'opening_balance' => $openingBalance,
+            'monthly_fee' => $monthlyFee,
+            'amount_paid' => 0,
+            'closing_balance' => $openingBalance + $monthlyFee,
+            'balance_carried_forward' => $openingBalance + $monthlyFee,
+        ]);
+    }
+
+    public function applyPayment($amount, $monthAppliedTo = null)
+    {
+        $billing = $this->getOrCreateMonthlyBilling($monthAppliedTo ?: now()->format('Y-m'));
+
+        // Apply payment: first to opening balance, then to current month fee
+        $remainingPayment = $amount;
+
+        // Pay off opening balance first
+        if ($billing->opening_balance > 0) {
+            $payToOpening = min($remainingPayment, $billing->opening_balance);
+            $billing->opening_balance -= $payToOpening;
+            $remainingPayment -= $payToOpening;
+        }
+
+        // Then apply to monthly fee
+        if ($remainingPayment > 0 && $billing->amount_paid < $billing->monthly_fee) {
+            $payToFee = min($remainingPayment, $billing->monthly_fee - $billing->amount_paid);
+            $billing->amount_paid += $payToFee;
+            $remainingPayment -= $payToFee;
+        }
+
+        // Recalculate balances
+        $billing->closing_balance = $billing->opening_balance + $billing->monthly_fee - $billing->amount_paid;
+        $billing->balance_carried_forward = max(0, $billing->closing_balance);
+
+        $billing->save();
+
+        return $billing;
+    }
+
+    private function getOrCreateMonthlyBilling($monthYear)
+    {
+        return $this->monthlyBillings()->where('month_year', $monthYear)->first()
+            ?? $this->createMonthlyBilling($monthYear);
     }
 }

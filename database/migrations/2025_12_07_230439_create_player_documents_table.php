@@ -33,3 +33,4 @@ return new class extends Migration
         Schema::dropIfExists('player_documents');
     }
 };
+

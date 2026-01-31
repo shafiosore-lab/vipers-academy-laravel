@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('goalkeeper_rankings', function (Blueprint $table) {
             $table->id();
-            $table->string('season', 20); // e.g., "2024/25"
+            $table->string('season', 20);
             $table->string('league_name');
             $table->string('goalkeeper_name');
             $table->string('goalkeeper_image')->nullable();
@@ -25,27 +25,27 @@ return new class extends Migration
             $table->integer('saves')->default(0);
             $table->integer('goals_conceded')->default(0);
             $table->decimal('goals_conceded_per_game', 4, 2)->default(0);
-            $table->decimal('save_percentage', 5, 2)->nullable(); // percentage
+            $table->decimal('save_percentage', 5, 2)->nullable();
             $table->integer('clean_sheets')->default(0);
-            $table->decimal('clean_sheet_percentage', 5, 2)->nullable(); // percentage
+            $table->decimal('clean_sheet_percentage', 5, 2)->nullable();
             $table->integer('shots_faced')->default(0);
             $table->integer('shots_on_target_faced')->default(0);
             $table->decimal('shots_faced_per_game', 4, 2)->default(0);
             $table->integer('penalties_saved')->default(0);
             $table->integer('penalties_faced')->default(0);
-            $table->decimal('penalty_save_percentage', 5, 2)->nullable(); // percentage
+            $table->decimal('penalty_save_percentage', 5, 2)->nullable();
             $table->integer('catches')->default(0);
             $table->integer('punches')->default(0);
             $table->integer('distribution_completed')->default(0);
             $table->integer('distribution_attempted')->default(0);
-            $table->decimal('distribution_accuracy', 5, 2)->nullable(); // percentage
+            $table->decimal('distribution_accuracy', 5, 2)->nullable();
             $table->integer('crosses_claimed')->default(0);
             $table->integer('errors_leading_to_goal')->default(0);
             $table->decimal('overall_rating', 3, 2)->nullable();
             $table->string('nationality')->nullable();
             $table->integer('age')->nullable();
             $table->decimal('height_cm', 5, 2)->nullable();
-            $table->string('dominant_hand')->default('Right'); // Right, Left
+            $table->string('dominant_hand')->default('Right');
             $table->boolean('is_vipers_player')->default(false);
             $table->text('notes')->nullable();
             $table->timestamps();
@@ -64,3 +64,4 @@ return new class extends Migration
         Schema::dropIfExists('goalkeeper_rankings');
     }
 };
+

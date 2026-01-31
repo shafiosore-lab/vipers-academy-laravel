@@ -345,7 +345,7 @@
                         <i class="fas fa-shopping-cart"></i>
                         <h5>No Recent Orders</h5>
                         <p>Your order history will appear here</p>
-                        <a href="{{ route('products.index') }}" class="btn btn-primary btn-sm" target="_blank">Start Shopping</a>
+                        <a href="{{ route('home') }}" class="btn btn-primary btn-sm" target="_blank">Back to Home</a>
                     </div>
                     @endforelse
                 </div>

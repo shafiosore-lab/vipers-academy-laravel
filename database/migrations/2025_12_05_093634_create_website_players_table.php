@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('category'); // u9, u11, etc.
+            $table->string('category');
             $table->string('position');
             $table->integer('age');
             $table->string('image_path')->nullable();
@@ -36,3 +36,4 @@ return new class extends Migration
         Schema::dropIfExists('website_players');
     }
 };
+

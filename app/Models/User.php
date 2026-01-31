@@ -30,6 +30,7 @@ class User extends Authenticatable
         'password',
         'user_type', // 'admin', 'partner', 'staff', 'player'
         'approval_status', // 'pending', 'approved', 'rejected'
+        'status', // 'active', 'pending', 'suspended'
         'profile_photo',
         'approved_at',
         'approved_by_user_id',
@@ -141,6 +142,14 @@ class User extends Authenticatable
     public function isPartner()
     {
         return $this->user_type === 'partner';
+    }
+
+    /**
+     * Check if user is a staff member.
+     */
+    public function isStaff()
+    {
+        return $this->user_type === 'staff';
     }
 
     /**
