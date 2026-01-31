@@ -460,13 +460,14 @@ Route::middleware(['auth', 'player'])->prefix('player-portal')->name('player.por
     Route::get('/support', [App\Http\Controllers\Player\PlayerPortalController::class, 'support'])->name('support');
 });
 
-// Partner Routes (if needed)
+// Partner Routes
 Route::middleware(['auth', 'partner'])->prefix('partner')->name('partner.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Partner\PartnerController::class, 'dashboard'])->name('dashboard');
     Route::get('/players', [App\Http\Controllers\Partner\PartnerController::class, 'players'])->name('players');
     Route::get('/analytics', [App\Http\Controllers\Partner\PartnerController::class, 'analytics'])->name('analytics');
 });
-Route::middleware(['auth', 'partner'])->prefix('partner')->name('partner.')->group(function () {
+
+// API Routes
 Route::prefix('api')->name('api.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Player\PlayerPortalController::class, 'dashboard'])->name('dashboard');
 });

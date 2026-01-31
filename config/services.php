@@ -4,6 +4,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | SMS Provider Configuration
+    |--------------------------------------------------------------------------
+    | Choose which SMS provider to use: 'africas_talking' or 'bulksms'
+    */
+    'sms_provider' => env('SMS_PROVIDER', 'africas_talking'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Third Party Services
     |--------------------------------------------------------------------------
     |
@@ -79,6 +87,12 @@ return [
     '360dialog' => [
         'api_key' => env('360DIALOG_API_KEY'),
         'phone_number_id' => env('360DIALOG_PHONE_NUMBER_ID'),
+    ],
+
+    'bulksms' => [
+        'api_token' => env('BULKSMS_API_TOKEN'),
+        'base_url' => env('BULKSMS_BASE_URL', 'https://bulksms.talksasa.com/api/v3'),
+        'sender_id' => env('BULKSMS_SENDER_ID', 'VipersAcademy'),
     ],
 
 ];

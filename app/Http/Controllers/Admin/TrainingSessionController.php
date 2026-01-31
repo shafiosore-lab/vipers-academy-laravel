@@ -141,6 +141,9 @@ class TrainingSessionController extends Controller
         try {
             $trainingSession->end();
 
+            // Send SMS notification to all players' parents
+            $this->sendSessionEndNotifications($trainingSession);
+
             ActivityLog::log('ended_training_session', 'TrainingSession', $trainingSession->id, [
                 'team_category' => $trainingSession->team_category,
                 'total_duration_minutes' => $trainingSession->total_duration_minutes,
@@ -151,6 +154,47 @@ class TrainingSessionController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
+    }
+
+    /**
+     * Send SMS notifications to parents when session ends.
+     */
+    private function sendSessionEndNotifications(TrainingSession $trainingSession)
+    {
+        // Get all players who attended this session
+        $playerIds = $trainingSession->attendances()->pluck('player_id');
+        $players = Player::whereIn('id', $playerIds)->get();
+
+        $sentCount = 0;
+        $failedCount = 0;
+
+        foreach ($players as $player) {
+            if (!$player->parent_phone) {
+                continue;
+            }
+
+            $message = "Dear Parent/Guardian,\n\n" .
+                "Your child {$player->full_name} attended the {$trainingSession->team_category} {$trainingSession->session_type} session.\n\n" .
+                "Duration: {$trainingSession->total_duration_minutes} minutes\n" .
+                "End Time: {$trainingSession->end_time->format('M j, Y g:i A')}\n\n" .
+                "Vipers Academy";
+
+            $result = $this->smsService->sendSms($player->parent_phone, $message);
+
+            if ($result) {
+                $sentCount++;
+            } else {
+                $failedCount++;
+            }
+        }
+
+        Log::info('Session end notifications sent', [
+            'session_id' => $trainingSession->id,
+            'sent' => $sentCount,
+            'failed' => $failedCount,
+        ]);
+
+        return ['sent' => $sentCount, 'failed' => $failedCount];
     }
 
     /**

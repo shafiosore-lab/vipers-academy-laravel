@@ -18,102 +18,128 @@ class DashboardController extends Controller
         // Cache dashboard data for 5 minutes to improve performance
         $cacheKey = 'admin_dashboard_' . auth()->id();
         $cacheTime = 300; // 5 minutes
-        $cacheTags = ['admin_dashboard'];
 
-        $data = \Cache::tags($cacheTags)->remember($cacheKey, $cacheTime, function () {
-            // Player insights data
-            $totalPlayers = Player::count();
-            $newPlayersThisMonth = Player::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count();
-            $playersLastMonth = Player::whereBetween('created_at', [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()])->count();
-            $playerGrowth = $playersLastMonth > 0 ? round((($newPlayersThisMonth - $playersLastMonth) / $playersLastMonth) * 100, 1) : 0;
-            $playersWithContracts = Player::where('has_professional_contract', true)->count();
-            $internationalPlayers = Player::where('international_eligible', true)->count();
-            $playersNeedingAttention = Player::where('needs_attention', true)->count();
+        // Check if cache tagging is supported (requires Redis/Memcached)
+        $useTags = false;
+        try {
+            $driver = config('cache.default');
+            $supportedDrivers = ['redis', 'memcached', 'dynamodb', 'octane'];
+            if (in_array($driver, $supportedDrivers)) {
+                $useTags = true;
+            }
+        } catch (\Exception $e) {
+            $useTags = false;
+        }
 
-            // Academic insights
-            $excellentAcademic = Player::where('academic_performance', 'Excellent')->count();
-            $averageAcademicGPA = Player::whereNotNull('academic_gpa')->avg('academic_gpa');
-
-            // Performance insights
-            $totalGoals = Player::sum('goals_scored');
-            $totalAssists = Player::sum('assists');
-            $highPerformers = Player::where('performance_rating', '>=', 8.0)->count();
-            $totalMatches = Player::sum('matches_played');
-
-            // School distribution
-            $schools = Player::whereNotNull('school_name')
-                ->select('school_name')
-                ->selectRaw('COUNT(*) as student_count')
-                ->groupBy('school_name')
-                ->orderBy('student_count', 'desc')
-                ->take(5)
-                ->get();
-
-            // Development stages
-            $developmentStages = Player::select('development_stage')
-                ->whereNotNull('development_stage')
-                ->selectRaw('COUNT(*) as count')
-                ->groupBy('development_stage')
-                ->get();
-
-            // Recent follow-ups needed
-            $recentFollowUps = Player::where('needs_attention', true)
-                ->orWhere('last_follow_up', '<', now()->subDays(30))
-                ->take(5)
-                ->get();
-
-            // Top performers
-            $topPerformers = Player::whereNotNull('performance_rating')
-                ->orderBy('performance_rating', 'desc')
-                ->take(5)
-                ->get();
-
-            // Partner insights data
-            $totalPartners = User::where('user_type', 'partner')->count();
-            $activePartners = User::where('user_type', 'partner')->where('approval_status', 'approved')->count();
-            $pendingPartners = User::where('user_type', 'partner')->where('approval_status', 'pending')->count();
-
-            // Additional metrics for dashboard
-            $totalPrograms = Program::count();
-            $newProgramsThisMonth = Program::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count();
-            $programsLastMonth = Program::whereBetween('created_at', [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()])->count();
-            $programGrowth = $programsLastMonth > 0 ? round((($newProgramsThisMonth - $programsLastMonth) / $programsLastMonth) * 100, 1) : 0;
-
-            $totalNews = Blog::count();
-            $newsThisWeek = Blog::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count();
-            $newsLastWeek = Blog::whereBetween('created_at', [now()->subWeek()->startOfWeek(), now()->subWeek()->endOfWeek()])->count();
-            $newsGrowth = $newsLastWeek > 0 ? round((($newsThisWeek - $newsLastWeek) / $newsLastWeek) * 100, 1) : 0;
-
-            // Recent partner registrations
-            $recentPartners = User::where('user_type', 'partner')
-                ->latest()
-                ->take(3)
-                ->get();
-
-            // Recent player registrations (for activity feed)
-            $recentPlayers = Player::latest()->take(3)->get();
-
-            // Generate AI insights
-            $aiInsights = $this->generateAiInsights($totalPlayers, $highPerformers, $playersNeedingAttention);
-
-            // Chart data
-            $monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            $playerRegistrations = [12, 19, 3, 5, 2, 3, 9, 14, 7, 8, 15, 10]; // Sample data
-            $programCreations = [2, 4, 1, 3, 1, 2, 5, 8, 3, 4, 6, 3]; // Sample data
-
-            return compact(
-                'totalPlayers', 'newPlayersThisMonth', 'playerGrowth', 'playersWithContracts',
-                'internationalPlayers', 'playersNeedingAttention', 'excellentAcademic',
-                'averageAcademicGPA', 'totalGoals', 'totalAssists', 'highPerformers',
-                'totalMatches', 'schools', 'developmentStages', 'recentFollowUps',
-                'topPerformers', 'totalPartners', 'activePartners', 'pendingPartners',
-                'totalPrograms', 'newProgramsThisMonth', 'programGrowth', 'totalNews',
-                'newsThisWeek', 'newsGrowth', 'recentPartners', 'recentPlayers', 'aiInsights',
-                'monthLabels', 'playerRegistrations', 'programCreations'
-            );
-        });
+        if ($useTags) {
+            $data = \Cache::tags(['admin_dashboard'])->remember($cacheKey, $cacheTime, function () {
+                return $this->getDashboardData();
+            });
+        } else {
+            // Fallback: use simple cache without tags (works with file driver)
+            $data = \Cache::remember($cacheKey, $cacheTime, function () {
+                return $this->getDashboardData();
+            });
+        }
 
         return view('admin.dashboard.index', $data);
+    }
+
+    /**
+     * Gather all dashboard data
+     */
+    private function getDashboardData()
+    {
+        // Player insights data
+        $totalPlayers = Player::count();
+        $newPlayersThisMonth = Player::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count();
+        $playersLastMonth = Player::whereBetween('created_at', [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()])->count();
+        $playerGrowth = $playersLastMonth > 0 ? round((($newPlayersThisMonth - $playersLastMonth) / $playersLastMonth) * 100, 1) : 0;
+        $playersWithContracts = Player::where('has_professional_contract', true)->count();
+        $internationalPlayers = Player::where('international_eligible', true)->count();
+        $playersNeedingAttention = Player::where('needs_attention', true)->count();
+
+        // Academic insights
+        $excellentAcademic = Player::where('academic_performance', 'Excellent')->count();
+        $averageAcademicGPA = Player::whereNotNull('academic_gpa')->avg('academic_gpa');
+
+        // Performance insights
+        $totalGoals = Player::sum('goals_scored');
+        $totalAssists = Player::sum('assists');
+        $highPerformers = Player::where('performance_rating', '>=', 8.0)->count();
+        $totalMatches = Player::sum('matches_played');
+
+        // School distribution
+        $schools = Player::whereNotNull('school_name')
+            ->select('school_name')
+            ->selectRaw('COUNT(*) as student_count')
+            ->groupBy('school_name')
+            ->orderBy('student_count', 'desc')
+            ->take(5)
+            ->get();
+
+        // Development stages
+        $developmentStages = Player::select('development_stage')
+            ->whereNotNull('development_stage')
+            ->selectRaw('COUNT(*) as count')
+            ->groupBy('development_stage')
+            ->get();
+
+        // Recent follow-ups needed
+        $recentFollowUps = Player::where('needs_attention', true)
+            ->orWhere('last_follow_up', '<', now()->subDays(30))
+            ->take(5)
+            ->get();
+
+        // Top performers
+        $topPerformers = Player::whereNotNull('performance_rating')
+            ->orderBy('performance_rating', 'desc')
+            ->take(5)
+            ->get();
+
+        // Partner insights data
+        $totalPartners = User::where('user_type', 'partner')->count();
+        $activePartners = User::where('user_type', 'partner')->where('approval_status', 'approved')->count();
+        $pendingPartners = User::where('user_type', 'partner')->where('approval_status', 'pending')->count();
+
+        // Additional metrics for dashboard
+        $totalPrograms = Program::count();
+        $newProgramsThisMonth = Program::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count();
+        $programsLastMonth = Program::whereBetween('created_at', [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()])->count();
+        $programGrowth = $programsLastMonth > 0 ? round((($newProgramsThisMonth - $programsLastMonth) / $programsLastMonth) * 100, 1) : 0;
+
+        $totalNews = Blog::count();
+        $newsThisWeek = Blog::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count();
+        $newsLastWeek = Blog::whereBetween('created_at', [now()->subWeek()->startOfWeek(), now()->subWeek()->endOfWeek()])->count();
+        $newsGrowth = $newsLastWeek > 0 ? round((($newsThisWeek - $newsLastWeek) / $newsLastWeek) * 100, 1) : 0;
+
+        // Recent partner registrations
+        $recentPartners = User::where('user_type', 'partner')
+            ->latest()
+            ->take(3)
+            ->get();
+
+        // Recent player registrations (for activity feed)
+        $recentPlayers = Player::latest()->take(3)->get();
+
+        // Generate AI insights
+        $aiInsights = $this->generateAiInsights($totalPlayers, $highPerformers, $playersNeedingAttention);
+
+        // Chart data
+        $monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        $playerRegistrations = [12, 19, 3, 5, 2, 3, 9, 14, 7, 8, 15, 10]; // Sample data
+        $programCreations = [2, 4, 1, 3, 1, 2, 5, 8, 3, 4, 6, 3]; // Sample data
+
+        return compact(
+            'totalPlayers', 'newPlayersThisMonth', 'playerGrowth', 'playersWithContracts',
+            'internationalPlayers', 'playersNeedingAttention', 'excellentAcademic',
+            'averageAcademicGPA', 'totalGoals', 'totalAssists', 'highPerformers',
+            'totalMatches', 'schools', 'developmentStages', 'recentFollowUps',
+            'topPerformers', 'totalPartners', 'activePartners', 'pendingPartners',
+            'totalPrograms', 'newProgramsThisMonth', 'programGrowth', 'totalNews',
+            'newsThisWeek', 'newsGrowth', 'recentPartners', 'recentPlayers', 'aiInsights',
+            'monthLabels', 'playerRegistrations', 'programCreations'
+        );
     }
 
     public function performanceOverview()
