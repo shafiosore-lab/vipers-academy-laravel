@@ -541,6 +541,8 @@
 
                 if ($user->hasAnyRole(['super-admin', 'admin-operations', 'operations-admin'])) {
                     $dashboardRoute = route('admin.dashboard');
+                } elseif ($user->hasRole('org-admin')) {
+                    $dashboardRoute = route('organization.dashboard');
                 } elseif ($user->hasAnyRole(['coach', 'head-coach', 'assistant-coach'])) {
                     $dashboardRoute = route('coach.dashboard');
                 } elseif ($user->hasRole('team-manager')) {
@@ -571,6 +573,7 @@
                     <h5>{{ __('Vipers Academy') }}</h5>
                     <small>
                         @if(auth()->user()->hasRole('super-admin')){{ __('Admin Portal') }}
+                        @elseif(auth()->user()->hasRole('org-admin')){{ __('Organization Admin') }}
                         @elseif(auth()->user()->hasRole('operations-admin')){{ __('Admin Portal') }}
                         @elseif(auth()->user()->hasRole('head-coach')){{ __('Head Coach') }}
                         @elseif(auth()->user()->hasRole('coach')){{ __('Coach Dashboard') }}
@@ -661,6 +664,7 @@
                             <div class="staff-user-name">{{ Auth::user()->name }}</div>
                             <div class="staff-user-role">
                                 @if(auth()->user()->hasRole('super-admin')){{ __('Super Admin') }}
+                                @elseif(auth()->user()->hasRole('org-admin')){{ __('Organization Admin') }}
                                 @elseif(auth()->user()->hasRole('operations-admin')){{ __('Operations Admin') }}
                                 @elseif(auth()->user()->hasRole('head-coach')){{ __('Head Coach') }}
                                 @elseif(auth()->user()->hasRole('coach')){{ __('Coach') }}
@@ -863,8 +867,25 @@
             @endif
 
             {{-- ADMIN SECTION --}}
-            @if(auth()->user()->hasAnyRole(['super-admin', 'operations-admin', 'admin']))
+            @if(auth()->user()->hasAnyRole(['super-admin', 'org-admin', 'operations-admin', 'admin']))
                 <div class="nav-section-title" role="heading" aria-level="2">{{ __('Admin') }}</div>
+                @if(auth()->user()->hasRole('org-admin'))
+                <a href="{{ route('organization.dashboard') }}" class="sidebar-nav-link {{ request()->routeIs('organization.dashboard') ? 'active' : '' }}">
+                    <i class="fas fa-th-large" aria-hidden="true"></i><span>{{ __('Dashboard') }}</span>
+                </a>
+                <a href="{{ route('organization.attendance.index') }}" class="sidebar-nav-link {{ request()->routeIs('organization.attendance.*') ? 'active' : '' }}">
+                    <i class="fas fa-calendar-check" aria-hidden="true"></i><span>{{ __('Attendance') }}</span>
+                </a>
+                <a href="{{ route('admin.programs.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.programs.*') ? 'active' : '' }}">
+                    <i class="fas fa-graduation-cap" aria-hidden="true"></i><span>{{ __('Programs') }}</span>
+                </a>
+                <a href="{{ route('admin.staff.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.staff.*') ? 'active' : '' }}">
+                    <i class="fas fa-users-cog" aria-hidden="true"></i><span>{{ __('Staff') }}</span>
+                </a>
+                <a href="{{ route('admin.settings.company') }}" class="sidebar-nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                    <i class="fas fa-cog" aria-hidden="true"></i><span>{{ __('Settings') }}</span>
+                </a>
+                @elseif(auth()->user()->hasAnyRole(['super-admin', 'operations-admin', 'admin']))
                 <a href="{{ route('admin.dashboard') }}" class="sidebar-nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                     <i class="fas fa-th-large" aria-hidden="true"></i><span>{{ __('Dashboard') }}</span>
                 </a>
@@ -883,6 +904,7 @@
                 <a href="{{ route('admin.partners.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.partners.*') ? 'active' : '' }}">
                     <i class="fas fa-handshake" aria-hidden="true"></i><span>{{ __('Partners') }}</span>
                 </a>
+                @endif
             @endif
 
             {{-- QUICK LINKS - VISIBLE TO ALL --}}

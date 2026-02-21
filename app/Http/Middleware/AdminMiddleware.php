@@ -38,7 +38,7 @@ class AdminMiddleware
 
         // Check if user has any admin role or is staff with appropriate permissions
         // Use SLUGS to match the role middleware expectations
-        $adminRoles = ['super-admin', 'marketing-admin', 'scouting-admin', 'operations-admin', 'admin-operations', 'partner-operations', 'coaching-admin', 'finance-admin'];
+        $adminRoles = ['super-admin', 'marketing-admin', 'scouting-admin', 'operations-admin', 'admin-operations', 'partner-operations', 'coaching-admin', 'finance-admin', 'org-admin'];
         $staffRoles = ['coach', 'assistant-coach', 'head-coach']; // Staff roles that should have basic admin access
 
         $userRoles = $user->roles->pluck('slug')->toArray();

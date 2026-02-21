@@ -43,7 +43,28 @@ class AdminStaffController extends Controller
 
     public function create()
     {
-        $roles = Role::where('type', 'partner_staff')->get();
+        // Get the currently logged-in user
+        $currentUser = auth()->user();
+
+        // Check if user is Super Admin - show all roles
+        if ($currentUser->hasRole('super-admin')) {
+            $roles = Role::orderBy('name')->get();
+        }
+        // Check if user is Organization Admin - show partner_staff roles (expandable based on subscription later)
+        elseif ($currentUser->hasRole('org-admin')) {
+            // For now, show partner_staff roles
+            // TODO: Expand based on subscription package features
+            $roles = Role::where('type', 'partner_staff')->orderBy('name')->get();
+
+            // If no partner_staff roles, get all roles except super-admin and org-admin
+            if ($roles->isEmpty()) {
+                $roles = Role::whereNotIn('slug', ['super-admin', 'org-admin'])->orderBy('name')->get();
+            }
+        }
+        // Default: show all roles (fallback if no partner_staff roles exist)
+        else {
+            $roles = Role::orderBy('name')->get();
+        }
 
         return view('admin.staff.create', compact('roles'));
     }

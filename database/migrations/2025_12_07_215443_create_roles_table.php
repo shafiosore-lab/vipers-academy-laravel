@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('slug')->unique();
             $table->string('description')->nullable();
-            $table->enum('type', ['admin', 'partner_staff', 'player'])->default('admin');
+            $table->enum('type', ['admin', 'organization', 'partner_staff', 'player'])->default('admin');
             $table->boolean('is_default')->default(false);
             $table->timestamps();
         });

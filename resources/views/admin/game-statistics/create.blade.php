@@ -116,14 +116,80 @@
                                         </div>
 
                                         <div id="aiSection" style="display: none;">
+                                            <!-- Quick Templates -->
+                                            <div class="mb-3">
+                                                <label class="form-label"><i class="fas fa-magic me-1"></i>Quick Templates</label>
+                                                <div class="d-flex flex-wrap gap-2">
+                                                    <button type="button" class="btn btn-sm btn-outline-primary template-btn"
+                                                            data-template="PlayerName played [minutes] minutes, scored [goals] goal(s), made [assists] assist(s), had [tackles] successful tackles, [passes] passes completed, [shots] shots on target, and received a [rating] rating.">
+                                                        <i class="fas fa-futbol me-1"></i>Standard
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-outline-success template-btn"
+                                                            data-template="In today's match against [Opponent], [Player] played as [Position]. Goals: [x], Assists: [x], Key passes: [x], Tackles won: [x], Dribbles completed: [x], Rating: [x]/10.">
+                                                        <i class="fas fa-running me-1"></i>Detailed
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-outline-info template-btn"
+                                                            data-template="Goalkeeper performance: [Minutes] minutes played, [Saves] saves, [Clean sheets] clean sheet(s), [Goals conceded] goals conceded, [Distribution] successful passes, Rating: [x]/10.">
+                                                        <i class="fas fa-hand-rock me-1"></i>Goalkeeper
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-outline-warning template-btn"
+                                                            data-template="[Player] came on as a substitute in minute [minute], scored [goals] goal(s), provided [assists] assist(s) and [key passes] key passes in [minutes] minutes of play.">
+                                                        <i class="fas fa-clock me-1"></i>Substitute
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Terminology Guide -->
+                                            <div class="mb-3">
+                                                <a class="text-primary" data-bs-toggle="collapse" href="#terminologyGuide" role="button" aria-expanded="false">
+                                                    <i class="fas fa-book me-1"></i>Football Terminology Guide
+                                                </a>
+                                                <div class="collapse mt-2" id="terminologyGuide">
+                                                    <div class="card card-body bg-light small">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <strong>Attacking Terms:</strong>
+                                                                <ul class="mb-2">
+                                                                    <li><code>Goals</code> - Goals scored</li>
+                                                                    <li><code>Assists</code> - Key passes leading to goals</li>
+                                                                    <li><code>Shots on Target</code> - Shots requiring a save</li>
+                                                                    <li><code>Key Passes</code> - Passes leading to shots</li>
+                                                                    <li><code>Dribbles</code> - Successful take-ons</li>
+                                                                    <li><code>Crosses</code> - Deliveries from wide areas</li>
+                                                                </ul>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <strong>Defensive Terms:</strong>
+                                                                <ul class="mb-2">
+                                                                    <li><code>Tackles</code> - Successful challenges</li>
+                                                                    <li><code>Interceptions</code> - Cut passes</li>
+                                                                    <li><code>Blocks</code> - Blocked shots</li>
+                                                                    <li><code>Clearances</code> - Defensive headers/passes</li>
+                                                                    <li><code>Saves</code> - Goalkeeper stops</li>
+                                                                    <li><code>Clean Sheet</code> - No goals conceded</li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <label for="game_summary" class="form-label">Game Summary *</label>
-                                            <textarea class="form-control @error('game_summary') is-invalid @enderror"
-                                                      id="game_summary" name="game_summary" rows="6"
-                                                      placeholder="Describe the player's performance in the game. For example: 'John played 85 minutes, scored 2 goals including a stunning free kick, provided 1 assist with a perfect cross, made 15 successful tackles, and received an 8.5 rating from the coach.'">{{ old('game_summary') }}</textarea>
+                                            <div class="input-group">
+                                                <textarea class="form-control @error('game_summary') is-invalid @enderror"
+                                                          id="game_summary" name="game_summary" rows="6"
+                                                          placeholder="Describe the player's performance in the game. For example: 'John played 85 minutes, scored 2 goals including a stunning free kick, provided 1 assist with a perfect cross, made 15 successful tackles, and received an 8.5 rating from the coach.'">{{ old('game_summary') }}</textarea>
+                                                <button type="button" class="btn btn-warning btn-sm" id="enhanceBtn" title="Enhance with terminology">
+                                                    <i class="fas fa-magic"></i> Enhance
+                                                </button>
+                                            </div>
                                             @error('game_summary')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
-                                            <div class="form-text">Provide a detailed description of the player's performance for AI analysis</div>
+                                            <div class="form-text">
+                                                <i class="fas fa-lightbulb text-warning me-1"></i>
+                                                Include: minutes played, goals, assists, key stats, and performance rating (0-10)
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -310,6 +376,49 @@
     border: 1px solid #a3cfbb;
     color: #0c5460;
 }
+
+.template-btn {
+    transition: all 0.2s ease;
+}
+
+.template-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.template-btn.active {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.template-btn i {
+    font-size: 0.75rem;
+}
+
+code {
+    background-color: #e9ecef;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.85em;
+}
+
+/* Enhance button styles */
+#enhanceBtn {
+    height: auto;
+    white-space: nowrap;
+    align-self: flex-start;
+    margin-top: 0;
+}
+
+.input-group textarea#game_summary {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.input-group #enhanceBtn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
 </style>
 
 <script>
@@ -346,6 +455,72 @@ document.addEventListener('DOMContentLoaded', function() {
         manualFields.forEach(fieldId => {
             const field = document.getElementById(fieldId);
             if (field) field.value = '';
+        });
+    }
+
+    // Template button functionality
+    document.querySelectorAll('.template-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const template = this.getAttribute('data-template');
+            gameSummaryField.value = template;
+            gameSummaryField.focus();
+            // Add visual feedback
+            this.classList.add('active');
+            setTimeout(() => this.classList.remove('active'), 200);
+        });
+    });
+
+    // Enhance button functionality
+    const enhanceBtn = document.getElementById('enhanceBtn');
+    if (enhanceBtn) {
+        enhanceBtn.addEventListener('click', function() {
+            const text = gameSummaryField.value.trim();
+            if (!text) {
+                alert('Please enter some text in the game summary field first.');
+                gameSummaryField.focus();
+                return;
+            }
+
+            // Show loading state
+            const originalBtnContent = enhanceBtn.innerHTML;
+            enhanceBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            enhanceBtn.disabled = true;
+
+            // Call the API
+            fetch('/api/terminology/enhance', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                },
+                body: JSON.stringify({ text: text })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.enhanced) {
+                    gameSummaryField.value = data.enhanced;
+                    // Show success feedback
+                    enhanceBtn.innerHTML = '<i class="fas fa-check"></i> Enhanced!';
+                    enhanceBtn.classList.remove('btn-warning');
+                    enhanceBtn.classList.add('btn-success');
+                    setTimeout(() => {
+                        enhanceBtn.innerHTML = originalBtnContent;
+                        enhanceBtn.classList.remove('btn-success');
+                        enhanceBtn.classList.add('btn-warning');
+                        enhanceBtn.disabled = false;
+                    }, 2000);
+                } else {
+                    alert('Could not enhance text. Please try again.');
+                    enhanceBtn.innerHTML = originalBtnContent;
+                    enhanceBtn.disabled = false;
+                }
+            })
+            .catch(error => {
+                console.error('Error enhancing text:', error);
+                alert('Error enhancing text. Please make sure you are logged in and try again.');
+                enhanceBtn.innerHTML = originalBtnContent;
+                enhanceBtn.disabled = false;
+            });
         });
     }
 

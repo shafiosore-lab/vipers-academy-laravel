@@ -48,6 +48,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'player' => \App\Http\Middleware\PlayerMiddleware::class,
             'partner' => \App\Http\Middleware\PartnerMiddleware::class,
             'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'tenant' => \App\Http\Middleware\TenantScope::class,
+            'super.admin' => \App\Http\Middleware\CheckSuperAdmin::class,
+            'feature' => \App\Http\Middleware\CheckFeature::class,
             'Socialite' => \Laravel\Socialite\Facades\Socialite::class,
         ]);
     })

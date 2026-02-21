@@ -28,6 +28,17 @@ class RoleSeeder extends Seeder
             ]
         );
 
+        // Organization Admin - Manage single organization
+        Role::updateOrCreate(
+            ['slug' => 'org-admin'],
+            [
+                'name' => 'Organization Admin',
+                'description' => 'Full control over their organization',
+                'type' => 'organization',
+                'is_default' => false,
+            ]
+        );
+
         // 2. Admin/Operations Manager - High access, no deletion
         Role::updateOrCreate(
             ['slug' => 'admin-operations'],

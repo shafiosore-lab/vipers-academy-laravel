@@ -114,16 +114,13 @@
                                 <select class="form-select @error('role_id') is-invalid @enderror"
                                         id="role_id" name="role_id" required>
                                     <option value="">{{ __('Select Role') }}</option>
-                                    @foreach($roles as $role)
+                                    @forelse($roles as $role)
                                         <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
                                             {{ $role->name }} - {{ $role->description ?? __('Basic access based on registration') }}
                                         </option>
-                                    @endforeach
-                                    @if($roles->isEmpty())
-                                        <option value="1">{{ __('Assistant Coach - Basic coaching access') }}</option>
-                                        <option value="2">{{ __('Manager - Administrative access') }}</option>
-                                        <option value="3">{{ __('Physiotherapist - Medical access') }}</option>
-                                    @endif
+                                    @empty
+                                        <option value="" disabled>{{ __('No roles available. Please contact administrator.') }}</option>
+                                    @endforelse
                                 </select>
                                 @error('role_id')
                                     <div class="invalid-feedback">{{ $message }}</div>

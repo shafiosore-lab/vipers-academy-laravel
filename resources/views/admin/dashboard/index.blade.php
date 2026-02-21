@@ -287,33 +287,41 @@
         <div class="stats-row">
             <div class="usage-stat">
                 <span class="usage-value">
-                    @try
-                        {{ \App\Models\Document::sum(\DB::raw('COALESCE((SELECT SUM(download_count) FROM user_documents ud WHERE ud.document_id = documents.id), 0)')) }}
-                    @catch
-                        0
-                    @endtry
+                    @php
+                    try {
+                        $totalDownloads = \App\Models\Document::selectRaw('COALESCE((SELECT SUM(download_count) FROM user_documents WHERE user_documents.document_id = documents.id), 0) as total')->pluck('total')->sum();
+                        echo $totalDownloads;
+                    } catch (\Exception $e) {
+                        echo 0;
+                    }
+                    @endphp
                 </span>
                 <span class="usage-label">{{ __('Total Downloads') }}</span>
             </div>
 
             <div class="usage-stat">
                 <span class="usage-value">
-                    @try
-                        {{ \App\Models\Document::sum(\DB::raw('COALESCE((SELECT COUNT(*) FROM user_documents ud WHERE ud.document_id = documents.id AND ud.status = "signed"), 0)')) }}
-                    @catch
-                        0
-                    @endtry
+                    @php
+                    try {
+                        $signedDocs = \App\Models\Document::selectRaw('COALESCE((SELECT COUNT(*) FROM user_documents WHERE user_documents.document_id = documents.id AND user_documents.status = "signed"), 0) as total')->pluck('total')->sum();
+                        echo $signedDocs;
+                    } catch (\Exception $e) {
+                        echo 0;
+                    }
+                    @endphp
                 </span>
                 <span class="usage-label">{{ __('Completed Signatures') }}</span>
             </div>
 
             <div class="usage-stat alert">
                 <span class="usage-value">
-                    @try
-                        {{ \App\Models\UserDocument::expiringSoon(7)->count() }}
-                    @catch
-                        0
-                    @endtry
+                    @php
+                    try {
+                        echo \App\Models\UserDocument::expiringSoon(7)->count();
+                    } catch (\Exception $e) {
+                        echo 0;
+                    }
+                    @endphp
                 </span>
                 <span class="usage-label">{{ __('Expiring This Week') }}</span>
             </div>

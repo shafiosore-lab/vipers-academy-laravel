@@ -412,6 +412,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 Route::prefix('api')->name('api.')->group(function () {
     Route::get('/blog', [BlogController::class, 'apiIndex'])->name('blog.index');
 
+    // Football Terminology API
+    Route::prefix('terminology')->name('terminology.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\TerminologyController::class, 'index'])->name('index');
+        Route::post('/enhance', [App\Http\Controllers\Admin\TerminologyController::class, 'enhance'])->name('enhance');
+        Route::get('/search', [App\Http\Controllers\Admin\TerminologyController::class, 'search'])->name('search');
+    });
+
     // AI Insights API Routes
     Route::prefix('ai-insights')->name('ai-insights.')->group(function () {
         // System status
@@ -550,4 +557,44 @@ Route::middleware(['auth', 'role:parent'])->prefix('parent')->name('parent.')->g
 // API Routes
 Route::prefix('api')->name('api.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Player\PlayerPortalController::class, 'dashboard'])->name('dashboard');
+});
+
+// Super Admin Routes
+Route::middleware(['auth', 'super.admin'])->prefix('super-admin')->name('super-admin.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'dashboard'])->name('dashboard');
+
+    // Organizations Management
+    Route::get('/organizations', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'organizations'])->name('organizations.index');
+    Route::get('/organizations/create', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'createOrganization'])->name('organizations.create');
+    Route::post('/organizations', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'storeOrganization'])->name('organizations.store');
+    Route::get('/organizations/{organization}', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'showOrganization'])->name('organizations.show');
+    Route::get('/organizations/{organization}/edit', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'editOrganization'])->name('organizations.edit');
+    Route::put('/organizations/{organization}', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'updateOrganization'])->name('organizations.update');
+    Route::post('/organizations/{organization}/toggle-status', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'toggleOrganizationStatus'])->name('organizations.toggle-status');
+
+    // Subscription Plans Management
+    Route::get('/plans', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'plans'])->name('plans.index');
+    Route::get('/plans/create', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'createPlan'])->name('plans.create');
+    Route::post('/plans', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'storePlan'])->name('plans.store');
+    Route::get('/plans/{plan}/edit', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'editPlan'])->name('plans.edit');
+    Route::put('/plans/{plan}', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'updatePlan'])->name('plans.update');
+
+    // Users Management (Global)
+    Route::get('/users', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'users'])->name('users.index');
+
+    // Analytics
+    Route::get('/analytics', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'analytics'])->name('analytics');
+});
+
+// Organization Admin Routes
+Route::middleware(['auth', 'role:org-admin'])->prefix('organization')->name('organization.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Organization\OrganizationDashboardController::class, 'index'])->name('dashboard');
+
+    // Attendance Management
+    Route::get('/attendance', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'index'])->name('attendance.index');
+    Route::get('/attendance/create', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'create'])->name('attendance.create');
+    Route::post('/attendance', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'store'])->name('attendance.store');
+    Route::get('/attendance/{attendance}', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'show'])->name('attendance.show');
+    Route::get('/attendance/export', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'showExportPage'])->name('attendance.export.page');
+    Route::get('/attendance/export/download', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'export'])->name('attendance.export');
 });

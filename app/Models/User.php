@@ -38,6 +38,8 @@ class User extends Authenticatable
         'approval_notes',
         'partner_id', // for staff accounts - reference to partner who created them
         'last_login',
+        'organization_id',
+        'last_login_at',
     ];
 
     /**
@@ -143,6 +145,22 @@ class User extends Authenticatable
     public function isPartner()
     {
         return $this->user_type === 'partner';
+    }
+
+    /**
+     * Check if user is a super admin (platform owner).
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole('super-admin');
+    }
+
+    /**
+     * Check if user is an organization admin.
+     */
+    public function isOrgAdmin(): bool
+    {
+        return $this->hasRole('org-admin');
     }
 
     /**
@@ -297,6 +315,14 @@ class User extends Authenticatable
     public function partner()
     {
         return $this->hasOne(Partner::class);
+    }
+
+    /**
+     * Get the organization this user belongs to.
+     */
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class);
     }
 
     /**

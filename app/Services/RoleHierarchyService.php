@@ -32,6 +32,7 @@ class RoleHierarchyService
         'coaching-admin' => 13,
         'finance-admin' => 14,
         'operations-admin' => 15,
+        'org-admin' => 50,
         'super-admin' => 100,
     ];
 
@@ -40,6 +41,7 @@ class RoleHierarchyService
      */
     private const DASHBOARD_ROUTES = [
         'super-admin' => 'admin.dashboard',
+        'org-admin' => 'organization.dashboard',
         'marketing-admin' => 'admin.dashboard',
         'scouting-admin' => 'admin.dashboard',
         'coaching-admin' => 'admin.dashboard',
