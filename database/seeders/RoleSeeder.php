@@ -126,5 +126,27 @@ class RoleSeeder extends Seeder
                 'is_default' => true,
             ]
         );
+
+        // 11. Coach - Primary coach role for team management
+        Role::updateOrCreate(
+            ['slug' => 'coach'],
+            [
+                'name' => 'Coach',
+                'description' => 'Primary coach role for team management',
+                'type' => 'partner_staff',
+                'is_default' => false,
+            ]
+        );
+
+        // 12. Student - Enrolled student with access to learning materials
+        Role::updateOrCreate(
+            ['slug' => 'student'],
+            [
+                'name' => 'Student',
+                'description' => 'Enrolled student with access to learning materials',
+                'type' => 'admin',
+                'is_default' => false,
+            ]
+        );
     }
 }

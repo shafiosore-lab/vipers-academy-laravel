@@ -28,6 +28,10 @@ class Payment extends Model
         'paid_at',
         'due_date',
         'month_applied_to',
+        'payment_category_id',
+        'next_due_date',
+        'is_joining_fee_paid',
+        'category_slug',
     ];
 
     protected $casts = [
@@ -35,6 +39,8 @@ class Payment extends Model
         'gateway_response' => 'array',
         'paid_at' => 'datetime',
         'due_date' => 'datetime',
+        'next_due_date' => 'datetime',
+        'is_joining_fee_paid' => 'boolean',
     ];
 
     // Relationships
@@ -56,6 +62,26 @@ class Payment extends Model
     public function player(): BelongsTo
     {
         return $this->belongsTo(Player::class);
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(PaymentCategory::class, 'payment_category_id');
+    }
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function approvedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approved_by');
     }
 
     // Scopes
@@ -88,6 +114,26 @@ class Payment extends Model
     {
         return $query->where('due_date', '<', now())
                     ->where('payment_status', 'pending');
+    }
+
+    public function scopeByCategory($query, $categoryId)
+    {
+        return $query->where('payment_category_id', $categoryId);
+    }
+
+    public function scopeByCategorySlug($query, $slug)
+    {
+        return $query->where('category_slug', $slug);
+    }
+
+    public function scopeJoiningFee($query)
+    {
+        return $query->where('payment_type', 'joining_fee');
+    }
+
+    public function scopeMonthly($query)
+    {
+        return $query->where('payment_type', 'monthly_fee');
     }
 
     // Helper methods

@@ -875,9 +875,9 @@
 
 
                 <!-- Cart Icon -->
-                <a href="{{ route('cart.index') }}" class="cart-nav-link" title="Shopping Cart">
+                <a href="#" class="cart-nav-link" title="Shopping Cart (Coming Soon)">
                     <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count" id="nav-cart-count">0</span>
+                    <span class="cart-count empty" id="nav-cart-count">0</span>
                 </a>
 
                 <!-- User Menu -->
@@ -1120,32 +1120,8 @@
             }
         }
 
-        // ---------- Cart Count Update ----------
-        function updateCartCount() {
-            fetch('{{ route("cart.summary") }}')
-                .then(response => response.json())
-                .then(data => {
-                    const cartCountElement = document.getElementById('nav-cart-count');
-                    if (cartCountElement) {
-                        const count = data.count || 0;
-                        cartCountElement.textContent = count > 99 ? '99+' : count;
-                        cartCountElement.classList.toggle('empty', count === 0);
-                    }
-                })
-                .catch(error => {
-                    console.log('Error updating cart count:', error);
-                });
-        }
-
-        // Update cart count on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            updateCartCount();
-        });
-
-        // Update cart count after adding/removing items (listen for custom events from cart page)
-        window.addEventListener('cartUpdated', function() {
-            updateCartCount();
-        });
+        // Cart functionality - disabled until cart system is implemented
+        // Cart routes not defined yet
 
         window.addEventListener('resize', checkScreenSize);
         checkScreenSize(); // Check on initial load

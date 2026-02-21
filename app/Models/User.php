@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Partner;
 use App\Models\Staff;
 use App\Models\Approval;
@@ -197,7 +198,13 @@ class User extends Authenticatable
      */
     public function hasRole(string $role): bool
     {
-        return $this->roles()->where('slug', $role)->exists();
+        // First try to find by slug (primary method)
+        if ($this->roles()->where('slug', $role)->exists()) {
+            return true;
+        }
+
+        // Fallback: also check by name (case-insensitive) for backwards compatibility
+        return $this->roles()->whereRaw('LOWER(name) = ?', [strtolower($role)])->exists();
     }
 
     /**
@@ -205,7 +212,14 @@ class User extends Authenticatable
      */
     public function hasAnyRole(array $roles): bool
     {
-        return $this->roles()->whereIn('slug', $roles)->exists();
+        // First try to find by slug
+        if ($this->roles()->whereIn('slug', $roles)->exists()) {
+            return true;
+        }
+
+        // Fallback: also check by name
+        $lowerRoles = array_map('strtolower', $roles);
+        return $this->roles()->whereIn('name', $lowerRoles)->exists();
     }
 
     /**

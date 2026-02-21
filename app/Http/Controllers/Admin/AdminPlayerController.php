@@ -3,11 +3,62 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PlayerFormRequest;
 use App\Models\Player;
+use App\Models\WebsitePlayer;
 use Illuminate\Http\Request;
 
 class AdminPlayerController extends Controller
 {
+    /**
+     * Validation rules for store (used by both store and update)
+     * Now consolidated in PlayerFormRequest
+     */
+    protected function getValidationRules(bool $isUpdate = false, ?int $playerId = null): array
+    {
+        $request = new PlayerFormRequest();
+        return $request->rules($isUpdate, $playerId);
+    }
+
+    /**
+     * Process file uploads for player
+     */
+    protected function processFileUploads(Request $request): array
+    {
+        $formRequest = new PlayerFormRequest();
+        $fileFields = $formRequest->getFileFields();
+        $data = [];
+
+        foreach ($fileFields as $field) {
+            if ($request->hasFile($field)) {
+                $data[$field] = $request->file($field)->store('uploads/players', 'public');
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Prepare player data from request
+     */
+    protected function preparePlayerData(Request $request, bool $isUpdate = false): array
+    {
+        $data = $request->all();
+
+        // Merge file uploads
+        $data = array_merge($data, $this->processFileUploads($request));
+
+        // Create full name from first and last name
+        $data['full_name'] = $data['first_name'] . ' ' . $data['last_name'];
+
+        // Calculate age from date of birth
+        if (isset($data['date_of_birth'])) {
+            $data['age'] = \Carbon\Carbon::parse($data['date_of_birth'])->age;
+        }
+
+        return $data;
+    }
+
     public function index()
     {
         $players = Player::all();
@@ -27,122 +78,11 @@ class AdminPlayerController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            // Basic Information
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'date_of_birth' => 'required|date|before:today',
-            'place_of_birth' => 'required|string|max:255',
-            'nationality' => 'required|string|max:255',
-            'gender' => 'required|in:Male,Female',
-            'position' => 'required|string|max:255',
+        // Use consolidated validation from PlayerFormRequest
+        $validationRules = $this->getValidationRules(false);
+        $request->validate($validationRules);
 
-            // Contact Information
-            'address' => 'required|string',
-            'city' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'email' => 'required|email|max:255',
-            'emergency_contact_name' => 'required|string|max:255',
-            'emergency_contact_phone' => 'required|string|max:20',
-            'emergency_contact_relationship' => 'required|string|max:255',
-
-            // Guardian Information
-            'father_name' => 'nullable|string|max:255',
-            'father_id_number' => 'nullable|string|max:255',
-            'father_phone' => 'nullable|string|max:20',
-            'mother_name' => 'nullable|string|max:255',
-            'mother_id_number' => 'nullable|string|max:255',
-            'mother_phone' => 'nullable|string|max:20',
-            'guardian_name' => 'nullable|string|max:255',
-            'guardian_phone' => 'nullable|string|max:20',
-            'guardian_relationship' => 'nullable|string|max:255',
-
-            // Medical Information
-            'medical_conditions' => 'nullable|string',
-            'allergies' => 'nullable|string',
-            'blood_type' => 'nullable|string|max:10',
-            'medical_insurance_provider' => 'nullable|string|max:255',
-            'medical_insurance_number' => 'nullable|string|max:255',
-            'last_medical_checkup' => 'nullable|date',
-            'medications' => 'nullable|string',
-
-            // Physical Information
-            'height_cm' => 'nullable|numeric|min:50|max:250',
-            'weight_kg' => 'nullable|numeric|min:20|max:200',
-            'dominant_foot' => 'nullable|in:Left,Right,Both',
-
-            // Football Registration
-            'fifa_registration_number' => 'nullable|string|max:255|unique:players',
-            'license_type' => 'nullable|string|max:255',
-            'registration_date' => 'nullable|date',
-            'previous_clubs' => 'nullable|string',
-            'transfer_status' => 'nullable|string|max:255',
-            'contract_status' => 'nullable|string|max:255',
-
-            // Academic Information
-            'school_name' => 'nullable|string|max:255',
-            'school_grade' => 'nullable|string|max:255',
-            'academic_performance' => 'nullable|string|max:255',
-
-            // Images and Documents
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'passport_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'birth_certificate' => 'nullable|file|mimes:pdf,jpeg,png,jpg,gif|max:5120',
-            'medical_certificate' => 'nullable|file|mimes:pdf,jpeg,png,jpg,gif|max:5120',
-            'school_certificate' => 'nullable|file|mimes:pdf,jpeg,png,jpg,gif|max:5120',
-
-            // Academy Compliance - Legal Documents
-            'guardian_consent_form' => 'nullable|file|mimes:pdf,jpeg,png,jpg,gif|max:5120',
-            'participation_agreement' => 'nullable|file|mimes:pdf,jpeg,png,jpg,gif|max:5120',
-            'data_consent_form' => 'nullable|file|mimes:pdf,jpeg,png,jpg,gif|max:5120',
-            'safeguarding_policy_acknowledged' => 'required|boolean',
-
-            // Academy Compliance - Identity Documents
-            'guardian_id_document' => 'nullable|file|mimes:pdf,jpeg,png,jpg,gif|max:5120',
-            'player_id_document' => 'nullable|file|mimes:pdf,jpeg,png,jpg,gif|max:5120',
-
-            // Academy Compliance - Accommodation
-            'accommodation_provided' => 'required|boolean',
-            'accommodation_details' => 'nullable|string',
-
-            // Academy Compliance - Training & Competition
-            'age_group' => 'nullable|string|max:255',
-            'training_schedule' => 'nullable|string',
-            'competition_plan' => 'nullable|string',
-
-            // Academy Compliance - Previous Domicile
-            'previous_domicile' => 'nullable|string|max:255',
-            'relocation_reason' => 'nullable|string',
-
-            // Contract Information
-            'contract_start_date' => 'nullable|date',
-            'contract_end_date' => 'nullable|date|after:contract_start_date',
-            'registration_status' => 'required|in:Pending,Approved,Rejected,Active,Inactive',
-            'admin_notes' => 'nullable|string',
-        ]);
-
-        $data = $request->all();
-
-        // Handle file uploads
-        $fileFields = [
-            'photo', 'passport_photo', 'birth_certificate', 'medical_certificate', 'school_certificate',
-            'guardian_consent_form', 'participation_agreement', 'data_consent_form',
-            'guardian_id_document', 'player_id_document'
-        ];
-        foreach ($fileFields as $field) {
-            if ($request->hasFile($field)) {
-                $data[$field] = $request->file($field)->store('uploads/players', 'public');
-            }
-        }
-
-        // Create full name from first and last name
-        $data['full_name'] = $data['first_name'] . ' ' . $data['last_name'];
-
-        // Calculate age from date of birth
-        if (isset($data['date_of_birth'])) {
-            $data['age'] = \Carbon\Carbon::parse($data['date_of_birth'])->age;
-        }
+        $data = $this->preparePlayerData($request, false);
 
         $player = Player::create($data);
 
@@ -164,122 +104,11 @@ class AdminPlayerController extends Controller
     {
         $player = Player::findOrFail($id);
 
-        $request->validate([
-            // Basic Information
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'date_of_birth' => 'required|date|before:today',
-            'place_of_birth' => 'required|string|max:255',
-            'nationality' => 'required|string|max:255',
-            'gender' => 'required|in:Male,Female',
-            'position' => 'required|string|max:255',
+        // Use consolidated validation from PlayerFormRequest
+        $validationRules = $this->getValidationRules(true, $player->id);
+        $request->validate($validationRules);
 
-            // Contact Information
-            'address' => 'required|string',
-            'city' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'email' => 'required|email|max:255',
-            'emergency_contact_name' => 'required|string|max:255',
-            'emergency_contact_phone' => 'required|string|max:20',
-            'emergency_contact_relationship' => 'required|string|max:255',
-
-            // Guardian Information
-            'father_name' => 'nullable|string|max:255',
-            'father_id_number' => 'nullable|string|max:255',
-            'father_phone' => 'nullable|string|max:20',
-            'mother_name' => 'nullable|string|max:255',
-            'mother_id_number' => 'nullable|string|max:255',
-            'mother_phone' => 'nullable|string|max:20',
-            'guardian_name' => 'nullable|string|max:255',
-            'guardian_phone' => 'nullable|string|max:20',
-            'guardian_relationship' => 'nullable|string|max:255',
-
-            // Medical Information
-            'medical_conditions' => 'nullable|string',
-            'allergies' => 'nullable|string',
-            'blood_type' => 'nullable|string|max:10',
-            'medical_insurance_provider' => 'nullable|string|max:255',
-            'medical_insurance_number' => 'nullable|string|max:255',
-            'last_medical_checkup' => 'nullable|date',
-            'medications' => 'nullable|string',
-
-            // Physical Information
-            'height_cm' => 'nullable|numeric|min:50|max:250',
-            'weight_kg' => 'nullable|numeric|min:20|max:200',
-            'dominant_foot' => 'nullable|in:Left,Right,Both',
-
-            // Football Registration
-            'fifa_registration_number' => 'nullable|string|max:255|unique:players,fifa_registration_number,' . $id,
-            'license_type' => 'nullable|string|max:255',
-            'registration_date' => 'nullable|date',
-            'previous_clubs' => 'nullable|string',
-            'transfer_status' => 'nullable|string|max:255',
-            'contract_status' => 'nullable|string|max:255',
-
-            // Academic Information
-            'school_name' => 'nullable|string|max:255',
-            'school_grade' => 'nullable|string|max:255',
-            'academic_performance' => 'nullable|string|max:255',
-
-            // Images and Documents
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'passport_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'birth_certificate' => 'nullable|file|mimes:pdf,jpeg,png,jpg,gif|max:5120',
-            'medical_certificate' => 'nullable|file|mimes:pdf,jpeg,png,jpg,gif|max:5120',
-            'school_certificate' => 'nullable|file|mimes:pdf,jpeg,png,jpg,gif|max:5120',
-
-            // Academy Compliance - Legal Documents
-            'guardian_consent_form' => 'nullable|file|mimes:pdf,jpeg,png,jpg,gif|max:5120',
-            'participation_agreement' => 'nullable|file|mimes:pdf,jpeg,png,jpg,gif|max:5120',
-            'data_consent_form' => 'nullable|file|mimes:pdf,jpeg,png,jpg,gif|max:5120',
-            'safeguarding_policy_acknowledged' => 'required|boolean',
-
-            // Academy Compliance - Identity Documents
-            'guardian_id_document' => 'nullable|file|mimes:pdf,jpeg,png,jpg,gif|max:5120',
-            'player_id_document' => 'nullable|file|mimes:pdf,jpeg,png,jpg,gif|max:5120',
-
-            // Academy Compliance - Accommodation
-            'accommodation_provided' => 'required|boolean',
-            'accommodation_details' => 'nullable|string',
-
-            // Academy Compliance - Training & Competition
-            'age_group' => 'nullable|string|max:255',
-            'training_schedule' => 'nullable|string',
-            'competition_plan' => 'nullable|string',
-
-            // Academy Compliance - Previous Domicile
-            'previous_domicile' => 'nullable|string|max:255',
-            'relocation_reason' => 'nullable|string',
-
-            // Contract Information
-            'contract_start_date' => 'nullable|date',
-            'contract_end_date' => 'nullable|date|after:contract_start_date',
-            'registration_status' => 'required|in:Pending,Approved,Rejected,Active,Inactive',
-            'admin_notes' => 'nullable|string',
-        ]);
-
-        $data = $request->all();
-
-        // Handle file uploads
-        $fileFields = [
-            'photo', 'passport_photo', 'birth_certificate', 'medical_certificate', 'school_certificate',
-            'guardian_consent_form', 'participation_agreement', 'data_consent_form',
-            'guardian_id_document', 'player_id_document'
-        ];
-        foreach ($fileFields as $field) {
-            if ($request->hasFile($field)) {
-                $data[$field] = $request->file($field)->store('uploads/players', 'public');
-            }
-        }
-
-        // Update full name from first and last name
-        $data['full_name'] = $data['first_name'] . ' ' . $data['last_name'];
-
-        // Recalculate age from date of birth
-        if (isset($data['date_of_birth'])) {
-            $data['age'] = \Carbon\Carbon::parse($data['date_of_birth'])->age;
-        }
+        $data = $this->preparePlayerData($request, true);
 
         $player->update($data);
 
@@ -357,22 +186,25 @@ class AdminPlayerController extends Controller
 
     /**
      * Sync approved player to website
+     * Syncs both full and temporary approved players
      */
     private function syncToWebsite(Player $player)
     {
         \Log::info('AdminPlayerController@syncToWebsite: Starting sync', [
             'player_id' => $player->id,
             'name' => $player->full_name,
-            'approved' => $player->isFullyApproved()
+            'approval_type' => $player->approval_type,
+            'is_fully_approved' => $player->isFullyApproved(),
+            'is_approved' => $player->isApproved()
         ]);
 
-        // Only sync if player is fully approved
-        if (!$player->isFullyApproved()) {
-            \Log::info('AdminPlayerController@syncToWebsite: Player not fully approved, skipping sync');
+        // Only sync if player is approved (both full and temporary)
+        if (!$player->isApproved()) {
+            \Log::info('AdminPlayerController@syncToWebsite: Player not approved, skipping sync');
             return;
         }
 
-        // Check if website player already exists
+        // Check if website player already exists via player_id
         $websitePlayer = $player->websitePlayer;
 
         if ($websitePlayer) {
@@ -391,21 +223,36 @@ class AdminPlayerController extends Controller
                 'website_player_id' => $websitePlayer->id
             ]);
         } else {
-            // Create new website player
-            $websitePlayer = WebsitePlayer::create([
-                'first_name' => $player->first_name,
-                'last_name' => $player->last_name,
-                'category' => $player->category,
-                'position' => $player->position,
-                'age' => $player->age,
-                'jersey_number' => $player->jersey_number,
-                'image_path' => $player->image_path,
-                'bio' => $player->bio,
-                'player_id' => $player->id,
-            ]);
-            \Log::info('AdminPlayerController@syncToWebsite: Created new website player', [
-                'website_player_id' => $websitePlayer->id
-            ]);
+            // Check for duplicate by name (handle orphaned records with same name)
+            $nameMatch = WebsitePlayer::where('first_name', $player->first_name)
+                ->where('last_name', $player->last_name)
+                ->whereNull('player_id')
+                ->first();
+
+            if ($nameMatch) {
+                // Link orphaned record to this player
+                $nameMatch->update(['player_id' => $player->id]);
+                \Log::info('AdminPlayerController@syncToWebsite: Linked orphaned record', [
+                    'website_player_id' => $nameMatch->id,
+                    'player_id' => $player->id
+                ]);
+            } else {
+                // Create new website player
+                $websitePlayer = WebsitePlayer::create([
+                    'first_name' => $player->first_name,
+                    'last_name' => $player->last_name,
+                    'category' => $player->category,
+                    'position' => $player->position,
+                    'age' => $player->age,
+                    'jersey_number' => $player->jersey_number,
+                    'image_path' => $player->image_path,
+                    'bio' => $player->bio,
+                    'player_id' => $player->id,
+                ]);
+                \Log::info('AdminPlayerController@syncToWebsite: Created new website player', [
+                    'website_player_id' => $websitePlayer->id
+                ]);
+            }
         }
 
         \Log::info('AdminPlayerController@syncToWebsite: Sync completed');

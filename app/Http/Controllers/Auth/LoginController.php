@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Services\RoleHierarchyService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,29 +28,31 @@ class LoginController extends Controller
 
             $user = Auth::user();
 
-            // Redirect based on user type
-            if ($user->isAdmin()) {
-                return redirect()->intended(route('admin.dashboard'));
-            } elseif ($user->isStaff()) {
-                // Staff users (coaches, etc.) get access to admin dashboard
-                return redirect()->intended(route('admin.dashboard'));
-            } elseif ($user->isPlayer()) {
-                // Check if player exists and is approved
-                $player = $user->player;
-                if ($player && $player->isApproved()) {
-                    return redirect()->intended(route('player.portal.dashboard'));
-                } else {
-                    // Player not approved or doesn't exist
-                    Auth::logout();
-                    return redirect('/')->with('error', 'Your player account is pending approval. Please contact the academy administration.');
-                }
-            } elseif ($user->isPartner()) {
-                return redirect()->intended(route('partner.dashboard'));
-            } else {
-                // Default redirect for visitors or other user types
-                return redirect()->intended('/');
-            }
+            // Log login success for debugging
+            \Log::info('User logged in successfully', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'user_type' => $user->user_type,
+                'roles' => $user->roles->pluck('slug')->toArray(),
+            ]);
+
+            // Use RoleHierarchyService to determine correct dashboard
+            $hierarchyService = new RoleHierarchyService();
+            $dashboardRoute = $hierarchyService->getDashboardRouteForUser($user);
+
+            \Log::info('Redirecting user to dashboard', [
+                'user_id' => $user->id,
+                'dashboard_route' => $dashboardRoute,
+            ]);
+
+            return redirect()->route($dashboardRoute);
         }
+
+        // Log failed login attempt
+        \Log::warning('Failed login attempt', [
+            'email' => $request->email,
+            'ip' => $request->ip(),
+        ]);
 
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',

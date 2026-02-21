@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Player;
+use App\Models\WebsitePlayer;
 use App\Models\Program;
 use App\Models\Blog;
 use App\Models\Gallery;
@@ -50,11 +51,41 @@ class DashboardController extends Controller
      */
     private function getDashboardData()
     {
-        // Player insights data
-        $totalPlayers = Player::count();
+        // Player insights data - count from both tables
+        $mainPlayersCount = Player::count();
+        $websitePlayersCount = WebsitePlayer::count();
+        $totalPlayers = $mainPlayersCount + $websitePlayersCount;
+
+        // Main Player table status counts
+        $mainApprovedPlayers = Player::where('registration_status', 'Approved')->count();
+        $mainPendingPlayers = Player::where('registration_status', 'Pending')->count();
+        $mainTemporaryPlayers = Player::where('approval_type', 'temporary')->count();
+
+        // WebsitePlayer status counts (orphaned records = no player_id linked)
+        $websiteOrphanedPlayers = WebsitePlayer::whereNull('player_id')->count();
+        $websiteLinkedPlayers = WebsitePlayer::whereNotNull('player_id')->count();
+
+        // Log for debugging
+        \Log::info('Player counts debug', [
+            'main_players' => $mainPlayersCount,
+            'website_players' => $websitePlayersCount,
+            'total_players' => $totalPlayers,
+            'main_approved' => $mainApprovedPlayers,
+            'main_pending' => $mainPendingPlayers,
+            'main_temporary' => $mainTemporaryPlayers,
+            'website_orphaned' => $websiteOrphanedPlayers,
+            'website_linked' => $websiteLinkedPlayers,
+        ]);
+
         $newPlayersThisMonth = Player::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count();
+        $newWebsitePlayersThisMonth = WebsitePlayer::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count();
+        $totalNewPlayers = $newPlayersThisMonth + $newWebsitePlayersThisMonth;
+
         $playersLastMonth = Player::whereBetween('created_at', [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()])->count();
-        $playerGrowth = $playersLastMonth > 0 ? round((($newPlayersThisMonth - $playersLastMonth) / $playersLastMonth) * 100, 1) : 0;
+        $websitePlayersLastMonth = WebsitePlayer::whereBetween('created_at', [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()])->count();
+        $totalPlayersLastMonth = $playersLastMonth + $websitePlayersLastMonth;
+
+        $playerGrowth = $totalPlayersLastMonth > 0 ? round((($totalNewPlayers - $totalPlayersLastMonth) / $totalPlayersLastMonth) * 100, 1) : 0;
         $playersWithContracts = Player::where('has_professional_contract', true)->count();
         $internationalPlayers = Player::where('international_eligible', true)->count();
         $playersNeedingAttention = Player::where('needs_attention', true)->count();
@@ -138,7 +169,11 @@ class DashboardController extends Controller
             'topPerformers', 'totalPartners', 'activePartners', 'pendingPartners',
             'totalPrograms', 'newProgramsThisMonth', 'programGrowth', 'totalNews',
             'newsThisWeek', 'newsGrowth', 'recentPartners', 'recentPlayers', 'aiInsights',
-            'monthLabels', 'playerRegistrations', 'programCreations'
+            'monthLabels', 'playerRegistrations', 'programCreations',
+            // WebsitePlayer counts
+            'mainPlayersCount', 'websitePlayersCount',
+            'mainApprovedPlayers', 'mainPendingPlayers', 'mainTemporaryPlayers',
+            'websiteOrphanedPlayers', 'websiteLinkedPlayers'
         );
     }
 
@@ -276,7 +311,7 @@ class DashboardController extends Controller
         $recentRegistrations = Player::latest()->take(10)->get();
 
         // Generate PDF
-        $pdf = Pdf::loadView('admin.compliance-report', compact(
+        $pdf = Pdf::loadView('admin.compliance.report', compact(
             'totalPlayers',
             'fifaRegistered',
             'safeguardingCompliant',

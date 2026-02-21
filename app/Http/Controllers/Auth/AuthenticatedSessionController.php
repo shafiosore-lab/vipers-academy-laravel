@@ -28,7 +28,26 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        $user = Auth::user();
+
+        // Log login success for debugging
+        \Log::info('User logged in successfully', [
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'user_type' => $user->user_type,
+            'roles' => $user->roles->pluck('slug')->toArray(),
+        ]);
+
+        // Use RoleHierarchyService to determine correct dashboard
+        $hierarchyService = new \App\Services\RoleHierarchyService();
+        $dashboardRoute = $hierarchyService->getDashboardRouteForUser($user);
+
+        \Log::info('Redirecting user to dashboard', [
+            'user_id' => $user->id,
+            'dashboard_route' => $dashboardRoute,
+        ]);
+
+        return redirect()->route($dashboardRoute);
     }
 
     /**

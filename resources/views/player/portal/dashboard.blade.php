@@ -1,6 +1,6 @@
-@extends('player.portal.layout')
+@extends('layouts.staff')
 
-@section('portal-content')
+@section('content')
 <div class="dashboard-container">
     <!-- Welcome Section -->
     <div class="welcome-banner" data-aos="fade-down">

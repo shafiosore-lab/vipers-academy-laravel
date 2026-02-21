@@ -67,6 +67,7 @@ Route::get('/programs', [ProgramController::class, 'index'])->name('programs');
 Route::get('/programs/{id}', [ProgramController::class, 'show'])->name('program_detail');
 Route::get('/enroll', [App\Http\Controllers\Admin\AdminEnrollmentController::class, 'index'])->name('enrol');
 Route::post('/enroll', [App\Http\Controllers\Admin\AdminEnrollmentController::class, 'store'])->name('enrol.store');
+Route::get('/enroll/success', [App\Http\Controllers\Admin\AdminEnrollmentController::class, 'success'])->name('enrol.success');
 
 // Blog
 Route::get('/blog', [BlogController::class, 'index'])->name('blog');
@@ -173,22 +174,19 @@ Route::middleware(['auth'])->prefix('student')->name('student.')->group(function
     })->name('profile');
 });
 
-// Dashboard - Redirect based on user role
+// Dashboard - Redirect based on user role using RoleHierarchyService
 Route::get('/dashboard', function() {
     $user = auth()->user();
 
-    if ($user->isAdmin()) {
-        return redirect()->route('admin.dashboard');
-    } elseif ($user->isPlayer()) {
-        return redirect()->route('player.portal.dashboard');
-    } elseif ($user->hasRole('student')) {
-        return redirect()->route('student.dashboard');
-    } elseif ($user->isPartner()) {
-        return redirect()->route('partner.dashboard');
-    } else {
-        // Default redirect for visitors or other user types
-        return redirect()->route('home');
+    if (!$user) {
+        return redirect()->route('login');
     }
+
+    // Use RoleHierarchyService to determine correct dashboard
+    $hierarchyService = new \App\Services\RoleHierarchyService();
+    $dashboardRoute = $hierarchyService->getDashboardRouteForUser($user);
+
+    return redirect()->route($dashboardRoute);
 })->middleware('auth')->name('dashboard');
 
 // Profile
@@ -325,6 +323,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/payments/{payment}', [App\Http\Controllers\Admin\AdminPaymentController::class, 'update'])->name('payments.update');
     Route::get('/payments/financial-report', [App\Http\Controllers\Admin\AdminPaymentController::class, 'financialReport'])->name('payments.financial-report');
 
+    // Payment Categories Management
+    Route::get('/payment-categories', [App\Http\Controllers\Admin\PaymentCategoryController::class, 'index'])->name('payment-categories.index');
+    Route::get('/payment-categories/create', [App\Http\Controllers\Admin\PaymentCategoryController::class, 'create'])->name('payment-categories.create');
+    Route::post('/payment-categories', [App\Http\Controllers\Admin\PaymentCategoryController::class, 'store'])->name('payment-categories.store');
+    Route::get('/payment-categories/{paymentCategory}', [App\Http\Controllers\Admin\PaymentCategoryController::class, 'show'])->name('payment-categories.show');
+    Route::get('/payment-categories/{paymentCategory}/edit', [App\Http\Controllers\Admin\PaymentCategoryController::class, 'edit'])->name('payment-categories.edit');
+    Route::put('/payment-categories/{paymentCategory}', [App\Http\Controllers\Admin\PaymentCategoryController::class, 'update'])->name('payment-categories.update');
+    Route::delete('/payment-categories/{paymentCategory}', [App\Http\Controllers\Admin\PaymentCategoryController::class, 'destroy'])->name('payment-categories.destroy');
+    Route::get('/payment-categories/{paymentCategory}/toggle-status', [App\Http\Controllers\Admin\PaymentCategoryController::class, 'toggleStatus'])->name('payment-categories.toggle-status');
+
     // Jobs Management
     Route::get('/jobs', [App\Http\Controllers\Admin\AdminJobController::class, 'index'])->name('jobs.index');
     Route::get('/jobs/create', [App\Http\Controllers\Admin\AdminJobController::class, 'create'])->name('jobs.create');
@@ -370,6 +378,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/training-sessions/{trainingSession}/start', [App\Http\Controllers\Admin\TrainingSessionController::class, 'start'])->name('training-sessions.start');
     Route::post('/training-sessions/{trainingSession}/end', [App\Http\Controllers\Admin\TrainingSessionController::class, 'end'])->name('training-sessions.end');
     Route::post('/training-sessions/{trainingSession}/admit-player', [App\Http\Controllers\Admin\TrainingSessionController::class, 'admitPlayer'])->name('training-sessions.admit-player');
+    Route::post('/training-sessions/{trainingSession}/check-out-player', [App\Http\Controllers\Admin\TrainingSessionController::class, 'checkOutPlayer'])->name('training-sessions.check-out-player');
     Route::get('/training-sessions/{trainingSession}/live-data', [App\Http\Controllers\Admin\TrainingSessionController::class, 'liveData'])->name('training-sessions.live-data');
     Route::get('/training-sessions/{trainingSession}/players-for-attendance', [App\Http\Controllers\Admin\TrainingSessionController::class, 'getPlayersForAttendance'])->name('training-sessions.players-for-attendance');
 
@@ -456,6 +465,7 @@ Route::middleware(['auth', 'player'])->prefix('player-portal')->name('player.por
     Route::get('/schedule', [App\Http\Controllers\Player\PlayerPortalController::class, 'schedule'])->name('schedule');
     Route::get('/resources', [App\Http\Controllers\Player\PlayerPortalController::class, 'resources'])->name('resources');
     Route::get('/orders', [App\Http\Controllers\Player\PlayerPortalController::class, 'orders'])->name('orders');
+    Route::get('/payments', [App\Http\Controllers\Player\PlayerPortalController::class, 'payments'])->name('payments');
     Route::get('/communication', [App\Http\Controllers\Player\PlayerPortalController::class, 'communication'])->name('communication');
     Route::get('/support', [App\Http\Controllers\Player\PlayerPortalController::class, 'support'])->name('support');
 });
@@ -464,11 +474,80 @@ Route::middleware(['auth', 'player'])->prefix('player-portal')->name('player.por
 Route::middleware(['auth', 'partner'])->prefix('partner')->name('partner.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Partner\PartnerController::class, 'dashboard'])->name('dashboard');
     Route::get('/players', [App\Http\Controllers\Partner\PartnerController::class, 'players'])->name('players');
+    Route::get('/players/create', [App\Http\Controllers\Partner\PartnerController::class, 'createPlayer'])->name('player.create');
+    Route::post('/players', [App\Http\Controllers\Partner\PartnerController::class, 'storePlayer'])->name('player.store');
+    Route::get('/players/{id}', [App\Http\Controllers\Partner\PartnerController::class, 'showPlayer'])->name('player.show');
+    Route::get('/players/{id}/edit', [App\Http\Controllers\Partner\PartnerController::class, 'editPlayer'])->name('player.edit');
+    Route::put('/players/{id}', [App\Http\Controllers\Partner\PartnerController::class, 'updatePlayer'])->name('player.update');
     Route::get('/analytics', [App\Http\Controllers\Partner\PartnerController::class, 'analytics'])->name('analytics');
+    Route::get('/export', [App\Http\Controllers\Partner\PartnerController::class, 'exportPlayers'])->name('export');
+});
+
+// Staff Dashboard Routes (Role-based)
+// Coach Dashboard - for head-coach, coach, assistant-coach, and partners
+Route::middleware(['auth', 'role:coach|assistant-coach|head-coach|partner'])->prefix('coach')->name('coach.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Staff\CoachDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/sessions', [App\Http\Controllers\Staff\CoachDashboardController::class, 'trainingSessions'])->name('sessions');
+    Route::get('/players', [App\Http\Controllers\Staff\CoachDashboardController::class, 'players'])->name('players');
+    Route::get('/player/{player}', [App\Http\Controllers\Staff\CoachDashboardController::class, 'playerProgress'])->name('player.progress');
+});
+
+// Team Manager Dashboard
+Route::middleware(['auth', 'role:team-manager'])->prefix('manager')->name('manager.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Staff\ManagerDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/registrations', [App\Http\Controllers\Staff\ManagerDashboardController::class, 'registrations'])->name('registrations');
+    Route::get('/logistics', [App\Http\Controllers\Staff\ManagerDashboardController::class, 'logistics'])->name('logistics');
+});
+
+// Media Officer Dashboard
+Route::middleware(['auth', 'role:media-officer'])->prefix('media')->name('media.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Staff\MediaDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/blogs', [App\Http\Controllers\Staff\MediaDashboardController::class, 'blogs'])->name('blogs');
+    Route::get('/blogs/create', [App\Http\Controllers\Staff\MediaDashboardController::class, 'createBlog'])->name('blogs.create');
+    Route::post('/blogs', [App\Http\Controllers\Staff\MediaDashboardController::class, 'storeBlog'])->name('blogs.store');
+    Route::get('/blogs/{blog}/edit', [App\Http\Controllers\Staff\MediaDashboardController::class, 'editBlog'])->name('blogs.edit');
+    Route::put('/blogs/{blog}', [App\Http\Controllers\Staff\MediaDashboardController::class, 'updateBlog'])->name('blogs.update');
+    Route::get('/gallery', [App\Http\Controllers\Staff\MediaDashboardController::class, 'gallery'])->name('gallery');
+});
+
+// Welfare Officer Dashboard
+Route::middleware(['auth', 'role:safeguarding-officer'])->prefix('welfare')->name('welfare.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Staff\WelfareDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/attention-list', [App\Http\Controllers\Staff\WelfareDashboardController::class, 'attentionList'])->name('attention.list');
+    Route::get('/compliance', [App\Http\Controllers\Staff\WelfareDashboardController::class, 'compliance'])->name('compliance');
+});
+
+// Finance Officer Dashboard
+Route::middleware(['auth', 'role:finance-officer'])->prefix('finance')->name('finance.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/payments', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'payments'])->name('payments');
+    Route::get('/payments/create', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'createPayment'])->name('payments.create');
+    Route::post('/payments', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'storePayment'])->name('payments.store');
+    Route::get('/payments/{payment}', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'viewPayment'])->name('payments.view');
+    Route::get('/payments/{payment}/edit', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'editPayment'])->name('payments.edit');
+    Route::put('/payments/{payment}', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'updatePayment'])->name('payments.update');
+    Route::delete('/payments/{payment}', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'deletePayment'])->name('payments.delete');
+    Route::get('/reports', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'reports'])->name('reports');
+    Route::get('/record-payment', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'recordPayment'])->name('record-payment');
+    Route::get('/reminders', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'sendReminders'])->name('reminders');
+    Route::get('/analytics', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'analytics'])->name('analytics');
+});
+
+// Parent Portal Routes
+Route::middleware(['auth', 'role:parent'])->prefix('parent')->name('parent.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\Parent\ParentDashboardController::class, 'dashboard'])->name('dashboard');
+    Route::get('/profile', [App\Http\Controllers\Parent\ParentDashboardController::class, 'playerProfile'])->name('profile');
+    Route::patch('/profile/update', [App\Http\Controllers\Parent\ParentDashboardController::class, 'updateProfile'])->name('profile.update');
+    Route::put('/profile/password', [App\Http\Controllers\Parent\ParentDashboardController::class, 'updatePassword'])->name('profile.password');
+    Route::get('/finances', [App\Http\Controllers\Parent\ParentDashboardController::class, 'finances'])->name('finances');
+    Route::get('/training', [App\Http\Controllers\Parent\ParentDashboardController::class, 'training'])->name('training');
+    Route::get('/matches', [App\Http\Controllers\Parent\ParentDashboardController::class, 'matches'])->name('matches');
+    Route::get('/media', [App\Http\Controllers\Parent\ParentDashboardController::class, 'media'])->name('media');
+    Route::get('/insights', [App\Http\Controllers\Parent\ParentDashboardController::class, 'insights'])->name('insights');
+    Route::get('/announcements', [App\Http\Controllers\Parent\ParentDashboardController::class, 'announcements'])->name('announcements');
 });
 
 // API Routes
 Route::prefix('api')->name('api.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Player\PlayerPortalController::class, 'dashboard'])->name('dashboard');
-});
 });

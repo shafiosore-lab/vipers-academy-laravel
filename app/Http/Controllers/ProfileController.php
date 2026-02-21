@@ -16,15 +16,31 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-        // Check if user is accessing from admin area
-        if ($request->is('admin/*')) {
-            return view('admin.profile', [
-                'user' => $request->user(),
+        $user = $request->user();
+
+        // Use role-appropriate profile view based on user roles
+        if ($user->hasAnyRole(['super-admin', 'admin-operations', 'operations-admin'])) {
+            return view('admin.profile.index', [
+                'user' => $user,
+            ]);
+        } elseif ($user->hasAnyRole(['coach', 'head-coach', 'assistant-coach', 'team-manager', 'finance-officer', 'media-officer', 'safeguarding-officer'])) {
+            // Staff users - use staff layout with their role-based dashboard
+            return view('staff.profile.edit', [
+                'user' => $user,
+            ]);
+        } elseif ($user->hasAnyRole(['player'])) {
+            return view('player.portal.profile', [
+                'user' => $user,
+            ]);
+        } elseif ($user->hasAnyRole(['parent', 'partner'])) {
+            return view('partner.profile.edit', [
+                'user' => $user,
             ]);
         }
 
-        return view('profile.edit', [
-            'user' => $request->user(),
+        // Default: use admin profile view
+        return view('admin.profile.index', [
+            'user' => $user,
         ]);
     }
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="csrf_token_here">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Login - Vipers Academy</title>
 
     <!-- Fonts -->
@@ -477,7 +477,7 @@
                         <label for="email">Email Address</label>
                         <input id="email" type="email" name="email"
                                placeholder="your@email.com" required autofocus autocomplete="username"
-                               class="form-control">
+                               class="form-control" value="coach@mumiasvipers.com">
                     </div>
 
                     <!-- Password -->
@@ -485,7 +485,7 @@
                         <label for="password">Password</label>
                         <input id="password" type="password" name="password"
                                placeholder="Enter your password" required autocomplete="current-password"
-                               class="form-control">
+                               class="form-control" value="password">
                     </div>
 
                     <!-- Remember & Forgot -->

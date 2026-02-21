@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AttendanceFormRequest;
 use App\Models\Attendance;
 use App\Models\Player;
 use App\Models\ActivityLog;
@@ -84,12 +85,8 @@ class AdminAttendanceController extends Controller
         return view('admin.attendance.create', compact('players'));
     }
 
-    public function store(Request $request)
+    public function store(AttendanceFormRequest $request)
     {
-        $request->validate([
-            'player_id' => 'required|exists:players,id',
-            'session_id' => 'required|exists:training_sessions,id',
-        ]);
 
         $player = Player::find($request->player_id);
         $session = \App\Models\TrainingSession::find($request->session_id);
@@ -118,11 +115,19 @@ class AdminAttendanceController extends Controller
             return back()->with('error', 'Attendance already recorded for this player on this date and session type.');
         }
 
+        // FIX: Calculate missed_minutes and lateness_category for manual entry
+        $checkInTime = now();
+        $missedMinutes = $session->calculateMissedMinutes($checkInTime);
+        $latenessCategory = $session->determineLatenessCategory($missedMinutes);
+
         $attendance = Attendance::create([
             'player_id' => $request->player_id,
             'session_id' => $request->session_id,
             'session_type' => $session->session_type,
             'session_date' => $session->scheduled_start_time->toDateString(),
+            'check_in_time' => $checkInTime,
+            'missed_minutes' => $missedMinutes,
+            'lateness_category' => $latenessCategory,
             'recorded_by' => Auth::id(),
         ]);
 

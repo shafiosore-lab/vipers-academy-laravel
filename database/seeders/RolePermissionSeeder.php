@@ -25,8 +25,8 @@ class RolePermissionSeeder extends Seeder
         $marketingAdmin = Role::where('slug', 'marketing-admin')->first();
         if ($marketingAdmin) {
             $permissions = Permission::whereIn('slug', [
-                'view-news', 'create-news', 'edit-news', 'delete-news',
-                'view-gallery', 'create-gallery', 'edit-gallery', 'delete-gallery',
+                'view-blogs', 'create-blogs', 'edit-blogs',
+                'view-gallery', 'create-gallery', 'edit-gallery',
                 'view-jobs', 'create-jobs', 'edit-jobs', 'delete-jobs',
             ])->get();
             $marketingAdmin->permissions()->attach($permissions->pluck('id'));
@@ -81,7 +81,7 @@ class RolePermissionSeeder extends Seeder
         $partnerMarketing = Role::where('slug', 'partner-marketing')->first();
         if ($partnerMarketing) {
             $permissions = Permission::whereIn('slug', [
-                'view-news', 'create-news', 'edit-news',
+                'view-blogs', 'create-blogs', 'edit-blogs',
                 'view-gallery', 'create-gallery', 'edit-gallery',
                 'view-partner-analytics',
             ])->get();
@@ -199,8 +199,8 @@ class RolePermissionSeeder extends Seeder
         $mediaOfficer = Role::where('slug', 'media-officer')->first();
         if ($mediaOfficer) {
             $permissions = Permission::whereIn('slug', [
-                'view-news', 'create-news', 'edit-news', 'delete-news',
-                'view-gallery', 'create-gallery', 'edit-gallery', 'delete-gallery',
+                'view-blogs', 'create-blogs', 'edit-blogs',
+                'view-gallery', 'create-gallery', 'edit-gallery',
                 'send_bulk_messages', 'send_team_messages', 'approve-announcements',
             ])->get();
             $mediaOfficer->permissions()->attach($permissions->pluck('id'));

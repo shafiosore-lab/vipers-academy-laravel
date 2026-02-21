@@ -54,6 +54,58 @@
                     <td class="stat-value">{{ $totalPlayers }}</td>
                     <td><span class="stat-change positive">📈 {{ $playerGrowth }}% {{ __('vs last month') }}</span></td>
                 </tr>
+                {{-- Main Player Table Status --}}
+                <tr>
+                    <td>
+                        <div class="metric-info">
+                            <span class="metric-icon">✅</span>
+                            <span class="metric-name">{{ __('Main Approved') }}</span>
+                        </div>
+                    </td>
+                    <td class="stat-value">{{ $mainApprovedPlayers }}</td>
+                    <td><span class="stat-change">{{ __('From players table') }}</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="metric-info">
+                            <span class="metric-icon">⏳</span>
+                            <span class="metric-name">{{ __('Main Pending') }}</span>
+                        </div>
+                    </td>
+                    <td class="stat-value">{{ $mainPendingPlayers }}</td>
+                    <td><span class="stat-change">{{ __('From players table') }}</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="metric-info">
+                            <span class="metric-icon">🕐</span>
+                            <span class="metric-name">{{ __('Main Temporary') }}</span>
+                        </div>
+                    </td>
+                    <td class="stat-value">{{ $mainTemporaryPlayers }}</td>
+                    <td><span class="stat-change">{{ __('From players table') }}</span></td>
+                </tr>
+                {{-- WebsitePlayer Table Status --}}
+                <tr>
+                    <td>
+                        <div class="metric-info">
+                            <span class="metric-icon">🌐</span>
+                            <span class="metric-name">{{ __('Website Linked') }}</span>
+                        </div>
+                    </td>
+                    <td class="stat-value">{{ $websiteLinkedPlayers }}</td>
+                    <td><span class="stat-change">{{ __('Synced from players') }}</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="metric-info">
+                            <span class="metric-icon">📤</span>
+                            <span class="metric-name">{{ __('Website Orphaned') }}</span>
+                        </div>
+                    </td>
+                    <td class="stat-value">{{ $websiteOrphanedPlayers }}</td>
+                    <td><span class="stat-change warning">{{ __('Needs review') }}</span></td>
+                </tr>
                 <tr>
                     <td>
                         <div class="metric-info">
@@ -648,6 +700,11 @@ document.addEventListener('DOMContentLoaded', function() {
 .stat-change.positive {
     background: #dcfce7;
     color: var(--secondary);
+}
+
+.stat-change.warning {
+    background: #fef3c7;
+    color: #d97706;
 }
 
 /* Section Headers */

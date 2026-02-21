@@ -9,13 +9,14 @@ use App\Models\AiInsight;
 use App\Services\AiStatisticsService;
 use App\Services\AiInsightsService;
 use App\Services\AiInsightsGenerator;
+use App\Http\Requests\GameStatsFormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
 class PlayerController extends \App\Http\Controllers\Controller
 {
     /**
-     * Display all players
+     * Display all players - merged from both main players table and website uploaded players
      */
     public function index(Request $request)
     {
@@ -27,23 +28,66 @@ class PlayerController extends \App\Http\Controllers\Controller
                 return view('website.players.index', compact('players'));
             }
 
-            // Get players with pagination to avoid loading too many at once
-            $perPage = 50; // Adjust as needed
-            $players = WebsitePlayer::orderBy('last_name')
+            // Get all website players (both synced and orphaned)
+            $websitePlayers = WebsitePlayer::orderBy('last_name')
                 ->orderBy('first_name')
-                ->paginate($perPage);
+                ->get();
 
             // Debug logging
             \Log::info('PlayerController@index: Fetched website players', [
-                'total_players' => $players->total(),
-                'current_page' => $players->currentPage(),
-                'per_page' => $perPage
+                'total_website_players' => $websitePlayers->count(),
+                'with_player_id' => $websitePlayers->whereNotNull('player_id')->count(),
+                'orphaned' => $websitePlayers->whereNull('player_id')->count(),
             ]);
+
+            // Add source indicator for each player
+            $websitePlayers = $websitePlayers->map(function ($player) {
+                $player->source = $player->player_id ? 'synced' : 'direct_upload';
+
+                // Get approval status from main player if synced
+                if ($player->player_id && $player->player) {
+                    $player->approval_status = $player->player->approval_type;
+                    $player->is_fully_approved = $player->player->isFullyApproved();
+                } else {
+                    $player->approval_status = 'direct_upload';
+                    $player->is_fully_approved = true; // Direct uploads are shown by default
+                }
+
+                return $player;
+            });
+
+            // Filter: Only show approved/synced players OR direct uploads
+            // This ensures only appropriate players are displayed
+            $filteredPlayers = $websitePlayers->filter(function ($player) {
+                // Show synced players (linked to main table)
+                if ($player->source === 'synced') {
+                    return $player->player && $player->player->isApproved();
+                }
+                // Show direct uploads (orphaned records)
+                return $player->source === 'direct_upload';
+            });
+
+            // Pagination
+            $perPage = 50;
+            $players = new \Illuminate\Pagination\LengthAwarePaginator(
+                $filteredPlayers->forPage($request->get('page', 1), $perPage),
+                $filteredPlayers->count(),
+                $perPage,
+                $request->get('page', 1),
+                ['path' => \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPath()]
+            );
+
+            \Log::info('PlayerController@index: Final filtered players', [
+                'total' => $players->total(),
+                'synced_count' => $websitePlayers->where('source', 'synced')->count(),
+                'direct_upload_count' => $websitePlayers->where('source', 'direct_upload')->count(),
+            ]);
+
         } catch (\Exception $e) {
             // If table doesn't exist or other error, return empty collection
             $players = collect();
 
-            // Only log if it's not a "table doesn\'t exist" error (we already handle that above)
+            // Only log if it's not a "table doesn't exist" error (we already handle that above)
             if (strpos($e->getMessage(), ' doesn\'t exist') === false) {
                 \Log::error('PlayerController@index: Exception occurred', [
                     'message' => $e->getMessage(),
@@ -399,31 +443,11 @@ class PlayerController extends \App\Http\Controllers\Controller
 
 
 
-
     /**
      * Record comprehensive game statistics for a website player
      */
-    public function recordGameStats(Request $request, $id)
+    public function recordGameStats(GameStatsFormRequest $request, $id)
     {
-        // Validate basic required fields
-        $request->validate([
-            'player_id' => 'required|integer|exists:website_players,id',
-            'game_date' => 'required|date|before_or_equal:today',
-            'opponent_team' => 'required|string|max:255',
-            'minutes_played' => 'required|integer|min:0|max:120',
-            'tournament' => 'nullable|string|max:255',
-            'goals_scored' => 'nullable|integer|min:0',
-            'assists' => 'nullable|integer|min:0',
-            'shots_on_target' => 'nullable|integer|min:0',
-            'passes_completed' => 'nullable|integer|min:0',
-            'tackles' => 'nullable|integer|min:0',
-            'interceptions' => 'nullable|integer|min:0',
-            'saves' => 'nullable|integer|min:0',
-            'rating' => 'nullable|numeric|min:0|max:10',
-            'yellow_cards' => 'nullable|integer|min:0|max:2',
-            'red_cards' => 'nullable|integer|min:0|max:1',
-            'game_summary' => 'nullable|string|max:1000',
-        ]);
 
         $player = WebsitePlayer::findOrFail($request->player_id);
 

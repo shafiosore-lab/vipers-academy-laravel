@@ -172,9 +172,13 @@
                                                 @endif
                                                 <h6 class="mb-1">{{ $player->full_name }}</h6>
                                                 <small class="text-muted">{{ $player->position }}</small>
+                                                @if(isset($player->source) && $player->source === 'website')
+                                                    <span class="badge bg-info mb-2">Website</span>
+                                                @endif
                                                 <form action="{{ route('admin.training-sessions.admit-player', $trainingSession) }}" method="POST" class="mt-2">
                                                     @csrf
                                                     <input type="hidden" name="player_id" value="{{ $player->id }}">
+                                                    <input type="hidden" name="source" value="{{ $player->source ?? 'registration_form' }}">
                                                     <button type="submit" class="btn btn-success btn-sm w-100">
                                                         <i class="fas fa-check me-1"></i>Admit Player
                                                     </button>

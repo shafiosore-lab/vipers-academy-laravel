@@ -774,8 +774,30 @@
                 <i class="fas fa-bars" aria-hidden="true"></i>
             </button>
 
-            {{-- Brand --}}
-            <a href="{{ route('admin.dashboard') }}" class="admin-brand" aria-label="{{ __('Go to dashboard') }}">
+            {{-- Brand - Role-based --}}
+            @php
+                $dashboardRoute = route('admin.dashboard');
+                $user = auth()->user();
+
+                if ($user->hasAnyRole(['super-admin', 'admin-operations', 'operations-admin'])) {
+                    $dashboardRoute = route('admin.dashboard');
+                } elseif ($user->hasAnyRole(['coach', 'head-coach', 'assistant-coach'])) {
+                    $dashboardRoute = route('coach.dashboard');
+                } elseif ($user->hasRole('team-manager')) {
+                    $dashboardRoute = route('manager.dashboard');
+                } elseif ($user->hasRole('finance-officer')) {
+                    $dashboardRoute = route('finance.dashboard');
+                } elseif ($user->hasRole('media-officer')) {
+                    $dashboardRoute = route('media.dashboard');
+                } elseif ($user->hasRole('safeguarding-officer')) {
+                    $dashboardRoute = route('welfare.dashboard');
+                } elseif ($user->hasRole('player')) {
+                    $dashboardRoute = route('player.portal.dashboard');
+                } elseif ($user->hasAnyRole(['parent', 'partner'])) {
+                    $dashboardRoute = route('partner.dashboard');
+                }
+            @endphp
+            <a href="{{ $dashboardRoute }}" class="admin-brand" aria-label="{{ __('Go to dashboard') }}">
                 <img src="{{ asset('assets/img/logo/vps.jpeg') }}"
                      alt="{{ __('Vipers Academy Logo') }}"
                      class="admin-logo"
@@ -783,7 +805,17 @@
                 <div class="admin-brand-text">
                     <h1 class="sr-only">{{ __('Vipers Academy Admin Panel') }}</h1>
                     <h5>{{ __('Vipers Academy') }}</h5>
-                    <small>{{ __('Admin Panel') }}</small>
+                    <small>
+                        @if(auth()->user()->hasRole('super-admin')){{ __('Super Admin') }}
+                        @elseif(auth()->user()->hasRole('operations-admin')){{ __('Operations Admin') }}
+                        @elseif(auth()->user()->hasRole('admin-operations')){{ __('Admin Operations') }}
+                        @elseif(auth()->user()->hasRole('marketing-admin')){{ __('Marketing Admin') }}
+                        @elseif(auth()->user()->hasRole('scouting-admin')){{ __('Scouting Admin') }}
+                        @elseif(auth()->user()->hasRole('coaching-admin')){{ __('Coaching Admin') }}
+                        @elseif(auth()->user()->hasRole('finance-admin')){{ __('Finance Admin') }}
+                        @else{{ __('Admin Panel') }}
+                        @endif
+                    </small>
                 </div>
             </a>
 
@@ -904,7 +936,17 @@
                         <div class="admin-user-avatar" aria-hidden="true">{{ substr(Auth::user()->name, 0, 1) }}</div>
                         <div class="admin-user-info">
                             <div class="admin-user-name">{{ Auth::user()->name }}</div>
-                            <div class="admin-user-role">{{ __('Administrator') }}</div>
+                            <div class="admin-user-role">
+                                @if(auth()->user()->hasRole('super-admin')){{ __('Super Admin') }}
+                                @elseif(auth()->user()->hasRole('operations-admin')){{ __('Operations Admin') }}
+                                @elseif(auth()->user()->hasRole('admin-operations')){{ __('Admin Operations') }}
+                                @elseif(auth()->user()->hasRole('marketing-admin')){{ __('Marketing Admin') }}
+                                @elseif(auth()->user()->hasRole('scouting-admin')){{ __('Scouting Admin') }}
+                                @elseif(auth()->user()->hasRole('coaching-admin')){{ __('Coaching Admin') }}
+                                @elseif(auth()->user()->hasRole('finance-admin')){{ __('Finance Admin') }}
+                                @else{{ __('Administrator') }}
+                                @endif
+                            </div>
                         </div>
                         <i class="fas fa-chevron-down" aria-hidden="true" style="font-size: 12px; color: #999;"></i>
                     </button>

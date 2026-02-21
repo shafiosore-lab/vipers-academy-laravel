@@ -14,6 +14,25 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             // Update user_type enum to include 'staff'
             $table->enum('user_type', ['admin', 'partner', 'staff', 'player'])->default('player')->change();
+
+            // Add approval status column
+            if (!Schema::hasColumn('users', 'approval_status')) {
+                $table->enum('approval_status', ['pending', 'approved', 'rejected'])->default('pending')->after('user_type');
+            }
+
+            // Add other missing columns
+            if (!Schema::hasColumn('users', 'first_name')) {
+                $table->string('first_name')->nullable()->after('name');
+            }
+            if (!Schema::hasColumn('users', 'last_name')) {
+                $table->string('last_name')->nullable()->after('first_name');
+            }
+            if (!Schema::hasColumn('users', 'phone')) {
+                $table->string('phone')->nullable()->after('email');
+            }
+            if (!Schema::hasColumn('users', 'last_login')) {
+                $table->timestamp('last_login')->nullable()->after('status');
+            }
         });
     }
 

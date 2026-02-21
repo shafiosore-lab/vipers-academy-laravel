@@ -7,6 +7,7 @@ use App\Models\Player;
 use App\Models\Guardian;
 use App\Models\MonthlyBilling;
 use App\Services\NotificationService;
+use App\Http\Requests\PaymentFormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -46,16 +47,8 @@ class BillingController extends Controller
         return view('billing.create', compact('guardians'));
     }
 
-    public function store(Request $request)
+    public function store(PaymentFormRequest $request)
     {
-        $request->validate([
-            'guardian_id' => 'required|exists:guardians,id',
-            'player_id' => 'required|exists:players,id',
-            'amount' => 'required|numeric|min:0.01',
-            'payment_method' => 'required|in:cash,paybill,transfer',
-            'month_applied_to' => 'required|date_format:Y-m',
-            'notes' => 'nullable|string',
-        ]);
 
         DB::transaction(function () use ($request) {
             $player = Player::find($request->player_id);

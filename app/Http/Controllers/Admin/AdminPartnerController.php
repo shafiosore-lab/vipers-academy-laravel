@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Role;
+use App\Services\NewUserNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class AdminPartnerController extends Controller
 {
@@ -37,7 +40,6 @@ class AdminPartnerController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8|confirmed',
             'organization_name' => 'required|string|max:255',
             'organization_type' => 'required|in:football_club,school,academy,other',
             'contact_person' => 'required|string|max:255',
@@ -49,8 +51,12 @@ class AdminPartnerController extends Controller
             'partnership_type' => 'required|in:platform_access,scouting_services,training_programs,custom_solutions',
             'expected_users' => 'required|integer|min:1|max:10000',
             'additional_requirements' => 'nullable|string',
-            'status' => 'required|in:active,pending,rejected',
+            'role_id' => 'nullable|exists:roles,id',
+            'send_credentials' => 'nullable|boolean',
         ]);
+
+        $notificationService = new NewUserNotificationService();
+        $temporaryPassword = $notificationService->generateTemporaryPassword();
 
         $partnerDetails = [
             'organization_name' => $request->organization_name,
@@ -67,16 +73,36 @@ class AdminPartnerController extends Controller
             'registration_date' => now(),
         ];
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'user_type' => 'partner',
-            'status' => $request->status,
-            'partner_details' => $partnerDetails,
-        ]);
+        DB::transaction(function () use ($request, $temporaryPassword, $notificationService) {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($temporaryPassword),
+                'user_type' => 'partner',
+                'status' => 'active', // Auto-approve when created by super admin
+                'approval_status' => 'approved', // Auto-approve
+                'approved_at' => now(),
+                'approved_by' => auth()->id(),
+                'partner_details' => $partnerDetails,
+            ]);
 
-        return redirect()->route('admin.partners.index')->with('success', 'Partner created successfully.');
+            // Assign partner role if specified (optional customization)
+            if ($request->role_id) {
+                $role = Role::find($request->role_id);
+                $user->assignRole($role);
+            }
+            // Note: Partners can access partner dashboard based on user_type = 'partner'
+            // Roles are optional and can be used for granular permission control
+
+            // Send email notification if requested (default: true)
+            $sendCredentials = $request->input('send_credentials', true);
+            if ($sendCredentials) {
+                $user->refresh();
+                $notificationService->sendLoginCredentials($user, $temporaryPassword);
+            }
+        });
+
+        return redirect()->route('admin.partners.index')->with('success', 'Partner created successfully. Credentials will be sent to their email.');
     }
 
     public function edit(User $partner)

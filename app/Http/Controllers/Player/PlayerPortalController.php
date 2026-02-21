@@ -8,6 +8,7 @@ use App\Models\WebsitePlayer;
 use App\Models\Program;
 use App\Models\GameStatistic;
 use App\Models\Order;
+use App\Models\Payment;
 use Illuminate\Support\Facades\Log;
 
 class PlayerPortalController extends \App\Http\Controllers\Controller
@@ -19,7 +20,33 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
     {
         try {
             $user = auth()->user();
+
+            // Check if user has a player record
             $player = $user->player()->with(['gameStatistics', 'program'])->first();
+
+            // If no player record, show a simplified dashboard
+            if (!$player) {
+                \Log::info('PlayerPortalController: User has no player record', ['user_id' => $user->id]);
+
+                return view('player.portal.dashboard', [
+                    'player' => null,
+                    'websitePlayer' => null,
+                    'quickStats' => [
+                        'training_sessions' => 0,
+                        'goals_scored' => 0,
+                        'assists' => 0,
+                        'minutes_played' => 0,
+                        'appearances' => 0,
+                        'programs_enrolled' => 0,
+                    ],
+                    'recentActivity' => collect(),
+                    'recentOrders' => collect(),
+                    'upcomingSessions' => [],
+                    'announcements' => [],
+                    'noPlayerRecord' => true,
+                ]);
+            }
+
             $websitePlayer = WebsitePlayer::first();
 
             $quickStats = $this->getQuickStats($player, $websitePlayer);
@@ -57,7 +84,7 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
 
         $player = $accessCheck['player'];
 
-        $activePrograms = $player->program ? collect([$player->program]) : collect();
+        $activePrograms = $player && $player->program ? collect([$player->program]) : collect();
         $availablePrograms = Program::where('status', 'active')->get();
         $completedPrograms = collect();
 
@@ -222,6 +249,82 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
     }
 
     /**
+     * Payments - View payment history and status
+     */
+    public function payments()
+    {
+        $accessCheck = $this->checkPlayerAccess();
+        if ($accessCheck instanceof \Illuminate\Http\RedirectResponse) {
+            return $accessCheck;
+        }
+
+        $player = $accessCheck['player'];
+
+        if (!$player) {
+            return redirect()->route('player.portal.dashboard')
+                ->with('error', 'No player record found.');
+        }
+
+        // Get payment category info
+        $paymentCategory = $player->paymentCategory;
+
+        // Get all payments for this player
+        $payments = Payment::where('player_id', $player->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
+        // Get payment statistics
+        $totalPaid = Payment::where('player_id', $player->id)
+            ->where('payment_status', 'completed')
+            ->sum('amount');
+
+        $pendingPayments = Payment::where('player_id', $player->id)
+            ->where('payment_status', 'pending')
+            ->orderBy('due_date', 'asc')
+            ->get();
+
+        $overduePayments = Payment::where('player_id', $player->id)
+            ->where('payment_status', 'pending')
+            ->where('due_date', '<', now())
+            ->get();
+
+        $totalPending = $pendingPayments->sum('amount');
+        $totalOverdue = $overduePayments->sum('amount');
+
+        // Get upcoming payment
+        $upcomingPayment = null;
+        if ($paymentCategory) {
+            $lastPayment = Payment::where('player_id', $player->id)
+                ->where('payment_status', 'completed')
+                ->orderBy('paid_at', 'desc')
+                ->first();
+
+            if ($lastPayment && $lastPayment->paid_at) {
+                $nextDue = $lastPayment->paid_at->addDays($paymentCategory->payment_interval_days);
+                if ($nextDue->greaterThan(now())) {
+                    $upcomingPayment = [
+                        'due_date' => $nextDue,
+                        'amount' => $paymentCategory->monthly_amount,
+                        'type' => 'Monthly Fee',
+                    ];
+                }
+            }
+        }
+
+        return view('player.portal.payments', compact(
+            'player',
+            'paymentCategory',
+            'payments',
+            'totalPaid',
+            'pendingPayments',
+            'overduePayments',
+            'totalPending',
+            'totalOverdue',
+            'upcomingPayment'
+        ));
+    }
+
+    /**
      * Check if user has player access
      *
      * @return array|\Illuminate\Http\RedirectResponse
@@ -240,8 +343,10 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
 
         $player = $user->player;
 
+        // If no player record, allow access but return null player
         if (!$player) {
-            return redirect('/')->with('error', 'Player profile not found. Please contact administration.');
+            \Log::info('PlayerPortalController: User has no player record but has player role', ['user_id' => $user->id]);
+            return ['user' => $user, 'player' => null];
         }
 
         return ['user' => $user, 'player' => $player];
@@ -285,10 +390,10 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
     /**
      * Get performance data for training page
      *
-     * @param Player $player
+     * @param Player|null $player
      * @return array
      */
-    private function getPerformanceData(Player $player)
+    private function getPerformanceData(?Player $player)
     {
         return [
             'skills_assessment' => [],

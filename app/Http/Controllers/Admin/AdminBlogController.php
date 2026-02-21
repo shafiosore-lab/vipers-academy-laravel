@@ -111,17 +111,11 @@ class AdminBlogController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     * NOTE: Delete functionality has been removed per requirements.
      */
     public function destroy(Blog $blog)
     {
-
-        // Delete image if exists
-        if ($blog->image && Storage::disk('public')->exists($blog->image)) {
-            Storage::disk('public')->delete($blog->image);
-        }
-
-        $blog->delete();
-
-        return redirect()->route('admin.blog.index')->with('success', 'Blog post deleted successfully.');
+        // Delete functionality is disabled
+        return redirect()->route('admin.blog.index')->with('error', 'Delete functionality is not available.');
     }
 }

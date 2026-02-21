@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Partner;
 
+use App\Http\Controllers\Controller;
+use App\Http\Requests\PlayerFormRequest;
 use App\Models\Player;
 use App\Models\Program;
 use Illuminate\Http\Request;
@@ -9,6 +11,28 @@ use Illuminate\Support\Facades\Auth;
 
 class PartnerController extends \App\Http\Controllers\Controller
 {
+    /**
+     * Prepare player data from request (shared logic)
+     */
+    protected function preparePlayerData(Request $request): array
+    {
+        $data = $request->all();
+
+        // Map guardian fields to parent fields for SMS notifications
+        $data['parent_guardian_name'] = $data['guardian_name'] ?? null;
+        $data['parent_phone'] = $data['guardian_phone'] ?? null;
+
+        // Create full name from first and last name
+        $data['full_name'] = $data['first_name'] . ' ' . $data['last_name'];
+
+        // Calculate age from date of birth
+        if (isset($data['date_of_birth'])) {
+            $data['age'] = \Carbon\Carbon::parse($data['date_of_birth'])->age;
+        }
+
+        return $data;
+    }
+
     /**
      * Display the partner dashboard
      */
@@ -110,58 +134,13 @@ class PartnerController extends \App\Http\Controllers\Controller
     {
         $user = Auth::user();
 
-        $request->validate([
-            // Basic Information
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'date_of_birth' => 'required|date|before:today',
-            'place_of_birth' => 'required|string|max:255',
-            'nationality' => 'required|string|max:255',
-            'gender' => 'required|in:Male,Female',
-            'position' => 'required|string|max:255',
-            'program_id' => 'required|exists:programs,id',
+        // Use consolidated basic validation from PlayerFormRequest
+        $formRequest = new PlayerFormRequest();
+        $request->validate($formRequest->basicRules(false));
 
-            // Contact Information
-            'address' => 'required|string',
-            'city' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'email' => 'required|email|max:255',
-            'emergency_contact_name' => 'required|string|max:255',
-            'emergency_contact_phone' => 'required|string|max:20',
-            'emergency_contact_relationship' => 'required|string|max:255',
-
-            // Guardian Information
-            'guardian_name' => 'required|string|max:255',
-            'guardian_phone' => 'required|string|max:20',
-            'guardian_relationship' => 'required|string|max:255',
-
-            // Medical Information
-            'medical_conditions' => 'nullable|string',
-            'allergies' => 'nullable|string',
-            'blood_type' => 'nullable|string|max:10',
-
-            // Academic Information
-            'school_name' => 'nullable|string|max:255',
-            'school_grade' => 'nullable|string|max:255',
-
-            // Physical Information
-            'height_cm' => 'nullable|numeric|min:50|max:250',
-            'weight_kg' => 'nullable|numeric|min:20|max:200',
-            'dominant_foot' => 'nullable|in:Left,Right,Both',
-        ]);
-
-        $data = $request->all();
+        $data = $this->preparePlayerData($request);
         $data['partner_id'] = $user->id; // Link to partner
         $data['registration_status'] = 'Pending'; // All partner players start as pending
-
-        // Create full name from first and last name
-        $data['full_name'] = $data['first_name'] . ' ' . $data['last_name'];
-
-        // Calculate age from date of birth
-        if (isset($data['date_of_birth'])) {
-            $data['age'] = \Carbon\Carbon::parse($data['date_of_birth'])->age;
-        }
 
         Player::create($data);
 
@@ -202,56 +181,11 @@ class PartnerController extends \App\Http\Controllers\Controller
             abort(404, 'Player not found or migration not run yet.');
         }
 
-        $request->validate([
-            // Basic Information
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'date_of_birth' => 'required|date|before:today',
-            'place_of_birth' => 'required|string|max:255',
-            'nationality' => 'required|string|max:255',
-            'gender' => 'required|in:Male,Female',
-            'position' => 'required|string|max:255',
-            'program_id' => 'required|exists:programs,id',
+        // Use consolidated basic validation from PlayerFormRequest
+        $formRequest = new PlayerFormRequest();
+        $request->validate($formRequest->basicRules(true));
 
-            // Contact Information
-            'address' => 'required|string',
-            'city' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'email' => 'required|email|max:255',
-            'emergency_contact_name' => 'required|string|max:255',
-            'emergency_contact_phone' => 'required|string|max:20',
-            'emergency_contact_relationship' => 'required|string|max:255',
-
-            // Guardian Information
-            'guardian_name' => 'required|string|max:255',
-            'guardian_phone' => 'required|string|max:20',
-            'guardian_relationship' => 'required|string|max:255',
-
-            // Medical Information
-            'medical_conditions' => 'nullable|string',
-            'allergies' => 'nullable|string',
-            'blood_type' => 'nullable|string|max:10',
-
-            // Academic Information
-            'school_name' => 'nullable|string|max:255',
-            'school_grade' => 'nullable|string|max:255',
-
-            // Physical Information
-            'height_cm' => 'nullable|numeric|min:50|max:250',
-            'weight_kg' => 'nullable|numeric|min:20|max:200',
-            'dominant_foot' => 'nullable|in:Left,Right,Both',
-        ]);
-
-        $data = $request->all();
-
-        // Update full name from first and last name
-        $data['full_name'] = $data['first_name'] . ' ' . $data['last_name'];
-
-        // Recalculate age from date of birth
-        if (isset($data['date_of_birth'])) {
-            $data['age'] = \Carbon\Carbon::parse($data['date_of_birth'])->age;
-        }
+        $data = $this->preparePlayerData($request);
 
         $player->update($data);
 

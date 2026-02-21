@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
             TopScorersSeeder::class,
             CleanSheetsSeeder::class,
             GoalkeeperRankingsSeeder::class,
+            PaymentCategorySeeder::class,
         ]);
     }
 }

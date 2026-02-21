@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Partner;
+use App\Services\NewUserNotificationService;
+use App\Services\RoleHierarchyService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -52,9 +54,9 @@ class AdminStaffController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8|confirmed',
             'phone' => 'required|string|max:20|unique:users,phone',
             'role_id' => 'required|exists:roles,id',
+            'send_credentials' => 'nullable|boolean',
         ]);
 
         // Additional checks for uniqueness to prevent race conditions
@@ -66,23 +68,38 @@ class AdminStaffController extends Controller
             return back()->withInput()->withErrors(['email' => 'A user with this email address already exists.']);
         }
 
-        DB::transaction(function () use ($request) {
+        $notificationService = new NewUserNotificationService();
+        $temporaryPassword = $notificationService->generateTemporaryPassword();
+
+        DB::transaction(function () use ($request, $temporaryPassword, $notificationService) {
             $user = User::create([
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'name' => $request->first_name . ' ' . $request->last_name,
                 'email' => $request->email,
                 'phone' => $request->phone,
-                'password' => Hash::make($request->password),
+                'password' => Hash::make($temporaryPassword),
                 'user_type' => 'staff',
+                'status' => 'active',
                 'approval_status' => 'approved',
+                'approved_at' => now(),
+                'approved_by' => auth()->id(),
             ]);
 
-            $role = Role::find($request->role_id);
-            $user->assignRole($role);
+            // Use RoleHierarchyService to assign base role + specialized role
+            $hierarchyService = new RoleHierarchyService();
+            $selectedRole = Role::find($request->role_id);
+            $hierarchyService->assignBaseRoleWithSpecialization($user, [$selectedRole->slug]);
+
+            // Send email notification if requested (default: true)
+            $sendCredentials = $request->input('send_credentials', true);
+            if ($sendCredentials) {
+                $user->refresh(); // Refresh to get the created user
+                $notificationService->sendLoginCredentials($user, $temporaryPassword);
+            }
         });
 
-        return redirect()->route('admin.staff.index')->with('success', 'Staff member created successfully.');
+        return redirect()->route('admin.staff.index')->with('success', 'Staff member created successfully. Credentials will be sent to their email.');
     }
 
     public function show(User $staff)

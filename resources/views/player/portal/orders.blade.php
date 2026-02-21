@@ -1,8 +1,8 @@
-@extends('player.portal.layout')
+@extends('layouts.staff')
 
 @section('title', 'Order History - Player Portal')
 
-@section('portal-content')
+@section('content')
 <div class="row animate-slide-in">
     <!-- Main Content Area -->
     <div class="col-12">
@@ -197,19 +197,6 @@
             </div>
 
             <div class="quick-actions-grid">
-                <a href="{{ route('cart.index') }}" class="quick-action-card" target="_blank">
-                    <div class="action-icon">
-                        <i class="fas fa-shopping-cart"></i>
-                    </div>
-                    <div class="action-content">
-                        <h5>My Cart</h5>
-                        <p>View and manage your shopping cart</p>
-                    </div>
-                    <div class="action-arrow">
-                        <i class="fas fa-arrow-right"></i>
-                    </div>
-                </a>
-
                 <a href="{{ route('home') }}" class="quick-action-card" target="_blank">
                     <div class="action-icon">
                         <i class="fas fa-home"></i>

@@ -35,10 +35,9 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'Approve Partners', 'slug' => 'approve-partners', 'module' => 'partners']);
 
         // Content Management
-        Permission::create(['name' => 'View News', 'slug' => 'view-news', 'module' => 'content']);
-        Permission::create(['name' => 'Create News', 'slug' => 'create-news', 'module' => 'content']);
-        Permission::create(['name' => 'Edit News', 'slug' => 'edit-news', 'module' => 'content']);
-        Permission::create(['name' => 'Delete News', 'slug' => 'delete-news', 'module' => 'content']);
+        Permission::create(['name' => 'View Blogs', 'slug' => 'view-blogs', 'module' => 'content']);
+        Permission::create(['name' => 'Create Blogs', 'slug' => 'create-blogs', 'module' => 'content']);
+        Permission::create(['name' => 'Edit Blogs', 'slug' => 'edit-blogs', 'module' => 'content']);
 
         Permission::create(['name' => 'View Gallery', 'slug' => 'view-gallery', 'module' => 'content']);
         Permission::create(['name' => 'Create Gallery', 'slug' => 'create-gallery', 'module' => 'content']);

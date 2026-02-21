@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DocumentUploadFormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -58,7 +59,7 @@ class DocumentUploadController extends Controller
     /**
      * Store uploaded document
      */
-    public function store(Request $request, $documentType)
+    public function store(DocumentUploadFormRequest $request, $documentType)
     {
         $user = auth()->user();
 
@@ -69,19 +70,6 @@ class DocumentUploadController extends Controller
         }
 
         $documentInfo = $allowedTypes[$documentType];
-
-        // Validate file upload
-        $request->validate([
-            'document_file' => [
-                'required',
-                'file',
-                'max:' . ($documentInfo['max_size'] ?? 5120), // 5MB default
-                Rule::when(isset($documentInfo['allowed_mimes']), function ($rule) use ($documentInfo) {
-                    return $rule->mimes($documentInfo['allowed_mimes']);
-                }),
-            ],
-            'notes' => 'nullable|string|max:500',
-        ]);
 
         $file = $request->file('document_file');
 

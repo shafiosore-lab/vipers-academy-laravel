@@ -11,6 +11,14 @@ use Illuminate\Support\Facades\Log;
 
 class AdminEnrollmentController extends Controller
 {
+    /**
+     * Show enrollment success page
+     */
+    public function success()
+    {
+        return view('admin.enrollment.success');
+    }
+
     public function index(Request $request)
     {
         $programs = Program::where('status', 'active')->get();
@@ -64,7 +72,7 @@ class AdminEnrollmentController extends Controller
                 'email' => $request->email,
                 'phone' => $request->phone,
                 'password' => bcrypt($request->phone), // Use phone as password
-                'user_type' => 'student',
+                'user_type' => 'player',
                 'approval_status' => 'approved', // Auto-approve enrolled students
             ];
             Log::info('Creating user with data', $userData);
@@ -107,8 +115,12 @@ class AdminEnrollmentController extends Controller
             ]);
 
             // Clear dashboard cache so counts update immediately
-            \Cache::tags(['admin_dashboard'])->flush();
-            Log::info('DEBUG: Dashboard cache cleared');
+            try {
+                \Cache::tags(['admin_dashboard'])->flush();
+                Log::info('DEBUG: Dashboard cache cleared');
+            } catch (\Exception $cacheException) {
+                Log::warning('Cache clear failed (non-critical)', ['error' => $cacheException->getMessage()]);
+            }
 
             // Send email notification
             $this->sendEnrollmentNotification($enrollment);
@@ -121,7 +133,8 @@ class AdminEnrollmentController extends Controller
                 'program_id' => $enrollment->program_id,
             ]);
 
-            return back()->with('success', 'Data has been captured successfully!');
+            // Redirect to success page or dashboard after enrollment
+            return redirect()->route('enrol.success')->with('success', 'Enrollment completed successfully!');
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::warning('Enrollment validation failed', [
@@ -136,7 +149,7 @@ class AdminEnrollmentController extends Controller
                 'bindings' => $e->getBindings(),
                 'request_data' => $request->all(),
             ]);
-            return back()->with('error', 'Database error occurred. Please contact support.')->withInput();
+            return back()->with('error', 'Database error: ' . $e->getMessage())->withInput();
         } catch (\Exception $e) {
             Log::error('Unexpected error during enrollment', [
                 'error' => $e->getMessage(),

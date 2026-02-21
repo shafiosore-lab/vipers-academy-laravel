@@ -95,18 +95,28 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="program_id" class="form-label">Program</label>
+                            <label for="program_id" class="form-label">Select Program <span class="text-danger">*</span></label>
                             <select name="program_id" id="program_id" class="form-control @error('program_id') is-invalid @enderror" required>
-                                <option value="">Select a program</option>
+                                <option value="">-- Select a Program --</option>
                                 @foreach($programs as $program)
                                     <option value="{{ $program->id }}" {{ (isset($selected_program_id) && $selected_program_id == $program->id) || old('program_id') == $program->id ? 'selected' : '' }}>
-                                        {{ $program->title }} ({{ $program->age_group }})
+                                        {{ $program->title }} - KES {{ number_format($program->regular_fee, 0) }}
                                     </option>
                                 @endforeach
                             </select>
                             @error('program_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+
+                            <!-- Program Details Display -->
+                            <div id="programDetails" class="mt-3 p-3 bg-light rounded" style="display: none;">
+                                <h6 class="fw-bold" id="programTitle"></h6>
+                                <p class="mb-1 small" id="programDesc"></p>
+                                <div class="d-flex gap-3 small">
+                                    <span><i class="fas fa-clock me-1"></i> <span id="programDuration"></span></span>
+                                    <span><i class="fas fa-calendar me-1"></i> <span id="programSchedule"></span></span>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="d-grid">
@@ -178,4 +188,35 @@
     font-size: 0.875rem;
 }
 </style>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const programSelect = document.getElementById('program_id');
+    const programDetails = document.getElementById('programDetails');
+
+    // Program data from server
+    const programs = @json($programs);
+
+    programSelect.addEventListener('change', function() {
+        const programId = this.value;
+
+        if (!programId) {
+            programDetails.style.display = 'none';
+            return;
+        }
+
+        const program = programs.find(p => p.id == programId);
+
+        if (program) {
+            document.getElementById('programTitle').textContent = program.title;
+            document.getElementById('programDesc').textContent = program.description || '';
+            document.getElementById('programDuration').textContent = program.duration || '';
+            document.getElementById('programSchedule').textContent = program.schedule || '';
+            programDetails.style.display = 'block';
+        }
+    });
+});
+</script>
+@endpush
 @endsection

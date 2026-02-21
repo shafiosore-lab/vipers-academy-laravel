@@ -20,8 +20,23 @@ class CheckUserStatus
         if (Auth::check()) {
             $user = Auth::user();
 
+            // DIAGNOSTIC LOGGING
+            \Log::info('CheckUserStatus: User session check', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'user_type' => $user->user_type,
+                'approval_status' => $user->approval_status,
+                'status' => $user->status,
+                'is_admin' => $user->isAdmin(),
+                'is_active' => $user->isActive(),
+                'is_approved' => $user->isApproved(),
+                'route' => $request->route()?->getName(),
+                'url' => $request->url(),
+            ]);
+
             // If user is admin, allow access to everything
             if ($user->isAdmin()) {
+                \Log::info('CheckUserStatus: Admin user, allowing access');
                 return $next($request);
             }
 
@@ -36,8 +51,8 @@ class CheckUserStatus
                         $player->save();
 
                         // Only redirect if accessing restricted areas, not dashboard
-                        if (!request()->routeIs('player.dashboard', 'profile.edit', 'enrollments')) {
-                            return redirect()->route('player.dashboard')
+                        if (!request()->routeIs('player.portal.dashboard', 'profile.edit', 'enrollments')) {
+                            return redirect()->route('player.portal.dashboard')
                                 ->with('warning', 'Your temporary approval has expired. Please complete all required documents to regain full access.');
                         }
                     }
@@ -48,20 +63,29 @@ class CheckUserStatus
 
             // If user account is suspended, redirect to home with error
             if ($user->status === 'suspended') {
+                \Log::warning('CheckUserStatus: Account suspended, logging out', ['user_id' => $user->id]);
                 Auth::logout();
                 return redirect('/')->with('error', 'Your account has been suspended. Please contact support.');
             }
 
             // If user account is pending, allow access but show pending status
             if ($user->status === 'pending') {
+                \Log::info('CheckUserStatus: Account pending, allowing limited access');
                 // Allow access to dashboard and profile, but restrict other features
                 return $next($request);
             }
 
             // If user is active, allow full access
             if ($user->isActive()) {
+                \Log::info('CheckUserStatus: Account active, allowing full access');
                 return $next($request);
             }
+
+            \Log::warning('CheckUserStatus: No status matched, blocking access', [
+                'user_id' => $user->id,
+                'approval_status' => $user->approval_status,
+                'status' => $user->status,
+            ]);
         }
 
         // If not authenticated, redirect to login

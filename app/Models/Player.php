@@ -182,32 +182,34 @@ class Player extends Model
     // APPROVAL CHECKS
     // ==========================================
 
-    public function isApproved()
+    /**
+     * Check if player has any form of approval (full or temporary)
+     */
+    public function isApproved(): bool
     {
         return in_array($this->approval_type, ['full', 'temporary']);
     }
 
-    public function isFullyApproved()
+    /**
+     * Check if player has full approval
+     */
+    public function isFullyApproved(): bool
     {
         return $this->approval_type === 'full';
     }
 
-    public function isTemporarilyApproved()
+    /**
+     * Check if player has temporary approval
+     */
+    public function isTemporarilyApproved(): bool
     {
         return $this->approval_type === 'temporary';
     }
 
-    public function hasTemporaryApproval()
-    {
-        return $this->isTemporarilyApproved();
-    }
-
-    public function hasFullApproval()
-    {
-        return $this->isFullyApproved();
-    }
-
-    public function isTemporaryApprovalValid()
+    /**
+     * Check if player's temporary approval is still valid
+     */
+    public function isTemporaryApprovalValid(): bool
     {
         if ($this->approval_type !== 'temporary' || !$this->temporary_approval_expires_at) {
             return false;
@@ -216,7 +218,10 @@ class Player extends Model
         return now()->lessThanOrEqualTo($this->temporary_approval_expires_at);
     }
 
-    public function isTemporaryApprovalExpired()
+    /**
+     * Check if player's temporary approval has expired
+     */
+    public function isTemporaryApprovalExpired(): bool
     {
         if ($this->approval_type !== 'temporary' || !$this->temporary_approval_expires_at) {
             return false;
@@ -225,7 +230,10 @@ class Player extends Model
         return now()->greaterThan($this->temporary_approval_expires_at);
     }
 
-    public function getTemporaryApprovalDaysRemaining()
+    /**
+     * Get remaining days for temporary approval
+     */
+    public function getTemporaryApprovalDaysRemaining(): int
     {
         if ($this->approval_type !== 'temporary' || !$this->temporary_approval_expires_at) {
             return 0;
@@ -304,7 +312,19 @@ class Player extends Model
     // Billing methods
     public function getMonthlyFee()
     {
+        // Use payment category if assigned, otherwise fall back to fee_category
+        if ($this->paymentCategory) {
+            return $this->paymentCategory->monthly_amount;
+        }
         return $this->fee_category === 'B' ? 500 : 200;
+    }
+
+    public function getJoiningFee()
+    {
+        if ($this->paymentCategory) {
+            return $this->paymentCategory->joining_fee;
+        }
+        return $this->fee_category === 'B' ? 1000 : 100;
     }
 
     public function getCurrentOutstandingBalance()

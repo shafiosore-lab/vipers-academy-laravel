@@ -127,6 +127,36 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        /**
+         * Session Automation Log Channel
+         * Dedicated channel for training session automation logs
+         * Includes high-precision timing and delay tracking
+         */
+        'session_automation' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/session_automation.log'),
+            'level' => 'debug',
+            'days' => 30,
+            'replace_placeholders' => true,
+            'formatter' => \Monolog\Formatter\LineFormatter::class,
+            'formatter_with' => [
+                'format' => '[%datetime%] %channel%.%level_name%: %message% %context% %extra%',
+                'dateFormat' => 'Y-m-d H:i:s.u',
+            ],
+        ],
+
+        /**
+         * Session Recovery Log Channel
+         * For tracking missed session recovery operations
+         */
+        'session_recovery' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/session_recovery.log'),
+            'level' => 'info',
+            'days' => 60,
+            'replace_placeholders' => true,
+        ],
+
     ],
 
 ];
