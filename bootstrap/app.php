@@ -51,6 +51,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'tenant' => \App\Http\Middleware\TenantScope::class,
             'super.admin' => \App\Http\Middleware\CheckSuperAdmin::class,
             'feature' => \App\Http\Middleware\CheckFeature::class,
+            'subscription' => \App\Http\Middleware\CheckSubscriptionAccess::class,
             'Socialite' => \Laravel\Socialite\Facades\Socialite::class,
         ]);
     })

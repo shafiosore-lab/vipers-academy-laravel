@@ -412,6 +412,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 Route::prefix('api')->name('api.')->group(function () {
     Route::get('/blog', [BlogController::class, 'apiIndex'])->name('blog.index');
 
+    // Staff Management - Get available roles based on user permission level
+    Route::get('/staff/roles', [App\Http\Controllers\Admin\AdminStaffController::class, 'getAvailableRoles'])->name('staff.roles');
+
     // Football Terminology API
     Route::prefix('terminology')->name('terminology.')->group(function () {
         Route::get('/', [App\Http\Controllers\Admin\TerminologyController::class, 'index'])->name('index');
@@ -578,6 +581,42 @@ Route::middleware(['auth', 'super.admin'])->prefix('super-admin')->name('super-a
     Route::post('/plans', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'storePlan'])->name('plans.store');
     Route::get('/plans/{plan}/edit', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'editPlan'])->name('plans.edit');
     Route::put('/plans/{plan}', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'updatePlan'])->name('plans.update');
+    Route::delete('/plans/{plan}', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'destroyPlan'])->name('plans.destroy');
+
+    // Role Management Routes
+    Route::get('/roles', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'index'])->name('roles.index');
+    Route::get('/roles/hierarchy', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'hierarchy'])->name('roles.hierarchy');
+    Route::get('/roles/create', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'create'])->name('roles.create');
+    Route::post('/roles', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'store'])->name('roles.store');
+    Route::get('/roles/{role}', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'show'])->name('roles.show');
+    Route::get('/roles/{role}/edit', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'edit'])->name('roles.edit');
+    Route::put('/roles/{role}', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'update'])->name('roles.update');
+    Route::delete('/roles/{role}', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'destroy'])->name('roles.destroy');
+
+    // Hybrid Roles
+    Route::get('/roles/hybrid/create', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'createHybrid'])->name('roles.hybrid.create');
+    Route::post('/roles/hybrid', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'createHybrid'])->name('roles.hybrid.store');
+
+    // Role Templates
+    Route::get('/roles/templates', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'templates'])->name('roles.templates.index');
+    Route::get('/roles/templates/create', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'createTemplate'])->name('roles.templates.create');
+    Route::post('/roles/templates', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'storeTemplate'])->name('roles.templates.store');
+
+    // Role Requests
+    Route::get('/roles/requests', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'requests'])->name('roles.requests.index');
+    Route::post('/roles/requests/{request}/approve', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'approveRequest'])->name('roles.requests.approve');
+    Route::post('/roles/requests/{request}/reject', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'rejectRequest'])->name('roles.requests.reject');
+
+    // Audit Logs
+    Route::get('/roles/audit', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'auditLogs'])->name('roles.audit');
+
+    // Module Permissions
+    Route::get('/roles/modules', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'modulePermissions'])->name('roles.modules.index');
+    Route::post('/roles/modules', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'storeModulePermission'])->name('roles.modules.store');
+
+    // API Endpoints
+    Route::get('/roles/tree', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'getRoleTree'])->name('roles.tree');
+    Route::get('/roles/{role}/permissions', [App\Http\Controllers\SuperAdmin\RoleManagementController::class, 'getRolePermissions'])->name('roles.permissions');
 
     // Users Management (Global)
     Route::get('/users', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'users'])->name('users.index');

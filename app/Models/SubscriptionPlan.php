@@ -77,12 +77,12 @@ class SubscriptionPlan extends Model
     // Relationships
     public function subscriptions(): HasMany
     {
-        return $this->hasMany(Subscription::class);
+        return $this->hasMany(Subscription::class, 'plan_id');
     }
 
     public function organizations(): HasMany
     {
-        return $this->hasMany(Organization::class);
+        return $this->hasMany(Organization::class, 'subscription_plan_id');
     }
 
     // Scopes
@@ -164,5 +164,41 @@ class SubscriptionPlan extends Model
     public static function getEnterprise(): ?self
     {
         return self::getBySlug('enterprise');
+    }
+
+    // Permission management
+    public function getPermissions(): array
+    {
+        $features = $this->features ?? [];
+        return $features['permissions'] ?? [];
+    }
+
+    public function setPermissions(array $permissionIds): void
+    {
+        $features = $this->features ?? [];
+        $features['permissions'] = $permissionIds;
+        $this->features = $features;
+    }
+
+    public function hasPermission(string $permissionId): bool
+    {
+        return in_array($permissionId, $this->getPermissions());
+    }
+
+    public function assignPermission(string $permissionId): void
+    {
+        $permissions = $this->getPermissions();
+        if (!in_array($permissionId, $permissions)) {
+            $permissions[] = $permissionId;
+            $this->setPermissions($permissions);
+        }
+    }
+
+    public function removePermission(string $permissionId): void
+    {
+        $permissions = array_filter($this->getPermissions(), function($p) use ($permissionId) {
+            return $p !== $permissionId;
+        });
+        $this->setPermissions(array_values($permissions));
     }
 }

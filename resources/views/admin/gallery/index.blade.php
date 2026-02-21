@@ -4,7 +4,7 @@
 <h1>Manage Gallery</h1>
 <a href="{{ route('admin.gallery.create') }}" class="btn btn-primary mb-3">Add New Gallery</a>
 
-<table class="table">
+<table class="table table-bordered" width="100%" cellspacing="0">
     <thead>
         <tr>
             <th>Title</th>

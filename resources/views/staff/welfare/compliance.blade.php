@@ -64,7 +64,7 @@
                 <div class="card-body">
                     @if(isset($players) && $players->count() > 0)
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-bordered" width="100%" cellspacing="0">
                                 <thead>
                                     <tr>
                                         <th>Player</th>

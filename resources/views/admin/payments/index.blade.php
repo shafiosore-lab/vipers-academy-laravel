@@ -149,7 +149,7 @@
     </div>
     <div class="content-card-body">
         <div class="table-responsive">
-            <table class="table table-hover">
+            <table class="table table-bordered" width="100%" cellspacing="0">
                 <thead>
                     <tr>
                         <th>{{ __('Reference') }}</th>

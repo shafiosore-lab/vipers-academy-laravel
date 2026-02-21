@@ -119,7 +119,7 @@
                 <div class="card-body">
                     @if($data->count() > 0)
                         <div class="table-responsive">
-                            <table class="table table-hover table-striped">
+                            <table class="table table-bordered" width="100%" cellspacing="0">
                                 <thead class="table-light">
                                     @if($type === 'league')
                                         <tr>

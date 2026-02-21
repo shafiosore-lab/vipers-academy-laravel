@@ -4,7 +4,7 @@
 <h1>Manage Programs</h1>
 <a href="{{ route('admin.programs.create') }}" class="btn btn-primary mb-3">Add New Program</a>
 
-<table class="table table-striped">
+<table class="table table-bordered" width="100%" cellspacing="0">
     <thead>
         <tr>
             <th>Title</th>

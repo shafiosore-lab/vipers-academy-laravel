@@ -2,6 +2,33 @@
 
 @section('title', __('Create Staff Member - Vipers Academy Admin'))
 
+@push('styles')
+<style>
+    .role-category {
+        border-left: 3px solid #6c757d;
+        padding-left: 15px;
+        margin-bottom: 20px;
+    }
+    .role-category.coaching { border-color: #0d6efd; }
+    .role-category.management { border-color: #198754; }
+    .role-category.admin_operations { border-color: #dc3545; }
+    .role-category.media { border-color: #fd7e14; }
+    .role-category.welfare { border-color: #20c997; }
+    .role-category.finance { border-color: #6f42c1; }
+    .role-category.platform_administration { border-color: #000; }
+    .role-category.organization_administration { border-color: #0dcaf0; }
+
+    .subscription-badge {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+    .restricted-role {
+        opacity: 0.7;
+        background-color: #f8f9fa;
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="container-fluid">
     <!-- Page Header -->
@@ -115,8 +142,14 @@
                                         id="role_id" name="role_id" required>
                                     <option value="">{{ __('Select Role') }}</option>
                                     @forelse($roles as $role)
-                                        <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
-                                            {{ $role->name }} - {{ $role->description ?? __('Basic access based on registration') }}
+                                        <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }} {{ $role->is_subscription_restricted ? 'restricted-role' : '' }}>
+                                            {{ $role->name }}
+                                            @if($role->description)
+                                                - {{ $role->description }}
+                                            @endif
+                                            @if($role->is_subscription_restricted && isset($role->restriction_status))
+                                                ({{ $role->restriction_status }})
+                                            @endif
                                         </option>
                                     @empty
                                         <option value="" disabled>{{ __('No roles available. Please contact administrator.') }}</option>
@@ -125,6 +158,18 @@
                                 @error('role_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                                <div class="form-text">
+                                    @if(isset($subscriptionContext) && $subscriptionContext['is_super_admin'])
+                                        <span class="badge bg-dark"><i class="fas fa-crown me-1"></i>{{ __('Super Admin: All roles available') }}</span>
+                                    @elseif(isset($subscriptionContext) && $subscriptionContext['is_org_admin'])
+                                        <span class="badge bg-info"><i class="fas fa-building me-1"></i>{{ __('Organization Admin: Limited by subscription') }}</span>
+                                        @if(isset($subscriptionContext['subscription_plan']))
+                                            <span class="badge bg-success ms-1">{{ $subscriptionContext['subscription_plan'] }}</span>
+                                        @endif
+                                    @else
+                                        <span class="badge bg-secondary">{{ __('Available roles based on your permission level') }}</span>
+                                    @endif
+                                </div>
                             </div>
 
                             <div class="col-md-6 mb-3">
@@ -268,6 +313,31 @@
                     <h5 class="mb-0"><i class="fas fa-info-circle me-2 text-info"></i>{{ __('Information') }}</h5>
                 </div>
                 <div class="card-body">
+                    <!-- Subscription Context -->
+                    @if(isset($subscriptionContext))
+                    <div class="alert @if($subscriptionContext['is_super_admin']) alert-dark @elseif($subscriptionContext['is_org_admin']) alert-info @else alert-secondary @endif mb-3">
+                        <h6><i class="fas @if($subscriptionContext['is_super_admin']) fa-crown @elseif($subscriptionContext['is_org_admin']) fa-building @else fa-user-shield @endif me-2"></i>
+                        @if($subscriptionContext['is_super_admin'])
+                            {{ __('Super Administrator') }}
+                        @elseif($subscriptionContext['is_org_admin'])
+                            {{ __('Organization Administrator') }}
+                        @else
+                            {{ __('Staff Manager') }}
+                        @endif
+                        </h6>
+                        @if($subscriptionContext['is_super_admin'])
+                            <p class="mb-0 small">{{ __('You have access to all roles in the system.') }}</p>
+                        @elseif($subscriptionContext['is_org_admin'])
+                            <p class="mb-0 small">{{ __('You can only assign roles available in your subscription plan.') }}</p>
+                            @if(isset($subscriptionContext['subscription_plan']))
+                                <strong>{{ __('Current Plan:') }}</strong> {{ $subscriptionContext['subscription_plan'] }}
+                            @endif
+                        @else
+                            <p class="mb-0 small">{{ __('You can assign basic staff roles.') }}</p>
+                        @endif
+                    </div>
+                    @endif
+
                     <div class="alert alert-info">
                         <h6><i class="fas fa-lightbulb me-2"></i>{{ __('Staff Registration') }}</h6>
                         <p class="mb-0 small">{{ __('Creating a staff member will send them an email with login credentials and their account details.') }}</p>

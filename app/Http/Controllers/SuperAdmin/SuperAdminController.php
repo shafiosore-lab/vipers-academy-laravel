@@ -4,6 +4,7 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Organization;
+use App\Models\Permission;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
 use App\Models\User;
@@ -242,7 +243,8 @@ class SuperAdminController extends Controller
      */
     public function createPlan()
     {
-        return view('super-admin.plans.create');
+        $permissions = Permission::orderBy('module')->orderBy('name')->get()->groupBy('module');
+        return view('super-admin.plans.create', compact('permissions'));
     }
 
     /**
@@ -260,6 +262,7 @@ class SuperAdminController extends Controller
             'max_players' => 'nullable|integer',
             'max_staff' => 'nullable|integer',
             'features' => 'nullable|array',
+            'permissions' => 'nullable|array',
             'is_active' => 'boolean',
             'is_popular' => 'boolean',
         ]);
@@ -270,6 +273,12 @@ class SuperAdminController extends Controller
         foreach ($features as $key => $value) {
             $features[$key] = $value === 'on' || $value === true;
         }
+
+        // Store permissions in features array
+        $permissions = $request->permissions ?? [];
+        $features['permissions'] = array_keys(array_filter($permissions, function($v) {
+            return $v === 'on' || $v === true;
+        }));
 
         SubscriptionPlan::create([
             'name' => $request->name,
@@ -294,7 +303,8 @@ class SuperAdminController extends Controller
      */
     public function editPlan(SubscriptionPlan $plan)
     {
-        return view('super-admin.plans.edit', compact('plan'));
+        $permissions = Permission::orderBy('module')->orderBy('name')->get()->groupBy('module');
+        return view('super-admin.plans.edit', compact('plan', 'permissions'));
     }
 
     /**
@@ -312,6 +322,7 @@ class SuperAdminController extends Controller
             'max_players' => 'nullable|integer',
             'max_staff' => 'nullable|integer',
             'features' => 'nullable|array',
+            'permissions' => 'nullable|array',
             'is_active' => 'boolean',
             'is_popular' => 'boolean',
         ]);
@@ -322,6 +333,12 @@ class SuperAdminController extends Controller
         foreach ($features as $key => $value) {
             $features[$key] = $value === 'on' || $value === true;
         }
+
+        // Store permissions in features array
+        $permissions = $request->permissions ?? [];
+        $features['permissions'] = array_keys(array_filter($permissions, function($v) {
+            return $v === 'on' || $v === true;
+        }));
 
         $plan->update([
             'name' => $request->name,
@@ -339,6 +356,29 @@ class SuperAdminController extends Controller
 
         return redirect()->route('super-admin.plans.index')
             ->with('success', 'Subscription plan updated successfully.');
+    }
+
+    /**
+     * Delete subscription plan.
+     */
+    public function destroyPlan(SubscriptionPlan $plan)
+    {
+        // Check if plan has active subscriptions
+        if ($plan->subscriptions()->count() > 0) {
+            return redirect()->route('super-admin.plans.index')
+                ->with('error', 'Cannot delete plan with active subscriptions. Please cancel subscriptions first.');
+        }
+
+        $planName = $plan->name;
+        $plan->delete();
+
+        Log::info('Super Admin: Deleted plan', [
+            'plan_name' => $planName,
+            'deleted_by' => auth()->id(),
+        ]);
+
+        return redirect()->route('super-admin.plans.index')
+            ->with('success', "Plan '{$planName}' has been deleted.");
     }
 
     /**

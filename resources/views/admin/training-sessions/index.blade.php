@@ -45,7 +45,7 @@
 
                     <!-- Sessions Table -->
                     <div class="table-responsive">
-                        <table class="table table-striped table-hover">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
                             <thead class="table-dark">
                                 <tr>
                                     <th>Team</th>

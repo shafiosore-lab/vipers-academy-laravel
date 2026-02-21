@@ -17,10 +17,6 @@ class TestUserSeeder extends Seeder
     {
         $this->command->info('Starting comprehensive test user creation...');
 
-        // Clean all existing users
-        User::query()->delete();
-        $this->command->info('Cleared existing users.');
-
         // ==================== ADMIN USERS ====================
 
         // 1. Super Admin - Full system control
@@ -32,7 +28,6 @@ class TestUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'user_type' => 'admin',
             'approval_status' => 'approved',
-            'approved_at' => now(),
         ], ['super-admin']);
         $this->command->info("Created: Super Admin (super-admin)");
 
@@ -45,7 +40,6 @@ class TestUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'user_type' => 'admin',
             'approval_status' => 'approved',
-            'approved_at' => now(),
         ], ['marketing-admin']);
         $this->command->info("Created: Marketing Admin (marketing-admin)");
 
@@ -58,7 +52,6 @@ class TestUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'user_type' => 'admin',
             'approval_status' => 'approved',
-            'approved_at' => now(),
         ], ['scouting-admin']);
         $this->command->info("Created: Scouting Admin (scouting-admin)");
 
@@ -71,7 +64,6 @@ class TestUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'user_type' => 'admin',
             'approval_status' => 'approved',
-            'approved_at' => now(),
         ], ['operations-admin']);
         $this->command->info("Created: Operations Admin (operations-admin)");
 
@@ -84,7 +76,6 @@ class TestUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'user_type' => 'admin',
             'approval_status' => 'approved',
-            'approved_at' => now(),
         ], ['coaching-admin']);
         $this->command->info("Created: Coaching Admin (coaching-admin)");
 
@@ -97,7 +88,6 @@ class TestUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'user_type' => 'admin',
             'approval_status' => 'approved',
-            'approved_at' => now(),
         ], ['finance-admin']);
         $this->command->info("Created: Finance Admin (finance-admin)");
 
@@ -110,7 +100,6 @@ class TestUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'user_type' => 'admin',
             'approval_status' => 'approved',
-            'approved_at' => now(),
         ], ['admin-operations']);
         $this->command->info("Created: Admin Operations Manager (admin-operations)");
 
@@ -123,7 +112,6 @@ class TestUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'user_type' => 'admin',
             'approval_status' => 'approved',
-            'approved_at' => now(),
         ], ['head-coach']);
         $this->command->info("Created: Head Coach (head-coach)");
 
@@ -136,7 +124,6 @@ class TestUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'user_type' => 'admin',
             'approval_status' => 'approved',
-            'approved_at' => now(),
         ], ['safeguarding-officer']);
         $this->command->info("Created: Safeguarding Officer (safeguarding-officer)");
 
@@ -149,7 +136,6 @@ class TestUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'user_type' => 'admin',
             'approval_status' => 'approved',
-            'approved_at' => now(),
         ], ['finance-officer']);
         $this->command->info("Created: Finance Officer (finance-officer)");
 
@@ -162,9 +148,20 @@ class TestUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'user_type' => 'admin',
             'approval_status' => 'approved',
-            'approved_at' => now(),
         ], ['media-officer']);
         $this->command->info("Created: Media Officer (media-officer)");
+
+        // 12. Greenboys Academy Org Admin
+        $greenboysOrg = $this->createUser([
+            'name' => 'Greenboys Admin',
+            'first_name' => 'Greenboys',
+            'last_name' => 'Admin',
+            'email' => 'greenboys@admin.com',
+            'password' => bcrypt('password'),
+            'user_type' => 'admin',
+            'approval_status' => 'approved',
+        ], ['org-admin']);
+        $this->command->info("Created: Greenboys Admin (org-admin)");
 
         // ==================== PARTNER STAFF USERS ====================
 
@@ -177,7 +174,6 @@ class TestUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'user_type' => 'staff',
             'approval_status' => 'approved',
-            'approved_at' => now(),
         ], ['coach']);
         $this->command->info("Created: Coach (coach)");
 
@@ -190,7 +186,6 @@ class TestUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'user_type' => 'staff',
             'approval_status' => 'approved',
-            'approved_at' => now(),
         ], ['partner-marketing']);
         $this->command->info("Created: Partner Marketing (partner-marketing)");
 
@@ -203,7 +198,6 @@ class TestUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'user_type' => 'staff',
             'approval_status' => 'approved',
-            'approved_at' => now(),
         ], ['partner-scouting']);
         $this->command->info("Created: Partner Scouting (partner-scouting)");
 
@@ -216,7 +210,6 @@ class TestUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'user_type' => 'staff',
             'approval_status' => 'approved',
-            'approved_at' => now(),
         ], ['partner-operations']);
         $this->command->info("Created: Partner Operations (partner-operations)");
 
@@ -229,7 +222,6 @@ class TestUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'user_type' => 'staff',
             'approval_status' => 'approved',
-            'approved_at' => now(),
         ], ['assistant-coach']);
         $this->command->info("Created: Assistant Coach (assistant-coach)");
 
@@ -242,7 +234,6 @@ class TestUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'user_type' => 'staff',
             'approval_status' => 'approved',
-            'approved_at' => now(),
         ], ['team-manager']);
         $this->command->info("Created: Team Manager (team-manager)");
 
@@ -257,7 +248,6 @@ class TestUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'user_type' => 'player',
             'approval_status' => 'approved',
-            'approved_at' => now(),
         ], ['player']);
         $this->command->info("Created: Player User (player)");
 
@@ -270,7 +260,6 @@ class TestUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'user_type' => 'player',
             'approval_status' => 'approved',
-            'approved_at' => now(),
         ], ['parent']);
         $this->command->info("Created: Parent User (parent)");
 
@@ -285,7 +274,6 @@ class TestUserSeeder extends Seeder
             'password' => bcrypt('password'),
             'user_type' => 'partner',
             'approval_status' => 'approved',
-            'approved_at' => now(),
         ], []);
         $this->command->info("Created: Partner User (no role - partner type)");
 

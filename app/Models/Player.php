@@ -333,6 +333,52 @@ class Player extends Model
         return $latestBilling ? $latestBilling->outstanding_balance : 0;
     }
 
+    public function getPendingPayments()
+    {
+        return $this->payments()->pending()->orderBy('due_date', 'asc')->get();
+    }
+
+    public function getOverduePayments()
+    {
+        return $this->payments()->overdue()->orderBy('due_date', 'asc')->get();
+    }
+
+    public function getCompletedPayments()
+    {
+        return $this->payments()->completed()->orderBy('paid_at', 'desc')->get();
+    }
+
+    public function getTotalPaidAmount()
+    {
+        return $this->payments()->completed()->sum('amount');
+    }
+
+    public function getTotalPendingAmount()
+    {
+        return $this->payments()->pending()->sum('amount');
+    }
+
+    public function getTotalOverdueAmount()
+    {
+        return $this->payments()->overdue()->sum('amount');
+    }
+
+    public function hasPendingPayments(): bool
+    {
+        return $this->payments()->pending()->exists();
+    }
+
+    public function hasOverduePayments(): bool
+    {
+        return $this->payments()->overdue()->exists();
+    }
+
+    public function getNextPaymentDueDate()
+    {
+        $pending = $this->getPendingPayments()->first();
+        return $pending ? $pending->due_date : null;
+    }
+
     public function createMonthlyBilling($monthYear)
     {
         $openingBalance = $this->getCurrentOutstandingBalance();

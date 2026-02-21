@@ -8,7 +8,7 @@
 <div class="card">
     <div class="card-body">
         @if($blogs->count() > 0)
-        <table class="table table-striped">
+        <table class="table table-bordered" width="100%" cellspacing="0">
             <thead>
                 <tr>
                     <th>ID</th>

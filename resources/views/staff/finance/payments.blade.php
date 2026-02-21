@@ -98,7 +98,7 @@
         <div class="card-body">
             @if($payments->count() > 0)
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
+                    <table class="table table-bordered" width="100%" cellspacing="0">
                         <thead>
                             <tr>
                                 <th>Reference</th>

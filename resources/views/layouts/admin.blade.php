@@ -728,6 +728,56 @@
         }
     }
 
+    /* ========================================
+             RESPONSIVE TABLE STYLES
+             ======================================== */
+    .table {
+        table-layout: fixed;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.5rem;
+        vertical-align: middle;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .table th {
+        font-weight: 600;
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    /* Allow text wrapping in specific cells */
+    .table td.wrap,
+    .table th.wrap {
+        white-space: normal;
+        word-wrap: break-word;
+    }
+
+    /* Action buttons container */
+    .table td .btn-group,
+    .table td .btn-toolbar {
+        white-space: nowrap;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .table th,
+        .table td {
+            padding: 0.4rem;
+            font-size: 0.875rem;
+        }
+
+        .table-responsive {
+            border: none;
+        }
+    }
+
     /* High contrast mode support */
     @media (prefers-contrast: high) {
         :root {
@@ -922,6 +972,13 @@
                                 <i class="fas fa-users-cog me-2" aria-hidden="true"></i>{{ __('Add Staff') }}
                             </a>
                         </li>
+                        @if(auth()->user()->hasRole('super-admin'))
+                        <li role="none">
+                            <a class="dropdown-item" href="{{ route('super-admin.organizations.create') }}" role="menuitem">
+                                <i class="fas fa-building me-2" aria-hidden="true"></i>{{ __('Add Organization') }}
+                            </a>
+                        </li>
+                        @endif
                     </ul>
                 </div>
 
@@ -1100,6 +1157,23 @@
                 <i class="fas fa-shield-alt" aria-hidden="true"></i>
                 <span>{{ __('Compliance') }}</span>
             </a>
+
+            {{-- System Administration (Super Admin Only) --}}
+            @if(auth()->user()->hasRole('super-admin'))
+            <div class="nav-section-title" role="heading" aria-level="2">{{ __('System Administration') }}</div>
+            <a href="{{ route('super-admin.dashboard') }}"
+                class="sidebar-nav-link {{ request()->routeIs('super-admin.*') ? 'active' : '' }}"
+                aria-current="{{ request()->routeIs('super-admin.*') ? 'page' : 'false' }}">
+                <i class="fas fa-building" aria-hidden="true"></i>
+                <span>{{ __('Organizations') }}</span>
+            </a>
+            <a href="{{ route('super-admin.plans.index') }}"
+                class="sidebar-nav-link {{ request()->routeIs('super-admin.plans.*') ? 'active' : '' }}"
+                aria-current="{{ request()->routeIs('super-admin.plans.*') ? 'page' : 'false' }}">
+                <i class="fas fa-tags" aria-hidden="true"></i>
+                <span>{{ __('Subscription Plans') }}</span>
+            </a>
+            @endif
         </nav>
     </aside>
 

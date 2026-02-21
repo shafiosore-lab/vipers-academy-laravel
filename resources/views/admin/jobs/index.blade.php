@@ -4,7 +4,7 @@
 <h1>Manage Jobs</h1>
 <a href="{{ route('admin.jobs.create') }}" class="btn btn-primary mb-3">Add New Job</a>
 
-<table class="table">
+<table class="table table-bordered" width="100%" cellspacing="0">
     <thead>
         <tr>
             <th>Title</th>

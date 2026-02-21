@@ -117,7 +117,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-hover" id="partnersTable">
+                <table class="table table-bordered" id="partnersTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>{{ __('Organization') }}</th>
