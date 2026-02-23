@@ -242,12 +242,39 @@ class User extends Authenticatable
 
     /**
      * Check if user has a specific permission.
+     * Supports wildcard matching (e.g., 'players.*' matches any players permission).
      */
     public function hasPermission(string $permission): bool
     {
-        return $this->roles()->whereHas('permissions', function ($query) use ($permission) {
+        // Check exact match first
+        if ($this->roles()->whereHas('permissions', function ($query) use ($permission) {
             $query->where('slug', $permission);
-        })->exists();
+        })->exists()) {
+            return true;
+        }
+
+        // Check for wildcard permissions (e.g., 'players.*')
+        if (str_contains($permission, '.*')) {
+            $category = str_replace('.*', '', $permission);
+            return $this->roles()->whereHas('permissions', function ($query) use ($category) {
+                $query->where('slug', 'like', $category . '.%');
+            })->exists();
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if user has any of the specified permissions.
+     */
+    public function hasAnyPermission(array $permissions): bool
+    {
+        foreach ($permissions as $permission) {
+            if ($this->hasPermission($permission)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

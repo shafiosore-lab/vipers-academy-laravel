@@ -45,37 +45,37 @@
 
                     <!-- Sessions Table -->
                     <div class="table-responsive">
-                        <table class="table table-bordered" width="100%" cellspacing="0">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Team</th>
-                                    <th>Type</th>
-                                    <th>Scheduled Time</th>
-                                    <th>Status</th>
-                                    <th>Started By</th>
-                                    <th>Players</th>
-                                    <th>Duration</th>
-                                    <th>Actions</th>
+                        <table class="table table-sm table-bordered" width="100%" cellspacing="0">
+                            <thead class="table-light">
+                                <tr class="small">
+                                    <th class="py-2 text-dark">Team</th>
+                                    <th class="py-2 text-dark">Type</th>
+                                    <th class="py-2 text-dark">Scheduled Time</th>
+                                    <th class="py-2 text-dark">Status</th>
+                                    <th class="py-2 text-dark">Started By</th>
+                                    <th class="py-2 text-dark">Players</th>
+                                    <th class="py-2 text-dark">Duration</th>
+                                    <th class="py-2 text-dark">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @forelse($sessions as $session)
                                 <tr>
-                                    <td>
+                                    <td class="py-1 align-middle">
                                         <span class="badge bg-info">{{ $session->team_category }}</span>
                                     </td>
-                                    <td>
+                                    <td class="py-1 align-middle">
                                         <span class="badge bg-{{ $session->session_type == 'training' ? 'success' : 'warning' }}">
                                             {{ ucfirst($session->session_type) }}
                                         </span>
                                     </td>
-                                    <td>
+                                    <td class="py-1 align-middle small">
                                         {{ $session->scheduled_start_time->format('M j, Y g:i A') }}
                                         @if($session->actual_start_time)
-                                            <br><small class="text-muted">Started: {{ $session->actual_start_time->format('g:i A') }}</small>
+                                            <br><small class="text-muted">{{ $session->actual_start_time->format('g:i A') }}</small>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="py-1 align-middle">
                                         @switch($session->status)
                                             @case('scheduled')
                                                 <span class="badge bg-secondary">Scheduled</span>
@@ -91,16 +91,14 @@
                                                 @break
                                         @endswitch
                                     </td>
-                                    <td>
-                                        {{ $session->startedBy->name ?? 'Not Started' }}
-                                    </td>
-                                    <td>
+                                    <td class="py-1 align-middle small">{{ $session->startedBy->name ?? 'Not Started' }}</td>
+                                    <td class="py-1 align-middle small">
                                         {{ $session->players_admitted }}
                                         @if($session->late_arrivals > 0)
-                                            <small class="text-danger">({{ $session->late_arrivals }} late)</small>
+                                            <small class="text-danger">({{ $session->late_arrivals }})</small>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="py-1 align-middle small">
                                         @if($session->status == 'ended')
                                             {{ $session->total_duration_minutes }} min
                                         @elseif($session->status == 'active')
@@ -109,36 +107,36 @@
                                             -
                                         @endif
                                     </td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <a href="{{ route('admin.training-sessions.show', $session) }}" class="btn btn-sm btn-outline-primary">
-                                                <i class="fas fa-eye"></i> View
+                                    <td class="py-1 align-middle">
+                                        <div class="d-flex gap-1">
+                                            <a href="{{ route('admin.training-sessions.show', $session) }}" class="btn btn-sm btn-outline-primary py-0 px-1">
+                                                <i class="fas fa-eye"></i>
                                             </a>
                                             @if($session->status == 'scheduled')
-                                                <a href="{{ route('admin.training-sessions.edit', $session) }}" class="btn btn-sm btn-outline-secondary">
-                                                    <i class="fas fa-edit"></i> Edit
+                                                <a href="{{ route('admin.training-sessions.edit', $session) }}" class="btn btn-sm btn-outline-secondary py-0 px-1">
+                                                    <i class="fas fa-edit"></i>
                                                 </a>
                                                 <form action="{{ route('admin.training-sessions.destroy', $session) }}" method="POST" class="d-inline"
                                                       onsubmit="return confirm('Are you sure you want to delete this session? This action cannot be undone.')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                        <i class="fas fa-trash"></i> Delete
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-1">
+                                                        <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
                                                 <form action="{{ route('admin.training-sessions.start', $session) }}" method="POST" class="d-inline"
                                                       onsubmit="return confirm('Start this training session now?')">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-sm btn-success">
-                                                        <i class="fas fa-play"></i> Start
+                                                    <button type="submit" class="btn btn-sm btn-success py-0 px-1">
+                                                        <i class="fas fa-play"></i>
                                                     </button>
                                                 </form>
                                             @elseif($session->status == 'active')
                                                 <form action="{{ route('admin.training-sessions.end', $session) }}" method="POST" class="d-inline"
                                                       onsubmit="return confirm('End this training session? This will calculate final training times.')">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-sm btn-warning">
-                                                        <i class="fas fa-stop"></i> End
+                                                    <button type="submit" class="btn btn-sm btn-warning py-0 px-1">
+                                                        <i class="fas fa-stop"></i>
                                                     </button>
                                                 </form>
                                             @endif

@@ -85,6 +85,11 @@
         </div>
     </div>
 
+    <!-- Compact Analytics Dashboard -->
+    <div class="mb-4">
+        @include('components.compact-analytics')
+    </div>
+
     {{-- AI Insights --}}
     @if(!empty($aiInsights))
     <div class="insights-section">
@@ -936,4 +941,6 @@
     }
 }
 </style>
+@endpush
+
 @endpush

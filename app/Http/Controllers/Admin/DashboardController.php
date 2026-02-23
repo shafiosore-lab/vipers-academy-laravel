@@ -9,6 +9,7 @@ use App\Models\Program;
 use App\Models\Blog;
 use App\Models\Gallery;
 use App\Models\User;
+use App\Models\Document;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -161,6 +162,51 @@ class DashboardController extends Controller
         $playerRegistrations = [12, 19, 3, 5, 2, 3, 9, 14, 7, 8, 15, 10]; // Sample data
         $programCreations = [2, 4, 1, 3, 1, 2, 5, 8, 3, 4, 6, 3]; // Sample data
 
+        // Stats for revenue and users
+        $stats = [
+            'total_revenue' => \App\Models\Payment::completed()->sum('amount'),
+            'total_users' => User::count(),
+            'total_players' => $totalPlayers,
+        ];
+
+        // Recent activity for compact analytics
+        $recentActivity = [];
+
+        // Get recent players
+        foreach (Player::latest()->take(3)->get() as $player) {
+            $recentActivity[] = [
+                'icon' => '👤',
+                'type' => 'Player',
+                'description' => $player->first_name . ' ' . $player->last_name . ' registered',
+                'date' => $player->created_at->diffForHumans(),
+                'status' => $player->registration_status ?? 'new',
+            ];
+        }
+
+        // Get recent partners
+        foreach (User::where('user_type', 'partner')->latest()->take(2)->get() as $partner) {
+            $recentActivity[] = [
+                'icon' => '🤝',
+                'type' => 'Partner',
+                'description' => $partner->name . ' joined as partner',
+                'date' => $partner->created_at->diffForHumans(),
+                'status' => $partner->approval_status ?? 'pending',
+            ];
+        }
+
+        // Metrics for compact analytics
+        $metrics = [
+            'total_enrollments' => $totalPlayers,
+            'total_revenue' => $stats['total_revenue'],
+            'active_programs' => $totalPrograms,
+            'attendance_rate' => 85,
+            'recent_activity' => $recentActivity,
+        ];
+
+        // Document statistics for compact analytics
+        $documentStats = $this->getDocumentStats();
+        $metrics['document_stats'] = $documentStats;
+
         return compact(
             'totalPlayers', 'newPlayersThisMonth', 'playerGrowth', 'playersWithContracts',
             'internationalPlayers', 'playersNeedingAttention', 'excellentAcademic',
@@ -173,13 +219,16 @@ class DashboardController extends Controller
             // WebsitePlayer counts
             'mainPlayersCount', 'websitePlayersCount',
             'mainApprovedPlayers', 'mainPendingPlayers', 'mainTemporaryPlayers',
-            'websiteOrphanedPlayers', 'websiteLinkedPlayers'
+            'websiteOrphanedPlayers', 'websiteLinkedPlayers',
+            'stats',
+            'metrics'
         );
     }
 
     public function performanceOverview()
     {
         // ===== PLAYER METRICS =====
+        // Use only Player table as it has complete data structure
         $totalPlayers = Player::count();
         $activePlayers = Player::where('registration_status', 'Active')->count();
         $inactivePlayers = Player::where('registration_status', 'Inactive')->count();
@@ -194,9 +243,9 @@ class DashboardController extends Controller
         $femalePlayers = Player::where('gender', 'Female')->count();
 
         // ===== PERFORMANCE METRICS =====
-        $totalGoals = Player::sum('goals_scored');
-        $totalAssists = Player::sum('assists');
-        $totalMatches = Player::sum('matches_played');
+        $totalGoals = Player::sum('goals_scored') ?: 0;
+        $totalAssists = Player::sum('assists') ?: 0;
+        $totalMatches = Player::sum('matches_played') ?: 0;
 
         // Performance ratings
         $highPerformers = Player::where('performance_rating', '>=', 8.0)->count();
@@ -381,5 +430,62 @@ class DashboardController extends Controller
         }
 
         return $insights;
+    }
+
+    /**
+     * Get document statistics for compact analytics
+     */
+    private function getDocumentStats()
+    {
+        $totalDocuments = Document::count();
+        $activeDocuments = Document::where('is_active', true)->count();
+
+        // Document categories breakdown
+        $categoryBreakdown = Document::select('category')
+            ->selectRaw('COUNT(*) as count')
+            ->whereNotNull('category')
+            ->groupBy('category')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'category' => $item->category,
+                    'count' => $item->count,
+                    'display_name' => match($item->category) {
+                        'codes_of_conduct' => 'Codes of Conduct',
+                        'safety_protection' => 'Safety & Protection',
+                        'academy_policies' => 'Academy Policies',
+                        'contracts_agreements' => 'Contracts & Agreements',
+                        'academy_information' => 'Academy Information',
+                        'administrative' => 'Administrative',
+                        default => ucfirst(str_replace('_', ' ', $item->category))
+                    }
+                ];
+            });
+
+        // Recently uploaded documents
+        $recentDocuments = Document::latest()
+            ->take(5)
+            ->get()
+            ->map(function ($doc) {
+                return [
+                    'icon' => $doc->isPdf() ? '📄' : '📎',
+                    'type' => 'Document',
+                    'title' => $doc->title,
+                    'category' => $doc->category,
+                    'date' => $doc->created_at->diffForHumans(),
+                    'status' => $doc->is_active ? 'Active' : 'Inactive',
+                ];
+            });
+
+        // Documents this month
+        $documentsThisMonth = Document::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count();
+
+        return [
+            'total_documents' => $totalDocuments,
+            'active_documents' => $activeDocuments,
+            'documents_this_month' => $documentsThisMonth,
+            'category_breakdown' => $categoryBreakdown,
+            'recent_documents' => $recentDocuments,
+        ];
     }
 }

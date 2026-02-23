@@ -18,7 +18,14 @@ class AdminPartnerController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
-        return view('admin.partners.index', compact('partners'));
+        $totalPartners = User::where('user_type', 'partner')->count();
+        $activePartners = User::where('user_type', 'partner')->where('status', 'active')->count();
+        $pendingPartners = User::where('user_type', 'partner')->where('status', 'pending')->count();
+        $recentPartners = User::where('user_type', 'partner')
+            ->where('created_at', '>=', now()->subDays(30))
+            ->get();
+
+        return view('admin.partners.index', compact('partners', 'totalPartners', 'activePartners', 'pendingPartners', 'recentPartners'));
     }
 
     public function show(User $partner)

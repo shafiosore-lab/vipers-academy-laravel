@@ -3,111 +3,68 @@
 @section('title', __('Partners Management - Vipers Academy Admin'))
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid px-2">
     <!-- Page Header -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h1 class="h3 mb-0">{{ __('Partners Management') }}</h1>
-                    <p class="text-muted">{{ __('Manage partner organizations and their accounts') }}</p>
-                </div>
-                <a href="{{ route('admin.partners.create') }}" class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i>{{ __('Add New Partner') }}
-                </a>
-            </div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="h5 mb-0">{{ __('Partners') }}</h1>
+            <small class="text-muted">{{ __('Manage partner organizations') }}</small>
         </div>
+        <a href="{{ route('admin.partners.create') }}" class="btn btn-sm btn-primary">
+            <i class="fas fa-plus me-1"></i>{{ __('Add') }}
+        </a>
     </div>
 
-    <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <div class="col-xl-3 col-lg-6 mb-4">
-            <div class="card stat-card h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                <div class="card-body d-flex align-items-center">
-                    <div class="flex-grow-1">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fas fa-building fa-2x me-3 opacity-75"></i>
-                            <div>
-                                <h2 class="h4 mb-0 fw-bold">{{ $totalPartners }}</h2>
-                                <small class="opacity-75">{{ __('Total Partners') }}</small>
-                            </div>
-                        </div>
-                        <div class="progress mt-3" style="height: 6px;">
-                            <div class="progress-bar" role="progressbar" style="width: {{ $totalPartners > 0 ? ($activePartners / $totalPartners) * 100 : 0 }}%"></div>
-                        </div>
-                        <small class="text-white-50 mt-1">{{ $activePartners }} {{ __('active') }}</small>
-                    </div>
-                </div>
+    <!-- Compact Stats Row -->
+    <div class="compact-stats-row mb-3">
+        <div class="compact-stat-card">
+            <div class="compact-stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <i class="fas fa-building text-white"></i>
+            </div>
+            <div class="compact-stat-content">
+                <div class="compact-stat-value">{{ $totalPartners }}</div>
+                <div class="compact-stat-label">Total Partners</div>
+                <small class="text-muted">{{ $activePartners }} active</small>
             </div>
         </div>
-
-        <div class="col-xl-3 col-lg-6 mb-4">
-            <div class="card stat-card h-100" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                <div class="card-body d-flex align-items-center">
-                    <div class="flex-grow-1">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fas fa-clock fa-2x me-3 opacity-75"></i>
-                            <div>
-                                <h2 class="h4 mb-0 fw-bold">{{ $pendingPartners }}</h2>
-                                <small class="opacity-75">{{ __('Pending Approval') }}</small>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <small class="text-white-50">{{ __('Awaiting review') }}</small>
-                        </div>
-                    </div>
-                </div>
+        <div class="compact-stat-card">
+            <div class="compact-stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <i class="fas fa-clock text-white"></i>
+            </div>
+            <div class="compact-stat-content">
+                <div class="compact-stat-value">{{ $pendingPartners }}</div>
+                <div class="compact-stat-label">Pending</div>
             </div>
         </div>
-
-        <div class="col-xl-3 col-lg-6 mb-4">
-            <div class="card stat-card h-100" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                <div class="card-body d-flex align-items-center">
-                    <div class="flex-grow-1">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fas fa-check-circle fa-2x me-3 opacity-75"></i>
-                            <div>
-                                <h2 class="h4 mb-0 fw-bold">{{ $activePartners }}</h2>
-                                <small class="opacity-75">{{ __('Active Partners') }}</small>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <small class="text-white-50">{{ __('Approved partnerships') }}</small>
-                        </div>
-                    </div>
-                </div>
+        <div class="compact-stat-card">
+            <div class="compact-stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                <i class="fas fa-check-circle text-white"></i>
+            </div>
+            <div class="compact-stat-content">
+                <div class="compact-stat-value">{{ $activePartners }}</div>
+                <div class="compact-stat-label">Active</div>
             </div>
         </div>
-
-        <div class="col-xl-3 col-lg-6 mb-4">
-            <div class="card stat-card h-100" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-                <div class="card-body d-flex align-items-center">
-                    <div class="flex-grow-1">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fas fa-users fa-2x me-3 opacity-75"></i>
-                            <div>
-                                <h2 class="h4 mb-0 fw-bold">{{ $recentPartners->count() }}</h2>
-                                <small class="opacity-75">{{ __('Recent Partners') }}</small>
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <small class="text-white-50">{{ __('This month') }}</small>
-                        </div>
-                    </div>
-                </div>
+        <div class="compact-stat-card">
+            <div class="compact-stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                <i class="fas fa-users text-white"></i>
+            </div>
+            <div class="compact-stat-content">
+                <div class="compact-stat-value">{{ $recentPartners->count() }}</div>
+                <div class="compact-stat-label">Recent</div>
             </div>
         </div>
     </div>
 
     <!-- Partners Table -->
-    <div class="card">
-        <div class="card-header">
+    <div class="card border-0 shadow-sm">
+        <div class="card-header py-2 bg-white">
             <div class="d-flex justify-content-between align-items-center">
-                <h5 class="mb-0"><i class="fas fa-handshake me-2 text-primary"></i>{{ __('All Partners') }}</h5>
+                <h6 class="mb-0 small"><i class="fas fa-handshake me-2 text-primary"></i>{{ __('All Partners') }}</h6>
                 <div class="d-flex gap-2">
-                    <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="{{ __('Search partners...') }}" style="width: 250px;">
-                    <select id="statusFilter" class="form-select form-select-sm" style="width: 150px;">
-                        <option value="">{{ __('All Status') }}</option>
+                    <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="{{ __('Search...') }}" style="width: 150px;">
+                    <select id="statusFilter" class="form-select form-select-sm" style="width: 100px;">
+                        <option value="">{{ __('All') }}</option>
                         <option value="active">{{ __('Active') }}</option>
                         <option value="pending">{{ __('Pending') }}</option>
                         <option value="rejected">{{ __('Rejected') }}</option>
@@ -115,69 +72,67 @@
                 </div>
             </div>
         </div>
-        <div class="card-body">
+        <div class="card-body p-2">
             <div class="table-responsive">
-                <table class="table table-bordered" id="partnersTable" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>{{ __('Organization') }}</th>
-                            <th>{{ __('Contact') }}</th>
-                            <th>{{ __('Type') }}</th>
-                            <th>{{ __('Status') }}</th>
-                            <th>{{ __('Joined') }}</th>
-                            <th>{{ __('Actions') }}</th>
+                <table class="table table-sm table-hover mb-0" id="partnersTable" width="100%" cellspacing="0">
+                    <thead class="table-light">
+                        <tr class="small">
+                            <th class="py-1 px-2">{{ __('Organization') }}</th>
+                            <th class="py-1 px-2">{{ __('Contact') }}</th>
+                            <th class="py-1 px-2">{{ __('Type') }}</th>
+                            <th class="py-1 px-2">{{ __('Status') }}</th>
+                            <th class="py-1 px-2">{{ __('Joined') }}</th>
+                            <th class="py-1 px-2"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($partners ?? [] as $partner)
                         <tr>
-                            <td>
+                            <td class="py-1 align-middle">
                                 <div class="d-flex align-items-center">
-                                    <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
-                                        <i class="fas fa-building text-primary"></i>
+                                    <div class="bg-primary bg-opacity-10 rounded-circle p-1 me-2">
+                                        <i class="fas fa-building text-primary small"></i>
                                     </div>
-                                    <div>
+                                    <div class="small">
                                         <div class="fw-semibold">{{ $partner->organization_name }}</div>
                                         <small class="text-muted">{{ $partner->name }}</small>
                                     </div>
                                 </div>
                             </td>
-                            <td>
-                                <div>
-                                    <div>{{ $partner->contact_person }}</div>
-                                    <small class="text-muted">{{ $partner->email }}</small>
-                                </div>
+                            <td class="py-1 align-middle small">
+                                <div>{{ $partner->contact_person }}</div>
+                                <small class="text-muted">{{ $partner->email }}</small>
                             </td>
-                            <td>
-                                <span class="badge bg-secondary">{{ ucfirst(str_replace('_', ' ', $partner->organization_type)) }}</span>
+                            <td class="py-1 align-middle">
+                                <span class="badge bg-secondary-subtle text-secondary" style="font-size: 10px;">{{ ucfirst(str_replace('_', ' ', $partner->organization_type)) }}</span>
                             </td>
-                            <td>
+                            <td class="py-1 align-middle">
                                 @if($partner->status === 'active')
-                                    <span class="badge bg-success">{{ __('Active') }}</span>
+                                    <span class="badge bg-success-subtle text-success" style="font-size: 10px;">{{ __('Active') }}</span>
                                 @elseif($partner->status === 'pending')
-                                    <span class="badge bg-warning">{{ __('Pending') }}</span>
+                                    <span class="badge bg-warning-subtle text-warning" style="font-size: 10px;">{{ __('Pending') }}</span>
                                 @elseif($partner->status === 'rejected')
-                                    <span class="badge bg-danger">{{ __('Rejected') }}</span>
+                                    <span class="badge bg-danger-subtle text-danger" style="font-size: 10px;">{{ __('Rejected') }}</span>
                                 @else
-                                    <span class="badge bg-secondary">{{ __('Inactive') }}</span>
+                                    <span class="badge bg-secondary-subtle text-secondary" style="font-size: 10px;">{{ __('Inactive') }}</span>
                                 @endif
                             </td>
-                            <td>
+                            <td class="py-1 align-middle small">
                                 <small class="text-muted">{{ $partner->created_at->format('M j, Y') }}</small>
                             </td>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <a href="{{ route('admin.partners.show', $partner) }}" class="btn btn-sm btn-outline-primary" title="{{ __('View Details') }}">
+                            <td class="py-1 align-middle">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ route('admin.partners.show', $partner) }}" class="btn btn-sm btn-outline-primary py-0 px-1" title="{{ __('View') }}">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('admin.partners.edit', $partner) }}" class="btn btn-sm btn-outline-secondary" title="{{ __('Edit Partner') }}">
+                                    <a href="{{ route('admin.partners.edit', $partner) }}" class="btn btn-sm btn-outline-secondary py-0 px-1" title="{{ __('Edit') }}">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     @if($partner->status === 'pending')
                                     <form method="POST" action="{{ route('admin.partners.approve', $partner) }}" class="d-inline">
                                         @csrf
                                         @method('PUT')
-                                        <button type="submit" class="btn btn-sm btn-success" title="{{ __('Approve') }}">
+                                        <button type="submit" class="btn btn-sm btn-success py-0 px-1" title="{{ __('Approve') }}">
                                             <i class="fas fa-check"></i>
                                         </button>
                                     </form>
@@ -187,13 +142,13 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="text-center py-4">
+                            <td colspan="6" class="text-center py-3">
                                 <div class="text-muted">
-                                    <i class="fas fa-handshake fa-3x mb-3 opacity-50"></i>
-                                    <h5>{{ __('No Partners Found') }}</h5>
-                                    <p>{{ __('Start by adding your first partner organization.') }}</p>
-                                    <a href="{{ route('admin.partners.create') }}" class="btn btn-primary">
-                                        <i class="fas fa-plus me-2"></i>{{ __('Add First Partner') }}
+                                    <i class="fas fa-handshake fa-2x mb-2 opacity-50"></i>
+                                    <h6 class="mb-1">{{ __('No Partners Found') }}</h6>
+                                    <p class="small mb-2">{{ __('Add your first partner') }}</p>
+                                    <a href="{{ route('admin.partners.create') }}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-plus me-1"></i>{{ __('Add First') }}
                                     </a>
                                 </div>
                             </td>
@@ -205,7 +160,7 @@
 
             <!-- Pagination -->
             @if(isset($partners) && $partners->hasPages())
-            <div class="d-flex justify-content-center mt-4">
+            <div class="d-flex justify-content-center mt-2">
                 {{ $partners->links() }}
             </div>
             @endif
@@ -214,39 +169,83 @@
 </div>
 
 <style>
-    .stat-card {
-        transition: all 0.3s ease;
-        cursor: pointer;
-    }
+.compact-stats-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
 
-    .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    }
+.compact-stat-card {
+    flex: 1;
+    min-width: 120px;
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
 
-    .table th {
-        border-top: none;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.875rem;
-        letter-spacing: 0.5px;
-    }
+.compact-stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
 
-    .table td {
-        vertical-align: middle;
-    }
+.compact-stat-content {
+    display: flex;
+    flex-direction: column;
+}
 
-    .badge {
-        font-weight: 500;
-    }
+.compact-stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #2c3e50;
+}
 
-    .btn-group .btn {
-        margin-right: 2px;
-    }
+.compact-stat-label {
+    font-size: 12px;
+    color: #6c757d;
+    font-weight: 500;
+}
 
-    .btn-group .btn:last-child {
-        margin-right: 0;
-    }
+.stat-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    font-size: 0.75rem;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+.badge {
+    font-weight: 500;
+}
+
+.btn-group .btn {
+    margin-right: 2px;
+}
+
+.btn-group .btn:last-child {
+    margin-right: 0;
+}
 </style>
 
 <script>
@@ -255,13 +254,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const statusFilter = document.getElementById('statusFilter');
     const tableRows = document.querySelectorAll('#partnersTable tbody tr');
 
-    // Search functionality
     function filterTable() {
         const searchTerm = searchInput.value.toLowerCase();
         const statusValue = statusFilter.value.toLowerCase();
 
         tableRows.forEach(row => {
-            if (row.cells.length > 1) { // Skip empty state row
+            if (row.cells.length > 1) {
                 const organizationName = row.cells[0].textContent.toLowerCase();
                 const contactName = row.cells[1].textContent.toLowerCase();
                 const statusBadge = row.cells[3].querySelector('.badge').textContent.toLowerCase();
@@ -276,12 +274,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     searchInput.addEventListener('input', filterTable);
     statusFilter.addEventListener('change', filterTable);
-
-    // Auto-refresh functionality (optional)
-    setInterval(function() {
-        // Could add real-time updates here if needed
-        console.log('Partners table updated');
-    }, 30000); // Refresh every 30 seconds
 });
 </script>
 @endsection

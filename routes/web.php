@@ -297,6 +297,24 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/documents/statistics', [App\Http\Controllers\Admin\AdminDocumentController::class, 'statistics'])->name('documents.statistics');
     Route::post('/documents/bulk', [App\Http\Controllers\Admin\AdminDocumentController::class, 'bulk'])->name('documents.bulk');
 
+    // Letterhead & Document Generator
+    Route::get('/letterhead', [App\Http\Controllers\Admin\LetterheadController::class, 'index'])->name('letterhead.index');
+    Route::get('/letterhead/create', [App\Http\Controllers\Admin\LetterheadController::class, 'create'])->name('letterhead.create');
+    Route::post('/letterhead', [App\Http\Controllers\Admin\LetterheadController::class, 'store'])->name('letterhead.store');
+    Route::get('/letterhead/{letterhead}', [App\Http\Controllers\Admin\LetterheadController::class, 'edit'])->name('letterhead.edit');
+    Route::put('/letterhead/{letterhead}', [App\Http\Controllers\Admin\LetterheadController::class, 'update'])->name('letterhead.update');
+    Route::delete('/letterhead/{letterhead}', [App\Http\Controllers\Admin\LetterheadController::class, 'destroy'])->name('letterhead.destroy');
+
+    // Organization Documents
+    Route::get('/letterhead/documents', [App\Http\Controllers\Admin\LetterheadController::class, 'documents'])->name('letterhead.documents');
+    Route::get('/letterhead/document/create', [App\Http\Controllers\Admin\LetterheadController::class, 'documentCreate'])->name('letterhead.document.create');
+    Route::post('/letterhead/document', [App\Http\Controllers\Admin\LetterheadController::class, 'documentStore'])->name('letterhead.document.store');
+    Route::get('/letterhead/document/{document}/edit', [App\Http\Controllers\Admin\LetterheadController::class, 'documentEdit'])->name('letterhead.document.edit');
+    Route::put('/letterhead/document/{document}', [App\Http\Controllers\Admin\LetterheadController::class, 'documentUpdate'])->name('letterhead.document.update');
+    Route::delete('/letterhead/document/{document}', [App\Http\Controllers\Admin\LetterheadController::class, 'documentDestroy'])->name('letterhead.document.destroy');
+    Route::get('/letterhead/document/{document}/preview', [App\Http\Controllers\Admin\LetterheadController::class, 'documentPreview'])->name('letterhead.document.preview');
+    Route::get('/letterhead/document/{document}/download', [App\Http\Controllers\Admin\LetterheadController::class, 'documentDownload'])->name('letterhead.document.download');
+
     // Blog Management
     Route::get('/blog', [App\Http\Controllers\Admin\AdminBlogController::class, 'index'])->name('blog.index');
     Route::get('/blog/create', [App\Http\Controllers\Admin\AdminBlogController::class, 'create'])->name('blog.create');
@@ -319,8 +337,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Payments Management
     Route::get('/payments', [App\Http\Controllers\Admin\AdminPaymentController::class, 'index'])->name('payments.index');
+    Route::get('/payments/create', [App\Http\Controllers\Admin\AdminPaymentController::class, 'create'])->name('payments.create');
+    Route::post('/payments', [App\Http\Controllers\Admin\AdminPaymentController::class, 'store'])->name('payments.store');
     Route::get('/payments/{payment}', [App\Http\Controllers\Admin\AdminPaymentController::class, 'show'])->name('payments.show');
+    Route::get('/payments/{payment}/edit', [App\Http\Controllers\Admin\AdminPaymentController::class, 'edit'])->name('payments.edit');
     Route::put('/payments/{payment}', [App\Http\Controllers\Admin\AdminPaymentController::class, 'update'])->name('payments.update');
+    Route::delete('/payments/{payment}', [App\Http\Controllers\Admin\AdminPaymentController::class, 'destroy'])->name('payments.destroy');
     Route::get('/payments/financial-report', [App\Http\Controllers\Admin\AdminPaymentController::class, 'financialReport'])->name('payments.financial-report');
 
     // Payment Categories Management
@@ -341,6 +363,39 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/jobs/{job}/edit', [App\Http\Controllers\Admin\AdminJobController::class, 'edit'])->name('jobs.edit');
     Route::put('/jobs/{job}', [App\Http\Controllers\Admin\AdminJobController::class, 'update'])->name('jobs.update');
     Route::delete('/jobs/{job}', [App\Http\Controllers\Admin\AdminJobController::class, 'destroy'])->name('jobs.destroy');
+
+    // Teams Management - Using AdminTeamController
+    Route::get('/teams', [App\Http\Controllers\Admin\AdminTeamController::class, 'index'])->name('teams.index');
+    Route::get('/teams/create', [App\Http\Controllers\Admin\AdminTeamController::class, 'create'])->name('teams.create');
+    Route::post('/teams', [App\Http\Controllers\Admin\AdminTeamController::class, 'store'])->name('teams.store');
+    Route::get('/teams/{team}', [App\Http\Controllers\Admin\AdminTeamController::class, 'show'])->name('teams.show');
+    Route::get('/teams/{team}/edit', [App\Http\Controllers\Admin\AdminTeamController::class, 'edit'])->name('teams.edit');
+    Route::put('/teams/{team}', [App\Http\Controllers\Admin\AdminTeamController::class, 'update'])->name('teams.update');
+    Route::delete('/teams/{team}', [App\Http\Controllers\Admin\AdminTeamController::class, 'destroy'])->name('teams.destroy');
+
+    // Bulk SMS Management
+    Route::get('/sms', [App\Http\Controllers\Admin\AdminSmsController::class, 'index'])->name('sms.index');
+    Route::post('/sms/send', [App\Http\Controllers\Admin\AdminSmsController::class, 'send'])->name('sms.send');
+    Route::post('/sms/send-all-players', [App\Http\Controllers\Admin\AdminSmsController::class, 'sendToAllPlayers'])->name('sms.sendAllPlayers');
+    Route::get('/sms/history', [App\Http\Controllers\Admin\AdminSmsController::class, 'history'])->name('sms.history');
+
+    // WhatsApp Management
+    Route::get('/whatsapp', [App\Http\Controllers\Admin\AdminWhatsAppController::class, 'index'])->name('whatsapp.index');
+    Route::post('/whatsapp/send', [App\Http\Controllers\Admin\AdminWhatsAppController::class, 'send'])->name('whatsapp.send');
+    Route::post('/whatsapp/send-all-players', [App\Http\Controllers\Admin\AdminWhatsAppController::class, 'sendToAllPlayers'])->name('whatsapp.sendAllPlayers');
+    Route::get('/whatsapp/templates', [App\Http\Controllers\Admin\AdminWhatsAppController::class, 'templates'])->name('whatsapp.templates');
+    Route::get('/whatsapp/history', [App\Http\Controllers\Admin\AdminWhatsAppController::class, 'history'])->name('whatsapp.history');
+
+    // Message Gateway Settings (Unified)
+    Route::get('/messaging/settings', [App\Http\Controllers\Admin\MessageGatewayController::class, 'index'])->name('messaging.settings');
+    Route::get('/messaging/quick', [App\Http\Controllers\Admin\MessageGatewayController::class, 'quick'])->name('messaging.quick');
+    Route::post('/messaging/send', [App\Http\Controllers\Admin\MessageGatewayController::class, 'send'])->name('messaging.send');
+    Route::put('/messaging/gateway/{gateway}', [App\Http\Controllers\Admin\MessageGatewayController::class, 'update'])->name('messaging.gateway.update');
+    Route::post('/messaging/gateway/{gateway}/toggle', [App\Http\Controllers\Admin\MessageGatewayController::class, 'toggleStatus'])->name('messaging.gateway.toggle');
+    Route::post('/messaging/gateway/{gateway}/set-primary', [App\Http\Controllers\Admin\MessageGatewayController::class, 'setPrimary'])->name('messaging.gateway.setPrimary');
+    Route::post('/messaging/gateway/test', [App\Http\Controllers\Admin\MessageGatewayController::class, 'testMessage'])->name('messaging.gateway.test');
+    Route::post('/messaging/gateway', [App\Http\Controllers\Admin\MessageGatewayController::class, 'store'])->name('messaging.gateway.store');
+    Route::delete('/messaging/gateway/{gateway}', [App\Http\Controllers\Admin\MessageGatewayController::class, 'destroy'])->name('messaging.gateway.destroy');
 
 
     // Website Players Management
@@ -507,6 +562,24 @@ Route::middleware(['auth', 'role:team-manager'])->prefix('manager')->name('manag
     Route::get('/dashboard', [App\Http\Controllers\Staff\ManagerDashboardController::class, 'index'])->name('dashboard');
     Route::get('/registrations', [App\Http\Controllers\Staff\ManagerDashboardController::class, 'registrations'])->name('registrations');
     Route::get('/logistics', [App\Http\Controllers\Staff\ManagerDashboardController::class, 'logistics'])->name('logistics');
+
+    // Equipment Management Routes
+    Route::get('/equipment/categories', [App\Http\Controllers\Staff\EquipmentController::class, 'categories'])->name('equipment.categories');
+    Route::post('/equipment/categories', [App\Http\Controllers\Staff\EquipmentController::class, 'storeCategory'])->name('equipment.categories.store');
+    Route::put('/equipment/categories/{category}', [App\Http\Controllers\Staff\EquipmentController::class, 'updateCategory'])->name('equipment.categories.update');
+    Route::delete('/equipment/categories/{category}', [App\Http\Controllers\Staff\EquipmentController::class, 'destroyCategory'])->name('equipment.categories.destroy');
+
+    Route::get('/equipment/inventory', [App\Http\Controllers\Staff\EquipmentController::class, 'inventory'])->name('equipment.inventory');
+    Route::post('/equipment/inventory', [App\Http\Controllers\Staff\EquipmentController::class, 'storeEquipment'])->name('equipment.inventory.store');
+    Route::put('/equipment/inventory/{equipment}', [App\Http\Controllers\Staff\EquipmentController::class, 'updateEquipment'])->name('equipment.inventory.update');
+    Route::delete('/equipment/inventory/{equipment}', [App\Http\Controllers\Staff\EquipmentController::class, 'destroyEquipment'])->name('equipment.inventory.destroy');
+
+    Route::get('/equipment/distribution', [App\Http\Controllers\Staff\EquipmentController::class, 'distribution'])->name('equipment.distribution');
+    Route::post('/equipment/distribution', [App\Http\Controllers\Staff\EquipmentController::class, 'storeDistribution'])->name('equipment.distribution.store');
+    Route::post('/equipment/distribution/{distribution}/return', [App\Http\Controllers\Staff\EquipmentController::class, 'returnEquipment'])->name('equipment.distribution.return');
+
+    Route::get('/equipment/compliance', [App\Http\Controllers\Staff\EquipmentController::class, 'compliance'])->name('equipment.compliance');
+    Route::post('/equipment/compliance/report', [App\Http\Controllers\Staff\EquipmentController::class, 'generateComplianceReport'])->name('equipment.compliance.report');
 });
 
 // Media Officer Dashboard
@@ -626,7 +699,7 @@ Route::middleware(['auth', 'super.admin'])->prefix('super-admin')->name('super-a
 });
 
 // Organization Admin Routes
-Route::middleware(['auth', 'role:org-admin'])->prefix('organization')->name('organization.')->group(function () {
+Route::middleware(['auth', 'role:org-admin|super-admin'])->prefix('organization')->name('organization.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Organization\OrganizationDashboardController::class, 'index'])->name('dashboard');
 
     // Attendance Management
@@ -636,4 +709,16 @@ Route::middleware(['auth', 'role:org-admin'])->prefix('organization')->name('org
     Route::get('/attendance/{attendance}', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'show'])->name('attendance.show');
     Route::get('/attendance/export', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'showExportPage'])->name('attendance.export.page');
     Route::get('/attendance/export/download', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'export'])->name('attendance.export');
+
+    // Organization Roles & Permissions Management
+    Route::get('/roles', [App\Http\Controllers\Organization\OrgRoleManagementController::class, 'index'])->name('roles.index');
+    Route::get('/roles/create', [App\Http\Controllers\Organization\OrgRoleManagementController::class, 'create'])->name('roles.create');
+    Route::post('/roles', [App\Http\Controllers\Organization\OrgRoleManagementController::class, 'store'])->name('roles.store');
+    Route::get('/roles/{role}', [App\Http\Controllers\Organization\OrgRoleManagementController::class, 'show'])->name('roles.show');
+    Route::get('/roles/{role}/edit', [App\Http\Controllers\Organization\OrgRoleManagementController::class, 'edit'])->name('roles.edit');
+    Route::put('/roles/{role}', [App\Http\Controllers\Organization\OrgRoleManagementController::class, 'update'])->name('roles.update');
+    Route::delete('/roles/{role}', [App\Http\Controllers\Organization\OrgRoleManagementController::class, 'destroy'])->name('roles.destroy');
+    Route::post('/roles/{role}/assign', [App\Http\Controllers\Organization\OrgRoleManagementController::class, 'assignRole'])->name('roles.assign');
+    Route::get('/roles/{role}/users', [App\Http\Controllers\Organization\OrgRoleManagementController::class, 'getRoleUsers'])->name('roles.users');
+    Route::get('/roles/{role}/assignable-users', [App\Http\Controllers\Organization\OrgRoleManagementController::class, 'getAssignableUsers'])->name('roles.assignable-users');
 });

@@ -10,118 +10,234 @@ class PermissionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * Standardized permission format: category.action (lowercase, dot notation)
+     * 17 Categories:
+     * 1. matches, 2. documents, 3. jobs, 4. attendance, 5. communication
+     * 6. content, 7. finance, 8. players, 9. partners, 10. orders
+     * 11. programs, 12. reports, 13. sessions, 14. statistics, 15. system
+     * 16. teams, 17. users
      */
     public function run(): void
     {
-        // User Management
-        Permission::updateOrCreate(['slug' => 'view-users'], ['name' => 'View Users', 'module' => 'users']);
-        Permission::updateOrCreate(['slug' => 'create-users'], ['name' => 'Create Users', 'module' => 'users']);
-        Permission::updateOrCreate(['slug' => 'edit-users'], ['name' => 'Edit Users', 'module' => 'users']);
-        Permission::updateOrCreate(['slug' => 'delete-users'], ['name' => 'Delete Users', 'module' => 'users']);
-        Permission::updateOrCreate(['slug' => 'approve-users'], ['name' => 'Approve Users', 'module' => 'users']);
+        // Clear existing permissions to ensure clean slate
+        Permission::truncate();
 
-        // Player Management
-        Permission::create(['name' => 'View Players', 'slug' => 'view-players', 'module' => 'players']);
-        Permission::create(['name' => 'Create Players', 'slug' => 'create-players', 'module' => 'players']);
-        Permission::create(['name' => 'Edit Players', 'slug' => 'edit-players', 'module' => 'players']);
-        Permission::create(['name' => 'Delete Players', 'slug' => 'delete-players', 'module' => 'players']);
-        Permission::create(['name' => 'Approve Players', 'slug' => 'approve-players', 'module' => 'players']);
+        // =====================================================================
+        // 1. MATCHES (Order 1)
+        // =====================================================================
+        $matches = [
+            ['name' => 'View Matches', 'slug' => 'matches.view'],
+            ['name' => 'Create Matches', 'slug' => 'matches.create'],
+            ['name' => 'Edit Matches', 'slug' => 'matches.edit'],
+            ['name' => 'Delete Matches', 'slug' => 'matches.delete'],
+        ];
 
-        // Partner Management
-        Permission::create(['name' => 'View Partners', 'slug' => 'view-partners', 'module' => 'partners']);
-        Permission::create(['name' => 'Create Partners', 'slug' => 'create-partners', 'module' => 'partners']);
-        Permission::create(['name' => 'Edit Partners', 'slug' => 'edit-partners', 'module' => 'partners']);
-        Permission::create(['name' => 'Delete Partners', 'slug' => 'delete-partners', 'module' => 'partners']);
-        Permission::create(['name' => 'Approve Partners', 'slug' => 'approve-partners', 'module' => 'partners']);
+        // =====================================================================
+        // 2. DOCUMENTS (Order 2)
+        // =====================================================================
+        $documents = [
+            ['name' => 'View Documents', 'slug' => 'documents.view'],
+            ['name' => 'Upload Documents', 'slug' => 'documents.upload'],
+            ['name' => 'Approve Documents', 'slug' => 'documents.approve'],
+        ];
 
-        // Content Management
-        Permission::create(['name' => 'View Blogs', 'slug' => 'view-blogs', 'module' => 'content']);
-        Permission::create(['name' => 'Create Blogs', 'slug' => 'create-blogs', 'module' => 'content']);
-        Permission::create(['name' => 'Edit Blogs', 'slug' => 'edit-blogs', 'module' => 'content']);
+        // =====================================================================
+        // 3. JOBS (Order 3)
+        // =====================================================================
+        $jobs = [
+            ['name' => 'View Jobs', 'slug' => 'jobs.view'],
+            ['name' => 'Create Jobs', 'slug' => 'jobs.create'],
+            ['name' => 'Edit Jobs', 'slug' => 'jobs.edit'],
+            ['name' => 'Delete Jobs', 'slug' => 'jobs.delete'],
+        ];
 
-        Permission::create(['name' => 'View Gallery', 'slug' => 'view-gallery', 'module' => 'content']);
-        Permission::create(['name' => 'Create Gallery', 'slug' => 'create-gallery', 'module' => 'content']);
-        Permission::create(['name' => 'Edit Gallery', 'slug' => 'edit-gallery', 'module' => 'content']);
-        Permission::create(['name' => 'Delete Gallery', 'slug' => 'delete-gallery', 'module' => 'content']);
+        // =====================================================================
+        // 4. ATTENDANCE (Order 4)
+        // =====================================================================
+        $attendance = [
+            ['name' => 'Clock Player In', 'slug' => 'attendance.clock_in'],
+            ['name' => 'Clock Player Out', 'slug' => 'attendance.clock_out'],
+            ['name' => 'Mark Attendance', 'slug' => 'attendance.mark'],
+            ['name' => 'View Attendance History', 'slug' => 'attendance.view'],
+        ];
 
-        // Programs & Training
-        Permission::create(['name' => 'View Programs', 'slug' => 'view-programs', 'module' => 'programs']);
-        Permission::create(['name' => 'Create Programs', 'slug' => 'create-programs', 'module' => 'programs']);
-        Permission::create(['name' => 'Edit Programs', 'slug' => 'edit-programs', 'module' => 'programs']);
-        Permission::create(['name' => 'Delete Programs', 'slug' => 'delete-programs', 'module' => 'programs']);
+        // =====================================================================
+        // 5. COMMUNICATION (Order 5)
+        // =====================================================================
+        $communication = [
+            ['name' => 'Send Bulk Messages', 'slug' => 'communication.bulk'],
+            ['name' => 'Send Team Messages', 'slug' => 'communication.team'],
+            ['name' => 'Approve Announcements', 'slug' => 'communication.approve'],
+        ];
 
-        // Game Statistics
-        Permission::create(['name' => 'View Statistics', 'slug' => 'view-statistics', 'module' => 'statistics']);
-        Permission::create(['name' => 'Create Statistics', 'slug' => 'create-statistics', 'module' => 'statistics']);
-        Permission::create(['name' => 'Edit Statistics', 'slug' => 'edit-statistics', 'module' => 'statistics']);
-        Permission::create(['name' => 'Delete Statistics', 'slug' => 'delete-statistics', 'module' => 'statistics']);
+        // =====================================================================
+        // 6. CONTENT (Order 6)
+        // =====================================================================
+        $content = [
+            // News
+            ['name' => 'View News', 'slug' => 'content.news.view'],
+            ['name' => 'Create News', 'slug' => 'content.news.create'],
+            ['name' => 'Edit News', 'slug' => 'content.news.edit'],
+            ['name' => 'Delete News', 'slug' => 'content.news.delete'],
+            // Gallery
+            ['name' => 'View Gallery', 'slug' => 'content.gallery.view'],
+            ['name' => 'Create Gallery', 'slug' => 'content.gallery.create'],
+            ['name' => 'Edit Gallery', 'slug' => 'content.gallery.edit'],
+            ['name' => 'Delete Gallery', 'slug' => 'content.gallery.delete'],
+        ];
 
-        // Matches & Standings
-        Permission::create(['name' => 'View Matches', 'slug' => 'view-matches', 'module' => 'matches']);
-        Permission::create(['name' => 'Create Matches', 'slug' => 'create-matches', 'module' => 'matches']);
-        Permission::create(['name' => 'Edit Matches', 'slug' => 'edit-matches', 'module' => 'matches']);
-        Permission::create(['name' => 'Delete Matches', 'slug' => 'delete-matches', 'module' => 'matches']);
+        // =====================================================================
+        // 7. FINANCE (Order 7)
+        // =====================================================================
+        $finance = [
+            ['name' => 'View Payments', 'slug' => 'finance.payments.view'],
+            ['name' => 'Process Payments', 'slug' => 'finance.payments.process'],
+            ['name' => 'View Financial Reports', 'slug' => 'finance.reports.view'],
+        ];
 
-        // Financial Management
-        Permission::create(['name' => 'View Payments', 'slug' => 'view-payments', 'module' => 'finance']);
-        Permission::create(['name' => 'Process Payments', 'slug' => 'process-payments', 'module' => 'finance']);
-        Permission::create(['name' => 'View Financial Reports', 'slug' => 'view-financial-reports', 'module' => 'finance']);
+        // =====================================================================
+        // 8. PLAYERS (Order 8)
+        // =====================================================================
+        $players = [
+            ['name' => 'View Players', 'slug' => 'players.view'],
+            ['name' => 'Create Players', 'slug' => 'players.create'],
+            ['name' => 'Edit Players', 'slug' => 'players.edit'],
+            ['name' => 'Delete Players', 'slug' => 'players.delete'],
+            ['name' => 'Approve Players', 'slug' => 'players.approve'],
+            ['name' => 'View Player Portal', 'slug' => 'players.portal.view'],
+            ['name' => 'Update Player Profile', 'slug' => 'players.profile.update'],
+            ['name' => 'View Training Data', 'slug' => 'players.training.view'],
+        ];
 
-        // Orders Management
-        Permission::create(['name' => 'View Orders', 'slug' => 'view-orders', 'module' => 'orders']);
-        Permission::create(['name' => 'Process Orders', 'slug' => 'process-orders', 'module' => 'orders']);
-        Permission::create(['name' => 'Manage Order Status', 'slug' => 'manage-order-status', 'module' => 'orders']);
+        // =====================================================================
+        // 9. PARTNERS (Order 9)
+        // =====================================================================
+        $partners = [
+            ['name' => 'View Partners', 'slug' => 'partners.view'],
+            ['name' => 'Create Partners', 'slug' => 'partners.create'],
+            ['name' => 'Edit Partners', 'slug' => 'partners.edit'],
+            ['name' => 'Delete Partners', 'slug' => 'partners.delete'],
+            ['name' => 'Approve Partners', 'slug' => 'partners.approve'],
+            ['name' => 'View Partner Analytics', 'slug' => 'partners.analytics.view'],
+            ['name' => 'Create Staff Accounts', 'slug' => 'partners.staff.create'],
+            ['name' => 'Manage Staff Roles', 'slug' => 'partners.staff.roles'],
+        ];
 
-        // Documents & Compliance
-        Permission::create(['name' => 'View Documents', 'slug' => 'view-documents', 'module' => 'documents']);
-        Permission::create(['name' => 'Upload Documents', 'slug' => 'upload-documents', 'module' => 'documents']);
-        Permission::create(['name' => 'Approve Documents', 'slug' => 'approve-documents', 'module' => 'documents']);
+        // =====================================================================
+        // 10. ORDERS (Order 10)
+        // =====================================================================
+        $orders = [
+            ['name' => 'View Orders', 'slug' => 'orders.view'],
+            ['name' => 'Process Orders', 'slug' => 'orders.process'],
+            ['name' => 'Manage Order Status', 'slug' => 'orders.status.manage'],
+        ];
 
-        // Jobs & Careers
-        Permission::create(['name' => 'View Jobs', 'slug' => 'view-jobs', 'module' => 'jobs']);
-        Permission::create(['name' => 'Create Jobs', 'slug' => 'create-jobs', 'module' => 'jobs']);
-        Permission::create(['name' => 'Edit Jobs', 'slug' => 'edit-jobs', 'module' => 'jobs']);
-        Permission::create(['name' => 'Delete Jobs', 'slug' => 'delete-jobs', 'module' => 'jobs']);
+        // =====================================================================
+        // 11. PROGRAMS (Order 11)
+        // =====================================================================
+        $programs = [
+            ['name' => 'View Programs', 'slug' => 'programs.view'],
+            ['name' => 'Create Programs', 'slug' => 'programs.create'],
+            ['name' => 'Edit Programs', 'slug' => 'programs.edit'],
+            ['name' => 'Delete Programs', 'slug' => 'programs.delete'],
+        ];
 
-        // System Administration
-        Permission::create(['name' => 'View System Logs', 'slug' => 'view-system-logs', 'module' => 'system']);
-        Permission::create(['name' => 'Manage System Settings', 'slug' => 'manage-system-settings', 'module' => 'system']);
-        Permission::create(['name' => 'Manage Roles & Permissions', 'slug' => 'manage-roles-permissions', 'module' => 'system']);
+        // =====================================================================
+        // 12. REPORTS (Order 12)
+        // =====================================================================
+        $reports = [
+            ['name' => 'Generate Reports', 'slug' => 'reports.generate'],
+            ['name' => 'Export Reports', 'slug' => 'reports.export'],
+        ];
 
-        // Partner-specific permissions
-        Permission::create(['name' => 'Create Staff Accounts', 'slug' => 'create-staff-accounts', 'module' => 'partners']);
-        Permission::create(['name' => 'Manage Staff Roles', 'slug' => 'manage-staff-roles', 'module' => 'partners']);
-        Permission::create(['name' => 'View Partner Analytics', 'slug' => 'view-partner-analytics', 'module' => 'partners']);
+        // =====================================================================
+        // 13. SESSIONS (Order 13)
+        // =====================================================================
+        $sessions = [
+            ['name' => 'Start Training Session', 'slug' => 'sessions.start'],
+            ['name' => 'End Training Session', 'slug' => 'sessions.end'],
+            ['name' => 'Add Session Notes', 'slug' => 'sessions.notes.add'],
+        ];
 
-        // Player-specific permissions
-        Permission::create(['name' => 'View Player Portal', 'slug' => 'view-player-portal', 'module' => 'players']);
-        Permission::create(['name' => 'Update Player Profile', 'slug' => 'update-player-profile', 'module' => 'players']);
-        Permission::create(['name' => 'View Training Data', 'slug' => 'view-training-data', 'module' => 'players']);
+        // =====================================================================
+        // 14. STATISTICS (Order 14)
+        // =====================================================================
+        $statistics = [
+            ['name' => 'View Statistics', 'slug' => 'statistics.view'],
+            ['name' => 'Create Statistics', 'slug' => 'statistics.create'],
+            ['name' => 'Edit Statistics', 'slug' => 'statistics.edit'],
+            ['name' => 'Delete Statistics', 'slug' => 'statistics.delete'],
+        ];
 
-        // Session Management (CRITICAL for Assistant Coach)
-        Permission::create(['name' => 'Start Training Session', 'slug' => 'start_training_session', 'module' => 'sessions']);
-        Permission::create(['name' => 'End Training Session', 'slug' => 'end_training_session', 'module' => 'sessions']);
-        Permission::create(['name' => 'Mark Attendance', 'slug' => 'mark_attendance', 'module' => 'attendance']);
-        Permission::create(['name' => 'Clock Player In', 'slug' => 'clock_player_in', 'module' => 'attendance']);
-        Permission::create(['name' => 'Clock Player Out', 'slug' => 'clock_player_out', 'module' => 'attendance']);
-        Permission::create(['name' => 'Add Session Notes', 'slug' => 'add_session_notes', 'module' => 'sessions']);
-        Permission::create(['name' => 'View Attendance History', 'slug' => 'view_attendance_history', 'module' => 'attendance']);
+        // =====================================================================
+        // 15. SYSTEM (Order 15)
+        // =====================================================================
+        $system = [
+            ['name' => 'View System Logs', 'slug' => 'system.logs.view'],
+            ['name' => 'Manage System Settings', 'slug' => 'system.settings.manage'],
+            ['name' => 'Manage Roles & Permissions', 'slug' => 'system.rbac.manage'],
+        ];
 
-        // Team Management
-        Permission::create(['name' => 'Create Team', 'slug' => 'create_team', 'module' => 'teams']);
-        Permission::create(['name' => 'Edit Team', 'slug' => 'edit_team', 'module' => 'teams']);
-        Permission::create(['name' => 'Assign Players to Team', 'slug' => 'assign_players_to_team', 'module' => 'teams']);
+        // =====================================================================
+        // 16. TEAMS (Order 16)
+        // =====================================================================
+        $teams = [
+            ['name' => 'Create Team', 'slug' => 'teams.create'],
+            ['name' => 'Edit Team', 'slug' => 'teams.edit'],
+            ['name' => 'Assign Players to Team', 'slug' => 'teams.players.assign'],
+        ];
 
-        // Communication
-        Permission::create(['name' => 'Send Bulk Messages', 'slug' => 'send_bulk_messages', 'module' => 'communication']);
-        Permission::create(['name' => 'Send Team Messages', 'slug' => 'send_team_messages', 'module' => 'communication']);
-        Permission::create(['name' => 'Approve Announcements', 'slug' => 'approve_announcements', 'module' => 'communication']);
+        // =====================================================================
+        // 17. USERS (Order 17)
+        // =====================================================================
+        $users = [
+            ['name' => 'View Users', 'slug' => 'users.view'],
+            ['name' => 'Create Users', 'slug' => 'users.create'],
+            ['name' => 'Edit Users', 'slug' => 'users.edit'],
+            ['name' => 'Delete Users', 'slug' => 'users.delete'],
+            ['name' => 'Approve Users', 'slug' => 'users.approve'],
+        ];
 
-        // Reports
-        Permission::create(['name' => 'Generate Reports', 'slug' => 'generate_reports', 'module' => 'reports']);
-        Permission::create(['name' => 'Export Reports', 'slug' => 'export_reports', 'module' => 'reports']);
+        // =====================================================================
+        // INSERT ALL PERMISSIONS
+        // =====================================================================
 
-        // System Administration
-        Permission::create(['name' => 'Manage Roles & Permissions', 'slug' => 'manage_roles_permissions', 'module' => 'system']);
+        // Helper function to insert permissions with category
+        $insertPermissions = function($permissions, $category) {
+            foreach ($permissions as $perm) {
+                Permission::updateOrCreate(
+                    ['slug' => $perm['slug']],
+                    [
+                        'name' => $perm['name'],
+                        'module' => $category,
+                        'description' => $perm['name']
+                    ]
+                );
+            }
+        };
+
+        // Insert all by category order
+        $insertPermissions($matches, 'matches');
+        $insertPermissions($documents, 'documents');
+        $insertPermissions($jobs, 'jobs');
+        $insertPermissions($attendance, 'attendance');
+        $insertPermissions($communication, 'communication');
+        $insertPermissions($content, 'content');
+        $insertPermissions($finance, 'finance');
+        $insertPermissions($players, 'players');
+        $insertPermissions($partners, 'partners');
+        $insertPermissions($orders, 'orders');
+        $insertPermissions($programs, 'programs');
+        $insertPermissions($reports, 'reports');
+        $insertPermissions($sessions, 'sessions');
+        $insertPermissions($statistics, 'statistics');
+        $insertPermissions($system, 'system');
+        $insertPermissions($teams, 'teams');
+        $insertPermissions($users, 'users');
+
+        // Log the count
+        $this->command->info('Permissions seeded successfully!');
+        $this->command->info('Total permissions: ' . Permission::count());
     }
 }

@@ -105,12 +105,72 @@ class Role extends Model
     }
 
     /**
-     * Assign a permission to this role.
+     * Assign a permission to this role with dependency enforcement.
+     * If assigning create/edit/delete/approve, automatically assigns view.
      */
     public function assignPermission(string|Permission $permission): void
     {
-        $permissionId = $permission instanceof Permission ? $permission->id : Permission::where('slug', $permission)->first()->id;
-        $this->permissions()->attach($permissionId);
+        $permissionModel = $permission instanceof Permission
+            ? $permission
+            : Permission::where('slug', $permission)->first();
+
+        if (!$permissionModel) {
+            return;
+        }
+
+        // Check if this is a dependent permission that requires view
+        $slug = $permissionModel->slug;
+        $parts = explode('.', $slug);
+        if (count($parts) >= 2) {
+            $category = $parts[0];
+            $action = $parts[1];
+            $dependentActions = ['create', 'edit', 'delete', 'approve', 'upload', 'process', 'manage', 'start', 'end', 'add', 'assign', 'generate', 'export', 'clock', 'mark', 'send', 'update'];
+
+            if (in_array($action, $dependentActions)) {
+                $viewSlug = $category . '.view';
+                $viewPermission = Permission::where('slug', $viewSlug)->first();
+                if ($viewPermission && !$this->hasPermission($viewSlug)) {
+                    $this->permissions()->attach($viewPermission->id);
+                }
+            }
+        }
+
+        $this->permissions()->attach($permissionModel->id);
+    }
+
+    /**
+     * Sync permissions with automatic dependency enforcement.
+     * Ensures that when a dependent permission is added, the base view permission is also added.
+     */
+    public function syncPermissionsWithDependencies(array $permissionIds): void
+    {
+        // Get all permissions being synced
+        $permissions = Permission::whereIn('id', $permissionIds)->get();
+
+        // Collect all needed permissions including dependencies
+        $neededIds = $permissionIds;
+
+        foreach ($permissions as $perm) {
+            $parts = explode('.', $perm->slug);
+            if (count($parts) >= 2) {
+                $category = $parts[0];
+                $action = $parts[1];
+
+                // Actions that require view permission
+                $dependentActions = ['create', 'edit', 'delete', 'approve', 'upload', 'process', 'manage', 'start', 'end', 'add', 'assign', 'generate', 'export', 'clock', 'mark', 'send', 'update'];
+
+                if (in_array($action, $dependentActions)) {
+                    $viewSlug = $category . '.view';
+                    $viewPerm = Permission::where('slug', $viewSlug)->first();
+                    if ($viewPerm && !in_array($viewPerm->id, $neededIds)) {
+                        $neededIds[] = $viewPerm->id;
+                    }
+                }
+            }
+        }
+
+        // Sync with dependencies included
+        $this->permissions()->sync(array_unique($neededIds));
     }
 
     /**

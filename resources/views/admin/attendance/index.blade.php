@@ -134,34 +134,34 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>{{ __('Player') }}</th>
-                            <th>{{ __('Session') }}</th>
-                            <th>{{ __('Check In') }}</th>
-                            <th>{{ __('Lateness') }}</th>
-                            <th>{{ __('Training Time') }}</th>
-                            <th>{{ __('Category') }}</th>
-                            <th>{{ __('Recorded By') }}</th>
-                            <th>{{ __('Actions') }}</th>
+                <table class="table table-sm table-bordered" width="100%" cellspacing="0">
+                    <thead class="table-light">
+                        <tr class="small">
+                            <th class="py-2">{{ __('Player') }}</th>
+                            <th class="py-2">{{ __('Session') }}</th>
+                            <th class="py-2">{{ __('Check In') }}</th>
+                            <th class="py-2">{{ __('Lateness') }}</th>
+                            <th class="py-2">{{ __('Training Time') }}</th>
+                            <th class="py-2">{{ __('Category') }}</th>
+                            <th class="py-2">{{ __('Recorded By') }}</th>
+                            <th class="py-2">{{ __('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($attendances as $attendance)
                         <tr>
-                            <td>
+                            <td class="py-1 align-middle">
                                 <div class="d-flex align-items-center">
-                                    <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
-                                        <i class="fas fa-user text-primary"></i>
+                                    <div class="bg-primary bg-opacity-10 rounded-circle p-1 me-2">
+                                        <i class="fas fa-user text-primary small"></i>
                                     </div>
-                                    <div>
+                                    <div class="small">
                                         <div class="fw-semibold">{{ $attendance->player->full_name ?? 'Unknown Player' }}</div>
                                         <small class="text-muted">{{ __('ID') }}: {{ $attendance->player_id }}</small>
                                     </div>
                                 </div>
                             </td>
-                            <td>
+                            <td class="py-1 align-middle small">
                                 @if($attendance->session)
                                     <div>
                                         <div class="fw-semibold">{{ ucfirst($attendance->session->session_type) }} - {{ $attendance->session->team_category }}</div>
@@ -173,7 +173,7 @@
                                     </span>
                                 @endif
                             </td>
-                            <td>
+                            <td class="py-1 align-middle small">
                                 @if($attendance->check_in_time)
                                     <div>
                                         <div class="fw-semibold">{{ $attendance->check_in_time->format('H:i') }}</div>
@@ -183,7 +183,7 @@
                                     <span class="text-muted">{{ __('Not checked in') }}</span>
                                 @endif
                             </td>
-                            <td>
+                            <td class="py-1 align-middle">
                                 @if($attendance->lateness_category)
                                     @if($attendance->lateness_category == 'on_time')
                                         <span class="badge bg-success">{{ $attendance->missed_minutes ?? 0 }} min</span>
@@ -198,7 +198,7 @@
                                     <span class="text-muted">-</span>
                                 @endif
                             </td>
-                            <td>
+                            <td class="py-1 align-middle">
                                 @if($attendance->trained_minutes)
                                     <span class="badge bg-info">{{ $attendance->trained_minutes }} min</span>
                                 @elseif($attendance->session && $attendance->session->status == 'active')
@@ -209,14 +209,14 @@
                                     <span class="text-muted">-</span>
                                 @endif
                             </td>
-                            <td>
+                            <td class="py-1 align-middle">
                                 @if($attendance->session && $attendance->session->status == 'ended')
                                     @if($attendance->trained_minutes >= ($attendance->session->total_duration_minutes ?? 0) * 0.8)
-                                        <span class="badge bg-success">Full Session</span>
+                                        <span class="badge bg-success">Full</span>
                                     @elseif($attendance->trained_minutes >= ($attendance->session->total_duration_minutes ?? 0) * 0.5)
-                                        <span class="badge bg-warning">Partial Session</span>
+                                        <span class="badge bg-warning">Partial</span>
                                     @elseif($attendance->trained_minutes > 0)
-                                        <span class="badge bg-danger">Late Arrival</span>
+                                        <span class="badge bg-danger">Late</span>
                                     @else
                                         <span class="badge bg-dark">Absent</span>
                                     @endif
@@ -226,7 +226,7 @@
                                     <span class="badge bg-secondary">Not Started</span>
                                 @endif
                             </td>
-                            <td>
+                            <td class="py-1 align-middle small">
                                 @if($attendance->recorder)
                                     <div>
                                         <div class="fw-semibold">{{ $attendance->recorder->name }}</div>
@@ -236,16 +236,16 @@
                                     <span class="text-muted">{{ __('System') }}</span>
                                 @endif
                             </td>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <a href="{{ route('admin.attendance.show', $attendance) }}" class="btn btn-sm btn-outline-primary" title="{{ __('View Details') }}">
+                            <td class="py-1 align-middle">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ route('admin.attendance.show', $attendance) }}" class="btn btn-sm btn-outline-primary py-0 px-1" title="{{ __('View Details') }}">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     @if($attendance->session && $attendance->session->status == 'active' && !$attendance->check_in_time)
                                         <form method="POST" action="{{ route('admin.training-sessions.admit-player', $attendance->session) }}" class="d-inline">
                                             @csrf
                                             <input type="hidden" name="player_id" value="{{ $attendance->player_id }}">
-                                            <button type="submit" class="btn btn-sm btn-success" title="{{ __('Admit to Session') }}">
+                                            <button type="submit" class="btn btn-sm btn-success py-0 px-1" title="{{ __('Admit to Session') }}">
                                                 <i class="fas fa-user-check"></i>
                                             </button>
                                         </form>

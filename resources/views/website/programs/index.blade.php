@@ -10,149 +10,121 @@
     <div class="container-fluid">
         <div class="programs-grid">
 
-            <!-- Program 1: Weekend Football & Life-Skills -->
+            @forelse($programs as $index => $program)
+            <!-- Program {{ $index + 1 }}: {{ $program->title }} -->
             <article class="program-card">
-                <div class="program-layout">
+                <div class="program-layout {{ $index % 2 === 1 ? 'reverse' : '' }}">
                     <div class="program-content">
-                        <span class="program-badge badge-primary">Football & Life Skills</span>
-                        <h3 class="program-title">Weekend Football & Life-Skills Program</h3>
+                        <span class="program-badge badge-{{ $index === 0 ? 'primary' : ($index === 1 ? 'warning' : 'success') }}">
+                            {{ $program->category ?? 'Program' }}
+                        </span>
+                        <h3 class="program-title">{{ $program->title }}</h3>
 
                         <div class="program-details">
                             <div class="detail-item">
                                 <i class="fas fa-dollar-sign"></i>
-                                <span>KSH 500/month</span>
+                                <span>{{ $program->fee_display ?? 'Contact for pricing' }}</span>
                             </div>
                             <div class="detail-item">
                                 <i class="fas fa-calendar"></i>
-                                <span>Full Year</span>
+                                <span>{{ $program->schedule_display ?? $program->duration ?? 'Flexible' }}</span>
                             </div>
                             <div class="detail-item">
                                 <i class="fas fa-users"></i>
-                                <span>Ages 6–18</span>
+                                <span>{{ $program->age_range ?? $program->age_group ?? 'All Ages' }}</span>
                             </div>
                         </div>
 
                         <p class="program-description">
-                            A year-round weekend program combining structured football training, academic discipline,
-                            digital literacy, character development, and CBC-aligned mentorship.
+                            {{ $program->description }}
                         </p>
 
                         <div class="program-actions">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#weekendProgramModal">
+                            <button class="btn btn-{{ $index === 0 ? 'primary' : ($index === 1 ? 'warning' : 'success') }}" data-bs-toggle="modal" data-bs-target="#programModal{{ $program->id }}">
                                 <i class="fas fa-info-circle me-2"></i>Learn More
                             </button>
-                            <a href="{{ route('enrol') }}" class="btn btn-outline-primary">
+                            <a href="{{ route('enrol') }}" class="btn btn-outline-{{ $index === 0 ? 'primary' : ($index === 1 ? 'warning' : 'success') }}">
                                 <i class="fas fa-user-plus me-2"></i>Enroll Now
                             </a>
                         </div>
                     </div>
 
                     <div class="program-image">
-                        <img src="{{ asset('assets/img/gallery/kids.jpeg') }}"
-                             alt="Weekend Football & Life-Skills Program"
+                        @if($program->image)
+                        <img src="{{ asset('storage/' . $program->image) }}"
+                             alt="{{ $program->title }}"
                              loading="lazy">
+                        @else
+                        <img src="{{ asset('assets/img/gallery/' . ($index === 0 ? 'kids.jpeg' : ($index === 1 ? 'co.jpeg' : 'coding.jpeg'))) }}"
+                             alt="{{ $program->title }}"
+                             loading="lazy">
+                        @endif
                     </div>
                 </div>
             </article>
 
-            <!-- Program 2: Long Holiday Intensive Camp -->
-            <article class="program-card">
-                <div class="program-layout reverse">
-                   <div class="program-image">
-                        <img src="{{ asset('assets/img/gallery/co.jpeg') }}"
-                             alt="Weekend Football & Life-Skills Program"
-                             loading="lazy">
-                    </div>
-
-                    <div class="program-content">
-                        <span class="program-badge badge-warning">Holiday Intensive Camp</span>
-                        <h3 class="program-title">Long Holiday Intensive Camp</h3>
-
-                        <div class="program-details">
-                            <div class="detail-item">
-                                <i class="fas fa-dollar-sign"></i>
-                                <span>KSH 5,000/holiday</span>
-                            </div>
-                            <div class="detail-item">
-                                <i class="fas fa-calendar"></i>
-                                <span>April/Aug/Dec</span>
-                            </div>
-                            <div class="detail-item">
-                                <i class="fas fa-users"></i>
-                                <span>Ages 7–17</span>
-                            </div>
-                        </div>
-
-                        <p class="program-description">
-                            A fully immersive holiday camp blending football training, academic mentorship,
-                            computer exposure, tournaments, teamwork, and life-skills development.
-                        </p>
-
-                        <div class="program-actions">
-                            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#holidayCampModal">
-                                <i class="fas fa-info-circle me-2"></i>Learn More
+            <!-- Program Modal -->
+            <div class="modal fade" id="programModal{{ $program->id }}" tabindex="-1" aria-labelledby="programModalLabel{{ $program->id }}" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-{{ $index === 0 ? 'primary' : ($index === 1 ? 'warning' : 'success') }} text-{{ $index === 1 ? 'dark' : 'white' }}">
+                            <h5 class="modal-title" id="programModalLabel{{ $program->id }}">{{ $program->title }}</h5>
+                            <button type="button" class="btn-{{ $index === 1 ? 'dark' : 'light' }}" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
                             </button>
-                            <a href="{{ route('enrol') }}" class="btn btn-outline-warning">
+                        </div>
+                        <div class="modal-body">
+                            <h6 class="fw-bold text-{{ $index === 0 ? 'primary' : ($index === 1 ? 'warning' : 'success') }}">Program Overview</h6>
+                            <p>{{ $program->description }}</p>
+
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6><i class="fas fa-dollar-sign me-2"></i>Fee</h6>
+                                    <p>{{ $program->fee_display ?? 'KSH ' . number_format($program->regular_fee ?? 0, 0) }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6><i class="fas fa-clock me-2"></i>Duration</h6>
+                                    <p>{{ $program->duration ?? 'Flexible' }}</p>
+                                </div>
+                            </div>
+
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <h6><i class="fas fa-calendar me-2"></i>Schedule</h6>
+                                    <p>{{ $program->schedule ?? $program->schedule_display ?? 'Flexible' }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6><i class="fas fa-users me-2"></i>Ages</h6>
+                                    <p>{{ $program->age_range ?? $program->age_group ?? 'All ages' }}</p>
+                                </div>
+                            </div>
+
+                            @if($program->objectives)
+                            <hr>
+                            <h6><i class="fas fa-bullseye me-2"></i>Objectives</h6>
+                            <p>{{ $program->objectives }}</p>
+                            @endif
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <a href="{{ route('enrol') }}" class="btn btn-{{ $index === 0 ? 'primary' : ($index === 1 ? 'warning' : 'success') }}">
                                 <i class="fas fa-user-plus me-2"></i>Enroll Now
                             </a>
                         </div>
                     </div>
                 </div>
-            </article>
-
-            <!-- Program 3: Computer & Coding Classes -->
-            <article class="program-card">
-                <div class="program-layout">
-                    <div class="program-content">
-                        <span class="program-badge badge-success">Technology & Coding</span>
-                        <h3 class="program-title">Computer & Coding Classes</h3>
-
-                        <div class="program-details">
-                            <div class="detail-item">
-                                <i class="fas fa-dollar-sign"></i>
-                                <span>KSH 3,500/month</span>
-                            </div>
-                            <div class="detail-item">
-                                <i class="fas fa-clock"></i>
-                                <span>Flexible Schedule</span>
-                            </div>
-                            <div class="detail-item">
-                                <i class="fas fa-users"></i>
-                                <span>Ages 7–18</span>
-                            </div>
-                        </div>
-
-                        <p class="program-description">
-                            Beginner-friendly tech classes where children learn coding, software basics,
-                            problem-solving, and digital creativity — preparing them for future tech careers.
-                        </p>
-
-                        <div class="program-actions">
-                            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#codingClassesModal">
-                                <i class="fas fa-info-circle me-2"></i>Learn More
-                            </button>
-                            <a href="{{ route('enrol') }}" class="btn btn-outline-success">
-                                <i class="fas fa-user-plus me-2"></i>Enroll Now
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="program-image">
-                        <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
-                             alt="Computer & Coding Classes"
-                             loading="lazy">
-                    </div>
-                </div>
-            </article>
+            </div>
+            @empty
+            <div class="alert alert-info">
+                <p class="mb-0">No programs available at the moment. Please check back later.</p>
+            </div>
+            @endforelse
 
         </div>
     </div>
 </section>
-
-<!-- Modals -->
-@include('website.programs.modals.weekend-program')
-@include('website.programs.modals.holiday-camp')
-@include('website.programs.modals.coding-classes')
 
 @endsection
 

@@ -797,6 +797,21 @@
                 <a href="{{ route('manager.logistics') }}" class="sidebar-nav-link {{ request()->routeIs('manager.logistics') ? 'active' : '' }}">
                     <i class="fas fa-truck" aria-hidden="true"></i><span>{{ __('Logistics') }}</span>
                 </a>
+
+                {{-- Equipment Management Section --}}
+                <div class="nav-section-title" role="heading" aria-level="2">{{ __('Equipment Management') }}</div>
+                <a href="{{ route('manager.equipment.categories') }}" class="sidebar-nav-link {{ request()->routeIs('manager.equipment.categories') ? 'active' : '' }}">
+                    <i class="fas fa-tags" aria-hidden="true"></i><span>{{ __('Equipment Categories') }}</span>
+                </a>
+                <a href="{{ route('manager.equipment.inventory') }}" class="sidebar-nav-link {{ request()->routeIs('manager.equipment.inventory') ? 'active' : '' }}">
+                    <i class="fas fa-boxes" aria-hidden="true"></i><span>{{ __('Inventory Counts') }}</span>
+                </a>
+                <a href="{{ route('manager.equipment.distribution') }}" class="sidebar-nav-link {{ request()->routeIs('manager.equipment.distribution') ? 'active' : '' }}">
+                    <i class="fas fa-clipboard-list" aria-hidden="true"></i><span>{{ __('Distribution Records') }}</span>
+                </a>
+                <a href="{{ route('manager.equipment.compliance') }}" class="sidebar-nav-link {{ request()->routeIs('manager.equipment.compliance') ? 'active' : '' }}">
+                    <i class="fas fa-file-contract" aria-hidden="true"></i><span>{{ __('Sponsor Compliance') }}</span>
+                </a>
             @endif
 
             {{-- FINANCE OFFICER SECTION --}}
@@ -931,6 +946,9 @@
                 </a>
                 <a href="{{ route('admin.staff.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.staff.*') ? 'active' : '' }}">
                     <i class="fas fa-users-cog" aria-hidden="true"></i><span>{{ __('Staff') }}</span>
+                </a>
+                <a href="{{ route('organization.roles.index') }}" class="sidebar-nav-link {{ request()->routeIs('organization.roles.*') ? 'active' : '' }}">
+                    <i class="fas fa-user-shield" aria-hidden="true"></i><span>{{ __('Roles & Permissions') }}</span>
                 </a>
                 <a href="{{ route('admin.settings.company') }}" class="sidebar-nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
                     <i class="fas fa-cog" aria-hidden="true"></i><span>{{ __('Settings') }}</span>

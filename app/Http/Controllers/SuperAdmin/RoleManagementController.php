@@ -139,9 +139,9 @@ class RoleManagementController extends Controller
                 'organization_id' => $request->organization_id,
             ]);
 
-            // Assign permissions
+            // Assign permissions with dependency enforcement
             if ($request->has('permissions')) {
-                $role->permissions()->sync($request->permissions);
+                $role->syncPermissionsWithDependencies($request->permissions);
             }
 
             // Log role creation
@@ -222,7 +222,7 @@ class RoleManagementController extends Controller
         ]));
 
         if ($request->has('permissions')) {
-            $role->permissions()->sync($request->permissions);
+            $role->syncPermissionsWithDependencies($request->permissions);
 
             // Log permission changes
             RoleAuditLog::logPermissionChange(

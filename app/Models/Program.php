@@ -24,6 +24,9 @@ class Program extends Model
         'status',
         'start_date',
         'end_date',
+        'fee_display',
+        'schedule_display',
+        'age_range',
     ];
 
     protected $casts = [

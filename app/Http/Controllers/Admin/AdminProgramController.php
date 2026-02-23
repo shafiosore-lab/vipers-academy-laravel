@@ -36,6 +36,9 @@ class AdminProgramController extends Controller
             'regular_fee' => 'nullable|numeric|min:0',
             'mumias_fee' => 'nullable|numeric|min:0',
             'mumias_discount_percentage' => 'nullable|integer|min:0|max:100',
+            'fee_display' => 'nullable|string|max:255',
+            'schedule_display' => 'nullable|string|max:255',
+            'age_range' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -48,6 +51,9 @@ class AdminProgramController extends Controller
             'regular_fee' => $request->regular_fee,
             'mumias_fee' => $request->mumias_fee,
             'mumias_discount_percentage' => $request->mumias_discount_percentage,
+            'fee_display' => $request->fee_display,
+            'schedule_display' => $request->schedule_display,
+            'age_range' => $request->age_range,
         ];
 
         if ($request->hasFile('image')) {
@@ -78,10 +84,13 @@ class AdminProgramController extends Controller
             'regular_fee' => 'nullable|numeric|min:0',
             'mumias_fee' => 'nullable|numeric|min:0',
             'mumias_discount_percentage' => 'nullable|integer|min:0|max:100',
+            'fee_display' => 'nullable|string|max:255',
+            'schedule_display' => 'nullable|string|max:255',
+            'age_range' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $data = $request->only(['title', 'age_group', 'description', 'schedule', 'duration', 'regular_fee', 'mumias_fee', 'mumias_discount_percentage']);
+        $data = $request->only(['title', 'age_group', 'description', 'schedule', 'duration', 'regular_fee', 'mumias_fee', 'mumias_discount_percentage', 'fee_display', 'schedule_display', 'age_range']);
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('uploads/programs', 'public');

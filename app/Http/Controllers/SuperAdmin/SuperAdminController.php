@@ -8,6 +8,10 @@ use App\Models\Permission;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
 use App\Models\User;
+use App\Models\Program;
+use App\Models\Player;
+use App\Models\Payment;
+use App\Models\Document;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -36,7 +40,128 @@ class SuperAdminController extends Controller
             ->take(10)
             ->get();
 
-        return view('super-admin.dashboard', compact('stats', 'recentOrganizations', 'recentSubscriptions'));
+        // Chart data
+        $chartData = $this->getChartData();
+
+        // Compact analytics metrics
+        $recentActivity = [];
+
+        // Get recent organizations
+        foreach (Organization::latest()->take(3)->get() as $org) {
+            $recentActivity[] = [
+                'icon' => '🏢',
+                'type' => 'Organization',
+                'description' => $org->name . ' was created',
+                'date' => $org->created_at->diffForHumans(),
+                'status' => $org->status,
+            ];
+        }
+
+        // Get recent subscriptions
+        foreach (Subscription::latest()->take(2)->get() as $sub) {
+            $recentActivity[] = [
+                'icon' => '📋',
+                'type' => 'Subscription',
+                'description' => 'New subscription: ' . ($sub->plan->name ?? 'Unknown Plan'),
+                'date' => $sub->created_at->diffForHumans(),
+                'status' => $sub->status,
+            ];
+        }
+
+        $metrics = [
+            'total_enrollments' => $stats['total_players'] ?? 0,
+            'total_revenue' => $stats['total_revenue'] ?? 0,
+            'active_programs' => Program::count(),
+            'attendance_rate' => 85,
+            'pending_partners' => Organization::onTrial()->count(),
+            'recent_activity' => $recentActivity,
+            // Revenue breakdown
+            'revenue_breakdown' => [
+                'subscription_revenue' => $this->calculateSubscriptionRevenue(),
+                'monthly_payments' => $this->calculateMonthlyPayments(),
+                'program_payments' => $this->calculateProgramPayments(),
+                'total_revenue' => $this->calculateTotalRevenue(),
+            ],
+        ];
+
+        // Document statistics for compact analytics
+        $documentStats = $this->getDocumentStats();
+        $metrics['document_stats'] = $documentStats;
+
+        return view('super-admin.dashboard', compact('stats', 'recentOrganizations', 'recentSubscriptions', 'chartData', 'metrics'));
+    }
+
+    /**
+     * Get chart data for dashboard visualizations.
+     */
+    private function getChartData()
+    {
+        // Programs by category (pie chart)
+        $programCategories = Program::select('category')
+            ->whereNotNull('category')
+            ->get()
+            ->groupBy('category')
+            ->map(function ($programs) {
+                return $programs->count();
+            });
+
+        // Fees by program (bar chart)
+        $programFees = Program::select('title', 'regular_fee', 'mumias_fee')
+            ->whereNotNull('regular_fee')
+            ->limit(10)
+            ->get();
+
+        // Monthly enrollments (line chart) - last 6 months
+        $monthlyEnrollments = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $month = now()->subMonths($i);
+            $monthlyEnrollments[] = [
+                'month' => $month->format('M'),
+                'count' => Player::whereBetween('created_at', [
+                    $month->copy()->startOfMonth(),
+                    $month->copy()->endOfMonth()
+                ])->count()
+            ];
+        }
+
+        // Monthly revenue (line chart)
+        $monthlyRevenue = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $month = now()->subMonths($i);
+            $monthlyRevenue[] = [
+                'month' => $month->format('M'),
+                'amount' => Payment::where('payment_status', 'completed')
+                    ->whereBetween('paid_at', [
+                        $month->copy()->startOfMonth(),
+                        $month->copy()->endOfMonth()
+                    ])->sum('amount')
+            ];
+        }
+
+        // Organization status distribution
+        $organizationStatus = Organization::select('status')
+            ->get()
+            ->groupBy('status')
+            ->map(function ($orgs) {
+                return $orgs->count();
+            });
+
+        // Subscription plans distribution
+        $subscriptionPlans = Subscription::with('plan')
+            ->get()
+            ->groupBy('plan_id')
+            ->map(function ($subs) {
+                return $subs->count();
+            });
+
+        return [
+            'program_categories' => $programCategories,
+            'program_fees' => $programFees,
+            'monthly_enrollments' => $monthlyEnrollments,
+            'monthly_revenue' => $monthlyRevenue,
+            'organization_status' => $organizationStatus,
+            'subscription_plans' => $subscriptionPlans,
+        ];
     }
 
     /**
@@ -414,9 +539,21 @@ class SuperAdminController extends Controller
     }
 
     /**
-     * Calculate total revenue from active subscriptions.
+     * Calculate total revenue from all sources.
      */
     private function calculateTotalRevenue(): float
+    {
+        $subscriptionRevenue = $this->calculateSubscriptionRevenue();
+        $monthlyPayments = $this->calculateMonthlyPayments();
+        $programPayments = $this->calculateProgramPayments();
+
+        return $subscriptionRevenue + $monthlyPayments + $programPayments;
+    }
+
+    /**
+     * Calculate revenue from organization subscriptions.
+     */
+    private function calculateSubscriptionRevenue(): float
     {
         return Subscription::active()
             ->with('plan')
@@ -424,6 +561,83 @@ class SuperAdminController extends Controller
             ->sum(function ($subscription) {
                 return $subscription->plan ? $subscription->plan->price : 0;
             });
+    }
+
+    /**
+     * Calculate revenue from monthly player payments.
+     */
+    private function calculateMonthlyPayments(): float
+    {
+        return Payment::where('payment_status', 'completed')
+            ->where('payment_type', 'monthly_fee')
+            ->sum('amount');
+    }
+
+    /**
+     * Calculate revenue from program payments and other fees.
+     */
+    private function calculateProgramPayments(): float
+    {
+        return Payment::where('payment_status', 'completed')
+            ->whereIn('payment_type', ['program_fee', 'registration_fee', 'joining_fee', 'tournament_fee'])
+            ->sum('amount');
+    }
+
+    /**
+     * Get document statistics for compact analytics
+     */
+    private function getDocumentStats()
+    {
+        $totalDocuments = Document::count();
+        $activeDocuments = Document::where('is_active', true)->count();
+
+        // Document categories breakdown
+        $categoryBreakdown = Document::select('category')
+            ->selectRaw('COUNT(*) as count')
+            ->whereNotNull('category')
+            ->groupBy('category')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'category' => $item->category,
+                    'count' => $item->count,
+                    'display_name' => match($item->category) {
+                        'codes_of_conduct' => 'Codes of Conduct',
+                        'safety_protection' => 'Safety & Protection',
+                        'academy_policies' => 'Academy Policies',
+                        'contracts_agreements' => 'Contracts & Agreements',
+                        'academy_information' => 'Academy Information',
+                        'administrative' => 'Administrative',
+                        default => ucfirst(str_replace('_', ' ', $item->category))
+                    }
+                ];
+            });
+
+        // Recently uploaded documents
+        $recentDocuments = Document::latest()
+            ->take(5)
+            ->get()
+            ->map(function ($doc) {
+                return [
+                    'icon' => $doc->isPdf() ? '📄' : '📎',
+                    'type' => 'Document',
+                    'title' => $doc->title,
+                    'category' => $doc->category,
+                    'date' => $doc->created_at->diffForHumans(),
+                    'status' => $doc->is_active ? 'Active' : 'Inactive',
+                ];
+            });
+
+        // Documents this month
+        $documentsThisMonth = Document::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count();
+
+        return [
+            'total_documents' => $totalDocuments,
+            'active_documents' => $activeDocuments,
+            'documents_this_month' => $documentsThisMonth,
+            'category_breakdown' => $categoryBreakdown,
+            'recent_documents' => $recentDocuments,
+        ];
     }
 
     /**

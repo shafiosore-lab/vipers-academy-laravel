@@ -149,23 +149,23 @@
     </div>
     <div class="content-card-body">
         <div class="table-responsive">
-            <table class="table table-bordered" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>{{ __('Reference') }}</th>
-                        <th>{{ __('Payer') }}</th>
-                        <th>{{ __('Type') }}</th>
-                        <th>{{ __('Amount') }}</th>
-                        <th>{{ __('Status') }}</th>
-                        <th>{{ __('Method') }}</th>
-                        <th>{{ __('Date') }}</th>
-                        <th>{{ __('Actions') }}</th>
+            <table class="table table-sm table-bordered" width="100%" cellspacing="0">
+                <thead class="table-light">
+                    <tr class="small">
+                        <th class="py-2">{{ __('Reference') }}</th>
+                        <th class="py-2">{{ __('Payer') }}</th>
+                        <th class="py-2">{{ __('Type') }}</th>
+                        <th class="py-2">{{ __('Amount') }}</th>
+                        <th class="py-2">{{ __('Status') }}</th>
+                        <th class="py-2">{{ __('Method') }}</th>
+                        <th class="py-2">{{ __('Date') }}</th>
+                        <th class="py-2">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($payments as $payment)
                         <tr>
-                            <td>
+                            <td class="py-1 align-middle small">
                                 <a href="{{ route('admin.payments.show', $payment) }}" class="text-decoration-none fw-semibold">
                                     {{ $payment->payment_reference }}
                                 </a>
@@ -173,34 +173,34 @@
                                     <br><small class="text-muted">{{ $payment->transaction_id }}</small>
                                 @endif
                             </td>
-                            <td>
+                            <td class="py-1 align-middle small">
                                 <div class="fw-semibold">{{ $payment->getPayerName() }}</div>
                                 <small class="text-muted">{{ ucfirst($payment->payer_type) }}</small>
                             </td>
-                            <td>
+                            <td class="py-1 align-middle">
                                 <span class="badge bg-secondary">{{ ucfirst(str_replace('_', ' ', $payment->payment_type)) }}</span>
                             </td>
-                            <td class="fw-semibold">{{ $payment->getFormattedAmount() }}</td>
-                            <td>
+                            <td class="py-1 align-middle fw-semibold small">{{ $payment->getFormattedAmount() }}</td>
+                            <td class="py-1 align-middle">
                                 <span class="badge bg-{{ $payment->payment_status === 'completed' ? 'success' : ($payment->payment_status === 'pending' ? 'warning' : 'danger') }}">
                                     {{ ucfirst($payment->payment_status) }}
                                 </span>
                             </td>
-                            <td>{{ ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</td>
-                            <td>{{ $payment->created_at->format('M d, Y') }}</td>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <a href="{{ route('admin.payments.show', $payment) }}" class="btn btn-sm btn-outline-primary" title="{{ __('View') }}">
+                            <td class="py-1 align-middle small">{{ ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</td>
+                            <td class="py-1 align-middle small">{{ $payment->created_at->format('M d, Y') }}</td>
+                            <td class="py-1 align-middle">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ route('admin.payments.show', $payment) }}" class="btn btn-sm btn-outline-primary py-0 px-1" title="{{ __('View') }}">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('admin.payments.edit', $payment) }}" class="btn btn-sm btn-outline-secondary" title="{{ __('Edit') }}">
+                                    <a href="{{ route('admin.payments.edit', $payment) }}" class="btn btn-sm btn-outline-secondary py-0 px-1" title="{{ __('Edit') }}">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     @if($payment->isPending())
                                         <form method="POST" action="{{ route('admin.payments.destroy', $payment) }}" class="d-inline" onsubmit="return confirm('{{ __('Are you sure you want to delete this payment record?') }}')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="{{ __('Delete') }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-1" title="{{ __('Delete') }}">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>

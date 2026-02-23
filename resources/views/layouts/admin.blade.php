@@ -7,25 +7,13 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', __('Admin Dashboard - Vipers Academy'))</title>
 
-    {{-- Favicon --}}
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-
-    {{-- Fonts --}}
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    {{-- Font Awesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    {{-- Bootstrap 5.3 --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    {{-- Chart.js --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-    /* ========================================
-           CSS VARIABLES
-           ======================================== */
     :root {
         --primary: #ea1c4d;
         --primary-dark: #c0173f;
@@ -37,60 +25,32 @@
         --gray-900: #333;
         --gray-600: #666;
         --gray-300: #e8e8e8;
+        --gray-100: #f5f5f5;
         --bg-light: #f7f7f7;
         --white: #fff;
         --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
         --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
         --transition: 0.2s ease;
-        --sidebar-width: 260px;
         --header-height: 60px;
+        --sidebar-width: 260px;
     }
 
-    /* ========================================
-           BASE STYLES
-           ======================================== */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
         font-family: 'Roboto', sans-serif;
-        font-size: 16px;
-        background: var(--white);
-        color: var(--gray-900);
-        overflow-x: hidden;
-    }
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-        font-weight: 700;
-        line-height: 1.2;
+        font-size: 14px;
+        background: var(--gray-100);
         color: var(--gray-900);
     }
 
-    h1 {
-        font-size: 30px;
-        color: var(--primary);
-    }
+    h1, h2, h3, h4, h5, h6 { font-weight: 700; color: var(--gray-900); }
+    h1 { font-size: 28px; color: var(--primary); }
+    h2 { font-size: 20px; }
+    h3 { font-size: 16px; }
 
-    h2 {
-        font-size: 22px;
-    }
-
-    h3 {
-        font-size: 16px;
-    }
-
-    /* ========================================
-           TOP HEADER
-           ======================================== */
+    /* Top Header */
     .top-header {
         background: var(--white);
         border-bottom: 1px solid var(--gray-300);
@@ -107,95 +67,46 @@
         height: 100%;
         display: flex;
         align-items: center;
-        padding: 0 2rem;
+        padding: 0 1.5rem;
     }
 
-    /* Brand */
     .admin-brand {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
         text-decoration: none;
-        margin-right: 3rem;
     }
 
     .admin-logo {
-        width: 40px;
-        height: 40px;
+        width: 36px;
+        height: 36px;
         object-fit: contain;
-        border-radius: 8px;
+        border-radius: 6px;
     }
 
     .admin-brand-text h5 {
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 700;
         color: var(--primary);
         margin: 0;
-        line-height: 1.2;
     }
 
     .admin-brand-text small {
-        font-size: 11px;
+        font-size: 10px;
         color: #999;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
     }
 
-    /* Search */
-    .admin-search {
-        flex: 1;
-        max-width: 500px;
-        margin-right: 2rem;
-    }
-
-    .admin-search-form {
-        display: flex;
-        border: 1px solid var(--gray-300);
-        border-radius: 6px;
-        overflow: hidden;
-        background: #f8f9fa;
-        transition: var(--transition);
-    }
-
-    .admin-search-form:focus-within {
-        border-color: var(--primary);
-        background: var(--white);
-        box-shadow: 0 0 0 3px rgba(234, 28, 77, 0.1);
-    }
-
-    .admin-search-input {
-        flex: 1;
-        border: none;
-        padding: 10px 16px;
-        font-size: 14px;
-        outline: none;
-        background: transparent;
-    }
-
-    .admin-search-btn {
-        background: transparent;
-        border: none;
-        color: #999;
-        padding: 0 16px;
-        cursor: pointer;
-        transition: var(--transition);
-    }
-
-    .admin-search-btn:hover {
-        color: var(--primary);
-    }
-
-    /* Header Actions */
     .header-actions {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 8px;
         margin-left: auto;
     }
 
     .header-action-btn {
-        width: 38px;
-        height: 38px;
+        width: 34px;
+        height: 34px;
         border-radius: 50%;
         background: #f8f9fa;
         border: none;
@@ -205,7 +116,6 @@
         justify-content: center;
         cursor: pointer;
         position: relative;
-        transition: var(--transition);
     }
 
     .header-action-btn:hover {
@@ -220,9 +130,9 @@
         background: var(--danger);
         color: var(--white);
         border-radius: 50%;
-        width: 18px;
-        height: 18px;
-        font-size: 10px;
+        width: 16px;
+        height: 16px;
+        font-size: 9px;
         font-weight: 600;
         display: flex;
         align-items: center;
@@ -230,74 +140,35 @@
         border: 2px solid var(--white);
     }
 
-    .language-selector {
-        background: #f8f9fa;
-        border: 1px solid var(--gray-300);
-        border-radius: 6px;
-        color: var(--gray-600);
-        font-size: 13px;
-        padding: 8px 12px;
-        outline: none;
-        cursor: pointer;
-        transition: var(--transition);
-    }
-
-    .language-selector:hover,
-    .language-selector:focus {
-        border-color: var(--primary);
-        background: var(--white);
-    }
-
-    /* User Menu */
     .admin-user-menu {
         display: flex;
         align-items: center;
-        gap: 10px;
-        padding: 6px 12px;
+        gap: 8px;
+        padding: 4px 10px;
         background: #f8f9fa;
-        border-radius: 8px;
+        border-radius: 20px;
         cursor: pointer;
-        transition: var(--transition);
-        margin-left: 12px;
-    }
-
-    .admin-user-menu:hover {
-        background: #e9ecef;
     }
 
     .admin-user-avatar {
-        width: 32px;
-        height: 32px;
+        width: 28px;
+        height: 28px;
         border-radius: 50%;
         background: linear-gradient(135deg, var(--primary), var(--secondary));
         display: flex;
         align-items: center;
         justify-content: center;
         color: var(--white);
-        font-size: 14px;
+        font-size: 12px;
         font-weight: 600;
-    }
-
-    .admin-user-info {
-        display: flex;
-        flex-direction: column;
-        line-height: 1.2;
     }
 
     .admin-user-name {
         font-size: 13px;
         font-weight: 600;
-        color: var(--gray-900);
     }
 
-    .admin-user-role {
-        font-size: 11px;
-        color: #999;
-    }
-
-    /* ========================================
-           SIDEBAR
-           ======================================== */
+    /* Left Sidebar */
     .admin-sidebar {
         background: var(--white);
         width: var(--sidebar-width);
@@ -308,108 +179,196 @@
         border-right: 1px solid var(--gray-300);
         overflow-y: auto;
         z-index: 1030;
-        transition: left var(--transition);
+        box-shadow: 2px 0 10px rgba(0,0,0,0.05);
     }
 
-    .admin-sidebar::-webkit-scrollbar {
-        width: 6px;
-    }
+    .admin-sidebar::-webkit-scrollbar { width: 4px; }
+    .admin-sidebar::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 2px; }
 
-    .admin-sidebar::-webkit-scrollbar-thumb {
-        background: var(--gray-300);
-        border-radius: 3px;
-    }
+    .sidebar-nav { padding: 0.25rem 0; }
 
-    .sidebar-nav {
-        padding: 1.5rem 1rem;
-    }
+    /* Accordion Styles */
+    .sidebar-accordion { margin-bottom: 2px; }
 
-    .nav-section-title {
-        font-size: 11px;
-        font-weight: 600;
-        color: #999;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 0 12px;
-        margin-bottom: 8px;
-        margin-top: 20px;
-    }
-
-    .nav-section-title:first-child {
-        margin-top: 0;
-    }
-
-    .sidebar-nav-link {
+    .sidebar-accordion-header {
         display: flex;
         align-items: center;
-        padding: 10px 12px;
-        color: var(--gray-600);
-        text-decoration: none;
-        border-radius: 6px;
-        margin-bottom: 4px;
-        font-size: 14px;
-        font-weight: 500;
-        transition: var(--transition);
-        position: relative;
+        justify-content: space-between;
+        padding: 8px 1rem;
+        color: var(--gray-900);
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
     }
 
-    .sidebar-nav-link:hover {
+    .sidebar-accordion-header:hover {
         background: #f8f9fa;
         color: var(--primary);
     }
 
-    .sidebar-nav-link.active {
+    .sidebar-accordion-header.active {
         background: #fff5f0;
         color: var(--primary);
+    }
+
+    .sidebar-accordion-header i {
+        width: 18px;
+        font-size: 13px;
+        margin-right: 8px;
+    }
+
+    .sidebar-accordion-icon {
+        font-size: 11px;
+        color: var(--gray-600);
+        transition: all 0.3s ease;
+        font-weight: bold;
+    }
+
+    .sidebar-accordion-header.active .sidebar-accordion-icon {
+        color: var(--primary);
+    }
+
+    .sidebar-accordion-header.active .sidebar-accordion-icon::before {
+        content: "\2212";
+    }
+
+    .sidebar-accordion:not(.open) .sidebar-accordion-icon::before {
+        content: "\002B";
+    }
+
+    .sidebar-accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+    .sidebar-accordion.open .sidebar-accordion-content {
+        max-height: 500px;
+    }
+
+    .sidebar-accordion-content .sidebar-link {
+        padding-left: 2.5rem;
+    }
+
+    .sidebar-link {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 1rem;
+        color: var(--gray-600);
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        border-left: 3px solid transparent;
+    }
+
+    .sidebar-link:hover {
+        background: #f8f9fa;
+        color: var(--primary);
+    }
+
+    .sidebar-link.active {
+        background: #fff5f0;
+        color: var(--primary);
+        border-left-color: var(--primary);
         font-weight: 600;
     }
 
-    .sidebar-nav-link.active::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 3px;
-        height: 20px;
-        background: var(--primary);
-        border-radius: 0 3px 3px 0;
-    }
-
-    .sidebar-nav-link i {
-        width: 20px;
-        margin-right: 12px;
-        font-size: 16px;
-    }
-
-    .sidebar-nav-badge {
-        margin-left: auto;
-        background: var(--danger);
-        color: var(--white);
-        font-size: 10px;
-        font-weight: 600;
-        padding: 2px 6px;
-        border-radius: 10px;
-        min-width: 18px;
+    .sidebar-link i {
+        width: 16px;
+        font-size: 13px;
         text-align: center;
     }
 
-    /* ========================================
-           MAIN CONTENT
-           ======================================== */
-    .admin-main {
-        margin-left: var(--sidebar-width);
+    .sidebar-badge {
+        margin-left: auto;
+        background: var(--danger);
+        color: var(--white);
+        font-size: 9px;
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: 10px;
+    }
+
+    /* Accordion Toggle Setting */
+    .accordion-settings {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 1rem;
+        margin-bottom: 8px;
+        background: #f8f9fa;
+        border-bottom: 1px solid var(--gray-300);
+    }
+
+    .accordion-settings-label {
+        font-size: 11px;
+        color: #999;
+        font-weight: 500;
+    }
+
+    .accordion-toggle-switch {
+        position: relative;
+        width: 36px;
+        height: 20px;
+    }
+
+    .accordion-toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .accordion-toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.3s;
+        border-radius: 20px;
+    }
+
+    .accordion-toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 14px;
+        width: 14px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.3s;
+        border-radius: 50%;
+    }
+
+    .accordion-toggle-switch input:checked + .accordion-toggle-slider {
+        background-color: var(--primary);
+    }
+
+    .accordion-toggle-switch input:checked + .accordion-toggle-slider:before {
+        transform: translateX(16px);
+    }
+
+    /* Main Content - Right Side */
+    .admin-content {
         margin-top: var(--header-height);
-        padding: 2rem;
+        margin-left: var(--sidebar-width);
+        padding: 20px;
         min-height: calc(100vh - var(--header-height));
     }
 
-    /* ========================================
-           ALERTS
-           ======================================== */
+    /* Alerts */
     .alert-custom {
         border-radius: 8px;
-        padding: 1rem 1.25rem;
+        padding: 1rem;
         border: 1px solid transparent;
         margin-bottom: 1rem;
         display: flex;
@@ -417,59 +376,24 @@
         gap: 12px;
     }
 
-    .alert-custom i {
-        font-size: 18px;
-    }
+    .alert-custom.success { background: #f0fdf4; border-color: #bbf7d0; color: var(--secondary); }
+    .alert-custom.error { background: #fef2f2; border-color: #fecaca; color: var(--danger); }
 
-    .alert-custom.success {
-        background: #f0fdf4;
-        border-color: #bbf7d0;
-        color: var(--secondary);
-    }
-
-    .alert-custom.error {
-        background: #fef2f2;
-        border-color: #fecaca;
-        color: var(--danger);
-    }
-
-    /* ========================================
-           FOOTER
-           ======================================== */
+    /* Footer */
     .admin-footer {
-        margin-top: 3rem;
-        padding: 1.5rem 0;
+        margin-top: 2rem;
+        padding: 1rem 0;
         border-top: 1px solid var(--gray-300);
     }
 
     .admin-footer-content {
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 1rem;
-        font-size: 13px;
+        font-size: 12px;
         color: #999;
     }
 
-    .admin-footer-links {
-        display: flex;
-        gap: 1.5rem;
-    }
-
-    .admin-footer-links a {
-        color: #999;
-        text-decoration: none;
-        transition: var(--transition);
-    }
-
-    .admin-footer-links a:hover {
-        color: var(--primary);
-    }
-
-    /* ========================================
-           DROPDOWN
-           ======================================== */
+    /* Dropdown */
     .dropdown-menu {
         border-radius: 8px;
         border: 1px solid var(--gray-300);
@@ -480,8 +404,7 @@
     .dropdown-item {
         border-radius: 6px;
         padding: 8px 12px;
-        font-size: 14px;
-        transition: var(--transition);
+        font-size: 13px;
     }
 
     .dropdown-item:hover {
@@ -490,30 +413,35 @@
     }
 
     .dropdown-header {
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 600;
         color: #999;
-        padding: 8px 12px;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
     }
 
-    /* Mobile Toggle */
-    .mobile-sidebar-toggle {
+    /* Responsive */
+    @media (max-width: 991.98px) {
+        .admin-sidebar {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .admin-sidebar.show { transform: translateX(0); }
+        .admin-content { margin-left: 0; }
+
+        .sidebar-toggle-mobile {
+            display: block !important;
+        }
+    }
+
+    .sidebar-toggle-mobile {
         display: none;
         background: none;
         border: none;
-        color: var(--gray-600);
         font-size: 20px;
+        color: var(--gray-600);
         cursor: pointer;
-        margin-right: 1rem;
     }
 
-    /* ========================================
-            ACCESSIBILITY & UX ENHANCEMENTS
-            ======================================== */
-
-    /* Screen reader only content */
     .sr-only {
         position: absolute;
         width: 1px;
@@ -525,288 +453,6 @@
         white-space: nowrap;
         border: 0;
     }
-
-    .sr-only-focusable:focus {
-        position: static;
-        width: auto;
-        height: auto;
-        padding: 0.5rem;
-        margin: 0;
-        overflow: visible;
-        clip: auto;
-        white-space: normal;
-        border: 2px solid var(--primary);
-        background: var(--white);
-        color: var(--primary);
-        z-index: 9999;
-    }
-
-    /* Focus management */
-    .sidebar-nav-link:focus,
-    .header-action-btn:focus,
-    .admin-search-input:focus,
-    .language-selector:focus,
-    .admin-user-menu:focus {
-        outline: 2px solid var(--primary);
-        outline-offset: 2px;
-        box-shadow: 0 0 0 4px rgba(234, 28, 77, 0.2);
-    }
-
-    /* Loading indicator */
-    .loading-indicator {
-        position: fixed;
-        top: var(--header-height);
-        left: var(--sidebar-width);
-        right: 0;
-        bottom: 0;
-        background: rgba(255, 255, 255, 0.9);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        backdrop-filter: blur(4px);
-    }
-
-    .loading-spinner {
-        width: 40px;
-        height: 40px;
-        border: 4px solid var(--gray-300);
-        border-top: 4px solid var(--primary);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin-bottom: 1rem;
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    /* Breadcrumb navigation */
-    .breadcrumb-nav {
-        background: var(--white);
-        border-bottom: 1px solid var(--gray-300);
-        padding: 0.75rem 0;
-        font-size: 14px;
-    }
-
-    .breadcrumb-nav .container-fluid {
-        padding: 0 2rem;
-    }
-
-    .breadcrumb {
-        background: transparent;
-        margin: 0;
-        padding: 0;
-    }
-
-    .breadcrumb-item {
-        display: flex;
-        align-items: center;
-    }
-
-    .breadcrumb-item + .breadcrumb-item::before {
-        content: "/";
-        color: var(--gray-600);
-        padding: 0 0.5rem;
-    }
-
-    .breadcrumb-item.active {
-        color: var(--primary);
-        font-weight: 600;
-    }
-
-    /* Enhanced dropdowns */
-    .dropdown-menu {
-        border-radius: 8px;
-        border: 1px solid var(--gray-300);
-        box-shadow: var(--shadow-lg);
-        padding: 0.5rem;
-        animation: fadeInDown 0.2s ease-out;
-    }
-
-    @keyframes fadeInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* ========================================
-            RESPONSIVE DESIGN
-            ======================================== */
-    @media (max-width: 992px) {
-        .admin-sidebar {
-            left: calc(-1 * var(--sidebar-width));
-        }
-
-        .admin-sidebar.show {
-            left: 0;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .admin-main {
-            margin-left: 0;
-        }
-
-        .mobile-sidebar-toggle {
-            display: block;
-        }
-
-        .admin-search {
-            max-width: 300px;
-        }
-
-        .loading-indicator {
-            left: 0;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .top-header .container-fluid {
-            padding: 0 1rem;
-        }
-
-        .admin-brand {
-            margin-right: 1rem;
-        }
-
-        .admin-brand-text {
-            display: none;
-        }
-
-        .admin-search {
-            display: none;
-        }
-
-        .admin-main {
-            padding: 1rem;
-        }
-
-        .admin-user-info {
-            display: none;
-        }
-
-        .header-actions {
-            gap: 8px;
-        }
-
-        .breadcrumb-nav .container-fluid {
-            padding: 0 1rem;
-        }
-
-        .language-selector-wrapper {
-            display: none;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .top-header .container-fluid {
-            padding: 0 0.5rem;
-        }
-
-        .admin-main {
-            padding: 0.5rem;
-        }
-
-        .header-actions .dropdown {
-            display: none;
-        }
-
-        .header-actions .header-action-btn:not(.notification-btn) {
-            display: none;
-        }
-
-        .alert-custom {
-            margin-bottom: 1rem;
-            padding: 0.75rem;
-        }
-    }
-
-    /* ========================================
-             RESPONSIVE TABLE STYLES
-             ======================================== */
-    .table {
-        table-layout: fixed;
-        width: 100%;
-        margin-bottom: 1rem;
-    }
-
-    .table th,
-    .table td {
-        padding: 0.5rem;
-        vertical-align: middle;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .table th {
-        font-weight: 600;
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-    }
-
-    /* Allow text wrapping in specific cells */
-    .table td.wrap,
-    .table th.wrap {
-        white-space: normal;
-        word-wrap: break-word;
-    }
-
-    /* Action buttons container */
-    .table td .btn-group,
-    .table td .btn-toolbar {
-        white-space: nowrap;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        .table th,
-        .table td {
-            padding: 0.4rem;
-            font-size: 0.875rem;
-        }
-
-        .table-responsive {
-            border: none;
-        }
-    }
-
-    /* High contrast mode support */
-    @media (prefers-contrast: high) {
-        :root {
-            --primary: #0000ff;
-            --secondary: #00ff00;
-            --gray-900: #000;
-            --white: #fff;
-        }
-
-        .sidebar-nav-link,
-        .header-action-btn {
-            border: 1px solid;
-        }
-    }
-
-    /* Reduced motion support */
-    @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-            animation-duration: 0.01ms !important;
-            animation-iteration-count: 1 !important;
-            transition-duration: 0.01ms !important;
-        }
-
-        .loading-spinner {
-            animation: none;
-        }
-    }
     </style>
 
     @stack('styles')
@@ -814,219 +460,74 @@
 
 <body>
     {{-- Top Header --}}
-    <header class="top-header" role="banner">
+    <header class="top-header">
         <div class="container-fluid">
-            {{-- Mobile Sidebar Toggle --}}
-            <button class="mobile-sidebar-toggle" id="mobileSidebarToggle"
-                    aria-label="{{ __('Toggle navigation menu') }}"
-                    aria-expanded="false"
-                    aria-controls="adminSidebar">
-                <i class="fas fa-bars" aria-hidden="true"></i>
+            <button class="sidebar-toggle-mobile me-3" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
             </button>
 
-            {{-- Brand - Role-based --}}
             @php
                 $dashboardRoute = route('admin.dashboard');
                 $user = auth()->user();
-
-                if ($user->hasAnyRole(['super-admin', 'admin-operations', 'operations-admin'])) {
-                    $dashboardRoute = route('admin.dashboard');
-                } elseif ($user->hasAnyRole(['coach', 'head-coach', 'assistant-coach'])) {
+                if ($user->hasAnyRole(['coach', 'head-coach', 'assistant-coach'])) {
                     $dashboardRoute = route('coach.dashboard');
                 } elseif ($user->hasRole('team-manager')) {
                     $dashboardRoute = route('manager.dashboard');
                 } elseif ($user->hasRole('finance-officer')) {
                     $dashboardRoute = route('finance.dashboard');
-                } elseif ($user->hasRole('media-officer')) {
-                    $dashboardRoute = route('media.dashboard');
-                } elseif ($user->hasRole('safeguarding-officer')) {
-                    $dashboardRoute = route('welfare.dashboard');
-                } elseif ($user->hasRole('player')) {
-                    $dashboardRoute = route('player.portal.dashboard');
-                } elseif ($user->hasAnyRole(['parent', 'partner'])) {
-                    $dashboardRoute = route('partner.dashboard');
                 }
             @endphp
-            <a href="{{ $dashboardRoute }}" class="admin-brand" aria-label="{{ __('Go to dashboard') }}">
-                <img src="{{ asset('assets/img/logo/vps.jpeg') }}"
-                     alt="{{ __('Vipers Academy Logo') }}"
-                     class="admin-logo"
-                     loading="lazy">
+
+            <a href="{{ $dashboardRoute }}" class="admin-brand">
+                <img src="{{ asset('assets/img/logo/vps.jpeg') }}" alt="Logo" class="admin-logo">
                 <div class="admin-brand-text">
-                    <h1 class="sr-only">{{ __('Vipers Academy Admin Panel') }}</h1>
                     <h5>{{ __('Vipers Academy') }}</h5>
                     <small>
                         @if(auth()->user()->hasRole('super-admin')){{ __('Super Admin') }}
-                        @elseif(auth()->user()->hasRole('operations-admin')){{ __('Operations Admin') }}
-                        @elseif(auth()->user()->hasRole('admin-operations')){{ __('Admin Operations') }}
-                        @elseif(auth()->user()->hasRole('marketing-admin')){{ __('Marketing Admin') }}
-                        @elseif(auth()->user()->hasRole('scouting-admin')){{ __('Scouting Admin') }}
-                        @elseif(auth()->user()->hasRole('coaching-admin')){{ __('Coaching Admin') }}
-                        @elseif(auth()->user()->hasRole('finance-admin')){{ __('Finance Admin') }}
                         @else{{ __('Admin Panel') }}
                         @endif
                     </small>
                 </div>
             </a>
 
-            {{-- Search --}}
-            <div class="admin-search">
-                <form class="admin-search-form" action="{{ route('search') }}" method="GET" role="search">
-                    <label for="global-search" class="sr-only">{{ __('Search') }}</label>
-                    <input type="search"
-                           id="global-search"
-                           name="q"
-                           class="admin-search-input"
-                           placeholder="{{ __('Search players, programs...') }}"
-                           aria-label="{{ __('Search the system') }}"
-                           autocomplete="off">
-                    <button type="submit" class="admin-search-btn" aria-label="{{ __('Submit search') }}">
-                        <i class="fas fa-search" aria-hidden="true"></i>
-                    </button>
-                </form>
-            </div>
-
-            {{-- Header Actions --}}
-            <nav class="header-actions" role="navigation" aria-label="{{ __('Header actions') }}">
-                {{-- Language Selector --}}
-                <div class="language-selector-wrapper">
-                    <label for="language-selector" class="sr-only">{{ __('Select language') }}</label>
-                    <select id="language-selector" class="language-selector" aria-label="{{ __('Select language') }}">
-                        <option value="en" {{ app()->getLocale() === 'en' ? 'selected' : '' }}>🇬🇧 EN</option>
-                        <option value="es" {{ app()->getLocale() === 'es' ? 'selected' : '' }}>🇪🇸 ES</option>
-                        <option value="fr" {{ app()->getLocale() === 'fr' ? 'selected' : '' }}>🇫🇷 FR</option>
-                        <option value="sw" {{ app()->getLocale() === 'sw' ? 'selected' : '' }}>🇰🇪 SW</option>
-                    </select>
-                </div>
-
-                {{-- Notifications --}}
+            <nav class="header-actions">
                 <div class="dropdown">
-                    <button class="header-action-btn notification-btn"
-                            type="button"
-                            data-bs-toggle="dropdown"
-                            aria-label="{{ __('Notifications') }}"
-                            aria-haspopup="true"
-                            aria-expanded="false">
-                        <i class="fas fa-bell" aria-hidden="true"></i>
+                    <button class="header-action-btn" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell"></i>
                         @php
                         $pendingPlayers = \App\Models\Player::where('registration_status', 'Pending')->count();
                         $pendingPartners = \App\Models\User::where('user_type', 'partner')->where('approval_status', 'pending')->count();
                         $totalNotifications = $pendingPlayers + $pendingPartners;
                         @endphp
                         @if($totalNotifications > 0)
-                        <span class="notification-badge" aria-label="{{ $totalNotifications }} notifications">{{ $totalNotifications }}</span>
+                        <span class="notification-badge">{{ $totalNotifications }}</span>
                         @endif
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end" style="width: 320px;" role="menu">
-                        <li role="none">
-                            <h6 class="dropdown-header" role="none">{{ __('Notifications') }}</h6>
-                        </li>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><h6 class="dropdown-header">{{ __('Notifications') }}</h6></li>
                         @if($pendingPlayers > 0)
-                        <li role="none">
-                            <a class="dropdown-item" href="{{ route('admin.players.index') }}" role="menuitem">
-                                <i class="fas fa-user-plus text-success me-2" aria-hidden="true"></i>
-                                {{ $pendingPlayers }} {{ __('pending registrations') }}
-                            </a>
-                        </li>
-                        @endif
-                        @if($pendingPartners > 0)
-                        <li role="none">
-                            <a class="dropdown-item" href="{{ route('admin.partners.index') }}" role="menuitem">
-                                <i class="fas fa-handshake text-primary me-2" aria-hidden="true"></i>
-                                {{ $pendingPartners }} {{ __('partnership applications') }}
-                            </a>
-                        </li>
+                        <li><a class="dropdown-item" href="{{ route('admin.players.index') }}"><i class="fas fa-user-plus text-success me-2"></i>{{ $pendingPlayers }} {{ __('pending') }}</a></li>
                         @endif
                         @if($totalNotifications === 0)
-                        <li class="dropdown-item text-center text-muted" role="menuitem">{{ __('No notifications') }}</li>
+                        <li><span class="dropdown-item text-muted">{{ __('No notifications') }}</span></li>
                         @endif
                     </ul>
                 </div>
 
-                {{-- Quick Actions --}}
                 <div class="dropdown">
-                    <button class="header-action-btn"
-                            type="button"
-                            data-bs-toggle="dropdown"
-                            aria-label="{{ __('Quick actions') }}"
-                            aria-haspopup="true"
-                            aria-expanded="false">
-                        <i class="fas fa-plus" aria-hidden="true"></i>
+                    <button class="admin-user-menu" data-bs-toggle="dropdown">
+                        <div class="admin-user-avatar">{{ substr(Auth::user()->name, 0, 1) }}</div>
+                        <span class="admin-user-name">{{ Auth::user()->name }}</span>
+                        <i class="fas fa-chevron-down" style="font-size: 10px; color: #999;"></i>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end" role="menu">
-                        <li role="none">
-                            <h6 class="dropdown-header" role="none">{{ __('Quick Actions') }}</h6>
-                        </li>
-                        <li role="none">
-                            <a class="dropdown-item" href="{{ route('admin.players.create') }}" role="menuitem">
-                                <i class="fas fa-user-plus me-2" aria-hidden="true"></i>{{ __('Add Player') }}
-                            </a>
-                        </li>
-                        <li role="none">
-                            <a class="dropdown-item" href="{{ route('admin.programs.create') }}" role="menuitem">
-                                <i class="fas fa-football-ball me-2" aria-hidden="true"></i>{{ __('Add Program') }}
-                            </a>
-                        </li>
-                        <li role="none">
-                            <a class="dropdown-item" href="{{ route('admin.staff.create') }}" role="menuitem">
-                                <i class="fas fa-users-cog me-2" aria-hidden="true"></i>{{ __('Add Staff') }}
-                            </a>
-                        </li>
-                        @if(auth()->user()->hasRole('super-admin'))
-                        <li role="none">
-                            <a class="dropdown-item" href="{{ route('super-admin.organizations.create') }}" role="menuitem">
-                                <i class="fas fa-building me-2" aria-hidden="true"></i>{{ __('Add Organization') }}
-                            </a>
-                        </li>
-                        @endif
-                    </ul>
-                </div>
-
-                {{-- User Menu --}}
-                <div class="dropdown">
-                    <button class="admin-user-menu"
-                            data-bs-toggle="dropdown"
-                            role="button"
-                            aria-label="{{ __('User menu for') }} {{ Auth::user()->name }}"
-                            aria-haspopup="true"
-                            aria-expanded="false">
-                        <div class="admin-user-avatar" aria-hidden="true">{{ substr(Auth::user()->name, 0, 1) }}</div>
-                        <div class="admin-user-info">
-                            <div class="admin-user-name">{{ Auth::user()->name }}</div>
-                            <div class="admin-user-role">
-                                @if(auth()->user()->hasRole('super-admin')){{ __('Super Admin') }}
-                                @elseif(auth()->user()->hasRole('operations-admin')){{ __('Operations Admin') }}
-                                @elseif(auth()->user()->hasRole('admin-operations')){{ __('Admin Operations') }}
-                                @elseif(auth()->user()->hasRole('marketing-admin')){{ __('Marketing Admin') }}
-                                @elseif(auth()->user()->hasRole('scouting-admin')){{ __('Scouting Admin') }}
-                                @elseif(auth()->user()->hasRole('coaching-admin')){{ __('Coaching Admin') }}
-                                @elseif(auth()->user()->hasRole('finance-admin')){{ __('Finance Admin') }}
-                                @else{{ __('Administrator') }}
-                                @endif
-                            </div>
-                        </div>
-                        <i class="fas fa-chevron-down" aria-hidden="true" style="font-size: 12px; color: #999;"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" role="menu">
-                        <li role="none">
-                            <a class="dropdown-item" href="{{ route('profile.edit') }}" role="menuitem">
-                                <i class="fas fa-user me-2" aria-hidden="true"></i>{{ __('My Profile') }}
-                            </a>
-                        </li>
-                        <li role="none">
-                            <a class="dropdown-item" href="{{ route('players.index') }}" target="_blank" role="menuitem">
-                                <i class="fas fa-external-link-alt me-2" aria-hidden="true"></i>{{ __('View Website') }}
-                            </a>
-                        </li>
-                        <li role="none">
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li role="none">
-                            <form method="POST" action="{{ route('logout') }}" role="none">
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{{ route('profile.edit') }}"><i class="fas fa-user me-2"></i>{{ __('Profile') }}</a></li>
+                        <li><a class="dropdown-item" href="{{ route('players.index') }}" target="_blank"><i class="fas fa-external-link-alt me-2"></i>{{ __('Website') }}</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="dropdown-item text-danger" role="menuitem">
-                                    <i class="fas fa-sign-out-alt me-2" aria-hidden="true"></i>{{ __('Logout') }}
-                                </button>
+                                <button type="submit" class="dropdown-item text-danger"><i class="fas fa-sign-out-alt me-2"></i>{{ __('Logout') }}</button>
                             </form>
                         </li>
                     </ul>
@@ -1035,400 +536,326 @@
         </div>
     </header>
 
-    {{-- Sidebar --}}
-    <aside class="admin-sidebar" id="adminSidebar" role="navigation" aria-label="{{ __('Main navigation') }}">
+    {{-- Left Sidebar with Accordion --}}
+    <aside class="admin-sidebar" id="adminSidebar">
         <nav class="sidebar-nav">
-            {{-- Main Menu --}}
-            <div class="nav-section-title" role="heading" aria-level="2">{{ __('Main Menu') }}</div>
-            <a href="{{ route('admin.dashboard') }}"
-                class="sidebar-nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
-                aria-current="{{ request()->routeIs('admin.dashboard') ? 'page' : 'false' }}">
-                <i class="fas fa-th-large" aria-hidden="true"></i>
-                <span>{{ __('Dashboard') }}</span>
-            </a>
+            {{-- Accordion Settings Toggle --}}
+            <div class="accordion-settings">
+                <span class="accordion-settings-label">{{ __('One section at a time') }}</span>
+                <label class="accordion-toggle-switch">
+                    <input type="checkbox" id="accordionMode" onchange="toggleAccordionMode()">
+                    <span class="accordion-toggle-slider"></span>
+                </label>
+            </div>
 
-            {{-- Player Management --}}
-            <div class="nav-section-title" role="heading" aria-level="2">{{ __('Player Management') }}</div>
-            <a href="{{ route('admin.players.index') }}"
-                class="sidebar-nav-link {{ request()->routeIs('admin.players.*') ? 'active' : '' }}"
-                aria-current="{{ request()->routeIs('admin.players.*') ? 'page' : 'false' }}">
-                <i class="fas fa-users" aria-hidden="true"></i>
-                <span>{{ __('Players') }}</span>
-                @php
-                $pendingPlayersCount = \App\Models\Player::where('registration_status', 'Pending')->count();
-                @endphp
-                @if($pendingPlayersCount > 0)
-                <span class="sidebar-nav-badge" aria-label="{{ $pendingPlayersCount }} pending players">{{ $pendingPlayersCount }}</span>
-                @endif
-            </a>
-            <a href="{{ route('admin.attendance.index') }}"
-                class="sidebar-nav-link {{ request()->routeIs('admin.attendance.*') ? 'active' : '' }}"
-                aria-current="{{ request()->routeIs('admin.attendance.*') ? 'page' : 'false' }}">
-                <i class="fas fa-calendar-check" aria-hidden="true"></i>
-                <span>{{ __('Attendance') }}</span>
-            </a>
-            <a href="{{ route('admin.training-sessions.index') }}"
-                class="sidebar-nav-link {{ request()->routeIs('admin.training-sessions.*') ? 'active' : '' }}"
-                aria-current="{{ request()->routeIs('admin.training-sessions.*') ? 'page' : 'false' }}">
-                <i class="fas fa-stopwatch" aria-hidden="true"></i>
-                <span>{{ __('Training Sessions') }}</span>
-            </a>
-            <a href="{{ route('admin.game-statistics.index') }}"
-                class="sidebar-nav-link {{ request()->routeIs('admin.game-statistics.*') ? 'active' : '' }}"
-                aria-current="{{ request()->routeIs('admin.game-statistics.*') ? 'page' : 'false' }}">
-                <i class="fas fa-chart-bar" aria-hidden="true"></i>
-                <span>{{ __('Game Statistics') }}</span>
-            </a>
+            {{-- Dashboard (Direct Link) --}}
+            <div class="sidebar-accordion">
+                <a href="{{ route('admin.dashboard') }}" class="sidebar-accordion-header {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                    <span><i class="fas fa-th-large"></i> {{ __('Dashboard') }}</span>
+                </a>
+            </div>
 
-            {{-- Competition Management --}}
-            <div class="nav-section-title" role="heading" aria-level="2">{{ __('Competition') }}</div>
-            <a href="{{ route('admin.matches.index') }}"
-                class="sidebar-nav-link {{ request()->routeIs('admin.matches.*') ? 'active' : '' }}"
-                aria-current="{{ request()->routeIs('admin.matches.*') ? 'page' : 'false' }}">
-                <i class="fas fa-futbol" aria-hidden="true"></i>
-                <span>{{ __('Matches') }}</span>
-            </a>
-            <a href="{{ route('admin.standings.index') }}"
-                class="sidebar-nav-link {{ request()->routeIs('admin.standings.*') ? 'active' : '' }}"
-                aria-current="{{ request()->routeIs('admin.standings.*') ? 'page' : 'false' }}">
-                <i class="fas fa-trophy" aria-hidden="true"></i>
-                <span>{{ __('Standings') }}</span>
-            </a>
+            {{-- Players Accordion --}}
+            <div class="sidebar-accordion" data-accordion="players">
+                <button class="sidebar-accordion-header {{ request()->routeIs('admin.players.*', 'admin.attendance.*', 'admin.training-sessions.*', 'admin.game-statistics.*') ? 'active' : '' }}" onclick="toggleAccordion('players')">
+                    <span><i class="fas fa-users"></i> {{ __('Players') }}</span>
+                    <span class="sidebar-accordion-icon"></span>
+                </button>
+                <div class="sidebar-accordion-content">
+                    <a href="{{ route('admin.players.index') }}" class="sidebar-link {{ request()->routeIs('admin.players.*') ? 'active' : '' }}">
+                        <i class="fas fa-user"></i>
+                        <span>{{ __('All Players') }}</span>
+                        @php $pending = \App\Models\Player::where('registration_status', 'Pending')->count(); @endphp
+                        @if($pending > 0)<span class="sidebar-badge">{{ $pending }}</span>@endif
+                    </a>
+                    <a href="{{ route('admin.attendance.index') }}" class="sidebar-link {{ request()->routeIs('admin.attendance.*') ? 'active' : '' }}">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>{{ __('Attendance') }}</span>
+                    </a>
+                    <a href="{{ route('admin.training-sessions.index') }}" class="sidebar-link {{ request()->routeIs('admin.training-sessions.*') ? 'active' : '' }}">
+                        <i class="fas fa-stopwatch"></i>
+                        <span>{{ __('Training') }}</span>
+                    </a>
+                    <a href="{{ route('admin.game-statistics.index') }}" class="sidebar-link {{ request()->routeIs('admin.game-statistics.*') ? 'active' : '' }}">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>{{ __('Statistics') }}</span>
+                    </a>
+                </div>
+            </div>
 
-            {{-- Academy Management --}}
-            <div class="nav-section-title" role="heading" aria-level="2">{{ __('Academy') }}</div>
-            <a href="{{ route('admin.programs.index') }}"
-                class="sidebar-nav-link {{ request()->routeIs('admin.programs.*') ? 'active' : '' }}"
-                aria-current="{{ request()->routeIs('admin.programs.*') ? 'page' : 'false' }}">
-                <i class="fas fa-football-ball" aria-hidden="true"></i>
-                <span>{{ __('Programs') }}</span>
-            </a>
-            <a href="{{ route('admin.staff.index') }}"
-                class="sidebar-nav-link {{ request()->routeIs('admin.staff.*') ? 'active' : '' }}"
-                aria-current="{{ request()->routeIs('admin.staff.*') ? 'page' : 'false' }}">
-                <i class="fas fa-users-cog" aria-hidden="true"></i>
-                <span>{{ __('Staff') }}</span>
-            </a>
-            <a href="{{ route('admin.partners.index') }}"
-                class="sidebar-nav-link {{ request()->routeIs('admin.partners.*') ? 'active' : '' }}"
-                aria-current="{{ request()->routeIs('admin.partners.*') ? 'page' : 'false' }}">
-                <i class="fas fa-handshake" aria-hidden="true"></i>
-                <span>{{ __('Partners') }}</span>
-                @php
-                $pendingPartnersCount = \App\Models\User::where('user_type', 'partner')->where('approval_status', 'pending')->count();
-                @endphp
-                @if($pendingPartnersCount > 0)
-                <span class="sidebar-nav-badge" aria-label="{{ $pendingPartnersCount }} pending partners">{{ $pendingPartnersCount }}</span>
-                @endif
-            </a>
+            {{-- Communication Accordion --}}
+            <div class="sidebar-accordion" data-accordion="communication">
+                <button class="sidebar-accordion-header {{ request()->routeIs('admin.blog.*', 'admin.sms.*', 'admin.whatsapp.*', 'admin.messaging.*') ? 'active' : '' }}" onclick="toggleAccordion('communication')">
+                    <span><i class="fas fa-bullhorn"></i> {{ __('Communication') }}</span>
+                    <span class="sidebar-accordion-icon"></span>
+                </button>
+                <div class="sidebar-accordion-content">
+                    <a href="{{ route('admin.messaging.quick') }}" class="sidebar-link {{ request()->routeIs('admin.messaging.quick') ? 'active' : '' }}">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>{{ __('Quick Messaging') }}</span>
+                    </a>
+                    <a href="{{ route('admin.messaging.settings') }}" class="sidebar-link {{ request()->routeIs('admin.messaging.settings') ? 'active' : '' }}">
+                        <i class="fas fa-cog"></i>
+                        <span>{{ __('Message Settings') }}</span>
+                    </a>
+                    <a href="{{ route('admin.blog.index') }}" class="sidebar-link {{ request()->routeIs('admin.blog.*') ? 'active' : '' }}">
+                        <i class="fas fa-newspaper"></i>
+                        <span>{{ __('Announcements') }}</span>
+                    </a>
+                    <a href="{{ route('admin.sms.index') }}" class="sidebar-link {{ request()->routeIs('admin.sms.*') ? 'active' : '' }}">
+                        <i class="fas fa-sms"></i>
+                        <span>{{ __('Bulk SMS') }}</span>
+                    </a>
+                    <a href="{{ route('admin.whatsapp.index') }}" class="sidebar-link {{ request()->routeIs('admin.whatsapp.*') ? 'active' : '' }}">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>{{ __('WhatsApp') }}</span>
+                    </a>
+                </div>
+            </div>
 
-            {{-- Content Management --}}
-            <div class="nav-section-title" role="heading" aria-level="2">{{ __('Content') }}</div>
-            <a href="{{ route('admin.blog.index') }}"
-                class="sidebar-nav-link {{ request()->routeIs('admin.blog.*') ? 'active' : '' }}"
-                aria-current="{{ request()->routeIs('admin.blog.*') ? 'page' : 'false' }}">
-                <i class="fas fa-newspaper" aria-hidden="true"></i>
-                <span>{{ __('Blog') }}</span>
-            </a>
-            <a href="{{ route('admin.gallery.index') }}"
-                class="sidebar-nav-link {{ request()->routeIs('admin.gallery.*') ? 'active' : '' }}"
-                aria-current="{{ request()->routeIs('admin.gallery.*') ? 'page' : 'false' }}">
-                <i class="fas fa-images" aria-hidden="true"></i>
-                <span>{{ __('Gallery') }}</span>
-            </a>
-            <a href="{{ route('admin.documents.index') }}"
-                class="sidebar-nav-link {{ request()->routeIs('admin.documents.*') ? 'active' : '' }}"
-                aria-current="{{ request()->routeIs('admin.documents.*') ? 'page' : 'false' }}">
-                <i class="fas fa-file-alt" aria-hidden="true"></i>
-                <span>{{ __('Documents') }}</span>
-            </a>
+            {{-- Competition Accordion --}}
+            <div class="sidebar-accordion" data-accordion="competition">
+                <button class="sidebar-accordion-header {{ request()->routeIs('admin.matches.*', 'admin.standings.*') ? 'active' : '' }}" onclick="toggleAccordion('competition')">
+                    <span><i class="fas fa-futbol"></i> {{ __('Competition') }}</span>
+                    <span class="sidebar-accordion-icon"></span>
+                </button>
+                <div class="sidebar-accordion-content">
+                    <a href="{{ route('admin.matches.index') }}" class="sidebar-link {{ request()->routeIs('admin.matches.*') ? 'active' : '' }}">
+                        <i class="fas fa-futbol"></i>
+                        <span>{{ __('Matches') }}</span>
+                    </a>
+                    <a href="{{ route('admin.standings.index') }}" class="sidebar-link {{ request()->routeIs('admin.standings.*') ? 'active' : '' }}">
+                        <i class="fas fa-trophy"></i>
+                        <span>{{ __('Standings') }}</span>
+                    </a>
+                </div>
+            </div>
 
-            {{-- Analytics & Reports --}}
-            <div class="nav-section-title" role="heading" aria-level="2">{{ __('Analytics') }}</div>
-            <a href="{{ route('admin.performance.overview') }}"
-                class="sidebar-nav-link {{ request()->routeIs('admin.performance.overview') ? 'active' : '' }}"
-                aria-current="{{ request()->routeIs('admin.performance.overview') ? 'page' : 'false' }}">
-                <i class="fas fa-chart-line" aria-hidden="true"></i>
-                <span>{{ __('Overview') }}</span>
-            </a>
-            <a href="{{ route('admin.compliance.report') }}"
-                class="sidebar-nav-link {{ request()->routeIs('admin.compliance.report') ? 'active' : '' }}"
-                aria-current="{{ request()->routeIs('admin.compliance.report') ? 'page' : 'false' }}">
-                <i class="fas fa-shield-alt" aria-hidden="true"></i>
-                <span>{{ __('Compliance') }}</span>
-            </a>
+            {{-- Finance Accordion --}}
+            <div class="sidebar-accordion" data-accordion="finance">
+                <button class="sidebar-accordion-header {{ request()->routeIs('admin.payments.*', 'admin.payment-categories.*') ? 'active' : '' }}" onclick="toggleAccordion('finance')">
+                    <span><i class="fas fa-credit-card"></i> {{ __('Finance') }}</span>
+                    <span class="sidebar-accordion-icon"></span>
+                </button>
+                <div class="sidebar-accordion-content">
+                    <a href="{{ route('admin.payments.index') }}" class="sidebar-link {{ request()->routeIs('admin.payments.*') ? 'active' : '' }}">
+                        <i class="fas fa-credit-card"></i>
+                        <span>{{ __('Payments') }}</span>
+                    </a>
+                    <a href="{{ route('admin.payment-categories.index') }}" class="sidebar-link {{ request()->routeIs('admin.payment-categories.*') ? 'active' : '' }}">
+                        <i class="fas fa-tags"></i>
+                        <span>{{ __('Categories') }}</span>
+                    </a>
+                </div>
+            </div>
 
-            {{-- System Administration (Super Admin Only) --}}
+            {{-- Academy Accordion (includes Analytics) --}}
+            <div class="sidebar-accordion" data-accordion="academy">
+                <button class="sidebar-accordion-header {{ request()->routeIs('admin.programs.*', 'admin.teams.*', 'admin.staff.*', 'admin.partners.*', 'admin.performance.*', 'admin.compliance.*') ? 'active' : '' }}" onclick="toggleAccordion('academy')">
+                    <span><i class="fas fa-graduation-cap"></i> {{ __('Academy') }}</span>
+                    <span class="sidebar-accordion-icon"></span>
+                </button>
+                <div class="sidebar-accordion-content">
+                    <a href="{{ route('admin.programs.index') }}" class="sidebar-link {{ request()->routeIs('admin.programs.*') ? 'active' : '' }}">
+                        <i class="fas fa-football-ball"></i>
+                        <span>{{ __('Programs') }}</span>
+                    </a>
+                    <a href="{{ route('admin.teams.index') }}" class="sidebar-link {{ request()->routeIs('admin.teams.*') ? 'active' : '' }}">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>{{ __('Teams') }}</span>
+                    </a>
+                    <a href="{{ route('admin.staff.index') }}" class="sidebar-link {{ request()->routeIs('admin.staff.*') ? 'active' : '' }}">
+                        <i class="fas fa-users-cog"></i>
+                        <span>{{ __('Staff') }}</span>
+                    </a>
+                    <a href="{{ route('admin.partners.index') }}" class="sidebar-link {{ request()->routeIs('admin.partners.*') ? 'active' : '' }}">
+                        <i class="fas fa-handshake"></i>
+                        <span>{{ __('Partners') }}</span>
+                    </a>
+                    <div class="nav-dropdown-divider" style="height:1px;background:#e8e8e8;margin:8px 12px;"></div>
+                    <a href="{{ route('admin.performance.overview') }}" class="sidebar-link {{ request()->routeIs('admin.performance.overview') ? 'active' : '' }}">
+                        <i class="fas fa-chart-line"></i>
+                        <span>{{ __('Analytics') }}</span>
+                    </a>
+                    <a href="{{ route('admin.compliance.report') }}" class="sidebar-link {{ request()->routeIs('admin.compliance.report') ? 'active' : '' }}">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>{{ __('Compliance') }}</span>
+                    </a>
+                </div>
+            </div>
+
+            {{-- Content Accordion --}}
+            <div class="sidebar-accordion" data-accordion="content">
+                <button class="sidebar-accordion-header {{ request()->routeIs('admin.gallery.*', 'admin.website-players.*', 'admin.jobs.*', 'admin.documents.*') ? 'active' : '' }}" onclick="toggleAccordion('content')">
+                    <span><i class="fas fa-images"></i> {{ __('Content') }}</span>
+                    <span class="sidebar-accordion-icon"></span>
+                </button>
+                <div class="sidebar-accordion-content">
+                    <a href="{{ route('admin.gallery.index') }}" class="sidebar-link {{ request()->routeIs('admin.gallery.*') ? 'active' : '' }}">
+                        <i class="fas fa-images"></i>
+                        <span>{{ __('Gallery') }}</span>
+                    </a>
+                    <a href="{{ route('admin.website-players.index') }}" class="sidebar-link {{ request()->routeIs('admin.website-players.*') ? 'active' : '' }}">
+                        <i class="fas fa-users"></i>
+                        <span>{{ __('Player Gallery') }}</span>
+                    </a>
+                    <a href="{{ route('admin.jobs.index') }}" class="sidebar-link {{ request()->routeIs('admin.jobs.*') ? 'active' : '' }}">
+                        <i class="fas fa-briefcase"></i>
+                        <span>{{ __('Careers') }}</span>
+                    </a>
+                    <a href="{{ route('admin.documents.index') }}" class="sidebar-link {{ request()->routeIs('admin.documents.*') ? 'active' : '' }}">
+                        <i class="fas fa-file-alt"></i>
+                        <span>{{ __('Documents') }}</span>
+                    </a>
+                    <a href="{{ route('admin.letterhead.index') }}" class="sidebar-link {{ request()->routeIs('admin.letterhead.*') ? 'active' : '' }}">
+                        <i class="fas fa-file-signature"></i>
+                        <span>{{ __('Letterhead') }}</span>
+                    </a>
+                </div>
+            </div>
+            {{-- System (Super Admin) Accordion --}}
             @if(auth()->user()->hasRole('super-admin'))
-            <div class="nav-section-title" role="heading" aria-level="2">{{ __('System Administration') }}</div>
-            <a href="{{ route('super-admin.dashboard') }}"
-                class="sidebar-nav-link {{ request()->routeIs('super-admin.*') ? 'active' : '' }}"
-                aria-current="{{ request()->routeIs('super-admin.*') ? 'page' : 'false' }}">
-                <i class="fas fa-building" aria-hidden="true"></i>
-                <span>{{ __('Organizations') }}</span>
-            </a>
-            <a href="{{ route('super-admin.plans.index') }}"
-                class="sidebar-nav-link {{ request()->routeIs('super-admin.plans.*') ? 'active' : '' }}"
-                aria-current="{{ request()->routeIs('super-admin.plans.*') ? 'page' : 'false' }}">
-                <i class="fas fa-tags" aria-hidden="true"></i>
-                <span>{{ __('Subscription Plans') }}</span>
-            </a>
+            <div class="sidebar-accordion" data-accordion="system">
+                <button class="sidebar-accordion-header {{ request()->routeIs('super-admin.*', 'manager.equipment.*') ? 'active' : '' }}" onclick="toggleAccordion('system')">
+                    <span><i class="fas fa-cog"></i> {{ __('System') }}</span>
+                    <span class="sidebar-accordion-icon"></span>
+                </button>
+                <div class="sidebar-accordion-content">
+                    <a href="{{ route('super-admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('super-admin.dashboard') ? 'active' : '' }}">
+                        <i class="fas fa-th-large"></i>
+                        <span>{{ __('Overview') }}</span>
+                    </a>
+                    <a href="{{ route('super-admin.organizations.index') }}" class="sidebar-link {{ request()->routeIs('super-admin.organizations.*') ? 'active' : '' }}">
+                        <i class="fas fa-building"></i>
+                        <span>{{ __('Organizations') }}</span>
+                    </a>
+                    <a href="{{ route('super-admin.roles.index') }}" class="sidebar-link {{ request()->routeIs('super-admin.roles.*') ? 'active' : '' }}">
+                        <i class="fas fa-user-shield"></i>
+                        <span>{{ __('Roles') }}</span>
+                    </a>
+                    <a href="{{ route('organization.roles.index') }}" class="sidebar-link {{ request()->routeIs('organization.roles.*') ? 'active' : '' }}">
+                        <i class="fas fa-users-cog"></i>
+                        <span>{{ __('Org Roles') }}</span>
+                    </a>
+                    <a href="{{ route('manager.equipment.categories') }}" class="sidebar-link {{ request()->routeIs('manager.equipment.*') ? 'active' : '' }}">
+                        <i class="fas fa-boxes"></i>
+                        <span>{{ __('Equipment') }}</span>
+                    </a>
+                </div>
+            </div>
             @endif
         </nav>
     </aside>
 
-    {{-- Main Content --}}
-    <main class="admin-main">
-        {{-- Success Alert --}}
+    {{-- Main Content (Right Side) --}}
+    <main class="admin-content">
         @if(session('success'))
         <div class="alert-custom success">
             <i class="fas fa-check-circle"></i>
             <div>{{ session('success') }}</div>
-            <button type="button" class="btn-close ms-auto" onclick="this.parentElement.remove()"
-                aria-label="{{ __('Close') }}"></button>
+            <button type="button" class="btn-close ms-auto" onclick="this.parentElement.remove()"></button>
         </div>
         @endif
 
-        {{-- Error Alert --}}
         @if(session('error'))
         <div class="alert-custom error">
             <i class="fas fa-exclamation-circle"></i>
             <div>{{ session('error') }}</div>
-            <button type="button" class="btn-close ms-auto" onclick="this.parentElement.remove()"
-                aria-label="{{ __('Close') }}"></button>
+            <button type="button" class="btn-close ms-auto" onclick="this.parentElement.remove()"></button>
         </div>
         @endif
 
-        {{-- Validation Errors --}}
-        @if($errors->any())
-        <div class="alert-custom error">
-            <i class="fas fa-exclamation-triangle"></i>
-            <div>
-                <strong>{{ __('Please fix the following errors:') }}</strong>
-                <ul class="mb-0 mt-2" style="padding-left: 1.25rem;">
-                    @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            <button type="button" class="btn-close ms-auto" onclick="this.parentElement.remove()"
-                aria-label="{{ __('Close') }}"></button>
-        </div>
-        @endif
-
-        {{-- Page Content --}}
         @yield('content')
 
-        {{-- Footer --}}
         <footer class="admin-footer">
-            <div class="container-fluid">
-                <div class="admin-footer-content">
-                    <div>&copy; {{ date('Y') }} {{ __('Vipers Academy') }}. {{ __('All rights reserved.') }}</div>
-                    <div class="admin-footer-links">
-                        <a href="#">{{ __('Privacy') }}</a>
-                        <a href="#">{{ __('Terms') }}</a>
-                        <a href="#">{{ __('Support') }}</a>
-                    </div>
-                </div>
+            <div class="admin-footer-content">
+                <div>&copy; {{ date('Y') }} {{ __('Vipers Academy') }}. {{ __('All rights reserved.') }}</div>
             </div>
         </footer>
     </main>
 
-    {{-- Bootstrap JS --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
     <script>
-    'use strict';
+    // Accordion functionality
+    let oneSectionOpen = localStorage.getItem('sidebarOneSectionOpen') !== 'false';
 
-    // Enhanced accessibility and UX features
-    document.addEventListener('DOMContentLoaded', function() {
-        // Mobile sidebar toggle with accessibility
-        const mobileSidebarToggle = document.getElementById('mobileSidebarToggle');
-        const adminSidebar = document.getElementById('adminSidebar');
+    // Initialize accordion mode toggle
+    document.getElementById('accordionMode').checked = oneSectionOpen;
 
-        if (mobileSidebarToggle && adminSidebar) {
-            mobileSidebarToggle.addEventListener('click', function() {
-                const isExpanded = adminSidebar.classList.contains('show');
-                adminSidebar.classList.toggle('show');
-                this.setAttribute('aria-expanded', !isExpanded);
-
-                // Focus management
-                if (!isExpanded) {
-                    const firstLink = adminSidebar.querySelector('.sidebar-nav-link');
-                    if (firstLink) firstLink.focus();
-                }
-            });
-
-            // Close sidebar when clicking outside or pressing Escape
-            document.addEventListener('click', (e) => {
-                if (!adminSidebar.contains(e.target) && !mobileSidebarToggle.contains(e.target)) {
-                    adminSidebar.classList.remove('show');
-                    mobileSidebarToggle.setAttribute('aria-expanded', 'false');
-                }
-            });
-
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && adminSidebar.classList.contains('show')) {
-                    adminSidebar.classList.remove('show');
-                    mobileSidebarToggle.setAttribute('aria-expanded', 'false');
-                    mobileSidebarToggle.focus();
-                }
-            });
-        }
-
-        // Auto-hide alerts after 5 seconds with accessibility
-        const alerts = document.querySelectorAll('.alert-custom');
-        alerts.forEach((alert, index) => {
-            setTimeout(() => {
-                if (alert && alert.parentNode) {
-                    alert.style.transition = 'opacity 0.3s ease';
-                    alert.style.opacity = '0';
-                    setTimeout(() => {
-                        if (alert.parentNode) alert.remove();
-                    }, 300);
-                }
-            }, 5000 + (index * 1000)); // Stagger removal for multiple alerts
-        });
-
-        // Language selector with proper form submission
-        const languageSelector = document.getElementById('language-selector');
-        if (languageSelector) {
-            languageSelector.addEventListener('change', function() {
-                // Create and submit a form to change language
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '/language'; // You'll need to create this route
-                form.style.display = 'none';
-
-                const csrfToken = document.querySelector('meta[name="csrf-token"]');
-                if (csrfToken) {
-                    const tokenInput = document.createElement('input');
-                    tokenInput.type = 'hidden';
-                    tokenInput.name = '_token';
-                    tokenInput.value = csrfToken.content;
-                    form.appendChild(tokenInput);
-                }
-
-                const langInput = document.createElement('input');
-                langInput.type = 'hidden';
-                langInput.name = 'language';
-                langInput.value = this.value;
-                form.appendChild(langInput);
-
-                document.body.appendChild(form);
-                form.submit();
-            });
-        }
-
-        // Enhanced search functionality
-        const searchInput = document.getElementById('global-search');
-        if (searchInput) {
-            let searchTimeout;
-            searchInput.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    if (this.value.length > 2) {
-                        // Implement live search suggestions if needed
-                        console.log('Searching for:', this.value);
-                    }
-                }, 300);
-            });
-
-            // Clear search on Escape
-            searchInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    this.value = '';
-                    this.blur();
-                }
-            });
-        }
-
-        // Loading indicator functions
-        window.showLoading = function(message = '{{ __("Loading...") }}') {
-            const indicator = document.getElementById('loading-indicator');
-            if (indicator) {
-                const messageSpan = indicator.querySelector('span');
-                if (messageSpan) messageSpan.textContent = message;
-                indicator.style.display = 'flex';
-            }
-        };
-
-        window.hideLoading = function() {
-            const indicator = document.getElementById('loading-indicator');
-            if (indicator) {
-                indicator.style.display = 'none';
-            }
-        };
-
-        // Keyboard navigation for dropdowns
-        const dropdowns = document.querySelectorAll('.dropdown');
-        dropdowns.forEach(dropdown => {
-            const toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
-            if (toggle) {
-                toggle.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        this.click();
-                    }
-                });
-            }
-        });
-
-        // Table sorting accessibility
-        const sortableHeaders = document.querySelectorAll('th[aria-sort]');
-        sortableHeaders.forEach(header => {
-            header.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    this.click();
-                }
-            });
-        });
-
-        // Form validation enhancement
-        const forms = document.querySelectorAll('form');
-        forms.forEach(form => {
-            form.addEventListener('submit', function(e) {
-                const submitBtn = form.querySelector('button[type="submit"]');
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>{{ __("Processing...") }}';
-                }
-            });
-        });
-
-        // Print functionality for reports
-        window.printPage = function() {
-            window.print();
-        };
-
-        // Dark mode toggle (if implemented)
-        window.toggleDarkMode = function() {
-            document.documentElement.classList.toggle('dark-mode');
-            localStorage.setItem('darkMode', document.documentElement.classList.contains('dark-mode'));
-        };
-
-        // Initialize dark mode from localStorage
-        if (localStorage.getItem('darkMode') === 'true') {
-            document.documentElement.classList.add('dark-mode');
-        }
-    });
-
-    // Global error handler
-    window.addEventListener('error', function(e) {
-        console.error('JavaScript error:', e.error);
-        // You could send this to your error tracking service
-    });
-
-    // Service worker for offline functionality (if needed)
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => console.log('SW registered'))
-            .catch(error => console.log('SW registration failed'));
+    function toggleAccordionMode() {
+        const checkbox = document.getElementById('accordionMode');
+        oneSectionOpen = checkbox.checked;
+        localStorage.setItem('sidebarOneSectionOpen', oneSectionOpen);
     }
-    </script>
 
+    function toggleAccordion(accordionName) {
+        const accordion = document.querySelector(`[data-accordion="${accordionName}"]`);
+        const isOpen = accordion.classList.contains('open');
+
+        // If one-section-open mode is enabled, close all others first
+        if (oneSectionOpen && !isOpen) {
+            document.querySelectorAll('.sidebar-accordion.open').forEach(openAccordion => {
+                openAccordion.classList.remove('open');
+            });
+        }
+
+        // Toggle current accordion
+        accordion.classList.toggle('open');
+
+        // Save state to localStorage
+        saveAccordionState();
+    }
+
+    function saveAccordionState() {
+        const openAccordions = [];
+        document.querySelectorAll('.sidebar-accordion.open').forEach(acc => {
+            openAccordions.push(acc.dataset.accordion);
+        });
+        localStorage.setItem('sidebarOpenAccordions', JSON.stringify(openAccordions));
+    }
+
+    function loadAccordionState() {
+        const savedState = localStorage.getItem('sidebarOpenAccordions');
+        if (savedState) {
+            const openAccordions = JSON.parse(savedState);
+            openAccordions.forEach(name => {
+                const accordion = document.querySelector(`[data-accordion="${name}"]`);
+                if (accordion) {
+                    accordion.classList.add('open');
+                }
+            });
+        } else {
+            // Default: open section that contains active link
+            const activeLink = document.querySelector('.sidebar-link.active');
+            if (activeLink) {
+                const content = activeLink.closest('.sidebar-accordion-content');
+                if (content) {
+                    content.parentElement.classList.add('open');
+                }
+            }
+        }
+    }
+
+    function toggleSidebar() {
+        document.getElementById('adminSidebar').classList.toggle('show');
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        loadAccordionState();
+
+        // Auto-hide alerts
+        const alerts = document.querySelectorAll('.alert-custom');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                if (alert) {
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 300);
+                }
+            }, 5000);
+        });
+    });
+    </script>
     @stack('scripts')
 </body>
-
 </html>

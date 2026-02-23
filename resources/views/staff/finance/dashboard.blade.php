@@ -122,28 +122,28 @@
                 <div class="card-body">
                     @if(isset($recentPayments) && $recentPayments->count() > 0)
                         <div class="table-responsive">
-                            <table class="table table-bordered" width="100%" cellspacing="0">
-                                <thead>
-                                    <tr>
-                                        <th>Player</th>
-                                        <th>Amount</th>
-                                        <th>Method</th>
-                                        <th>Status</th>
-                                        <th>Date</th>
+                            <table class="table table-sm table-bordered" width="100%" cellspacing="0">
+                                <thead class="table-light">
+                                    <tr class="small">
+                                        <th class="py-2">Player</th>
+                                        <th class="py-2">Amount</th>
+                                        <th class="py-2">Method</th>
+                                        <th class="py-2">Status</th>
+                                        <th class="py-2">Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($recentPayments as $payment)
                                         <tr>
-                                            <td>{{ $payment->player->first_name ?? '' }} {{ $payment->player->last_name ?? 'N/A' }}</td>
-                                            <td>KSh {{ number_format($payment->amount, 2) }}</td>
-                                            <td>{{ ucfirst($payment->payment_method) }}</td>
-                                            <td>
+                                            <td class="py-1 align-middle small">{{ $payment->player->first_name ?? '' }} {{ $payment->player->last_name ?? 'N/A' }}</td>
+                                            <td class="py-1 align-middle small">KSh {{ number_format($payment->amount, 2) }}</td>
+                                            <td class="py-1 align-middle small">{{ ucfirst($payment->payment_method) }}</td>
+                                            <td class="py-1 align-middle">
                                                 <span class="badge bg-{{ $payment->payment_status === 'completed' ? 'success' : ($payment->payment_status === 'pending' ? 'warning' : 'danger') }}">
                                                     {{ $payment->payment_status }}
                                                 </span>
                                             </td>
-                                            <td>{{ $payment->created_at->format('M j, Y') }}</td>
+                                            <td class="py-1 align-middle small">{{ $payment->created_at->format('M j, Y') }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

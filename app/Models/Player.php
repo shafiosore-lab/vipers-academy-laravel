@@ -33,6 +33,7 @@ class Player extends Model
         'temporary_approval_expires_at',
         'temporary_approval_notes',
         'partner_id',
+        'organization_id',
         'guardian_id',
         'email',
         'parent_guardian_name',
@@ -74,6 +75,11 @@ class Player extends Model
     public function partner()
     {
         return $this->belongsTo(User::class, 'partner_id');
+    }
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class);
     }
 
     public function gameStatistics()

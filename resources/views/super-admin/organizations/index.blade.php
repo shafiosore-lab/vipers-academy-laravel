@@ -48,17 +48,17 @@
     <div class="card shadow mb-4">
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Status</th>
-                            <th>Plan</th>
-                            <th>Users</th>
-                            <th>Players</th>
-                            <th>Created</th>
-                            <th>Actions</th>
+                <table class="table table-sm table-bordered" width="100%" cellspacing="0">
+                    <thead class="table-light">
+                        <tr class="small">
+                            <th class="py-2">Name</th>
+                            <th class="py-2">Email</th>
+                            <th class="py-2">Status</th>
+                            <th class="py-2">Plan</th>
+                            <th class="py-2">Users</th>
+                            <th class="py-2">Players</th>
+                            <th class="py-2">Created</th>
+                            <th class="py-2">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -80,7 +80,7 @@
                             <td><span class="text-muted">N/A</span></td>
                             <td>{{ $org->created_at->format('M d, Y') }}</td>
                             <td>
-                                <div class="btn-group" role="group">
+                                <div class="d-flex gap-1">
                                     <a href="{{ route('super-admin.organizations.show', $org) }}"
                                        class="btn btn-sm btn-info" title="View">
                                         <i class="fas fa-eye"></i>

@@ -98,56 +98,56 @@
         <div class="card-body">
             @if($payments->count() > 0)
                 <div class="table-responsive">
-                    <table class="table table-bordered" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th>Reference</th>
-                                <th>Player</th>
-                                <th>Type</th>
-                                <th>Amount</th>
-                                <th>Method</th>
-                                <th>Status</th>
-                                <th>Date</th>
-                                <th>Actions</th>
+                    <table class="table table-sm table-bordered" width="100%" cellspacing="0">
+                        <thead class="table-light">
+                            <tr class="small">
+                                <th class="py-2">Reference</th>
+                                <th class="py-2">Player</th>
+                                <th class="py-2">Type</th>
+                                <th class="py-2">Amount</th>
+                                <th class="py-2">Method</th>
+                                <th class="py-2">Status</th>
+                                <th class="py-2">Date</th>
+                                <th class="py-2">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($payments as $payment)
                                 <tr>
-                                    <td>
+                                    <td class="py-1 align-middle small">
                                         <span class="font-monospace">{{ $payment->payment_reference }}</span>
                                         @if($payment->needs_approval)
                                             <span class="badge bg-warning ms-1">Pending</span>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="py-1 align-middle small">
                                         @if($payment->player)
                                             {{ $payment->player->first_name }} {{ $payment->player->last_name }}
                                         @else
                                             <span class="text-muted">N/A</span>
                                         @endif
                                     </td>
-                                    <td>{{ ucfirst(str_replace('_', ' ', $payment->payment_type)) }}</td>
-                                    <td class="text-end">KSh {{ number_format($payment->amount, 2) }}</td>
-                                    <td>{{ ucfirst($payment->payment_method ?? 'N/A') }}</td>
-                                    <td>
+                                    <td class="py-1 align-middle small">{{ ucfirst(str_replace('_', ' ', $payment->payment_type)) }}</td>
+                                    <td class="py-1 align-middle text-end small">KSh {{ number_format($payment->amount, 2) }}</td>
+                                    <td class="py-1 align-middle small">{{ ucfirst($payment->payment_method ?? 'N/A') }}</td>
+                                    <td class="py-1 align-middle">
                                         <span class="badge bg-{{ $payment->getStatusBadgeClass() }}">
                                             {{ $payment->payment_status }}
                                         </span>
                                     </td>
-                                    <td>
+                                    <td class="py-1 align-middle small">
                                         @if($payment->paid_at)
                                             {{ $payment->paid_at->format('M j, Y') }}
                                         @else
                                             <span class="text-muted">-</span>
                                         @endif
                                     </td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <a href="{{ route('finance.payments.view', $payment->id) }}" class="btn btn-sm btn-outline-primary" title="View">
+                                    <td class="py-1 align-middle">
+                                        <div class="d-flex gap-1">
+                                            <a href="{{ route('finance.payments.view', $payment->id) }}" class="btn btn-sm btn-outline-primary py-0 px-1" title="View">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <a href="{{ route('finance.payments.edit', $payment->id) }}" class="btn btn-sm btn-outline-warning" title="Edit">
+                                            <a href="{{ route('finance.payments.edit', $payment->id) }}" class="btn btn-sm btn-outline-warning py-0 px-1" title="Edit">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                         </div>

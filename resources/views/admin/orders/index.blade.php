@@ -105,54 +105,54 @@
     </div>
     <div class="content-card-body">
         <div class="table-responsive">
-            <table class="table table-bordered" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>{{ __('Order #') }}</th>
-                        <th>{{ __('Customer') }}</th>
-                        <th>{{ __('Total') }}</th>
-                        <th>{{ __('Order Status') }}</th>
-                        <th>{{ __('Payment Status') }}</th>
-                        <th>{{ __('Date') }}</th>
-                        <th>{{ __('Actions') }}</th>
+            <table class="table table-sm table-bordered" width="100%" cellspacing="0">
+                <thead class="table-light">
+                    <tr class="small">
+                        <th class="py-2">{{ __('Order #') }}</th>
+                        <th class="py-2">{{ __('Customer') }}</th>
+                        <th class="py-2">{{ __('Total') }}</th>
+                        <th class="py-2">{{ __('Order Status') }}</th>
+                        <th class="py-2">{{ __('Payment Status') }}</th>
+                        <th class="py-2">{{ __('Date') }}</th>
+                        <th class="py-2">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($orders as $order)
                         <tr>
-                            <td>
+                            <td class="py-1 align-middle small">
                                 <a href="{{ route('admin.orders.show', $order) }}" class="text-decoration-none fw-semibold">
                                     {{ $order->order_number }}
                                 </a>
                             </td>
-                            <td>
+                            <td class="py-1 align-middle small">
                                 <div class="fw-semibold">{{ $order->customer_name }}</div>
                                 <small class="text-muted">{{ $order->customer_email }}</small>
                             </td>
-                            <td class="fw-semibold">KES {{ number_format($order->total_amount, 2) }}</td>
-                            <td>
+                            <td class="py-1 align-middle fw-semibold small">KES {{ number_format($order->total_amount, 2) }}</td>
+                            <td class="py-1 align-middle">
                                 <span class="badge bg-{{ $order->order_status === 'delivered' ? 'success' : ($order->order_status === 'pending' ? 'warning' : 'info') }}">
                                     {{ ucfirst($order->order_status) }}
                                 </span>
                             </td>
-                            <td>
+                            <td class="py-1 align-middle">
                                 <span class="badge bg-{{ $order->payment_status === 'paid' ? 'success' : ($order->payment_status === 'pending' ? 'warning' : 'danger') }}">
                                     {{ ucfirst($order->payment_status) }}
                                 </span>
                             </td>
-                            <td>{{ $order->created_at->format('M d, Y') }}</td>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <a href="{{ route('admin.orders.show', $order) }}" class="btn btn-sm btn-outline-primary" title="{{ __('View') }}">
+                            <td class="py-1 align-middle small">{{ $order->created_at->format('M d, Y') }}</td>
+                            <td class="py-1 align-middle">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ route('admin.orders.show', $order) }}" class="btn btn-sm btn-outline-primary py-0 px-1" title="{{ __('View') }}">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('admin.orders.edit', $order) }}" class="btn btn-sm btn-outline-secondary" title="{{ __('Edit') }}">
+                                    <a href="{{ route('admin.orders.edit', $order) }}" class="btn btn-sm btn-outline-secondary py-0 px-1" title="{{ __('Edit') }}">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <form method="POST" action="{{ route('admin.orders.destroy', $order) }}" class="d-inline" onsubmit="return confirm('{{ __('Are you sure you want to delete this order?') }}')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="{{ __('Delete') }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-1" title="{{ __('Delete') }}">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>

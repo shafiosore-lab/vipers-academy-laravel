@@ -14,7 +14,7 @@
         @method('PUT')
 
         <div class="row">
-            <div class="col-lg-8">
+            <div class="col-lg-12">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">Plan Details</h6>
@@ -104,73 +104,72 @@
                             <i class="fas fa-shield-alt"></i> Function Permissions
                         </h6>
                     </div>
-                    <div class="card-body">
-                        <p class="text-muted mb-3">Select which functions this plan can access. Check the module to grant full access, or select individual permissions below.</p>
+                    <div class="card-body p-0">
+                        <p class="text-muted mb-3 px-3 pt-3">Select which functions this plan can access. Check the module to grant full access, or select individual permissions below.</p>
 
                         @php
                         $planPermissions = $plan->getPermissions();
                         @endphp
 
                         @if($permissions && count($permissions) > 0)
-                            <div class="row">
-                                @foreach($permissions as $module => $modulePermissions)
-                                <div class="col-md-6 mb-4">
-                                    <div class="card border">
-                                        <div class="card-header bg-light">
-                                            <h6 class="mb-0">
-                                                @php
-                                                // Check if all permissions in this module are selected
-                                                $modulePermIds = $modulePermissions->pluck('id')->map(function($id) { return (string) $id; })->toArray();
-                                                $selectedInModule = array_intersect($modulePermIds, $planPermissions);
-                                                $allSelected = count($modulePermIds) > 0 && count($selectedInModule) === count($modulePermIds);
-                                                $someSelected = count($selectedInModule) > 0 && !$allSelected;
-                                                @endphp
-                                                <input type="checkbox"
-                                                       class="module-check"
-                                                       data-module="{{ $module }}"
-                                                       id="module_{{ $loop->index }}"
-                                                       {{ $allSelected ? 'checked' : '' }}>
-                                                <label for="module_{{ $loop->index }}" class="fw-bold">{{ ucfirst($module) }}</label>
-                                            </h6>
-                                        </div>
-                                        <div class="card-body">
-                                            @foreach($modulePermissions as $permission)
-                                            <div class="form-check">
-                                                <input type="checkbox"
-                                                       class="form-check-input permission-check"
-                                                       id="perm_{{ $permission->id }}"
-                                                       name="permissions[{{ $permission->id }}]"
-                                                       data-module="{{ $module }}"
-                                                       {{ in_array((string)$permission->id, $planPermissions) ? 'checked' : '' }}>
-                                                <label class="form-check-label" for="perm_{{ $permission->id }}">
-                                                    {{ $permission->name }}
-                                                </label>
-                                            </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-                                @endforeach
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-sm mb-0" style="font-size: 0.85rem;">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="width: 180px;">Module</th>
+                                            <th>Permissions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($permissions as $module => $modulePermissions)
+                                        @php
+                                        // Check if all permissions in this module are selected
+                                        $modulePermIds = $modulePermissions->pluck('id')->map(function($id) { return (string) $id; })->toArray();
+                                        $selectedInModule = array_intersect($modulePermIds, $planPermissions);
+                                        $allSelected = count($modulePermIds) > 0 && count($selectedInModule) === count($modulePermIds);
+                                        @endphp
+                                        <tr>
+                                            <td class="align-middle">
+                                                <div class="form-check">
+                                                    <input type="checkbox"
+                                                           class="form-check-input module-check"
+                                                           data-module="{{ $module }}"
+                                                           id="module_{{ $loop->index }}"
+                                                           {{ $allSelected ? 'checked' : '' }}>
+                                                    <label for="module_{{ $loop->index }}" class="form-check-label fw-bold">{{ ucfirst($module) }}</label>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex flex-wrap gap-2">
+                                                    @foreach($modulePermissions as $permission)
+                                                    <div class="form-check form-check-inline">
+                                                        <input type="checkbox"
+                                                               class="form-check-input permission-check"
+                                                               id="perm_{{ $permission->id }}"
+                                                               name="permissions[{{ $permission->id }}]"
+                                                               data-module="{{ $module }}"
+                                                               {{ in_array((string)$permission->id, $planPermissions) ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="perm_{{ $permission->id }}">
+                                                            {{ $permission->name }}
+                                                        </label>
+                                                    </div>
+                                                    @endforeach
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         @else
-                            <div class="alert alert-warning">
+                            <div class="alert alert-warning m-3">
                                 <i class="fas fa-exclamation-triangle"></i> No permissions found. Please run the roles audit script to create permissions.
                             </div>
                         @endif
                     </div>
                 </div>
 
-                <div class="mb-4">
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        <i class="fas fa-save"></i> Update Plan
-                    </button>
-                    <a href="{{ route('super-admin.plans.index') }}" class="btn btn-secondary btn-lg ms-2">
-                        Cancel
-                    </a>
-                </div>
-            </div>
-
-            <div class="col-lg-4">
+                {{-- Settings --}}
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">Settings</h6>
@@ -183,7 +182,6 @@
                                 Active
                             </label>
                         </div>
-
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input" id="is_popular" name="is_popular"
                                    value="1" {{ $plan->is_popular ? 'checked' : '' }}>
@@ -194,33 +192,13 @@
                     </div>
                 </div>
 
-                <!-- Current Permissions Summary -->
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">
-                            <i class="fas fa-list"></i> Current Permissions
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        @if(count($planPermissions) > 0)
-                            <p class="mb-2"><strong>{{ count($planPermissions) }}</strong> permissions assigned</p>
-                            <ul class="list-group list-group-flush small">
-                                @foreach($planPermissions as $permId)
-                                    @php
-                                    $perm = \App\Models\Permission::find($permId);
-                                    @endphp
-                                    @if($perm)
-                                    <li class="list-group-item px-0">
-                                        <i class="fas fa-check text-success me-1"></i>
-                                        {{ $perm->name }}
-                                    </li>
-                                    @endif
-                                @endforeach
-                            </ul>
-                        @else
-                            <p class="text-muted mb-0">No permissions assigned</p>
-                        @endif
-                    </div>
+                <div class="mb-4">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save"></i> Update Plan
+                    </button>
+                    <a href="{{ route('super-admin.plans.index') }}" class="btn btn-secondary btn-lg ms-2">
+                        Cancel
+                    </a>
                 </div>
             </div>
         </div>

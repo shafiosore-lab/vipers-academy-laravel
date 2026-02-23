@@ -9,6 +9,7 @@ use App\Models\Enrollment;
 use App\Models\User;
 use App\Models\Payment;
 use App\Models\Attendance;
+use App\Models\Document;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -125,6 +126,48 @@ class OrganizationDashboardController extends Controller
             ? round(($presentToday / max($totalAttendance, 1)) * 100, 1)
             : 0;
 
+        // Chart data
+        $chartData = $this->getChartData($organizationId);
+
+        // Compact analytics metrics
+        $recentActivity = [];
+
+        // Get recent players
+        foreach (Player::where('organization_id', $organizationId)->latest()->take(3)->get() as $player) {
+            $recentActivity[] = [
+                'icon' => '👤',
+                'type' => 'Player',
+                'description' => $player->first_name . ' ' . $player->last_name . ' registered',
+                'date' => $player->created_at->diffForHumans(),
+                'status' => $player->registration_status ?? 'new',
+            ];
+        }
+
+        // Get recent enrollments
+        foreach (Enrollment::whereHas('program', function($q) use ($organizationId) {
+            $q->where('organization_id', $organizationId);
+        })->latest()->take(2)->get() as $enrollment) {
+            $recentActivity[] = [
+                'icon' => '📝',
+                'type' => 'Enrollment',
+                'description' => ($enrollment->player->first_name ?? 'Unknown') . ' enrolled in ' . ($enrollment->program->name ?? 'program'),
+                'date' => $enrollment->created_at->diffForHumans(),
+                'status' => 'active',
+            ];
+        }
+
+        $metrics = [
+            'total_enrollments' => $totalEnrollments,
+            'total_revenue' => $totalRevenue,
+            'active_programs' => $activePrograms,
+            'attendance_rate' => $averageAttendance,
+            'recent_activity' => $recentActivity,
+        ];
+
+        // Document statistics for compact analytics
+        $documentStats = $this->getDocumentStats($organizationId);
+        $metrics['document_stats'] = $documentStats;
+
         // Generate AI insights
         $aiInsights = $this->generateInsights(
             $totalPlayers,
@@ -154,8 +197,99 @@ class OrganizationDashboardController extends Controller
             'recentPlayers',
             'recentEnrollments',
             'upcomingSessions',
-            'aiInsights'
+            'aiInsights',
+            'chartData',
+            'metrics'
         ));
+    }
+
+    /**
+     * Get chart data for dashboard visualizations.
+     */
+    private function getChartData($organizationId)
+    {
+        // Programs by category (pie chart)
+        $programCategories = Program::where('organization_id', $organizationId)
+            ->select('category')
+            ->whereNotNull('category')
+            ->get()
+            ->groupBy('category')
+            ->map(function ($programs) {
+                return $programs->count();
+            });
+
+        // Fees by program (bar chart)
+        $programFees = Program::where('organization_id', $organizationId)
+            ->select('title', 'regular_fee', 'mumias_fee')
+            ->whereNotNull('regular_fee')
+            ->limit(10)
+            ->get();
+
+        // Monthly enrollments (line chart) - last 6 months
+        $monthlyEnrollments = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $month = now()->subMonths($i);
+            $monthlyEnrollments[] = [
+                'month' => $month->format('M'),
+                'count' => Player::where('organization_id', $organizationId)
+                    ->whereBetween('created_at', [
+                        $month->copy()->startOfMonth(),
+                        $month->copy()->endOfMonth()
+                    ])->count()
+            ];
+        }
+
+        // Monthly revenue (line chart)
+        $monthlyRevenue = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $month = now()->subMonths($i);
+            $monthlyRevenue[] = [
+                'month' => $month->format('M'),
+                'amount' => Payment::where('organization_id', $organizationId)
+                    ->where('status', 'completed')
+                    ->whereBetween('paid_at', [
+                        $month->copy()->startOfMonth(),
+                        $month->copy()->endOfMonth()
+                    ])->sum('amount')
+            ];
+        }
+
+        // Attendance by month
+        $monthlyAttendance = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $month = now()->subMonths($i);
+            $present = Attendance::whereHas('player', function($q) use ($organizationId) {
+                $q->where('organization_id', $organizationId);
+            })
+            ->whereBetween('created_at', [
+                $month->copy()->startOfMonth(),
+                $month->copy()->endOfMonth()
+            ])
+            ->where('status', 'present')
+            ->count();
+
+            $total = Attendance::whereHas('player', function($q) use ($organizationId) {
+                $q->where('organization_id', $organizationId);
+            })
+            ->whereBetween('created_at', [
+                $month->copy()->startOfMonth(),
+                $month->copy()->endOfMonth()
+            ])
+            ->count();
+
+            $monthlyAttendance[] = [
+                'month' => $month->format('M'),
+                'rate' => $total > 0 ? round(($present / $total) * 100, 1) : 0
+            ];
+        }
+
+        return [
+            'program_categories' => $programCategories,
+            'program_fees' => $programFees,
+            'monthly_enrollments' => $monthlyEnrollments,
+            'monthly_revenue' => $monthlyRevenue,
+            'monthly_attendance' => $monthlyAttendance,
+        ];
     }
 
     private function generateInsights($totalPlayers, $activePlayers, $pendingPlayers, $averageAttendance)
@@ -210,5 +344,62 @@ class OrganizationDashboardController extends Controller
         }
 
         return $insights;
+    }
+
+    /**
+     * Get document statistics for compact analytics
+     */
+    private function getDocumentStats($organizationId)
+    {
+        $totalDocuments = Document::count();
+        $activeDocuments = Document::where('is_active', true)->count();
+
+        // Document categories breakdown
+        $categoryBreakdown = Document::select('category')
+            ->selectRaw('COUNT(*) as count')
+            ->whereNotNull('category')
+            ->groupBy('category')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'category' => $item->category,
+                    'count' => $item->count,
+                    'display_name' => match($item->category) {
+                        'codes_of_conduct' => 'Codes of Conduct',
+                        'safety_protection' => 'Safety & Protection',
+                        'academy_policies' => 'Academy Policies',
+                        'contracts_agreements' => 'Contracts & Agreements',
+                        'academy_information' => 'Academy Information',
+                        'administrative' => 'Administrative',
+                        default => ucfirst(str_replace('_', ' ', $item->category))
+                    }
+                ];
+            });
+
+        // Recently uploaded documents
+        $recentDocuments = Document::latest()
+            ->take(5)
+            ->get()
+            ->map(function ($doc) {
+                return [
+                    'icon' => $doc->isPdf() ? '📄' : '📎',
+                    'type' => 'Document',
+                    'title' => $doc->title,
+                    'category' => $doc->category,
+                    'date' => $doc->created_at->diffForHumans(),
+                    'status' => $doc->is_active ? 'Active' : 'Inactive',
+                ];
+            });
+
+        // Documents this month
+        $documentsThisMonth = Document::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count();
+
+        return [
+            'total_documents' => $totalDocuments,
+            'active_documents' => $activeDocuments,
+            'documents_this_month' => $documentsThisMonth,
+            'category_breakdown' => $categoryBreakdown,
+            'recent_documents' => $recentDocuments,
+        ];
     }
 }

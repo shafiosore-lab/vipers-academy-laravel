@@ -203,7 +203,7 @@
                                                 <td><strong>{{ $item->points }}</strong></td>
                                                 <td>{{ $item->season }}</td>
                                                 <td>
-                                                    <div class="btn-group" role="group">
+                                                    <div class="d-flex gap-1">
                                                         <a href="{{ route('admin.standings.show', [$item, 'type' => $type]) }}"
                                                            class="btn btn-sm btn-outline-info"
                                                            title="View">
@@ -260,7 +260,7 @@
                                                 <td>{{ $item->minutes_played }}</td>
                                                 <td>{{ $item->season }}</td>
                                                 <td>
-                                                    <div class="btn-group" role="group">
+                                                    <div class="d-flex gap-1">
                                                         <a href="{{ route('admin.standings.show', [$item, 'type' => $type]) }}"
                                                            class="btn btn-sm btn-outline-info"
                                                            title="View">
@@ -317,7 +317,7 @@
                                                 <td>{{ $item->minutes_played }}</td>
                                                 <td>{{ $item->season }}</td>
                                                 <td>
-                                                    <div class="btn-group" role="group">
+                                                    <div class="d-flex gap-1">
                                                         <a href="{{ route('admin.standings.show', [$item, 'type' => $type]) }}"
                                                            class="btn btn-sm btn-outline-info"
                                                            title="View">
@@ -374,7 +374,7 @@
                                                 <td>{{ number_format($item->save_percentage ?? 0, 1) }}%</td>
                                                 <td>{{ $item->season }}</td>
                                                 <td>
-                                                    <div class="btn-group" role="group">
+                                                    <div class="d-flex gap-1">
                                                         <a href="{{ route('admin.standings.show', [$item, 'type' => $type]) }}"
                                                            class="btn btn-sm btn-outline-info"
                                                            title="View">

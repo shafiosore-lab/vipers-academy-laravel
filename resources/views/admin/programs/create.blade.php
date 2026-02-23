@@ -106,6 +106,48 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
+                                            <label for="fee_display" class="form-label">Fee Display (Website)</label>
+                                            <input type="text" class="form-control @error('fee_display') is-invalid @enderror"
+                                                   id="fee_display" name="fee_display" value="{{ old('fee_display') }}"
+                                                   placeholder="e.g., KSH 500/month">
+                                            @error('fee_display')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <div class="form-text">Display fee on website (e.g., "KSH 500/month")</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="schedule_display" class="form-label">Schedule Display (Website)</label>
+                                            <input type="text" class="form-control @error('schedule_display') is-invalid @enderror"
+                                                   id="schedule_display" name="schedule_display" value="{{ old('schedule_display') }}"
+                                                   placeholder="e.g., Full Year, April/Aug/Dec">
+                                            @error('schedule_display')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <div class="form-text">Display schedule on website</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="age_range" class="form-label">Age Range (Website)</label>
+                                            <input type="text" class="form-control @error('age_range') is-invalid @enderror"
+                                                   id="age_range" name="age_range" value="{{ old('age_range') }}"
+                                                   placeholder="e.g., Ages 6-18">
+                                            @error('age_range')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <div class="form-text">Display age range on website (e.g., "Ages 6-18")</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
                                             <label for="regular_fee" class="form-label">Regular Fee (KSH)</label>
                                             <input type="number" class="form-control @error('regular_fee') is-invalid @enderror"
                                                    id="regular_fee" name="regular_fee" value="{{ old('regular_fee') }}" min="0" step="0.01">
