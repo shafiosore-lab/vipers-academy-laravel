@@ -194,7 +194,7 @@
                 <td>{{ $attendance->session_date->format('M j, Y') }}</td>
                 <td>{{ $attendance->check_in_time ? $attendance->check_in_time->format('H:i') : 'N/A' }}</td>
                 <td>{{ $attendance->check_out_time ? $attendance->check_out_time->format('H:i') : 'N/A' }}</td>
-                <td>{{ $attendance->total_duration_minutes ? $attendance->total_duration_minutes . ' min' : 'N/A' }}</td>
+                <td>{{ $attendance->total_duration_minutes ? number_format($attendance->total_duration_minutes, 2) . ' min' : 'N/A' }}</td>
                 <td>
                     @if($attendance->check_out_time)
                         <span class="badge badge-success">Completed</span>

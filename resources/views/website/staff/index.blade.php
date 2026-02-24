@@ -261,6 +261,39 @@
             </p>
         </div>
 
+        @if($leaders->count() > 0)
+        <div class="team-grid">
+            @foreach($leaders as $index => $leader)
+            <!-- Team Member -->
+            <div class="member-card">
+                <div class="member-photo">
+                    @if($leader->photo_path)
+                    <img src="{{ asset('storage/' . $leader->photo_path) }}"
+                         alt="{{ $leader->name }} - {{ $leader->role }}"
+                         loading="lazy">
+                    @else
+                    <img src="{{ asset('assets/img/gallery/kids.jpeg') }}"
+                         alt="{{ $leader->name }} - {{ $leader->role }}"
+                         loading="lazy">
+                    @endif
+                    @if($leader->linkedin_url)
+                    <a href="{{ $leader->linkedin_url }}" target="_blank" class="linkedin-btn" aria-label="{{ $leader->name }} LinkedIn Profile">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    @endif
+                </div>
+                <div class="member-info">
+                    <h3 class="member-name">{{ $leader->name }}</h3>
+                    <p class="member-role">{{ $leader->role }}</p>
+                    @if($leader->credentials)
+                    <p class="member-credentials">{{ $leader->credentials }}</p>
+                    @endif
+                </div>
+            </div>
+            @endforeach
+        </div>
+        @else
+        <!-- Fallback content when no leaders are in database -->
         <div class="team-grid">
             <!-- Team Member 1 -->
             <div class="member-card">
@@ -330,6 +363,7 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
 </section>
 @endsection

@@ -65,7 +65,7 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <a href="#" class="btn btn-sm btn-outline-primary">
+                                                <a href="{{ route('coach.training-sessions.show', $session->id) }}" class="btn btn-sm btn-outline-primary">
                                                     <i class="fas fa-eye"></i> View
                                                 </a>
                                             </td>

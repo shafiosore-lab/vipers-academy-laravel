@@ -182,6 +182,9 @@ Route::get('/dashboard', function() {
         return redirect()->route('login');
     }
 
+    // Eager load roles to prevent N+1 queries
+    $user->load('roles');
+
     // Use RoleHierarchyService to determine correct dashboard
     $hierarchyService = new \App\Services\RoleHierarchyService();
     $dashboardRoute = $hierarchyService->getDashboardRouteForUser($user);
@@ -221,6 +224,48 @@ Route::get('/auth/facebook/callback', [App\Http\Controllers\Auth\SocialAuthContr
 // Admin Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+
+    // Finance Module (accessible to admin and finance roles)
+    Route::prefix('finance')->name('finance.')->group(function () {
+        Route::get('/dashboard', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/payments', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'payments'])->name('payments');
+        Route::get('/payments/create', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'createPayment'])->name('payments.create');
+        Route::post('/payments', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'storePayment'])->name('payments.store');
+        Route::get('/payments/{payment}', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'viewPayment'])->name('payments.view');
+        Route::get('/payments/{payment}/edit', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'editPayment'])->name('payments.edit');
+        Route::put('/payments/{payment}', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'updatePayment'])->name('payments.update');
+        Route::delete('/payments/{payment}', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'deletePayment'])->name('payments.delete');
+        Route::get('/reports', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'reports'])->name('reports');
+        Route::get('/record-payment', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'recordPayment'])->name('record-payment');
+        Route::get('/reminders', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'sendReminders'])->name('reminders');
+        Route::get('/analytics', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'analytics'])->name('analytics');
+
+        // Budget Plans
+        Route::get('/budgets', [App\Http\Controllers\Staff\BudgetController::class, 'budgets'])->name('budgets.index');
+        Route::get('/budgets/create', [App\Http\Controllers\Staff\BudgetController::class, 'createBudget'])->name('budgets.create');
+        Route::post('/budgets', [App\Http\Controllers\Staff\BudgetController::class, 'storeBudget'])->name('budgets.store');
+        Route::get('/budgets/{budget}', [App\Http\Controllers\Staff\BudgetController::class, 'showBudget'])->name('budgets.show');
+        Route::get('/budgets/{budget}/edit', [App\Http\Controllers\Staff\BudgetController::class, 'editBudget'])->name('budgets.edit');
+        Route::put('/budgets/{budget}', [App\Http\Controllers\Staff\BudgetController::class, 'updateBudget'])->name('budgets.update');
+        Route::post('/budgets/{budget}/activate', [App\Http\Controllers\Staff\BudgetController::class, 'activateBudget'])->name('budgets.activate');
+        Route::post('/budgets/{budget}/close', [App\Http\Controllers\Staff\BudgetController::class, 'closeBudget'])->name('budgets.close');
+        Route::delete('/budgets/{budget}', [App\Http\Controllers\Staff\BudgetController::class, 'deleteBudget'])->name('budgets.destroy');
+        Route::get('/budgets/comparison', [App\Http\Controllers\Staff\BudgetController::class, 'comparison'])->name('budgets.comparison');
+        Route::get('/budgets/summary', [App\Http\Controllers\Staff\BudgetController::class, 'summary'])->name('budgets.summary');
+
+        // Expenses
+        Route::get('/expenses', [App\Http\Controllers\Staff\BudgetController::class, 'expenses'])->name('expenses.index');
+        Route::get('/expenses/create', [App\Http\Controllers\Staff\BudgetController::class, 'createExpense'])->name('expenses.create');
+        Route::post('/expenses', [App\Http\Controllers\Staff\BudgetController::class, 'storeExpense'])->name('expenses.store');
+        Route::get('/expenses/{expense}', [App\Http\Controllers\Staff\BudgetController::class, 'showExpense'])->name('expenses.show');
+        Route::get('/expenses/{expense}/edit', [App\Http\Controllers\Staff\BudgetController::class, 'editExpense'])->name('expenses.edit');
+        Route::put('/expenses/{expense}', [App\Http\Controllers\Staff\BudgetController::class, 'updateExpense'])->name('expenses.update');
+        Route::post('/expenses/{expense}/approve', [App\Http\Controllers\Staff\BudgetController::class, 'approveExpense'])->name('expenses.approve');
+        Route::post('/expenses/{expense}/reject', [App\Http\Controllers\Staff\BudgetController::class, 'rejectExpense'])->name('expenses.reject');
+        Route::post('/expenses/{expense}/mark-paid', [App\Http\Controllers\Staff\BudgetController::class, 'markExpensePaid'])->name('expenses.mark-paid');
+        Route::delete('/expenses/{expense}', [App\Http\Controllers\Staff\BudgetController::class, 'deleteExpense'])->name('expenses.destroy');
+        Route::get('/expenses/report', [App\Http\Controllers\Staff\BudgetController::class, 'expenseReport'])->name('expenses.report');
+    });
 
     // Players Management
     Route::get('/players', [App\Http\Controllers\Admin\AdminPlayerController::class, 'index'])->name('players.index');
@@ -461,6 +506,49 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Compliance Report
     Route::get('/compliance/report', [App\Http\Controllers\Admin\DashboardController::class, 'complianceReport'])->name('compliance.report');
+
+    // Equipment Management Routes (accessible by admin/super-admin)
+    Route::get('/equipment/categories', [App\Http\Controllers\Staff\EquipmentController::class, 'categories'])->name('equipment.categories');
+    Route::post('/equipment/categories', [App\Http\Controllers\Staff\EquipmentController::class, 'storeCategory'])->name('equipment.categories.store');
+    Route::put('/equipment/categories/{category}', [App\Http\Controllers\Staff\EquipmentController::class, 'updateCategory'])->name('equipment.categories.update');
+    Route::delete('/equipment/categories/{category}', [App\Http\Controllers\Staff\EquipmentController::class, 'destroyCategory'])->name('equipment.categories.destroy');
+
+    Route::get('/equipment/inventory', [App\Http\Controllers\Staff\EquipmentController::class, 'inventory'])->name('equipment.inventory');
+    Route::post('/equipment/inventory', [App\Http\Controllers\Staff\EquipmentController::class, 'storeEquipment'])->name('equipment.inventory.store');
+    Route::put('/equipment/inventory/{equipment}', [App\Http\Controllers\Staff\EquipmentController::class, 'updateEquipment'])->name('equipment.inventory.update');
+    Route::delete('/equipment/inventory/{equipment}', [App\Http\Controllers\Staff\EquipmentController::class, 'destroyEquipment'])->name('equipment.inventory.destroy');
+
+    Route::get('/equipment/distribution', [App\Http\Controllers\Staff\EquipmentController::class, 'distribution'])->name('equipment.distribution');
+    Route::post('/equipment/distribution', [App\Http\Controllers\Staff\EquipmentController::class, 'storeDistribution'])->name('equipment.distribution.store');
+    Route::post('/equipment/distribution/{distribution}/return', [App\Http\Controllers\Staff\EquipmentController::class, 'returnEquipment'])->name('equipment.distribution.return');
+
+    Route::get('/equipment/compliance', [App\Http\Controllers\Staff\EquipmentController::class, 'compliance'])->name('equipment.compliance');
+    Route::post('/equipment/compliance/report', [App\Http\Controllers\Staff\EquipmentController::class, 'generateComplianceReport'])->name('equipment.compliance.report');
+
+    // Page Content Management
+    Route::get('/page-content', [App\Http\Controllers\Admin\AdminPageContentController::class, 'index'])->name('page-content.index');
+    Route::get('/page-content/{page}', [App\Http\Controllers\Admin\AdminPageContentController::class, 'showPage'])->name('page-content.show');
+    Route::get('/page-content/{page}/{section}/edit', [App\Http\Controllers\Admin\AdminPageContentController::class, 'editSection'])->name('page-content.edit');
+    Route::put('/page-content/{page}/{section}', [App\Http\Controllers\Admin\AdminPageContentController::class, 'update'])->name('page-content.update');
+
+    // Leaders Management (Meet Our Leaders page)
+    Route::get('/leaders', [App\Http\Controllers\Admin\AdminLeaderController::class, 'index'])->name('leaders.index');
+    Route::get('/leaders/create', [App\Http\Controllers\Admin\AdminLeaderController::class, 'create'])->name('leaders.create');
+    Route::post('/leaders', [App\Http\Controllers\Admin\AdminLeaderController::class, 'store'])->name('leaders.store');
+    Route::get('/leaders/{leader}', [App\Http\Controllers\Admin\AdminLeaderController::class, 'show'])->name('leaders.show');
+    Route::get('/leaders/{leader}/edit', [App\Http\Controllers\Admin\AdminLeaderController::class, 'edit'])->name('leaders.edit');
+    Route::put('/leaders/{leader}', [App\Http\Controllers\Admin\AdminLeaderController::class, 'update'])->name('leaders.update');
+    Route::delete('/leaders/{leader}', [App\Http\Controllers\Admin\AdminLeaderController::class, 'destroy'])->name('leaders.destroy');
+    Route::post('/leaders/{leader}/toggle-status', [App\Http\Controllers\Admin\AdminLeaderController::class, 'toggleStatus'])->name('leaders.toggle-status');
+    Route::post('/leaders/reorder', [App\Http\Controllers\Admin\AdminLeaderController::class, 'reorder'])->name('leaders.reorder');
+
+    // Journey section - Add/Delete entries
+    Route::post('/page-content/journey/add', [App\Http\Controllers\Admin\AdminPageContentController::class, 'addJourneyEntry'])->name('page-content.journey.add');
+    Route::get('/page-content/journey/{id}/delete', [App\Http\Controllers\Admin\AdminPageContentController::class, 'deleteJourneyEntry'])->name('page-content.journey.delete');
+
+    // Values section - Add/Delete entries
+    Route::post('/page-content/values/add', [App\Http\Controllers\Admin\AdminPageContentController::class, 'addValueEntry'])->name('page-content.values.add');
+    Route::get('/page-content/values/{id}/delete', [App\Http\Controllers\Admin\AdminPageContentController::class, 'deleteValueEntry'])->name('page-content.values.delete');
 });
 
 // API Routes for AJAX functionality
@@ -555,6 +643,23 @@ Route::middleware(['auth', 'role:coach|assistant-coach|head-coach|partner'])->pr
     Route::get('/sessions', [App\Http\Controllers\Staff\CoachDashboardController::class, 'trainingSessions'])->name('sessions');
     Route::get('/players', [App\Http\Controllers\Staff\CoachDashboardController::class, 'players'])->name('players');
     Route::get('/player/{player}', [App\Http\Controllers\Staff\CoachDashboardController::class, 'playerProgress'])->name('player.progress');
+
+    // Attendance Management (Coach access)
+    Route::get('/attendance', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'index'])->name('attendance.index');
+    Route::get('/attendance/create', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'create'])->name('attendance.create');
+    Route::post('/attendance', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'store'])->name('attendance.store');
+    Route::get('/attendance/{attendance}', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'show'])->name('attendance.show');
+    Route::post('/attendance/{attendance}/check-in', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'checkIn'])->name('attendance.check-in');
+    Route::post('/attendance/{attendance}/check-out', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'checkOut'])->name('attendance.check-out');
+
+    // Training Sessions Management (Coach access)
+    Route::get('/training-sessions', [App\Http\Controllers\Admin\TrainingSessionController::class, 'index'])->name('training-sessions.index');
+    Route::get('/training-sessions/{trainingSession}', [App\Http\Controllers\Admin\TrainingSessionController::class, 'show'])->name('training-sessions.show');
+    Route::post('/training-sessions/{trainingSession}/start', [App\Http\Controllers\Admin\TrainingSessionController::class, 'start'])->name('training-sessions.start');
+    Route::post('/training-sessions/{trainingSession}/end', [App\Http\Controllers\Admin\TrainingSessionController::class, 'end'])->name('training-sessions.end');
+    Route::post('/training-sessions/{trainingSession}/admit-player', [App\Http\Controllers\Admin\TrainingSessionController::class, 'admitPlayer'])->name('training-sessions.admit-player');
+    Route::post('/training-sessions/{trainingSession}/check-out-player', [App\Http\Controllers\Admin\TrainingSessionController::class, 'checkOutPlayer'])->name('training-sessions.check-out-player');
+    Route::get('/training-sessions/{trainingSession}/players-for-attendance', [App\Http\Controllers\Admin\TrainingSessionController::class, 'getPlayersForAttendance'])->name('training-sessions.players-for-attendance');
 });
 
 // Team Manager Dashboard
@@ -601,7 +706,7 @@ Route::middleware(['auth', 'role:safeguarding-officer'])->prefix('welfare')->nam
 });
 
 // Finance Officer Dashboard
-Route::middleware(['auth', 'role:finance-officer'])->prefix('finance')->name('finance.')->group(function () {
+Route::middleware(['auth', 'role:finance-officer|finance-admin|operations-admin'])->prefix('finance')->name('finance.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'index'])->name('dashboard');
     Route::get('/payments', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'payments'])->name('payments');
     Route::get('/payments/create', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'createPayment'])->name('payments.create');
@@ -614,6 +719,38 @@ Route::middleware(['auth', 'role:finance-officer'])->prefix('finance')->name('fi
     Route::get('/record-payment', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'recordPayment'])->name('record-payment');
     Route::get('/reminders', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'sendReminders'])->name('reminders');
     Route::get('/analytics', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'analytics'])->name('analytics');
+
+    // Budget Plans
+    Route::get('/budgets', [App\Http\Controllers\Staff\BudgetController::class, 'budgets'])->name('budgets.index');
+    Route::get('/budgets/create', [App\Http\Controllers\Staff\BudgetController::class, 'createBudget'])->name('budgets.create');
+    Route::post('/budgets', [App\Http\Controllers\Staff\BudgetController::class, 'storeBudget'])->name('budgets.store');
+    Route::get('/budgets/{budget}', [App\Http\Controllers\Staff\BudgetController::class, 'showBudget'])->name('budgets.show');
+    Route::get('/budgets/{budget}/edit', [App\Http\Controllers\Staff\BudgetController::class, 'editBudget'])->name('budgets.edit');
+    Route::put('/budgets/{budget}', [App\Http\Controllers\Staff\BudgetController::class, 'updateBudget'])->name('budgets.update');
+    Route::post('/budgets/{budget}/activate', [App\Http\Controllers\Staff\BudgetController::class, 'activateBudget'])->name('budgets.activate');
+    Route::post('/budgets/{budget}/close', [App\Http\Controllers\Staff\BudgetController::class, 'closeBudget'])->name('budgets.close');
+    Route::delete('/budgets/{budget}', [App\Http\Controllers\Staff\BudgetController::class, 'deleteBudget'])->name('budgets.destroy');
+
+    // Budget Comparison
+    Route::get('/budgets/comparison', [App\Http\Controllers\Staff\BudgetController::class, 'comparison'])->name('budgets.comparison');
+
+    // Budget Summary
+    Route::get('/budgets/summary', [App\Http\Controllers\Staff\BudgetController::class, 'summary'])->name('budgets.summary');
+
+    // Expenses
+    Route::get('/expenses', [App\Http\Controllers\Staff\BudgetController::class, 'expenses'])->name('expenses.index');
+    Route::get('/expenses/create', [App\Http\Controllers\Staff\BudgetController::class, 'createExpense'])->name('expenses.create');
+    Route::post('/expenses', [App\Http\Controllers\Staff\BudgetController::class, 'storeExpense'])->name('expenses.store');
+    Route::get('/expenses/{expense}', [App\Http\Controllers\Staff\BudgetController::class, 'showExpense'])->name('expenses.show');
+    Route::get('/expenses/{expense}/edit', [App\Http\Controllers\Staff\BudgetController::class, 'editExpense'])->name('expenses.edit');
+    Route::put('/expenses/{expense}', [App\Http\Controllers\Staff\BudgetController::class, 'updateExpense'])->name('expenses.update');
+    Route::post('/expenses/{expense}/approve', [App\Http\Controllers\Staff\BudgetController::class, 'approveExpense'])->name('expenses.approve');
+    Route::post('/expenses/{expense}/reject', [App\Http\Controllers\Staff\BudgetController::class, 'rejectExpense'])->name('expenses.reject');
+    Route::post('/expenses/{expense}/mark-paid', [App\Http\Controllers\Staff\BudgetController::class, 'markExpensePaid'])->name('expenses.mark-paid');
+    Route::delete('/expenses/{expense}', [App\Http\Controllers\Staff\BudgetController::class, 'deleteExpense'])->name('expenses.destroy');
+
+    // Expense Reports
+    Route::get('/expenses/report', [App\Http\Controllers\Staff\BudgetController::class, 'expenseReport'])->name('expenses.report');
 });
 
 // Parent Portal Routes
@@ -638,6 +775,56 @@ Route::prefix('api')->name('api.')->group(function () {
 // Super Admin Routes
 Route::middleware(['auth', 'super.admin'])->prefix('super-admin')->name('super-admin.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'dashboard'])->name('dashboard');
+
+    // Finance Module (accessible to super-admin)
+    Route::prefix('finance')->name('finance.')->group(function () {
+        Route::get('/dashboard', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/payments', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'payments'])->name('payments');
+        Route::get('/payments/create', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'createPayment'])->name('payments.create');
+        Route::post('/payments', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'storePayment'])->name('payments.store');
+        Route::get('/payments/{payment}', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'viewPayment'])->name('payments.view');
+        Route::get('/payments/{payment}/edit', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'editPayment'])->name('payments.edit');
+        Route::put('/payments/{payment}', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'updatePayment'])->name('payments.update');
+        Route::delete('/payments/{payment}', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'deletePayment'])->name('payments.delete');
+        Route::get('/reports', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'reports'])->name('reports');
+        Route::get('/record-payment', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'recordPayment'])->name('record-payment');
+        Route::get('/reminders', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'sendReminders'])->name('reminders');
+        Route::get('/analytics', [App\Http\Controllers\Staff\FinanceDashboardController::class, 'analytics'])->name('analytics');
+
+        // Budget Plans
+        Route::get('/budgets', [App\Http\Controllers\Staff\BudgetController::class, 'budgets'])->name('budgets.index');
+        Route::get('/budgets/create', [App\Http\Controllers\Staff\BudgetController::class, 'createBudget'])->name('budgets.create');
+        Route::post('/budgets', [App\Http\Controllers\Staff\BudgetController::class, 'storeBudget'])->name('budgets.store');
+        Route::get('/budgets/{budget}', [App\Http\Controllers\Staff\BudgetController::class, 'showBudget'])->name('budgets.show');
+        Route::get('/budgets/{budget}/edit', [App\Http\Controllers\Staff\BudgetController::class, 'editBudget'])->name('budgets.edit');
+        Route::put('/budgets/{budget}', [App\Http\Controllers\Staff\BudgetController::class, 'updateBudget'])->name('budgets.update');
+        Route::post('/budgets/{budget}/activate', [App\Http\Controllers\Staff\BudgetController::class, 'activateBudget'])->name('budgets.activate');
+        Route::post('/budgets/{budget}/close', [App\Http\Controllers\Staff\BudgetController::class, 'closeBudget'])->name('budgets.close');
+        Route::delete('/budgets/{budget}', [App\Http\Controllers\Staff\BudgetController::class, 'deleteBudget'])->name('budgets.destroy');
+        Route::get('/budgets/comparison', [App\Http\Controllers\Staff\BudgetController::class, 'comparison'])->name('budgets.comparison');
+        Route::get('/budgets/summary', [App\Http\Controllers\Staff\BudgetController::class, 'summary'])->name('budgets.summary');
+
+        // Expenses
+        Route::get('/expenses', [App\Http\Controllers\Staff\BudgetController::class, 'expenses'])->name('expenses.index');
+        Route::get('/expenses/create', [App\Http\Controllers\Staff\BudgetController::class, 'createExpense'])->name('expenses.create');
+        Route::post('/expenses', [App\Http\Controllers\Staff\BudgetController::class, 'storeExpense'])->name('expenses.store');
+        Route::get('/expenses/{expense}', [App\Http\Controllers\Staff\BudgetController::class, 'showExpense'])->name('expenses.show');
+        Route::get('/expenses/{expense}/edit', [App\Http\Controllers\Staff\BudgetController::class, 'editExpense'])->name('expenses.edit');
+        Route::put('/expenses/{expense}', [App\Http\Controllers\Staff\BudgetController::class, 'updateExpense'])->name('expenses.update');
+        Route::post('/expenses/{expense}/approve', [App\Http\Controllers\Staff\BudgetController::class, 'approveExpense'])->name('expenses.approve');
+        Route::post('/expenses/{expense}/reject', [App\Http\Controllers\Staff\BudgetController::class, 'rejectExpense'])->name('expenses.reject');
+        Route::post('/expenses/{expense}/mark-paid', [App\Http\Controllers\Staff\BudgetController::class, 'markExpensePaid'])->name('expenses.mark-paid');
+        Route::delete('/expenses/{expense}', [App\Http\Controllers\Staff\BudgetController::class, 'deleteExpense'])->name('expenses.destroy');
+        Route::get('/expenses/report', [App\Http\Controllers\Staff\BudgetController::class, 'expenseReport'])->name('expenses.report');
+    });
+
+    // Attendance Management (Super Admin access)
+    Route::get('/attendance', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'index'])->name('attendance.index');
+    Route::get('/attendance/create', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'create'])->name('attendance.create');
+    Route::post('/attendance', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'store'])->name('attendance.store');
+    Route::get('/attendance/{attendance}', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'show'])->name('attendance.show');
+    Route::get('/attendance/export', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'showExportPage'])->name('attendance.export.page');
+    Route::get('/attendance/export/download', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'export'])->name('attendance.export');
 
     // Organizations Management
     Route::get('/organizations', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'organizations'])->name('organizations.index');
@@ -696,6 +883,15 @@ Route::middleware(['auth', 'super.admin'])->prefix('super-admin')->name('super-a
 
     // Analytics
     Route::get('/analytics', [App\Http\Controllers\SuperAdmin\SuperAdminController::class, 'analytics'])->name('analytics');
+
+    // Training Sessions (Super Admin access)
+    Route::resource('training-sessions', App\Http\Controllers\Admin\TrainingSessionController::class);
+    Route::post('/training-sessions/{trainingSession}/start', [App\Http\Controllers\Admin\TrainingSessionController::class, 'start'])->name('training-sessions.start');
+    Route::post('/training-sessions/{trainingSession}/end', [App\Http\Controllers\Admin\TrainingSessionController::class, 'end'])->name('training-sessions.end');
+    Route::post('/training-sessions/{trainingSession}/admit-player', [App\Http\Controllers\Admin\TrainingSessionController::class, 'admitPlayer'])->name('training-sessions.admit-player');
+    Route::post('/training-sessions/{trainingSession}/check-out-player', [App\Http\Controllers\Admin\TrainingSessionController::class, 'checkOutPlayer'])->name('training-sessions.check-out-player');
+    Route::get('/training-sessions/{trainingSession}/live-data', [App\Http\Controllers\Admin\TrainingSessionController::class, 'liveData'])->name('training-sessions.live-data');
+    Route::get('/training-sessions/{trainingSession}/players-for-attendance', [App\Http\Controllers\Admin\TrainingSessionController::class, 'getPlayersForAttendance'])->name('training-sessions.players-for-attendance');
 });
 
 // Organization Admin Routes

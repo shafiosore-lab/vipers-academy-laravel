@@ -52,8 +52,23 @@ class OrgRoleManagementController extends Controller
             $organizations = Organization::active()->orderBy('name')->get();
 
             // Get selected organization from request or default to first
-            $organizationId = $request->organization_id ?? $organizations->first()->id;
-            $organization = Organization::findOrFail($organizationId);
+            $firstOrganization = $organizations->first();
+
+            // Handle case when no organizations exist
+            if (!$firstOrganization) {
+                return redirect()->route('dashboard')
+                    ->with('error', 'No active organizations found. Please create an organization first.');
+            }
+
+            $organizationId = $request->organization_id ?? $firstOrganization->id;
+
+            // Verify the requested organization exists and is active
+            $organization = Organization::where('id', $organizationId)->active()->first();
+
+            if (!$organization) {
+                return redirect()->route('organization.roles.index')
+                    ->with('error', 'The selected organization does not exist or is not active.');
+            }
         } else {
             $organization = $user->organization;
             $organizations = null;

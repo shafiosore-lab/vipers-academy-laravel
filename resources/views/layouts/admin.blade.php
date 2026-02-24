@@ -97,6 +97,49 @@
         text-transform: uppercase;
     }
 
+    .admin-search {
+        flex: 1;
+        max-width: 400px;
+        margin-right: 2rem;
+    }
+
+    .admin-search-form {
+        display: flex;
+        border: 1px solid var(--gray-300);
+        border-radius: 6px;
+        overflow: hidden;
+        background: #f8f9fa;
+        transition: var(--transition);
+    }
+
+    .admin-search-form:focus-within {
+        border-color: var(--primary);
+        background: var(--white);
+        box-shadow: 0 0 0 3px rgba(234, 28, 77, 0.1);
+    }
+
+    .admin-search-input {
+        flex: 1;
+        border: none;
+        padding: 8px 14px;
+        font-size: 13px;
+        outline: none;
+        background: transparent;
+    }
+
+    .admin-search-btn {
+        background: transparent;
+        border: none;
+        color: #999;
+        padding: 0 12px;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .admin-search-btn:hover {
+        color: var(--primary);
+    }
+
     .header-actions {
         display: flex;
         align-items: center;
@@ -286,6 +329,21 @@
         text-align: center;
     }
 
+    .nav-section-title {
+        font-size: 11px;
+        font-weight: 600;
+        color: #999;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 0 12px;
+        margin-bottom: 8px;
+        margin-top: 20px;
+    }
+
+    .nav-section-title:first-child {
+        margin-top: 0;
+    }
+
     .sidebar-badge {
         margin-left: auto;
         background: var(--danger);
@@ -442,6 +500,13 @@
         cursor: pointer;
     }
 
+    /* Responsive search */
+    @media (max-width: 992px) {
+        .admin-search {
+            display: none;
+        }
+    }
+
     .sr-only {
         position: absolute;
         width: 1px;
@@ -460,9 +525,15 @@
 
 <body>
     {{-- Top Header --}}
-    <header class="top-header">
+    <header class="top-header" role="banner">
         <div class="container-fluid">
-            <button class="sidebar-toggle-mobile me-3" onclick="toggleSidebar()">
+            <button class="sidebar-toggle-mobile me-3"
+                    id="mobileSidebarToggle"
+                    type="button"
+                    aria-label="{{ __('Toggle navigation menu') }}"
+                    aria-expanded="false"
+                    aria-controls="adminSidebar"
+                    onclick="toggleSidebar()">
                 <i class="fas fa-bars"></i>
             </button>
 
@@ -490,7 +561,24 @@
                 </div>
             </a>
 
-            <nav class="header-actions">
+            {{-- Search --}}
+            <div class="admin-search">
+                <form class="admin-search-form" action="{{ route('search') }}" method="GET" role="search">
+                    <label for="global-search" class="sr-only">{{ __('Search') }}</label>
+                    <input type="search"
+                           id="global-search"
+                           name="q"
+                           class="admin-search-input"
+                           placeholder="{{ __('Search players, programs...') }}"
+                           aria-label="{{ __('Search the system') }}"
+                           autocomplete="off">
+                    <button type="submit" class="admin-search-btn" aria-label="{{ __('Submit search') }}">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+
+            <nav class="header-actions" role="navigation" aria-label="{{ __('Header actions') }}">
                 <div class="dropdown">
                     <button class="header-action-btn" data-bs-toggle="dropdown">
                         <i class="fas fa-bell"></i>
@@ -537,7 +625,7 @@
     </header>
 
     {{-- Left Sidebar with Accordion --}}
-    <aside class="admin-sidebar" id="adminSidebar">
+    <aside class="admin-sidebar" id="adminSidebar" role="navigation" aria-label="{{ __('Main navigation') }}">
         <nav class="sidebar-nav">
             {{-- Accordion Settings Toggle --}}
             <div class="accordion-settings">
@@ -557,7 +645,11 @@
 
             {{-- Players Accordion --}}
             <div class="sidebar-accordion" data-accordion="players">
-                <button class="sidebar-accordion-header {{ request()->routeIs('admin.players.*', 'admin.attendance.*', 'admin.training-sessions.*', 'admin.game-statistics.*') ? 'active' : '' }}" onclick="toggleAccordion('players')">
+                <button class="sidebar-accordion-header {{ request()->routeIs('admin.players.*', 'admin.attendance.*', 'admin.training-sessions.*', 'admin.game-statistics.*') ? 'active' : '' }}"
+                        type="button"
+                        aria-expanded="false"
+                        aria-controls="accordion-players"
+                        onclick="toggleAccordion('players')">
                     <span><i class="fas fa-users"></i> {{ __('Players') }}</span>
                     <span class="sidebar-accordion-icon"></span>
                 </button>
@@ -633,25 +725,56 @@
 
             {{-- Finance Accordion --}}
             <div class="sidebar-accordion" data-accordion="finance">
-                <button class="sidebar-accordion-header {{ request()->routeIs('admin.payments.*', 'admin.payment-categories.*') ? 'active' : '' }}" onclick="toggleAccordion('finance')">
+                <button class="sidebar-accordion-header {{ request()->routeIs('admin.payments.*', 'admin.payment-categories.*', 'finance.*') ? 'active' : '' }}" onclick="toggleAccordion('finance')">
                     <span><i class="fas fa-credit-card"></i> {{ __('Finance') }}</span>
                     <span class="sidebar-accordion-icon"></span>
                 </button>
                 <div class="sidebar-accordion-content">
+                    {{-- Revenue Section --}}
                     <a href="{{ route('admin.payments.index') }}" class="sidebar-link {{ request()->routeIs('admin.payments.*') ? 'active' : '' }}">
-                        <i class="fas fa-credit-card"></i>
-                        <span>{{ __('Payments') }}</span>
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>{{ __('Payments (Revenue)') }}</span>
                     </a>
                     <a href="{{ route('admin.payment-categories.index') }}" class="sidebar-link {{ request()->routeIs('admin.payment-categories.*') ? 'active' : '' }}">
                         <i class="fas fa-tags"></i>
-                        <span>{{ __('Categories') }}</span>
+                        <span>{{ __('Payment Categories') }}</span>
+                    </a>
+
+                    {{-- Divider --}}
+                    <div style="height:1px;background:#e8e8e8;margin:8px 12px;"></div>
+
+                    {{-- Budget Planning Section --}}
+                    <a href="{{ route('finance.budgets.summary') }}" class="sidebar-link {{ request()->routeIs('finance.budgets.summary') ? 'active' : '' }}">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>{{ __('Budget Summary') }}</span>
+                    </a>
+                    <a href="{{ route('finance.budgets.index') }}" class="sidebar-link {{ request()->routeIs('finance.budgets.index', 'finance.budgets.create', 'finance.budgets.show', 'finance.budgets.edit') ? 'active' : '' }}">
+                        <i class="fas fa-calculator"></i>
+                        <span>{{ __('Budget Plans') }}</span>
+                    </a>
+                    <a href="{{ route('finance.budgets.comparison') }}" class="sidebar-link {{ request()->routeIs('finance.budgets.comparison') ? 'active' : '' }}">
+                        <i class="fas fa-balance-scale"></i>
+                        <span>{{ __('Budget vs Actual') }}</span>
+                    </a>
+
+                    {{-- Divider --}}
+                    <div style="height:1px;background:#e8e8e8;margin:8px 12px;"></div>
+
+                    {{-- Expenses Section --}}
+                    <a href="{{ route('finance.expenses.index') }}" class="sidebar-link {{ request()->routeIs('finance.expenses.index', 'finance.expenses.create', 'finance.expenses.show', 'finance.expenses.edit') ? 'active' : '' }}">
+                        <i class="fas fa-receipt"></i>
+                        <span>{{ __('Expenses') }}</span>
+                    </a>
+                    <a href="{{ route('finance.expenses.report') }}" class="sidebar-link {{ request()->routeIs('finance.expenses.report') ? 'active' : '' }}">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>{{ __('Expense Reports') }}</span>
                     </a>
                 </div>
             </div>
 
             {{-- Academy Accordion (includes Analytics) --}}
             <div class="sidebar-accordion" data-accordion="academy">
-                <button class="sidebar-accordion-header {{ request()->routeIs('admin.programs.*', 'admin.teams.*', 'admin.staff.*', 'admin.partners.*', 'admin.performance.*', 'admin.compliance.*') ? 'active' : '' }}" onclick="toggleAccordion('academy')">
+                <button class="sidebar-accordion-header {{ request()->routeIs('admin.programs.*', 'admin.teams.*', 'admin.staff.*', 'admin.partners.*', 'admin.performance.*', 'admin.compliance.*', 'admin.equipment.*') ? 'active' : '' }}" onclick="toggleAccordion('academy')">
                     <span><i class="fas fa-graduation-cap"></i> {{ __('Academy') }}</span>
                     <span class="sidebar-accordion-icon"></span>
                 </button>
@@ -671,6 +794,10 @@
                     <a href="{{ route('admin.partners.index') }}" class="sidebar-link {{ request()->routeIs('admin.partners.*') ? 'active' : '' }}">
                         <i class="fas fa-handshake"></i>
                         <span>{{ __('Partners') }}</span>
+                    </a>
+                    <a href="{{ route('manager.equipment.categories') }}" class="sidebar-link {{ request()->routeIs('manager.equipment.*') ? 'active' : '' }}">
+                        <i class="fas fa-boxes"></i>
+                        <span>{{ __('Equipment') }}</span>
                     </a>
                     <div class="nav-dropdown-divider" style="height:1px;background:#e8e8e8;margin:8px 12px;"></div>
                     <a href="{{ route('admin.performance.overview') }}" class="sidebar-link {{ request()->routeIs('admin.performance.overview') ? 'active' : '' }}">
@@ -729,17 +856,77 @@
                         <i class="fas fa-building"></i>
                         <span>{{ __('Organizations') }}</span>
                     </a>
+                    <a href="{{ route('super-admin.users.index') }}" class="sidebar-link {{ request()->routeIs('super-admin.users.*') ? 'active' : '' }}">
+                        <i class="fas fa-users"></i>
+                        <span>{{ __('Users') }}</span>
+                    </a>
+                    <a href="{{ route('super-admin.plans.index') }}" class="sidebar-link {{ request()->routeIs('super-admin.plans.*') ? 'active' : '' }}">
+                        <i class="fas fa-tags"></i>
+                        <span>{{ __('Plans') }}</span>
+                    </a>
                     <a href="{{ route('super-admin.roles.index') }}" class="sidebar-link {{ request()->routeIs('super-admin.roles.*') ? 'active' : '' }}">
                         <i class="fas fa-user-shield"></i>
                         <span>{{ __('Roles') }}</span>
+                    </a>
+                    <a href="{{ route('super-admin.attendance.index') }}" class="sidebar-link {{ request()->routeIs('super-admin.attendance.*') ? 'active' : '' }}">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>{{ __('Attendance') }}</span>
                     </a>
                     <a href="{{ route('organization.roles.index') }}" class="sidebar-link {{ request()->routeIs('organization.roles.*') ? 'active' : '' }}">
                         <i class="fas fa-users-cog"></i>
                         <span>{{ __('Org Roles') }}</span>
                     </a>
-                    <a href="{{ route('manager.equipment.categories') }}" class="sidebar-link {{ request()->routeIs('manager.equipment.*') ? 'active' : '' }}">
-                        <i class="fas fa-boxes"></i>
-                        <span>{{ __('Equipment') }}</span>
+                </div>
+            </div>
+            @endif
+
+            {{-- Website Management (Super Admin) Accordion --}}
+            @if(auth()->user()->hasRole('super-admin'))
+            <div class="sidebar-accordion" data-accordion="website">
+                <button class="sidebar-accordion-header {{ request()->routeIs('admin.page-content.*', 'admin.blog.*', 'admin.gallery.*', 'admin.website-players.*', 'admin.jobs.*', 'admin.staff.*', 'admin.programs.*', 'leaders.*') ? 'active' : '' }}" onclick="toggleAccordion('website')">
+                    <span><i class="fas fa-globe"></i> {{ __('Website') }}</span>
+                    <span class="sidebar-accordion-icon"></span>
+                </button>
+                <div class="sidebar-accordion-content">
+                    <a href="{{ route('admin.page-content.index') }}" class="sidebar-link {{ request()->routeIs('admin.page-content.index') ? 'active' : '' }}">
+                        <i class="fas fa-file-alt"></i>
+                        <span>{{ __('Page Content') }}</span>
+                    </a>
+                    <a href="{{ route('admin.page-content.show', ['page' => 'home']) }}" class="sidebar-link {{ request()->routeIs('admin.page-content.show') && request()->route('page') == 'home' ? 'active' : '' }}">
+                        <i class="fas fa-home"></i>
+                        <span>{{ __('Home Page') }}</span>
+                    </a>
+                    <a href="{{ route('admin.page-content.show', ['page' => 'about']) }}" class="sidebar-link {{ request()->routeIs('admin.page-content.show') && request()->route('page') == 'about' ? 'active' : '' }}">
+                        <i class="fas fa-info-circle"></i>
+                        <span>{{ __('About Us') }}</span>
+                    </a>
+                    <a href="{{ route('admin.programs.index') }}" class="sidebar-link {{ request()->routeIs('admin.programs.*') ? 'active' : '' }}">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>{{ __('Programs') }}</span>
+                    </a>
+                    <a href="{{ route('admin.staff.index') }}" class="sidebar-link {{ request()->routeIs('admin.staff.*') ? 'active' : '' }}">
+                        <i class="fas fa-user-tie"></i>
+                        <span>{{ __('Staff') }}</span>
+                    </a>
+                    <a href="{{ route('admin.website-players.index') }}" class="sidebar-link {{ request()->routeIs('admin.website-players.*') ? 'active' : '' }}">
+                        <i class="fas fa-futbol"></i>
+                        <span>{{ __('Website Players') }}</span>
+                    </a>
+                    <a href="{{ route('admin.gallery.index') }}" class="sidebar-link {{ request()->routeIs('admin.gallery.*') ? 'active' : '' }}">
+                        <i class="fas fa-images"></i>
+                        <span>{{ __('Gallery') }}</span>
+                    </a>
+                    <a href="{{ route('admin.blog.index') }}" class="sidebar-link {{ request()->routeIs('admin.blog.*') ? 'active' : '' }}">
+                        <i class="fas fa-newspaper"></i>
+                        <span>{{ __('Announcements') }}</span>
+                    </a>
+                    <a href="{{ route('admin.jobs.index') }}" class="sidebar-link {{ request()->routeIs('admin.jobs.*') ? 'active' : '' }}">
+                        <i class="fas fa-briefcase"></i>
+                        <span>{{ __('Careers') }}</span>
+                    </a>
+                    <a href="{{ route('leaders.index') }}" class="sidebar-link {{ request()->routeIs('leaders.*') ? 'active' : '' }}">
+                        <i class="fas fa-star"></i>
+                        <span>{{ __('Leaders') }}</span>
                     </a>
                 </div>
             </div>
@@ -837,12 +1024,43 @@
     }
 
     function toggleSidebar() {
-        document.getElementById('adminSidebar').classList.toggle('show');
+        const sidebar = document.getElementById('adminSidebar');
+        const toggleBtn = document.getElementById('mobileSidebarToggle');
+        const isExpanded = sidebar.classList.contains('show');
+
+        sidebar.classList.toggle('show');
+
+        if (toggleBtn) {
+            toggleBtn.setAttribute('aria-expanded', !isExpanded);
+        }
     }
 
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
         loadAccordionState();
+
+        // Mobile sidebar enhancements
+        const mobileSidebarToggle = document.getElementById('mobileSidebarToggle');
+        const adminSidebar = document.getElementById('adminSidebar');
+
+        if (mobileSidebarToggle && adminSidebar) {
+            // Close sidebar when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!adminSidebar.contains(e.target) && !mobileSidebarToggle.contains(e.target)) {
+                    adminSidebar.classList.remove('show');
+                    mobileSidebarToggle.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            // Close sidebar when pressing Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && adminSidebar.classList.contains('show')) {
+                    adminSidebar.classList.remove('show');
+                    mobileSidebarToggle.setAttribute('aria-expanded', 'false');
+                    mobileSidebarToggle.focus();
+                }
+            });
+        }
 
         // Auto-hide alerts
         const alerts = document.querySelectorAll('.alert-custom');

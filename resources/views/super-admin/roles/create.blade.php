@@ -97,7 +97,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="module" class="form-label">{{ __('Module') }}</label>
-                                <select class="form-select @error('module') is-invalid @endreire" id="module" name="module">
+                                <select class="form-select @error('module') is-invalid @enderror" id="module" name="module">
                                     <option value="">{{ __('Select Module') }}</option>
                                     <option value="coaching" {{ old('module') == 'coaching' ? 'selected' : '' }}>{{ __('Coaching') }}</option>
                                     <option value="finance" {{ old('module') == 'finance' ? 'selected' : '' }}>{{ __('Finance') }}</option>

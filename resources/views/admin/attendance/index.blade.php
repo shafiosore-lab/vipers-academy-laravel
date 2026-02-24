@@ -2,6 +2,22 @@
 
 @section('title', __('Attendance Management - Vipers Academy Admin'))
 
+@php
+// Determine route prefix based on the current URL path (not just user role)
+$currentPath = request()->path();
+if (str_starts_with($currentPath, 'super-admin')) {
+    $routePrefix = 'super-admin';
+} elseif (str_starts_with($currentPath, 'organization')) {
+    $routePrefix = 'organization';
+} else {
+    $routePrefix = 'admin';
+}
+$baseUrl = '/' . $routePrefix;
+
+// Check which routes are available for the current prefix
+$canCreate = in_array($routePrefix, ['admin', 'organization']);
+@endphp
+
 @section('content')
 <div class="container-fluid">
     <!-- Page Header -->
@@ -13,10 +29,12 @@
                     <p class="text-muted">{{ __('Track player attendance for training sessions and matches') }}</p>
                 </div>
                 <div class="d-flex gap-2">
-                    <a href="{{ route('admin.attendance.create') }}" class="btn btn-primary">
+                    @if($canCreate)
+                    <a href="{{ route($routePrefix . '.attendance.create') }}" class="btn btn-primary">
                         <i class="fas fa-plus me-2"></i>{{ __('Record Attendance') }}
                     </a>
-                    <a href="{{ route('admin.attendance.export.page') }}" class="btn btn-outline-secondary">
+                    @endif
+                    <a href="{{ route($routePrefix . '.attendance.export.page') }}" class="btn btn-outline-secondary">
                         <i class="fas fa-download me-2"></i>{{ __('Export CSV') }}
                     </a>
                 </div>
@@ -46,7 +64,7 @@
                                             Players: {{ $session->players_admitted }}
                                         </small>
                                     </p>
-                                    <a href="{{ route('admin.training-sessions.show', $session) }}" class="btn btn-sm btn-primary">
+                                    <a href="{{ route($routePrefix . '.training-sessions.show', $session) }}" class="btn btn-sm btn-primary">
                                         <i class="fas fa-eye me-1"></i>Manage Session
                                     </a>
                                 </div>
@@ -82,7 +100,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <form method="GET" action="{{ route('admin.attendance.index') }}" class="row g-3">
+                    <form method="GET" action="{{ route($routePrefix . '.attendance.index') }}" class="row g-3">
                         <div class="col-md-3">
                             <label for="date" class="form-label">{{ __('Session Date') }}</label>
                             <input type="date" class="form-control @error('date') is-invalid @enderror"
@@ -116,7 +134,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-search me-2"></i>{{ __('Filter') }}
                                 </button>
-                                <a href="{{ route('admin.attendance.index') }}" class="btn btn-outline-secondary">
+                                <a href="{{ route($routePrefix . '.attendance.index') }}" class="btn btn-outline-secondary">
                                     <i class="fas fa-times me-2"></i>{{ __('Clear') }}
                                 </a>
                             </div>
@@ -200,7 +218,7 @@
                             </td>
                             <td class="py-1 align-middle">
                                 @if($attendance->trained_minutes)
-                                    <span class="badge bg-info">{{ $attendance->trained_minutes }} min</span>
+                                    <span class="badge bg-info">{{ number_format($attendance->trained_minutes, 2) }} min</span>
                                 @elseif($attendance->session && $attendance->session->status == 'active')
                                     <span class="text-success fw-bold">
                                         <i class="fas fa-clock me-1"></i>In Progress
@@ -238,11 +256,11 @@
                             </td>
                             <td class="py-1 align-middle">
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a href="{{ route('admin.attendance.show', $attendance) }}" class="btn btn-sm btn-outline-primary py-0 px-1" title="{{ __('View Details') }}">
+                                    <a href="{{ route($routePrefix . '.attendance.show', $attendance) }}" class="btn btn-sm btn-outline-primary py-0 px-1" title="{{ __('View Details') }}">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     @if($attendance->session && $attendance->session->status == 'active' && !$attendance->check_in_time)
-                                        <form method="POST" action="{{ route('admin.training-sessions.admit-player', $attendance->session) }}" class="d-inline">
+                                        <form method="POST" action="{{ route($routePrefix . '.training-sessions.admit-player', $attendance->session) }}" class="d-inline">
                                             @csrf
                                             <input type="hidden" name="player_id" value="{{ $attendance->player_id }}">
                                             <button type="submit" class="btn btn-sm btn-success py-0 px-1" title="{{ __('Admit to Session') }}">
@@ -260,7 +278,7 @@
                                     <i class="fas fa-calendar-times fa-3x mb-3 opacity-50"></i>
                                     <h5>{{ __('No Attendance Records') }}</h5>
                                     <p>{{ __('Attendance records will appear here once players are admitted to training sessions.') }}</p>
-                                    <a href="{{ route('admin.training-sessions.create') }}" class="btn btn-primary">
+                                    <a href="{{ route($routePrefix . '.training-sessions.create') }}" class="btn btn-primary">
                                         <i class="fas fa-plus me-2"></i>{{ __('Create Training Session') }}
                                     </a>
                                 </div>
@@ -292,7 +310,7 @@ document.getElementById('session_id').addEventListener('change', function() {
         document.getElementById('quickAttendanceSection').style.display = 'block';
 
         // Fetch session details and players
-        fetch(`/admin/training-sessions/${sessionId}/players-for-attendance`)
+        fetch(`${baseUrl}/training-sessions/${sessionId}/players-for-attendance`)
             .then(response => response.json())
             .then(data => {
                 // Update session info
@@ -359,7 +377,7 @@ function renderPlayersList(players, sessionId, session) {
                         <small class="badge ${alreadyAdmitted ? 'bg-success' : 'bg-secondary'}">${statusText}</small>
 
                         ${!alreadyAdmitted ?
-                            `<form method="POST" action="/admin/training-sessions/${sessionId}/admit-player" class="mt-2">
+                            `<form method="POST" action="${baseUrl}/training-sessions/${sessionId}/admit-player" class="mt-2">
                                 @csrf
                                 <input type="hidden" name="player_id" value="${player.id}">
                                 <button type="submit" class="btn btn-success btn-sm w-100">

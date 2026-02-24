@@ -815,16 +815,45 @@
             @endif
 
             {{-- FINANCE OFFICER SECTION --}}
-            @if(auth()->user()->hasRole('finance-officer'))
+            @if(auth()->user()->hasAnyRole(['finance-officer', 'finance-admin']))
                 <div class="nav-section-title" role="heading" aria-level="2">{{ __('Finance') }}</div>
                 <a href="{{ route('finance.dashboard') }}" class="sidebar-nav-link {{ request()->routeIs('finance.dashboard') ? 'active' : '' }}">
                     <i class="fas fa-th-large" aria-hidden="true"></i><span>{{ __('Dashboard') }}</span>
                 </a>
-                <a href="{{ route('finance.payments') }}" class="sidebar-nav-link {{ request()->routeIs('finance.payments') ? 'active' : '' }}">
+
+                {{-- Payments Submenu --}}
+                <a href="{{ route('finance.payments') }}" class="sidebar-nav-link {{ request()->routeIs('finance.payments*') ? 'active' : '' }}">
                     <i class="fas fa-money-bill-wave" aria-hidden="true"></i><span>{{ __('Payments') }}</span>
                 </a>
+
+                {{-- Budget Planning Section --}}
+                <div class="nav-section-title" role="heading" aria-level="3" style="font-size: 10px; margin-top: 12px;">{{ __('Budget Planning') }}</div>
+                <a href="{{ route('finance.budgets.summary') }}" class="sidebar-nav-link {{ request()->routeIs('finance.budgets.summary') ? 'active' : '' }}">
+                    <i class="fas fa-chart-pie" aria-hidden="true"></i><span>{{ __('Budget Summary') }}</span>
+                </a>
+                <a href="{{ route('finance.budgets.index') }}" class="sidebar-nav-link {{ request()->routeIs('finance.budgets.index', 'finance.budgets.create', 'finance.budgets.show', 'finance.budgets.edit') ? 'active' : '' }}">
+                    <i class="fas fa-calculator" aria-hidden="true"></i><span>{{ __('Budget Plans') }}</span>
+                </a>
+                <a href="{{ route('finance.budgets.comparison') }}" class="sidebar-nav-link {{ request()->routeIs('finance.budgets.comparison') ? 'active' : '' }}">
+                    <i class="fas fa-balance-scale" aria-hidden="true"></i><span>{{ __('Budget vs Actual') }}</span>
+                </a>
+
+                {{-- Expenses Section --}}
+                <div class="nav-section-title" role="heading" aria-level="3" style="font-size: 10px; margin-top: 12px;">{{ __('Expenses') }}</div>
+                <a href="{{ route('finance.expenses.index') }}" class="sidebar-nav-link {{ request()->routeIs('finance.expenses.index', 'finance.expenses.create', 'finance.expenses.show', 'finance.expenses.edit') ? 'active' : '' }}">
+                    <i class="fas fa-receipt" aria-hidden="true"></i><span>{{ __('All Expenses') }}</span>
+                </a>
+                <a href="{{ route('finance.expenses.report') }}" class="sidebar-nav-link {{ request()->routeIs('finance.expenses.report') ? 'active' : '' }}">
+                    <i class="fas fa-chart-bar" aria-hidden="true"></i><span>{{ __('Expense Reports') }}</span>
+                </a>
+
+                {{-- Reports --}}
+                <div class="nav-section-title" role="heading" aria-level="3" style="font-size: 10px; margin-top: 12px;">{{ __('Reports') }}</div>
                 <a href="{{ route('finance.reports') }}" class="sidebar-nav-link {{ request()->routeIs('finance.reports') ? 'active' : '' }}">
-                    <i class="fas fa-chart-bar" aria-hidden="true"></i><span>{{ __('Reports') }}</span>
+                    <i class="fas fa-file-invoice-dollar" aria-hidden="true"></i><span>{{ __('Revenue Reports') }}</span>
+                </a>
+                <a href="{{ route('finance.analytics') }}" class="sidebar-nav-link {{ request()->routeIs('finance.analytics') ? 'active' : '' }}">
+                    <i class="fas fa-analytics" aria-hidden="true"></i><span>{{ __('Analytics') }}</span>
                 </a>
             @endif
 
@@ -953,7 +982,14 @@
                 <a href="{{ route('admin.settings.company') }}" class="sidebar-nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
                     <i class="fas fa-cog" aria-hidden="true"></i><span>{{ __('Settings') }}</span>
                 </a>
-                @elseif(auth()->user()->hasAnyRole(['super-admin', 'operations-admin', 'admin']))
+                @elseif(auth()->user()->hasAnyRole(['super-admin']))
+                <a href="{{ route('super-admin.dashboard') }}" class="sidebar-nav-link {{ request()->routeIs('super-admin.dashboard') ? 'active' : '' }}">
+                    <i class="fas fa-th-large" aria-hidden="true"></i><span>{{ __('Super Admin') }}</span>
+                </a>
+                <a href="{{ route('admin.dashboard') }}" class="sidebar-nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                    <i class="fas fa-tachometer-alt" aria-hidden="true"></i><span>{{ __('Admin Dashboard') }}</span>
+                </a>
+                @elseif(auth()->user()->hasAnyRole(['operations-admin', 'admin']))
                 <a href="{{ route('admin.dashboard') }}" class="sidebar-nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                     <i class="fas fa-th-large" aria-hidden="true"></i><span>{{ __('Dashboard') }}</span>
                 </a>
@@ -973,6 +1009,49 @@
                     <i class="fas fa-handshake" aria-hidden="true"></i><span>{{ __('Partners') }}</span>
                 </a>
                 @endif
+            @endif
+
+            {{-- SUPER ADMIN SYSTEM SECTION - Visible to super-admin and team-manager --}}
+            @if(auth()->user()->hasAnyRole(['super-admin', 'team-manager']))
+                <div class="nav-section-title" role="heading" aria-level="2">{{ __('System') }}</div>
+                <a href="{{ route('super-admin.organizations.index') }}" class="sidebar-nav-link {{ request()->routeIs('super-admin.organizations.*') ? 'active' : '' }}">
+                    <i class="fas fa-building" aria-hidden="true"></i><span>{{ __('Organizations') }}</span>
+                </a>
+                <a href="{{ route('super-admin.users.index') }}" class="sidebar-nav-link {{ request()->routeIs('super-admin.users.*') ? 'active' : '' }}">
+                    <i class="fas fa-users" aria-hidden="true"></i><span>{{ __('Users') }}</span>
+                </a>
+                <a href="{{ route('super-admin.plans.index') }}" class="sidebar-nav-link {{ request()->routeIs('super-admin.plans.*') ? 'active' : '' }}">
+                    <i class="fas fa-tags" aria-hidden="true"></i><span>{{ __('Plans') }}</span>
+                </a>
+                <a href="{{ route('super-admin.roles.index') }}" class="sidebar-nav-link {{ request()->routeIs('super-admin.roles.*') ? 'active' : '' }}">
+                    <i class="fas fa-user-shield" aria-hidden="true"></i><span>{{ __('Roles') }}</span>
+                </a>
+                <a href="{{ route('super-admin.attendance.index') }}" class="sidebar-nav-link {{ request()->routeIs('super-admin.attendance.*') ? 'active' : '' }}">
+                    <i class="fas fa-calendar-check" aria-hidden="true"></i><span>{{ __('Attendance') }}</span>
+                </a>
+                <a href="{{ route('organization.roles.index') }}" class="sidebar-nav-link {{ request()->routeIs('organization.roles.*') ? 'active' : '' }}">
+                    <i class="fas fa-users-cog" aria-hidden="true"></i><span>{{ __('Org Roles') }}</span>
+                </a>
+                <a href="{{ route('manager.equipment.categories') }}" class="sidebar-nav-link {{ request()->routeIs('manager.equipment.*') ? 'active' : '' }}">
+                    <i class="fas fa-boxes" aria-hidden="true"></i><span>{{ __('Equipment') }}</span>
+                </a>
+
+                <div class="nav-section-title" role="heading" aria-level="2">{{ __('Website') }}</div>
+                <a href="{{ route('admin.blog.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.blog.*') ? 'active' : '' }}">
+                    <i class="fas fa-newspaper" aria-hidden="true"></i><span>{{ __('Announcements') }}</span>
+                </a>
+                <a href="{{ route('admin.gallery.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.gallery.*') ? 'active' : '' }}">
+                    <i class="fas fa-images" aria-hidden="true"></i><span>{{ __('Gallery') }}</span>
+                </a>
+                <a href="{{ route('admin.website-players.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.website-players.*') ? 'active' : '' }}">
+                    <i class="fas fa-users" aria-hidden="true"></i><span>{{ __('Player Gallery') }}</span>
+                </a>
+                <a href="{{ route('admin.jobs.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.jobs.*') ? 'active' : '' }}">
+                    <i class="fas fa-briefcase" aria-hidden="true"></i><span>{{ __('Careers') }}</span>
+                </a>
+                <a href="{{ route('admin.documents.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.documents.*') ? 'active' : '' }}">
+                    <i class="fas fa-file-alt" aria-hidden="true"></i><span>{{ __('Documents') }}</span>
+                </a>
             @endif
 
             {{-- QUICK LINKS - VISIBLE TO ALL --}}

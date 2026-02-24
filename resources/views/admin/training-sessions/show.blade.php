@@ -56,50 +56,82 @@
 
                 <div class="card-body">
                     <div class="row">
-                        <!-- Session Stats -->
+                        <!-- Session Stats - Compact Design -->
                         <div class="col-lg-8">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="card border-primary text-center h-100">
-                                        <div class="card-body">
-                                            <i class="fas fa-users fa-2x text-primary mb-2"></i>
-                                            <h4 class="mb-0">{{ $trainingSession->players_admitted }}</h4>
-                                            <small class="text-muted">Players Admitted</small>
+                            <div class="row g-2">
+                                <div class="col-6 col-md-3">
+                                    <div class="card border-0 shadow-sm h-100">
+                                        <div class="card-body p-2">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0">
+                                                    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);">
+                                                        <i class="fas fa-users text-white small"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1 ms-2">
+                                                    <div class="fs-5 fw-bold text-dark">{{ $trainingSession->players_admitted }}</div>
+                                                    <div class="text-muted small">Players Admitted</div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="card border-warning text-center h-100">
-                                        <div class="card-body">
-                                            <i class="fas fa-clock fa-2x text-warning mb-2"></i>
-                                            <h4 class="mb-0">{{ $trainingSession->late_arrivals }}</h4>
-                                            <small class="text-muted">Late Arrivals</small>
+                                <div class="col-6 col-md-3">
+                                    <div class="card border-0 shadow-sm h-100">
+                                        <div class="card-body p-2">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0">
+                                                    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);">
+                                                        <i class="fas fa-clock text-white small"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1 ms-2">
+                                                    <div class="fs-5 fw-bold text-dark">{{ $trainingSession->late_arrivals }}</div>
+                                                    <div class="text-muted small">Late Arrivals</div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="card border-info text-center h-100">
-                                        <div class="card-body">
-                                            <i class="fas fa-percentage fa-2x text-info mb-2"></i>
-                                            <h4 class="mb-0">{{ $trainingSession->punctuality_rate }}%</h4>
-                                            <small class="text-muted">Punctuality Rate</small>
+                                <div class="col-6 col-md-3">
+                                    <div class="card border-0 shadow-sm h-100">
+                                        <div class="card-body p-2">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0">
+                                                    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
+                                                        <i class="fas fa-percentage text-white small"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1 ms-2">
+                                                    <div class="fs-5 fw-bold text-dark">{{ $trainingSession->punctuality_rate }}%</div>
+                                                    <div class="text-muted small">Punctuality Rate</div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="card border-success text-center h-100">
-                                        <div class="card-body">
-                                            <i class="fas fa-stopwatch fa-2x text-success mb-2"></i>
-                                            <h4 class="mb-0" id="elapsedTime">
-                                                @if($trainingSession->status == 'active')
-                                                    {{ $trainingSession->formatted_elapsed_time }}
-                                                @elseif($trainingSession->status == 'ended')
-                                                    {{ $trainingSession->total_duration_minutes }}m
-                                                @else
-                                                    -
-                                                @endif
-                                            </h4>
-                                            <small class="text-muted">Duration</small>
+                                <div class="col-6 col-md-3">
+                                    <div class="card border-0 shadow-sm h-100">
+                                        <div class="card-body p-2">
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0">
+                                                    <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);">
+                                                        <i class="fas fa-stopwatch text-white small"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-grow-1 ms-2">
+                                                    <div class="fs-5 fw-bold text-dark" id="elapsedTime">
+                                                        @if($trainingSession->status == 'active')
+                                                            {{ $trainingSession->formatted_elapsed_time ?? '-' }}
+                                                        @elseif($trainingSession->status == 'ended')
+                                                            {{ $trainingSession->formatted_duration }}
+                                                        @else
+                                                            -
+                                                        @endif
+                                                    </div>
+                                                    <div class="text-muted small">Duration</div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -257,7 +289,7 @@
                                                 </td>
                                                 <td>
                                                     @if($trainingSession->status == 'ended')
-                                                        {{ $attendance->trained_minutes }} minutes
+                                                        {{ number_format($attendance->trained_minutes, 2) }} minutes
                                                     @else
                                                         <span class="text-muted">-</span>
                                                     @endif

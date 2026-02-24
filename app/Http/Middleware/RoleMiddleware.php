@@ -32,8 +32,15 @@ class RoleMiddleware
             'approval_status' => $user->approval_status,
             'status' => $user->status,
             'is_approved' => $user->isApproved(),
+            'is_super_admin' => $user->isSuperAdmin(),
             'roles' => $user->roles->pluck('slug', 'name')->toArray(),
         ]);
+
+        // Allow superadmins to bypass role checks - they have full access
+        if ($user->isSuperAdmin()) {
+            \Log::info('RoleMiddleware: Superadmin user bypassed role check', ['user_id' => $user->id]);
+            return $next($request);
+        }
 
         // Check if user is approved
         if (!$user->isApproved()) {

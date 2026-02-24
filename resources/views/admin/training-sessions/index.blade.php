@@ -100,7 +100,7 @@
                                     </td>
                                     <td class="py-1 align-middle small">
                                         @if($session->status == 'ended')
-                                            {{ $session->total_duration_minutes }} min
+                                            {{ $session->formatted_duration ?? '-' }}
                                         @elseif($session->status == 'active')
                                             <span class="text-success">{{ $session->formatted_elapsed_time }}</span>
                                         @else

@@ -4,56 +4,88 @@
 <div class="container-fluid px-2">
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="h5 mb-0">Manage Players</h1>
+        <h1 class="h4 mb-0 fw-bold">Manage Players</h1>
         <div>
             <a href="{{ route('admin.players.create') }}" class="btn btn-sm btn-primary me-1">
-                <i class="fas fa-plus me-1"></i>Add
+                <i class="fas fa-plus me-1"></i>Add Player
             </a>
             <form action="{{ route('admin.players.check.expired') }}" method="POST" class="d-inline">
                 @csrf
-                <button type="submit" class="btn btn-sm btn-warning">
+                <button type="submit" class="btn btn-sm btn-warning" title="Check Expired Approvals">
                     <i class="fas fa-clock"></i>
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- Compact Stats Row -->
-    <div class="compact-stats-row mb-3">
-        <div class="compact-stat-card">
-            <div class="compact-stat-icon" style="background: linear-gradient(135deg, #ea1c4d 0%, #c31432 100%);">
-                <i class="fas fa-users text-white"></i>
-            </div>
-            <div class="compact-stat-content">
-                <div class="compact-stat-value">{{ $players->count() }}</div>
-                <div class="compact-stat-label">Total Players</div>
-            </div>
-        </div>
-        <div class="compact-stat-card">
-            <div class="compact-stat-icon" style="background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);">
-                <i class="fas fa-check-circle text-white"></i>
-            </div>
-            <div class="compact-stat-content">
-                <div class="compact-stat-value">{{ $players->filter(function($player) { return $player->isApproved(); })->count() }}</div>
-                <div class="compact-stat-label">Approved</div>
-            </div>
-        </div>
-        <div class="compact-stat-card">
-            <div class="compact-stat-icon" style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);">
-                <i class="fas fa-clock text-white"></i>
-            </div>
-            <div class="compact-stat-content">
-                <div class="compact-stat-value">{{ $players->where('registration_status', 'Pending')->count() }}</div>
-                <div class="compact-stat-label">Pending</div>
+    <!-- Stats Cards Row -->
+    <div class="row g-2 mb-3">
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background: linear-gradient(135deg, #ea1c4d 0%, #c31432 100%);">
+                                <i class="fas fa-users text-white"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <div class="fs-4 fw-bold text-dark">{{ $players->count() }}</div>
+                            <div class="text-muted small">Total Players</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="compact-stat-card">
-            <div class="compact-stat-icon" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
-                <i class="fas fa-hourglass-half text-white"></i>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);">
+                                <i class="fas fa-check-circle text-white"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <div class="fs-4 fw-bold text-dark">{{ $players->filter(function($player) { return $player->isApproved(); })->count() }}</div>
+                            <div class="text-muted small">Approved</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="compact-stat-content">
-                <div class="compact-stat-value">{{ $players->where('approval_type', 'temporary')->count() }}</div>
-                <div class="compact-stat-label">Temporary</div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);">
+                                <i class="fas fa-clock text-white"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <div class="fs-4 fw-bold text-dark">{{ $players->where('registration_status', 'Pending')->count() }}</div>
+                            <div class="text-muted small">Pending</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
+                                <i class="fas fa-hourglass-half text-white"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <div class="fs-4 fw-bold text-dark">{{ $players->where('approval_type', 'temporary')->count() }}</div>
+                            <div class="text-muted small">Temporary</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -82,10 +114,10 @@
                         <tr class="py-1">
                             <td class="py-1 align-middle">
                                 <div class="d-flex align-items-center">
-                                    @if($player->photo)
-                                        <img class="rounded-circle mr-2" width="28" height="28" src="{{ asset('storage/' . $player->photo) }}" alt="Photo">
+                                    @if($player->image_path)
+                                        <img class="rounded-circle me-2" width="28" height="28" src="{{ asset('assets/img/players/' . $player->image_path) }}" alt="Photo">
                                     @else
-                                        <div class="bg-secondary rounded-circle mr-2 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;">
+                                        <div class="bg-secondary rounded-circle me-2 d-flex align-items-center justify-content-center" style="width: 28px; height: 28px;">
                                             <i class="fas fa-user text-white small"></i>
                                         </div>
                                     @endif
@@ -108,14 +140,14 @@
                                 @endif
                             </td>
                             <td class="py-1 align-middle">
-                                @if($player->hasTemporaryApproval())
+                                @if($player->isTemporarilyApproved())
                                     <span class="badge bg-info-subtle text-info" style="font-size: 10px;">Temp</span>
                                     @if($player->isTemporaryApprovalExpired())
                                         <small class="text-danger d-block">{{ $player->getTemporaryApprovalDaysRemaining() }}d left</small>
                                     @else
                                         <small class="text-muted d-block">{{ $player->getTemporaryApprovalDaysRemaining() }}d left</small>
                                     @endif
-                                @elseif($player->hasFullApproval())
+                                @elseif($player->isFullyApproved())
                                     <span class="badge bg-success-subtle text-success" style="font-size: 10px;">Full</span>
                                 @else
                                     <span class="badge bg-secondary-subtle text-secondary" style="font-size: 10px;">None</span>
@@ -123,15 +155,12 @@
                             </td>
                             <td class="py-1 align-middle">
                                 @php
-                                    $requiredDocs = ['guardian_consent_form', 'participation_agreement', 'data_consent_form', 'birth_certificate', 'medical_certificate', 'guardian_id_document', 'player_id_document'];
-                                    $completedDocs = 0;
-                                    foreach($requiredDocs as $doc) {
-                                        if($player->$doc) $completedDocs++;
-                                    }
+                                    $completedDocs = $player->documents_completed ?? 0;
+                                    $totalDocs = 7;
                                 @endphp
                                 <div class="progress" style="height: 12px; width: 60px;">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ ($completedDocs / count($requiredDocs)) * 100 }}%" aria-valuenow="{{ $completedDocs }}" aria-valuemin="0" aria-valuemax="{{ count($requiredDocs) }}">
-                                        {{ $completedDocs }}/{{ count($requiredDocs) }}
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ ($completedDocs / $totalDocs) * 100 }}%" aria-valuenow="{{ $completedDocs }}" aria-valuemin="0" aria-valuemax="{{ $totalDocs }}">
+                                        {{ $completedDocs }}/{{ $totalDocs }}
                                     </div>
                                 </div>
                             </td>
@@ -149,13 +178,13 @@
                                             <form action="{{ route('admin.players.approve', $player) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('PUT')
-                                                <button type="submit" class="btn btn-sm btn-success py-0 px-1" title="Full Approval" onclick="return confirm('Grant full approval to {{ $player->name }}?')">
+                                                <button type="submit" class="btn btn-sm btn-success py-0 px-1" title="Full Approval" onclick="return confirm('Grant full approval to {{ $player->full_name }}?')">
                                                     <i class="fas fa-check"></i>
                                                 </button>
                                             </form>
 
                                             <!-- Temporary Approval -->
-                                            <button type="button" class="btn btn-sm btn-primary py-0 px-1" title="Temporary Approval" onclick="confirmTempApproval('{{ $player->name }}', {{ $player->id }})">
+                                            <button type="button" class="btn btn-sm btn-primary py-0 px-1" title="Temporary Approval" onclick="confirmTempApproval('{{ $player->full_name }}', {{ $player->id }})">
                                                 <i class="fas fa-clock"></i>
                                             </button>
 
@@ -163,17 +192,17 @@
                                             <form action="{{ route('admin.players.reject', $player) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('PUT')
-                                                <button type="submit" class="btn btn-sm btn-danger py-0 px-1" title="Reject" onclick="return confirm('Reject {{ $player->name }}?')">
+                                                <button type="submit" class="btn btn-sm btn-danger py-0 px-1" title="Reject" onclick="return confirm('Reject {{ $player->full_name }}?')">
                                                     <i class="fas fa-times"></i>
                                                 </button>
                                             </form>
-                                        @elseif($player->hasTemporaryApproval() && !$player->isTemporaryApprovalExpired())
+                                        @elseif($player->isTemporarilyApproved() && !$player->isTemporaryApprovalExpired())
                                             <span class="badge bg-info-subtle text-info" style="font-size: 10px;">Temp</span>
                                         @elseif($player->isTemporaryApprovalExpired())
                                             <form action="{{ route('admin.players.reject', $player) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('PUT')
-                                                <button type="submit" class="btn btn-sm btn-warning py-0 px-1" title="Revoke Expired Approval" onclick="return confirm('Revoke expired temporary approval for {{ $player->name }}?')">
+                                                <button type="submit" class="btn btn-sm btn-warning py-0 px-1" title="Revoke Expired Approval" onclick="return confirm('Revoke expired temporary approval for {{ $player->full_name }}?')">
                                                     <i class="fas fa-exclamation-triangle"></i>
                                                 </button>
                                             </form>
@@ -182,7 +211,7 @@
                                         <form action="{{ route('admin.players.destroy', $player) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger py-0 px-1" title="Delete" onclick="return confirm('Delete {{ $player->name }}?')">
+                                            <button type="submit" class="btn btn-sm btn-danger py-0 px-1" title="Delete" onclick="return confirm('Delete {{ $player->full_name }}?')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
@@ -194,7 +223,6 @@
                             <!-- Temporary Approval Form (Inline) -->
                             <form action="{{ route('admin.players.approve.temporary', $player) }}" method="POST" class="d-inline" id="tempForm{{ $player->id }}">
                                 @csrf
-                                @method('PUT')
                                 <input type="hidden" name="notes" value="Temporary approval granted for 5 working days to allow document submission.">
                             </form>
                         @endif

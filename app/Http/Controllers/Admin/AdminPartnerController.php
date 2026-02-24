@@ -60,6 +60,13 @@ class AdminPartnerController extends Controller
             'additional_requirements' => 'nullable|string',
             'role_id' => 'nullable|exists:roles,id',
             'send_credentials' => 'nullable|boolean',
+            // Website display fields
+            'company_description' => 'nullable|string',
+            'company_website' => 'nullable|url',
+            'industry' => 'nullable|string|max:255',
+            'company_size' => 'nullable|integer|min:1',
+            'sponsorship_level' => 'nullable|in:Platinum,Gold,Silver,Bronze',
+            'annual_contribution' => 'nullable|integer|min:0',
         ]);
 
         $notificationService = new NewUserNotificationService();
@@ -78,6 +85,13 @@ class AdminPartnerController extends Controller
             'expected_users' => $request->expected_users,
             'additional_requirements' => $request->additional_requirements,
             'registration_date' => now(),
+            // Website display fields
+            'company_description' => $request->company_description,
+            'company_website' => $request->company_website,
+            'industry' => $request->industry,
+            'company_size' => $request->company_size,
+            'sponsorship_level' => $request->sponsorship_level,
+            'annual_contribution' => $request->annual_contribution,
         ];
 
         DB::transaction(function () use ($request, $temporaryPassword, $notificationService) {
@@ -142,6 +156,13 @@ class AdminPartnerController extends Controller
             'expected_users' => 'required|integer|min:1|max:10000',
             'additional_requirements' => 'nullable|string',
             'status' => 'required|in:active,pending,rejected',
+            // Website display fields
+            'company_description' => 'nullable|string',
+            'company_website' => 'nullable|url',
+            'industry' => 'nullable|string|max:255',
+            'company_size' => 'nullable|integer|min:1',
+            'sponsorship_level' => 'nullable|in:Platinum,Gold,Silver,Bronze',
+            'annual_contribution' => 'nullable|integer|min:0',
         ]);
 
         $partnerDetails = [
@@ -157,6 +178,13 @@ class AdminPartnerController extends Controller
             'expected_users' => $request->expected_users,
             'additional_requirements' => $request->additional_requirements,
             'registration_date' => $partner->partner_details['registration_date'] ?? now(),
+            // Website display fields
+            'company_description' => $request->company_description,
+            'company_website' => $request->company_website,
+            'industry' => $request->industry,
+            'company_size' => $request->company_size,
+            'sponsorship_level' => $request->sponsorship_level,
+            'annual_contribution' => $request->annual_contribution,
         ];
 
         $partner->update([

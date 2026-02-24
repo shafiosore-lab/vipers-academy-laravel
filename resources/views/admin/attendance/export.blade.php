@@ -2,6 +2,18 @@
 
 @section('title', __('Export Attendance - Vipers Academy Admin'))
 
+@php
+// Determine route prefix based on the current URL path (not just user role)
+$currentPath = request()->path();
+if (str_starts_with($currentPath, 'super-admin')) {
+    $routePrefix = 'super-admin';
+} elseif (str_starts_with($currentPath, 'organization')) {
+    $routePrefix = 'organization';
+} else {
+    $routePrefix = 'admin';
+}
+@endphp
+
 @section('content')
 <div class="container-fluid">
     <!-- Page Header -->
@@ -12,7 +24,7 @@
                     <h1 class="h3 mb-0">{{ __('Export Attendance Data') }}</h1>
                     <p class="text-muted">{{ __('Download attendance records in CSV format') }}</p>
                 </div>
-                <a href="{{ route('admin.attendance.index') }}" class="btn btn-outline-secondary">
+                <a href="{{ route($routePrefix . '.attendance.index') }}" class="btn btn-outline-secondary">
                     <i class="fas fa-arrow-left me-2"></i>{{ __('Back to Attendance') }}
                 </a>
             </div>
@@ -27,7 +39,7 @@
                     <h5 class="mb-0"><i class="fas fa-file-export me-2 text-primary"></i>{{ __('Export Configuration') }}</h5>
                 </div>
                 <div class="card-body">
-                    <form method="GET" action="{{ route('admin.attendance.export') }}" target="_blank">
+                    <form method="GET" action="{{ route($routePrefix . '.attendance.export.download') }}" target="_blank">
                         <!-- Date Range -->
                         <div class="row mb-4">
                             <div class="col-12">
@@ -134,7 +146,7 @@
 
                         <!-- Submit Buttons -->
                         <div class="d-flex justify-content-end gap-2">
-                            <a href="{{ route('admin.attendance.index') }}" class="btn btn-outline-secondary">
+                            <a href="{{ route($routePrefix . '.attendance.index') }}" class="btn btn-outline-secondary">
                                 <i class="fas fa-times me-2"></i>{{ __('Cancel') }}
                             </a>
                             <button type="submit" class="btn btn-success">

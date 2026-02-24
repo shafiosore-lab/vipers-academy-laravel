@@ -28,7 +28,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        $user = Auth::user();
+        // Eager load roles to prevent N+1 queries during login
+        $user = Auth::user()->load('roles');
 
         // Log login success for debugging
         \Log::info('User logged in successfully', [

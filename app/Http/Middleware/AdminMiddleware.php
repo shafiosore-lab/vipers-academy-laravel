@@ -31,14 +31,22 @@ class AdminMiddleware
             'approval_status' => $user->approval_status,
             'status' => $user->status,
             'is_admin' => $user->isAdmin(),
+            'is_super_admin' => $user->isSuperAdmin(),
             'is_active' => $user->isActive(),
             'is_approved' => $user->isApproved(),
             'roles' => $user->roles->pluck('slug', 'name')->toArray(),
         ]);
 
+        // Allow superadmins to bypass admin role checks - they have full access
+        if ($user->isSuperAdmin()) {
+            \Log::info('AdminMiddleware: Superadmin user bypassed admin role check', ['user_id' => $user->id]);
+            return $next($request);
+        }
+
         // Check if user has any admin role or is staff with appropriate permissions
-        // Use SLUGS to match the role middleware expectations
-        $adminRoles = ['super-admin', 'marketing-admin', 'scouting-admin', 'operations-admin', 'admin-operations', 'partner-operations', 'coaching-admin', 'finance-admin', 'org-admin'];
+        // Note: super-admin is handled separately by CheckSuperAdmin middleware
+        // This middleware focuses on staff/admin roles within organizations
+        $adminRoles = ['marketing-admin', 'scouting-admin', 'operations-admin', 'admin-operations', 'partner-operations', 'coaching-admin', 'finance-admin', 'org-admin'];
         $staffRoles = ['coach', 'assistant-coach', 'head-coach']; // Staff roles that should have basic admin access
 
         $userRoles = $user->roles->pluck('slug')->toArray();

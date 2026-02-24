@@ -15,10 +15,16 @@
             <div class="col-lg-9">
                 <div class="hero-content text-white" data-aos="fade-right">
                     <h1 class="hero-title fw-bold mb-3">
-                        Transforming Lives Through <span class="text-warning">Football & Education</span>
+                        @php
+                            $heroTitle = isset($pageContent['hero']) ? $pageContent['hero']->firstWhere('key', 'hero_title') : null;
+                        @endphp
+                        {{ $heroTitle?->value ?: 'Transforming Lives Through Football & Education' }}
                     </h1>
                     <p class="hero-subtitle mb-4">
-                        Founded in 2016, Mumias Vipers Academy is a community-based youth development organization using football to nurture talent, discipline, and education — with over 20 players currently on high school sports scholarships, accessing quality education that was once out of reach.
+                        @php
+                            $heroSubtitle = isset($pageContent['hero']) ? $pageContent['hero']->firstWhere('key', 'hero_subtitle') : null;
+                        @endphp
+                        {{ $heroSubtitle?->value ?: 'Founded in 2016, Mumias Vipers Academy is a community-based youth development organization using football to nurture talent, discipline, and education — with over 20 players currently on high school sports scholarships, accessing quality education that was once out of reach.' }}
                     </p>
                     <div class="hero-buttons d-flex flex-column flex-sm-row gap-3">
                         <a href="{{ route('programs') }}" class="btn btn-warning btn-lg px-4 py-3 fw-semibold shadow">
@@ -271,6 +277,189 @@
     </div>
 </section>
 
+<!-- Partners Section -->
+@if(isset($partners) && $partners->count() > 0)
+<section class="partners-section py-5 bg-white">
+    <div class="container">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h2 class="section-title fw-bold mb-2">
+                Our <span class="text-success">Partners</span> & Collaborators
+            </h2>
+            <p class="section-subtitle text-muted">Proud to work with leading organizations committed to youth development</p>
+        </div>
+
+        <!-- Main Featured Partners -->
+        <div class="row g-4 mb-5">
+            @php
+                $platinumPartners = $partners->filter(function($p) {
+                    $details = is_array($p->partner_details) ? $p->partner_details : json_decode($p->partner_details, true);
+                    return isset($details['sponsorship_level']) && $details['sponsorship_level'] === 'Platinum';
+                });
+                $goldPartners = $partners->filter(function($p) {
+                    $details = is_array($p->partner_details) ? $p->partner_details : json_decode($p->partner_details, true);
+                    return isset($details['sponsorship_level']) && $details['sponsorship_level'] === 'Gold';
+                });
+                $otherPartners = $partners->filter(function($p) {
+                    $details = is_array($p->partner_details) ? $p->partner_details : json_decode($p->partner_details, true);
+                    return !isset($details['sponsorship_level']) || !in_array($details['sponsorship_level'], ['Platinum', 'Gold']);
+                });
+            @endphp
+
+            @if($platinumPartners->count() > 0)
+            <div class="col-12 mb-4">
+                <div class="text-center mb-3">
+                    <span class="badge bg-warning text-dark px-3 py-2">
+                        <i class="fas fa-crown me-1"></i> Platinum Partners
+                    </span>
+                </div>
+                <div class="row g-4 justify-content-center">
+                    @foreach($platinumPartners as $partner)
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="partner-card-platinum card border-0 shadow-lg h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-start mb-3">
+                                    <div class="partner-logo-container-platinum me-3">
+                                        <div class="partner-logo-platinum">
+                                            {{ strtoupper(substr($partner->name, 0, 2)) }}
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h5 class="card-title fw-bold mb-1">{{ $partner->name }}</h5>
+                                        <span class="badge bg-warning bg-opacity-25 text-warning mb-2">
+                                            <i class="fas fa-crown me-1"></i> Platinum
+                                        </span>
+                                    </div>
+                                </div>
+                                <p class="card-text text-muted small mb-3">{{ Str::limit($partner->company_description, 120) }}</p>
+                                @if($partner->company_website)
+                                <a href="{{ $partner->company_website }}" target="_blank" class="btn btn-sm btn-outline-warning">
+                                    <i class="fas fa-external-link-alt me-1"></i> Visit Website
+                                </a>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
+            @if($goldPartners->count() > 0)
+            <div class="col-12 mb-4">
+                <div class="text-center mb-3">
+                    <span class="badge bg-success bg-opacity-25 text-success px-3 py-2">
+                        <i class="fas fa-medal me-1"></i> Gold Partners
+                    </span>
+                </div>
+                <div class="row g-3 justify-content-center">
+                    @foreach($goldPartners as $partner)
+                    <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="150">
+                        <div class="partner-card-gold card border-0 shadow-sm h-100">
+                            <div class="card-body p-3 text-center">
+                                <div class="partner-logo-container-gold mx-auto mb-2">
+                                    <div class="partner-logo-gold">
+                                        {{ strtoupper(substr($partner->name, 0, 2)) }}
+                                    </div>
+                                </div>
+                                <h6 class="card-title fw-bold mb-1 small">{{ $partner->name }}</h6>
+                                <small class="text-muted d-block mb-2">{{ $partner->industry ?? 'Partner' }}</small>
+                                @if($partner->company_website)
+                                <a href="{{ $partner->company_website }}" target="_blank" class="btn btn-sm btn-outline-success">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
+            @if($otherPartners->count() > 0)
+            <div class="col-12">
+                <div class="text-center mb-3">
+                    <span class="badge bg-primary bg-opacity-25 text-primary px-3 py-2">
+                        <i class="fas fa-handshake me-1"></i> Our Partners
+                    </span>
+                </div>
+                <div class="row g-3 justify-content-center">
+                    @foreach($otherPartners as $partner)
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-6" data-aos="fade-up" data-aos-delay="200">
+                        <div class="partner-card-silver card border-0 shadow-sm h-100">
+                            <div class="card-body p-3 text-center">
+                                <div class="partner-logo-container-silver mx-auto mb-2">
+                                    <div class="partner-logo-silver">
+                                        {{ strtoupper(substr($partner->name, 0, 2)) }}
+                                    </div>
+                                </div>
+                                <h6 class="card-title fw-bold mb-1 small">{{ Str::limit($partner->name, 20) }}</h6>
+                                <small class="text-muted">{{ $partner->industry ?? 'Partner' }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+        </div>
+
+        <!-- Partner Stats -->
+        <div class="row g-4 mt-2">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="stats-card card border-0 bg-success bg-opacity-10 h-100">
+                    <div class="card-body text-center py-4">
+                        <div class="stats-icon mb-3">
+                            <i class="fas fa-building fa-2x text-success"></i>
+                        </div>
+                        <h3 class="fw-bold text-success mb-1">{{ $partners->count() }}+</h3>
+                        <p class="mb-0 text-muted">Partner Organizations</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="stats-card card border-0 bg-warning bg-opacity-10 h-100">
+                    <div class="card-body text-center py-4">
+                        <div class="stats-icon mb-3">
+                            <i class="fas fa-hand-holding-heart fa-2x text-warning"></i>
+                        </div>
+                        <h3 class="fw-bold text-warning mb-1">KSh {{ number_format($partners->sum(function($p) {
+                            $details = is_array($p->partner_details) ? $p->partner_details : json_decode($p->partner_details, true);
+                            return $details['annual_contribution'] ?? 0;
+                        })) }}</h3>
+                        <p class="mb-0 text-muted">Annual Support Value</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="stats-card card border-0 bg-info bg-opacity-10 h-100">
+                    <div class="card-body text-center py-4">
+                        <div class="stats-icon mb-3">
+                            <i class="fas fa-calendar-check fa-2x text-info"></i>
+                        </div>
+                        <h3 class="fw-bold text-info mb-1">{{ $partners->filter(function($p) { return $p->created_at > now()->subYear(); })->count() }}+</h3>
+                        <p class="mb-0 text-muted">New Partnerships This Year</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Become a Partner CTA -->
+        <div class="text-center mt-5" data-aos="fade-up">
+            <div class="card border-0 bg-gradient shadow-lg" style="background: linear-gradient(135deg, #0d6efd 0%, #198754 100%);">
+                <div class="card-body py-5">
+                    <h3 class="fw-bold text-white mb-2">Become a Partner</h3>
+                    <p class="text-white-50 mb-4">Join our network of partners and help shape the future of Kenyan youth through football and education</p>
+                    <a href="{{ route('contact') }}" class="btn btn-light btn-lg px-5">
+                        <i class="fas fa-handshake me-2"></i>Partner With Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@endif
+
 <style>
 /* Hero Section */
 .hero-section {
@@ -463,6 +652,179 @@
     .container {
         max-width: 1200px;
     }
+}
+
+/* Partners Section Styles */
+.partners-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.partners-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #0d6efd, #198754, #0d6efd);
+}
+
+/* Platinum Partner Cards */
+.partner-card-platinum {
+    border-radius: 16px;
+    transition: all 0.4s ease;
+    background: linear-gradient(145deg, #ffffff 0%, #fffbf0 100%);
+}
+
+.partner-card-platinum:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(255, 193, 7, 0.2) !important;
+}
+
+.partner-logo-container-platinum {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+}
+
+.partner-logo-platinum {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+/* Gold Partner Cards */
+.partner-card-gold {
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    background: linear-gradient(145deg, #ffffff 0%, #f0fff4 100%);
+}
+
+.partner-card-gold:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(25, 135, 84, 0.15) !important;
+}
+
+.partner-logo-container-gold {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
+}
+
+.partner-logo-gold {
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+}
+
+/* Silver Partner Cards */
+.partner-card-silver {
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    background: #ffffff;
+}
+
+.partner-card-silver:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(13, 110, 253, 0.1) !important;
+}
+
+.partner-logo-container-silver {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #0d6efd 0%, #6ea8fe 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 10px rgba(13, 110, 253, 0.25);
+}
+
+.partner-logo-silver {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+}
+
+/* Partner Stats Cards */
+.stats-card {
+    border-radius: 16px;
+    transition: all 0.3s ease;
+}
+
+.stats-card:hover {
+    transform: scale(1.02);
+}
+
+.stats-icon i {
+    transition: transform 0.3s ease;
+}
+
+.stats-card:hover .stats-icon i {
+    transform: scale(1.1);
+}
+
+/* Partner CTA Gradient Card */
+.bg-gradient {
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+/* Partner Section Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.partner-card-platinum,
+.partner-card-gold,
+.partner-card-silver {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+/* Responsive Partner Styles */
+@media (max-width: 768px) {
+    .partner-logo-container-platinum {
+        width: 50px;
+        height: 50px;
+    }
+
+    .partner-logo-platinum {
+        font-size: 1rem;
+    }
+
+    .partner-logo-container-gold {
+        width: 40px;
+        height: 40px;
+    }
+
+    .partner-logo-gold {
+        font-size: 0.85rem;
+    }
+}
+
+/* Partner Badge Styles */
+.badge {
+    font-weight: 600;
+    letter-spacing: 0.5px;
 }
 </style>
 @endsection

@@ -203,8 +203,113 @@
         color: var(--primary);
     }
 
+    /* Professional Journey Cards */
+    .journey-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border: 1px solid var(--gray-300);
+        border-radius: 16px;
+        padding: 28px 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .journey-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), #ff6b6b);
+    }
+
+    .journey-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 32px rgba(234, 28, 77, 0.15);
+        border-color: var(--primary);
+    }
+
+    .journey-year {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 12px;
+        line-height: 1;
+    }
+
+    .journey-description {
+        color: var(--gray-600);
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    /* Professional Value Cards */
+    .value-card-new {
+        background: white;
+        border-radius: 20px;
+        padding: 35px 25px;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+        position: relative;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    .value-card-new::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary), #ff6b6b);
+        transition: width 0.3s ease;
+        border-radius: 2px;
+    }
+
+    .value-card-new:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+        border-color: var(--gray-300);
+    }
+
+    .value-card-new:hover::after {
+        width: 60%;
+    }
+
+    .value-icon-new {
+        font-size: 3rem;
+        margin-bottom: 18px;
+        display: inline-block;
+        padding: 16px;
+        background: linear-gradient(135deg, rgba(234, 28, 77, 0.1) 0%, rgba(255, 107, 107, 0.1) 100%);
+        border-radius: 50%;
+        line-height: 1;
+    }
+
+    .value-card-new h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+        color: var(--dark);
+    }
+
+    .value-card-new p {
+        color: var(--gray-600);
+        font-size: 0.9rem;
+        line-height: 1.7;
+        margin-bottom: 0;
+    }
+
     @media (max-width: 768px) {
         .section { padding: 40px 20px; }
+        .journey-card { padding: 20px 15px; }
+        .journey-year { font-size: 1.6rem; }
+        .value-card-new { padding: 25px 20px; }
+        .value-icon-new { font-size: 2.5rem; padding: 12px; }
     }
 </style>
 
@@ -289,54 +394,103 @@
         </div>
     </section>
 
-    <!-- TIMELINE -->
+    <!-- TIMELINE - Professional Card Style -->
     <section class="section">
-        <h2 class="section-title">Our Journey</h2>
-        <div class="timeline">
-            <div class="timeline-item">
-                <div class="timeline-year">2017</div>
-                <p>Founded as a grassroots initiative to nurture football talent and discipline.</p>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-year">2019</div>
-                <p>Expanded training programs and community engagement.</p>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-year">2021</div>
-                <p>First players progressed to competitive clubs and secondary schools.</p>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-year">2024+</div>
-                <p>20+ players on sports scholarships; expanding partnerships and facilities.</p>
-            </div>
+        <h2 class="section-title">{{ \App\Models\PageContent::getTitle('about', 'journey') ?: 'Our Journey' }}</h2>
+
+        <!-- Timeline Cards -->
+        <div class="row g-4">
+            @php
+                $journeyEntries = \App\Models\PageContent::getJourneyEntries();
+            @endphp
+            @forelse($journeyEntries as $year => $description)
+                <div class="col-md-6 col-lg-3">
+                    <div class="journey-card h-100">
+                        <div class="journey-year">{{ $year }}</div>
+                        <div class="journey-description">{{ $description }}</div>
+                    </div>
+                </div>
+            @empty
+                <!-- Fallback content -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="journey-card h-100">
+                        <div class="journey-year">2017</div>
+                        <div class="journey-description">Founded as a grassroots initiative to nurture football talent and discipline.</div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="journey-card h-100">
+                        <div class="journey-year">2019</div>
+                        <div class="journey-description">Expanded training programs and community engagement.</div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="journey-card h-100">
+                        <div class="journey-year">2021</div>
+                        <div class="journey-description">First players progressed to competitive clubs and secondary schools.</div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="journey-card h-100">
+                        <div class="journey-year">2024+</div>
+                        <div class="journey-description">20+ players on sports scholarships; expanding partnerships and facilities.</div>
+                    </div>
+                </div>
+            @endforelse
         </div>
     </section>
 
-    <!-- VALUES -->
+    <!-- VALUES - Professional Card Style -->
     <section class="values-section">
-        <h2 class="section-title">Our Core Values</h2>
+        <h2 class="section-title">{{ \App\Models\PageContent::getTitle('about', 'values') ?: 'Our Core Values' }}</h2>
 
-        <div class="values-grid">
-            <div class="value-card">
-                <div class="value-icon">🎯</div>
-                <h3>Discipline</h3>
-                <p>Consistency, responsibility, and self-control on and off the pitch.</p>
-            </div>
-            <div class="value-card">
-                <div class="value-icon">🤝</div>
-                <h3>Respect</h3>
-                <p>For teammates, parents, coaches, and the wider community.</p>
-            </div>
-            <div class="value-card">
-                <div class="value-icon">💪</div>
-                <h3>Hard Work</h3>
-                <p>Growth through commitment, effort, and perseverance.</p>
-            </div>
-            <div class="value-card">
-                <div class="value-icon">🛡️</div>
-                <h3>Child Safety & Accountability</h3>
-                <p>Safe environments, parental involvement, and transparent operations.</p>
-            </div>
+        <!-- Values Cards -->
+        <div class="row g-4">
+            @php
+                $valuesEntries = \App\Models\PageContent::getValuesEntries();
+            @endphp
+            @forelse($valuesEntries as $entry)
+                @php
+                    $valueData = is_array(json_decode($entry->value, true)) ? json_decode($entry->value, true) : ['icon' => '⭐', 'title' => ucfirst($entry->key), 'description' => $entry->value];
+                @endphp
+                <div class="col-md-6 col-lg-3">
+                    <div class="value-card-new h-100">
+                        <div class="value-icon-new">{{ $valueData['icon'] ?? '⭐' }}</div>
+                        <h3>{{ $valueData['title'] ?? ucfirst($entry->key) }}</h3>
+                        <p>{{ $valueData['description'] ?? $entry->value }}</p>
+                    </div>
+                </div>
+            @empty
+                <!-- Fallback content -->
+                <div class="col-md-6 col-lg-3">
+                    <div class="value-card-new h-100">
+                        <div class="value-icon-new">🎯</div>
+                        <h3>Discipline</h3>
+                        <p>Consistency, responsibility, and self-control on and off the pitch.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="value-card-new h-100">
+                        <div class="value-icon-new">🤝</div>
+                        <h3>Respect</h3>
+                        <p>For teammates, parents, coaches, and the wider community.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="value-card-new h-100">
+                        <div class="value-icon-new">💪</div>
+                        <h3>Hard Work</h3>
+                        <p>Growth through commitment, effort, and perseverance.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="value-card-new h-100">
+                        <div class="value-icon-new">🛡️</div>
+                        <h3>Child Safety & Accountability</h3>
+                        <p>Safe environments, parental involvement, and transparent operations.</p>
+                    </div>
+                </div>
+            @endforelse
         </div>
     </section>
 

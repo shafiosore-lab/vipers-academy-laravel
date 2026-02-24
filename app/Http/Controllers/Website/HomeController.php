@@ -7,6 +7,8 @@ use App\Models\Program;
 use App\Models\Player;
 use App\Models\News;
 use App\Models\Gallery;
+use App\Models\User;
+use App\Models\PageContent;
 
 class HomeController extends \App\Http\Controllers\Controller
 {
@@ -30,8 +32,22 @@ class HomeController extends \App\Http\Controllers\Controller
             }
         }
 
+        // Fetch active partners for the home page
+        $partners = User::where('user_type', 'partner')
+            ->where('status', 'active')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Fetch dynamic page content
+        $pageContent = [];
+        $sections = ['hero', 'what_we_do', 'features', 'stories', 'programs'];
+
+        foreach ($sections as $section) {
+            $pageContent[$section] = PageContent::getSection('home', $section);
+        }
+
         // For guests or unrecognized user types, show the home page
-        return view('website.home.index');
+        return view('website.home.index', compact('partners', 'pageContent'));
     }
 
     public function search(Request $request)

@@ -20,27 +20,49 @@ return new class extends Migration
         // 1. Add role template and inheritance fields to roles table
         Schema::table('roles', function (Blueprint $table) {
             // Role template support
-            $table->boolean('is_template')->default(false)->after('is_subscription_restricted');
-            $table->foreignId('organization_id')->nullable()->after('is_template')->constrained('organizations')->nullOnDelete();
+            if (!Schema::hasColumn('roles', 'is_template')) {
+                $table->boolean('is_template')->default(false)->after('is_subscription_restricted');
+            }
+            if (!Schema::hasColumn('roles', 'organization_id')) {
+                $table->foreignId('organization_id')->nullable()->after('is_template')->constrained('organizations')->nullOnDelete();
+            }
 
             // Role inheritance
-            $table->foreignId('parent_role_id')->nullable()->after('organization_id')->constrained('roles')->nullOnDelete();
-            $table->boolean('inherit_permissions')->default(true)->after('parent_role_id');
+            if (!Schema::hasColumn('roles', 'parent_role_id')) {
+                $table->foreignId('parent_role_id')->nullable()->after('organization_id')->constrained('roles')->nullOnDelete();
+            }
+            if (!Schema::hasColumn('roles', 'inherit_permissions')) {
+                $table->boolean('inherit_permissions')->default(true)->after('parent_role_id');
+            }
 
-            // Hybrid role support (combines multiple roles)
-            $table->text('combined_role_ids')->nullable()->after('inherit_permissions');
+            // Hybrid role support
+            if (!Schema::hasColumn('roles', 'combined_role_ids')) {
+                $table->text('combined_role_ids')->nullable()->after('inherit_permissions');
+            }
 
             // Internationalization
-            $table->string('name_key')->nullable()->after('name')->comment('Translation key for i18n');
-            $table->string('description_key')->nullable()->after('description')->comment('Translation key for i18n');
+            if (!Schema::hasColumn('roles', 'name_key')) {
+                $table->string('name_key')->nullable()->after('name')->comment('Translation key for i18n');
+            }
+            if (!Schema::hasColumn('roles', 'description_key')) {
+                $table->string('description_key')->nullable()->after('description')->comment('Translation key for i18n');
+            }
 
             // Role metadata
-            $table->string('department')->nullable()->after('module');
-            $table->json('metadata')->nullable()->after('department')->comment('Additional role configuration');
+            if (!Schema::hasColumn('roles', 'department')) {
+                $table->string('department')->nullable()->after('module');
+            }
+            if (!Schema::hasColumn('roles', 'metadata')) {
+                $table->json('metadata')->nullable()->after('department')->comment('Additional role configuration');
+            }
 
             // Role status
-            $table->boolean('is_active')->default(true)->after('metadata');
-            $table->boolean('is_system')->default(false)->after('is_active')->comment('System roles cannot be deleted');
+            if (!Schema::hasColumn('roles', 'is_active')) {
+                $table->boolean('is_active')->default(true)->after('metadata');
+            }
+            if (!Schema::hasColumn('roles', 'is_system')) {
+                $table->boolean('is_system')->default(false)->after('is_active')->comment('System roles cannot be deleted');
+            }
         });
 
         // 2. Create role_templates table for reusable role configurations
@@ -122,9 +144,15 @@ return new class extends Migration
 
         // 7. Update permissions table to add module grouping
         Schema::table('permissions', function (Blueprint $table) {
-            $table->string('module')->nullable()->after('description');
-            $table->string('action')->nullable()->after('module');
-            $table->boolean('is_active')->default(true)->after('action');
+            if (!Schema::hasColumn('permissions', 'module')) {
+                $table->string('module')->nullable()->after('description');
+            }
+            if (!Schema::hasColumn('permissions', 'action')) {
+                $table->string('action')->nullable()->after('module');
+            }
+            if (!Schema::hasColumn('permissions', 'is_active')) {
+                $table->boolean('is_active')->default(true)->after('action');
+            }
         });
     }
 

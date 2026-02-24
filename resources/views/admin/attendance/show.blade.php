@@ -79,7 +79,7 @@
                                                 <div class="col-12">
                                                     <strong>Duration:</strong>
                                                     @if($attendance->total_duration_minutes)
-                                                        <span class="text-info">{{ $attendance->total_duration_minutes }} minutes</span>
+                                                        <span class="text-info">{{ number_format($attendance->total_duration_minutes, 2) }} minutes</span>
                                                     @else
                                                         <span class="text-muted">N/A</span>
                                                     @endif

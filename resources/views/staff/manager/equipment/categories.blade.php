@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'Equipment Categories - Team Manager')
 

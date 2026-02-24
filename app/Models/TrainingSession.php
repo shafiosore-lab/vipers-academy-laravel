@@ -350,4 +350,12 @@ class TrainingSession extends Model
         $onTimePlayers = $this->players_admitted - $this->late_arrivals;
         return round(($onTimePlayers / $this->players_admitted) * 100, 1);
     }
+
+    public function getFormattedDurationAttribute()
+    {
+        if (!$this->total_duration_minutes) {
+            return '-';
+        }
+        return number_format($this->total_duration_minutes, 2) . 'm';
+    }
 }

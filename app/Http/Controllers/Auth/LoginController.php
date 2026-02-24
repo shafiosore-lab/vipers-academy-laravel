@@ -26,7 +26,8 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
-            $user = Auth::user();
+            // Eager load roles to prevent N+1 queries during login
+            $user = Auth::user()->load('roles');
 
             // Log login success for debugging
             \Log::info('User logged in successfully', [

@@ -21,7 +21,10 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         // Clear existing permissions to ensure clean slate
+        // Disable foreign key checks for MySQL to allow truncate
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0');
         Permission::truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
         // =====================================================================
         // 1. MATCHES (Order 1)

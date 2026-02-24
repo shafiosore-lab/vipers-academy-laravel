@@ -28,6 +28,9 @@ class ExportService
     const TYPE_SUBSCRIPTIONS = 'subscriptions';
     const TYPE_TRANSACTIONS = 'transactions';
     const TYPE_FINANCIAL = 'financial';
+    const TYPE_BUDGET = 'budget';
+    const TYPE_EXPENSE = 'expense';
+    const TYPE_BUDGET_VARIANCE = 'budget_variance';
 
     /**
      * Generate export based on type and format
@@ -232,6 +235,9 @@ class ExportService
             self::TYPE_SUBSCRIPTIONS => 'Subscription Report',
             self::TYPE_TRANSACTIONS => 'Transaction History',
             self::TYPE_FINANCIAL => 'Financial Statement',
+            self::TYPE_BUDGET => 'Budget Plan Report',
+            self::TYPE_EXPENSE => 'Expense Report',
+            self::TYPE_BUDGET_VARIANCE => 'Budget Variance Report',
             default => 'Export Report',
         };
     }
@@ -388,6 +394,158 @@ class ExportService
             'rows' => $rows,
             'record_count' => count($rows),
             'total_amount' => $orders->sum('total_amount'),
+        ];
+    }
+
+    /**
+     * Prepare budget data for export
+     */
+    public function prepareBudgetData(array $filters = []): array
+    {
+        $query = \App\Models\BudgetPlan::query()
+            ->with(['organization', 'createdBy']);
+
+        // Apply filters
+        if (!empty($filters['type'])) {
+            $query->where('type', $filters['type']);
+        }
+        if (!empty($filters['year'])) {
+            $query->where('year', $filters['year']);
+        }
+        if (!empty($filters['month'])) {
+            $query->where('month', $filters['month']);
+        }
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        $budgets = $query->orderBy('year', 'desc')->orderBy('month', 'desc')->get();
+
+        $headers = ['Name', 'Type', 'Year', 'Period', 'Total Budget', 'Total Spent', 'Balance', 'Status'];
+        $rows = [];
+
+        foreach ($budgets as $budget) {
+            $rows[] = [
+                $budget->name,
+                ucfirst($budget->type),
+                $budget->year,
+                $budget->getPeriodLabel(),
+                number_format($budget->total_budget, 2),
+                number_format($budget->total_spent, 2),
+                number_format($budget->getBalance(), 2),
+                ucfirst($budget->status),
+            ];
+        }
+
+        return [
+            'headers' => $headers,
+            'rows' => $rows,
+            'record_count' => count($rows),
+            'total_budget' => $budgets->sum('total_budget'),
+            'total_spent' => $budgets->sum('total_spent'),
+        ];
+    }
+
+    /**
+     * Prepare expense data for export
+     */
+    public function prepareExpenseData(array $filters = []): array
+    {
+        $query = \App\Models\Expense::query()
+            ->with(['category', 'budgetPlan', 'createdBy']);
+
+        // Apply filters
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+        if (!empty($filters['category_id'])) {
+            $query->where('expense_category_id', $filters['category_id']);
+        }
+        if (!empty($filters['budget_plan_id'])) {
+            $query->where('budget_plan_id', $filters['budget_plan_id']);
+        }
+        if (!empty($filters['date_from'])) {
+            $query->whereDate('expense_date', '>=', $filters['date_from']);
+        }
+        if (!empty($filters['date_to'])) {
+            $query->whereDate('expense_date', '<=', $filters['date_to']);
+        }
+        if (!empty($filters['team_id'])) {
+            $query->where('team_id', $filters['team_id']);
+        }
+
+        $expenses = $query->orderBy('expense_date', 'desc')->get();
+
+        $headers = ['Reference', 'Date', 'Title', 'Category', 'Amount', 'Status', 'Payment Method', 'Vendor'];
+        $rows = [];
+
+        foreach ($expenses as $expense) {
+            $rows[] = [
+                $expense->reference,
+                $expense->expense_date->format('Y-m-d'),
+                $expense->title,
+                $expense->category?->name ?? 'N/A',
+                number_format($expense->amount, 2),
+                ucfirst($expense->status),
+                $expense->payment_method ? ucfirst(str_replace('_', ' ', $expense->payment_method)) : 'N/A',
+                $expense->vendor ?? 'N/A',
+            ];
+        }
+
+        return [
+            'headers' => $headers,
+            'rows' => $rows,
+            'record_count' => count($rows),
+            'total_amount' => $expenses->sum('amount'),
+        ];
+    }
+
+    /**
+     * Prepare budget variance report for export
+     */
+    public function prepareBudgetVarianceData(array $filters = []): array
+    {
+        $query = \App\Models\BudgetPlan::query()
+            ->with(['items.category', 'expenses']);
+
+        // Apply filters
+        if (!empty($filters['year'])) {
+            $query->where('year', $filters['year']);
+        }
+        if (!empty($filters['month'])) {
+            $query->where('month', $filters['month']);
+        }
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        $budgets = $query->orderBy('year', 'desc')->get();
+
+        $headers = ['Budget', 'Category', 'Budgeted', 'Spent', 'Variance', 'Variance %'];
+        $rows = [];
+
+        foreach ($budgets as $budget) {
+            foreach ($budget->items as $item) {
+                $variance = $item->budgeted_amount - $item->spent_amount;
+                $variancePercent = $item->budgeted_amount > 0
+                    ? round(($variance / $item->budgeted_amount) * 100, 2)
+                    : 0;
+
+                $rows[] = [
+                    $budget->name,
+                    $item->category?->name ?? $item->name,
+                    number_format($item->budgeted_amount, 2),
+                    number_format($item->spent_amount, 2),
+                    number_format($variance, 2),
+                    $variancePercent . '%',
+                ];
+            }
+        }
+
+        return [
+            'headers' => $headers,
+            'rows' => $rows,
+            'record_count' => count($rows),
         ];
     }
 }

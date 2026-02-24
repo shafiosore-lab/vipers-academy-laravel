@@ -43,7 +43,7 @@ class RoleHierarchyService
      * Dashboard route mapping for each role
      */
     private const DASHBOARD_ROUTES = [
-        'super-admin' => 'admin.dashboard',
+        'super-admin' => 'super-admin.dashboard',
         'org-admin' => 'organization.dashboard',
         'marketing-admin' => 'admin.dashboard',
         'scouting-admin' => 'admin.dashboard',

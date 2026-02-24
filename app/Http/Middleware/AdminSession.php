@@ -16,6 +16,11 @@ class AdminSession
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Skip admin session handling for logout requests
+        if ($request->is('logout') || $request->routeIs('logout')) {
+            return $next($request);
+        }
+
         // Check if user is authenticated and is admin
         if (Auth::check() && Auth::user()->isAdmin()) {
             // Extend session lifetime for admin users
@@ -59,6 +64,6 @@ class AdminSession
                $path === '/login' ||
                $path === '/register' ||
                str_starts_with($path, '/password/') ||
-               $path === '/';
+               $path === '/logout';
     }
 }

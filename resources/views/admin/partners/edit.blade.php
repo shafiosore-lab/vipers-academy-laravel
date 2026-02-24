@@ -187,6 +187,72 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+
+                        <!-- Website Display Information -->
+                        <div class="col-12 mt-3">
+                            <h6 class="text-success mb-3"><i class="fas fa-globe me-2"></i>{{ __('Website Display Information') }}</h6>
+                            <div class="alert alert-info small">
+                                <i class="fas fa-info-circle me-2"></i>{{ __('These fields control how the partner appears on the website homepage partner section.') }}
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label for="company_description" class="form-label">{{ __('Company Description') }}</label>
+                            <textarea class="form-control @error('company_description') is-invalid @enderror"
+                                      id="company_description" name="company_description" rows="3"
+                                      placeholder="{{ __('Brief description of the organization for website display...') }}">{{ old('company_description', $partner->partner_details['company_description'] ?? $partner->company_description ?? '') }}</textarea>
+                            @error('company_description')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="company_website" class="form-label">{{ __('Company Website') }}</label>
+                            <input type="url" class="form-control @error('company_website') is-invalid @enderror"
+                                   id="company_website" name="company_website"
+                                   value="{{ old('company_website', $partner->partner_details['company_website'] ?? $partner->company_website ?? '') }}"
+                                   placeholder="https://example.com">
+                            @error('company_website')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="industry" class="form-label">{{ __('Industry') }}</label>
+                            <input type="text" class="form-control @error('industry') is-invalid @enderror"
+                                   id="industry" name="industry"
+                                   value="{{ old('industry', $partner->partner_details['industry'] ?? $partner->industry ?? '') }}"
+                                   placeholder="e.g., Telecommunications, Banking, Education">
+                            @error('industry')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="sponsorship_level" class="form-label">{{ __('Sponsorship Level') }}</label>
+                            <select class="form-select @error('sponsorship_level') is-invalid @enderror"
+                                    id="sponsorship_level" name="sponsorship_level">
+                                <option value="">{{ __('Select Level') }}</option>
+                                <option value="Platinum" {{ old('sponsorship_level', $partner->partner_details['sponsorship_level'] ?? '') === 'Platinum' ? 'selected' : '' }}>{{ __('Platinum') }}</option>
+                                <option value="Gold" {{ old('sponsorship_level', $partner->partner_details['sponsorship_level'] ?? '') === 'Gold' ? 'selected' : '' }}>{{ __('Gold') }}</option>
+                                <option value="Silver" {{ old('sponsorship_level', $partner->partner_details['sponsorship_level'] ?? '') === 'Silver' ? 'selected' : '' }}>{{ __('Silver') }}</option>
+                                <option value="Bronze" {{ old('sponsorship_level', $partner->partner_details['sponsorship_level'] ?? '') === 'Bronze' ? 'selected' : '' }}>{{ __('Bronze') }}</option>
+                            </select>
+                            @error('sponsorship_level')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="annual_contribution" class="form-label">{{ __('Annual Contribution (KSh)') }}</label>
+                            <input type="number" class="form-control @error('annual_contribution') is-invalid @enderror"
+                                   id="annual_contribution" name="annual_contribution"
+                                   value="{{ old('annual_contribution', $partner->partner_details['annual_contribution'] ?? '') }}"
+                                   placeholder="e.g., 5000000" min="0">
+                            @error('annual_contribution')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
 
                     <div class="d-flex justify-content-end gap-2">
