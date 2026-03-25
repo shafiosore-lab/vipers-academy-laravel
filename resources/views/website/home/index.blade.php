@@ -6,12 +6,10 @@
 
 @section('content')
 <!-- Hero Section -->
-<section class="hero-section position-relative overflow-hidden"
-    style="background-image: url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center;">
-    <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100"
-        style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.4) 100%);"></div>
-    <div class="container position-relative h-100">
-        <div class="row align-items-center h-100">
+<section class="hero-section home-hero-section" style="background-image: url('{{ asset('assets/img/home/teamb.png') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <div class="hero-overlay"></div>
+    <div class="container">
+        <div class="row align-items-center">
             <div class="col-lg-9">
                 <div class="hero-content text-white" data-aos="fade-right">
                     <h1 class="hero-title fw-bold mb-3">
@@ -26,12 +24,18 @@
                         @endphp
                         {{ $heroSubtitle?->value ?: 'Founded in 2016, Mumias Vipers Academy is a community-based youth development organization using football to nurture talent, discipline, and education — with over 20 players currently on high school sports scholarships, accessing quality education that was once out of reach.' }}
                     </p>
-                    <div class="hero-buttons d-flex flex-column flex-sm-row gap-3">
+                    <div class="hero-buttons d-flex flex-wrap gap-2">
                         <a href="{{ route('programs') }}" class="btn btn-warning btn-lg px-4 py-3 fw-semibold shadow">
-                            Explore Programs
+                            <i class="fas fa-compass me-2"></i>Explore Programs
                         </a>
-                        <a href="{{ route('about') }}" class="btn btn-outline-light btn-lg px-4 py-3 fw-semibold">
-                            Our Story
+                        <a href="{{ route('enrol') }}" class="btn btn-outline-light btn-lg px-4 py-3 fw-semibold">
+                            <i class="fas fa-user-plus me-2"></i>Enroll Now
+                        </a>
+                        <a href="{{ route('register') }}" class="btn btn-success btn-lg px-4 py-3 fw-semibold shadow">
+                            <i class="fas fa-play me-2"></i>Start Free Trial
+                        </a>
+                        <a href="{{ route('contact') }}" class="btn btn-outline-light btn-lg px-4 py-3 fw-semibold">
+                            <i class="fas fa-calendar-alt me-2"></i>Request Demo
                         </a>
                     </div>
                 </div>
@@ -100,9 +104,11 @@
                     </div>
                 </div>
 
-                <a href="{{ route('about') }}" class="btn btn-primary px-4 py-2">
-                    Learn More About Us
-                </a>
+                <div class="text-center mt-4">
+                    <a href="{{ route('enrol') }}" class="btn btn-primary px-4 py-3 fw-semibold shadow">
+                        <i class="fas fa-user-plus me-2"></i>Enroll Your Child
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -205,11 +211,11 @@
                         </div>
                         <h5 class="card-title fw-bold mb-1">Football Training</h5>
                         <small class="text-muted d-block mb-3">Professional Skills Development</small>
-                        <ul class="list-unstyled mb-3 text-start">
-                            <li class="mb-2 small"><i class="fas fa-check-circle text-success me-2"></i>Weekend training sessions</li>
-                            <li class="mb-2 small"><i class="fas fa-check-circle text-success me-2"></i>Theory & tactical classes</li>
-                            <li class="mb-2 small"><i class="fas fa-check-circle text-success me-2"></i>Age-appropriate groups</li>
-                            <li class="mb-2 small"><i class="fas fa-check-circle text-success me-2"></i>Tournament participation</li>
+                        <ul class="program-features list-unstyled mb-3 text-start text-md-start text-center">
+                            <li class="mb-2 small"><i class="fas fa-calendar-week program-icon-desktop me-2 text-success"></i>Weekend training sessions</li>
+                            <li class="mb-2 small"><i class="fas fa-chalkboard-teacher program-icon-desktop me-2 text-success"></i>Theory & tactical classes</li>
+                            <li class="mb-2 small"><i class="fas fa-users program-icon-desktop me-2 text-success"></i>Age-appropriate groups</li>
+                            <li class="mb-2 small"><i class="fas fa-trophy program-icon-desktop me-2 text-success"></i>Tournament participation</li>
                         </ul>
                         <div class="d-flex flex-wrap gap-2 justify-content-center">
                             <span class="badge bg-success">Weekend Programs</span>
@@ -228,11 +234,11 @@
                         </div>
                         <h5 class="card-title fw-bold mb-1">Academic Mentorship</h5>
                         <small class="text-muted d-block mb-3">CBC-Aligned Support</small>
-                        <ul class="list-unstyled mb-3 text-start">
-                            <li class="mb-2 small"><i class="fas fa-check-circle text-warning me-2"></i>Study discipline coaching</li>
-                            <li class="mb-2 small"><i class="fas fa-check-circle text-warning me-2"></i>CBC homework support</li>
-                            <li class="mb-2 small"><i class="fas fa-check-circle text-warning me-2"></i>Life-skills mentorship</li>
-                            <li class="mb-2 small"><i class="fas fa-check-circle text-warning me-2"></i>Behavior tracking system</li>
+                        <ul class="program-features list-unstyled mb-3 text-start text-md-start text-center">
+                            <li class="mb-2 small"><i class="fas fa-book-open program-icon-desktop me-2 text-warning"></i>Study discipline coaching</li>
+                            <li class="mb-2 small"><i class="fas fa-clipboard-list program-icon-desktop me-2 text-warning"></i>CBC homework support</li>
+                            <li class="mb-2 small"><i class="fas fa-hands-helping program-icon-desktop me-2 text-warning"></i>Life-skills mentorship</li>
+                            <li class="mb-2 small"><i class="fas fa-chart-line program-icon-desktop me-2 text-warning"></i>Behavior tracking system</li>
                         </ul>
                         <div class="d-flex flex-wrap gap-2 justify-content-center">
                             <span class="badge bg-warning text-dark">Study Support</span>
@@ -251,11 +257,11 @@
                         </div>
                         <h5 class="card-title fw-bold mb-1">Digital Skills</h5>
                         <small class="text-muted d-block mb-3">Technology Integration</small>
-                        <ul class="list-unstyled mb-3 text-start">
-                            <li class="mb-2 small"><i class="fas fa-check-circle text-info me-2"></i>Computer basics training</li>
-                            <li class="mb-2 small"><i class="fas fa-check-circle text-info me-2"></i>Introduction to coding</li>
-                            <li class="mb-2 small"><i class="fas fa-check-circle text-info me-2"></i>Digital safety education</li>
-                            <li class="mb-2 small"><i class="fas fa-check-circle text-info me-2"></i>Creative tech projects</li>
+                        <ul class="program-features list-unstyled mb-3 text-start text-md-start text-center">
+                            <li class="mb-2 small"><i class="fas fa-desktop program-icon-desktop me-2 text-info"></i>Computer basics training</li>
+                            <li class="mb-2 small"><i class="fas fa-code program-icon-desktop me-2 text-info"></i>Introduction to coding</li>
+                            <li class="mb-2 small"><i class="fas fa-shield-alt program-icon-desktop me-2 text-info"></i>Digital safety education</li>
+                            <li class="mb-2 small"><i class="fas fa-lightbulb program-icon-desktop me-2 text-info"></i>Creative tech projects</li>
                         </ul>
                         <div class="d-flex flex-wrap gap-2 justify-content-center">
                             <span class="badge bg-info">Computer Lab Access</span>
@@ -277,180 +283,159 @@
     </div>
 </section>
 
+    <!-- Impact/Stats Section - Transferred from About Page -->
+    <section class="impact-section py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="section-title fw-bold mb-2">
+                    Our Impact in Numbers
+                </h2>
+                <p class="section-subtitle text-muted">Real results from your support</p>
+            </div>
+
+            <div class="row g-4 text-center" id="impact-stats">
+                <div class="col-12 col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                    <div class="stat-card h-100 p-4 bg-white rounded-3 shadow-sm transition-all">
+                        <div class="stat-icon mb-3">
+                            <i class="fas fa-graduation-cap fa-2x text-primary"></i>
+                        </div>
+                        <div class="stat-number fw-bold" data-target="20" data-suffix="+">0</div>
+                        <p class="stat-label mb-0 text-muted">Active Scholarships</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
+                    <div class="stat-card h-100 p-4 bg-white rounded-3 shadow-sm transition-all">
+                        <div class="stat-icon mb-3">
+                            <i class="fas fa-calendar-alt fa-2x text-secondary"></i>
+                        </div>
+                        <div class="stat-number fw-bold" data-target="7">0</div>
+                        <p class="stat-label mb-0 text-muted">Years of Success Since 2017</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
+                    <div class="stat-card h-100 p-4 bg-white rounded-3 shadow-sm transition-all">
+                        <div class="stat-icon mb-3">
+                            <i class="fas fa-heart fa-2x text-warning"></i>
+                        </div>
+                        <div class="stat-number fw-bold" data-target="100" data-suffix="+">0</div>
+                        <p class="stat-label mb-0 text-muted">Lives Transformed</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
+                    <div class="stat-card h-100 p-4 bg-white rounded-3 shadow-sm transition-all">
+                        <div class="stat-icon mb-3">
+                            <i class="fas fa-award fa-2x text-info"></i>
+                        </div>
+                        <div class="stat-number fw-bold" data-target="85" data-suffix="%">0</div>
+                        <p class="stat-label mb-0 text-muted">Academic Success Rate</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-5" data-aos="fade-up">
+                <a href="{{ route('donate') }}" class="btn btn-primary btn-lg px-4 py-3 fw-semibold shadow">
+                    <i class="fas fa-heart me-2"></i>Support a Scholarship
+                </a>
+            </div>
+        </div>
+    </section>
+
 <!-- Partners Section -->
 @if(isset($partners) && $partners->count() > 0)
 <section class="partners-section py-5 bg-white">
     <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
+        <!-- Section Header -->
+        <div class="text-center mb-4" data-aos="fade-up">
             <h2 class="section-title fw-bold mb-2">
                 Our <span class="text-success">Partners</span> & Collaborators
             </h2>
             <p class="section-subtitle text-muted">Proud to work with leading organizations committed to youth development</p>
         </div>
 
-        <!-- Main Featured Partners -->
-        <div class="row g-4 mb-5">
-            @php
-                $platinumPartners = $partners->filter(function($p) {
-                    $details = is_array($p->partner_details) ? $p->partner_details : json_decode($p->partner_details, true);
-                    return isset($details['sponsorship_level']) && $details['sponsorship_level'] === 'Platinum';
-                });
-                $goldPartners = $partners->filter(function($p) {
-                    $details = is_array($p->partner_details) ? $p->partner_details : json_decode($p->partner_details, true);
-                    return isset($details['sponsorship_level']) && $details['sponsorship_level'] === 'Gold';
-                });
-                $otherPartners = $partners->filter(function($p) {
-                    $details = is_array($p->partner_details) ? $p->partner_details : json_decode($p->partner_details, true);
-                    return !isset($details['sponsorship_level']) || !in_array($details['sponsorship_level'], ['Platinum', 'Gold']);
-                });
-            @endphp
-
-            @if($platinumPartners->count() > 0)
-            <div class="col-12 mb-4">
-                <div class="text-center mb-3">
-                    <span class="badge bg-warning text-dark px-3 py-2">
-                        <i class="fas fa-crown me-1"></i> Platinum Partners
-                    </span>
-                </div>
-                <div class="row g-4 justify-content-center">
-                    @foreach($platinumPartners as $partner)
-                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                        <div class="partner-card-platinum card border-0 shadow-lg h-100">
-                            <div class="card-body p-4">
-                                <div class="d-flex align-items-start mb-3">
-                                    <div class="partner-logo-container-platinum me-3">
-                                        <div class="partner-logo-platinum">
-                                            {{ strtoupper(substr($partner->name, 0, 2)) }}
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <h5 class="card-title fw-bold mb-1">{{ $partner->name }}</h5>
-                                        <span class="badge bg-warning bg-opacity-25 text-warning mb-2">
-                                            <i class="fas fa-crown me-1"></i> Platinum
-                                        </span>
-                                    </div>
-                                </div>
-                                <p class="card-text text-muted small mb-3">{{ Str::limit($partner->company_description, 120) }}</p>
-                                @if($partner->company_website)
-                                <a href="{{ $partner->company_website }}" target="_blank" class="btn btn-sm btn-outline-warning">
-                                    <i class="fas fa-external-link-alt me-1"></i> Visit Website
-                                </a>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-            @endif
-
-            @if($goldPartners->count() > 0)
-            <div class="col-12 mb-4">
-                <div class="text-center mb-3">
-                    <span class="badge bg-success bg-opacity-25 text-success px-3 py-2">
-                        <i class="fas fa-medal me-1"></i> Gold Partners
-                    </span>
-                </div>
-                <div class="row g-3 justify-content-center">
-                    @foreach($goldPartners as $partner)
-                    <div class="col-lg-3 col-md-4 col-sm-6" data-aos="fade-up" data-aos-delay="150">
-                        <div class="partner-card-gold card border-0 shadow-sm h-100">
-                            <div class="card-body p-3 text-center">
-                                <div class="partner-logo-container-gold mx-auto mb-2">
-                                    <div class="partner-logo-gold">
-                                        {{ strtoupper(substr($partner->name, 0, 2)) }}
-                                    </div>
-                                </div>
-                                <h6 class="card-title fw-bold mb-1 small">{{ $partner->name }}</h6>
-                                <small class="text-muted d-block mb-2">{{ $partner->industry ?? 'Partner' }}</small>
-                                @if($partner->company_website)
-                                <a href="{{ $partner->company_website }}" target="_blank" class="btn btn-sm btn-outline-success">
-                                    <i class="fas fa-external-link-alt"></i>
-                                </a>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-            @endif
-
-            @if($otherPartners->count() > 0)
-            <div class="col-12">
-                <div class="text-center mb-3">
-                    <span class="badge bg-primary bg-opacity-25 text-primary px-3 py-2">
-                        <i class="fas fa-handshake me-1"></i> Our Partners
-                    </span>
-                </div>
-                <div class="row g-3 justify-content-center">
-                    @foreach($otherPartners as $partner)
-                    <div class="col-lg-2 col-md-3 col-sm-4 col-6" data-aos="fade-up" data-aos-delay="200">
-                        <div class="partner-card-silver card border-0 shadow-sm h-100">
-                            <div class="card-body p-3 text-center">
-                                <div class="partner-logo-container-silver mx-auto mb-2">
-                                    <div class="partner-logo-silver">
-                                        {{ strtoupper(substr($partner->name, 0, 2)) }}
-                                    </div>
-                                </div>
-                                <h6 class="card-title fw-bold mb-1 small">{{ Str::limit($partner->name, 20) }}</h6>
-                                <small class="text-muted">{{ $partner->industry ?? 'Partner' }}</small>
-                            </div>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-            @endif
-        </div>
-
-        <!-- Partner Stats -->
-        <div class="row g-4 mt-2">
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+        <!-- Partner Stats Row -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-4" data-aos="fade-up" data-aos-delay="100">
                 <div class="stats-card card border-0 bg-success bg-opacity-10 h-100">
-                    <div class="card-body text-center py-4">
-                        <div class="stats-icon mb-3">
+                    <div class="card-body text-center py-3">
+                        <div class="stats-icon mb-2">
                             <i class="fas fa-building fa-2x text-success"></i>
                         </div>
                         <h3 class="fw-bold text-success mb-1">{{ $partners->count() }}+</h3>
-                        <p class="mb-0 text-muted">Partner Organizations</p>
+                        <p class="text-muted mb-0 small">Partner Organizations</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="col-6 col-md-4" data-aos="fade-up" data-aos-delay="200">
                 <div class="stats-card card border-0 bg-warning bg-opacity-10 h-100">
-                    <div class="card-body text-center py-4">
-                        <div class="stats-icon mb-3">
+                    <div class="card-body text-center py-3">
+                        <div class="stats-icon mb-2">
                             <i class="fas fa-hand-holding-heart fa-2x text-warning"></i>
                         </div>
                         <h3 class="fw-bold text-warning mb-1">KSh {{ number_format($partners->sum(function($p) {
                             $details = is_array($p->partner_details) ? $p->partner_details : json_decode($p->partner_details, true);
                             return $details['annual_contribution'] ?? 0;
                         })) }}</h3>
-                        <p class="mb-0 text-muted">Annual Support Value</p>
+                        <p class="text-muted mb-0 small">Annual Support Value</p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="col-12 col-md-4" data-aos="fade-up" data-aos-delay="300">
                 <div class="stats-card card border-0 bg-info bg-opacity-10 h-100">
-                    <div class="card-body text-center py-4">
-                        <div class="stats-icon mb-3">
+                    <div class="card-body text-center py-3">
+                        <div class="stats-icon mb-2">
                             <i class="fas fa-calendar-check fa-2x text-info"></i>
                         </div>
                         <h3 class="fw-bold text-info mb-1">{{ $partners->filter(function($p) { return $p->created_at > now()->subYear(); })->count() }}+</h3>
-                        <p class="mb-0 text-muted">New Partnerships This Year</p>
+                        <p class="text-muted mb-0 small">New Partnerships This Year</p>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Continuous Horizontal Scrolling Carousel -->
+        <div class="partners-carousel-wrapper mb-4" data-aos="fade-up">
+            <div class="partners-carousel-track">
+                <!-- First set of partners -->
+                @foreach($partners as $partner)
+                <div class="partner-logo-item">
+                    <div class="partner-logo-card">
+                        <div class="partner-logo-wrapper">
+                            @if($partner->logo)
+                            <img src="{{ asset('storage/' . $partner->logo) }}" alt="{{ $partner->name }}" class="partner-logo-img">
+                            @else
+                            <div class="partner-initials">{{ strtoupper(substr($partner->name, 0, 2)) }}</div>
+                            @endif
+                        </div>
+                        <h6 class="partner-name mb-0">{{ Str::limit($partner->name, 15) }}</h6>
+                    </div>
+                </div>
+                @endforeach
+
+                <!-- Duplicate set for seamless infinite scroll -->
+                @foreach($partners as $partner)
+                <div class="partner-logo-item">
+                    <div class="partner-logo-card">
+                        <div class="partner-logo-wrapper">
+                            @if($partner->logo)
+                            <img src="{{ asset('storage/' . $partner->logo) }}" alt="{{ $partner->name }}" class="partner-logo-img">
+                            @else
+                            <div class="partner-initials">{{ strtoupper(substr($partner->name, 0, 2)) }}</div>
+                            @endif
+                        </div>
+                        <h6 class="partner-name mb-0">{{ Str::limit($partner->name, 15) }}</h6>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+
         <!-- Become a Partner CTA -->
         <div class="text-center mt-5" data-aos="fade-up">
-            <div class="card border-0 bg-gradient shadow-lg" style="background: linear-gradient(135deg, #0d6efd 0%, #198754 100%);">
-                <div class="card-body py-5">
-                    <h3 class="fw-bold text-white mb-2">Become a Partner</h3>
-                    <p class="text-white-50 mb-4">Join our network of partners and help shape the future of Kenyan youth through football and education</p>
-                    <a href="{{ route('contact') }}" class="btn btn-light btn-lg px-5">
+            <div class="card border-0 shadow-lg" style="background: linear-gradient(135deg, #001f3f 0%, #003366 100%);">
+                <div class="card-body py-4 px-4">
+                    <h4 class="fw-bold text-white mb-2">Become a Partner</h4>
+                    <p class="text-white-50 mb-3">Join our network of partners and help shape the future of Kenyan youth through football and education</p>
+                    <a href="{{ route('contact') }}" class="btn btn-light">
                         <i class="fas fa-handshake me-2"></i>Partner With Us
                     </a>
                 </div>
@@ -461,180 +446,70 @@
 @endif
 
 <style>
-/* Hero Section */
-.hero-section {
-    min-height: 70vh;
-    display: flex;
-    align-items: center;
-    padding: 3rem 0;
+/* Home Page Hero Section Styles */
+
+/* ========================================
+   PROGRAM FEATURES - RESPONSIVE ICONS
+   Desktop: Show icons | Mobile: Hide icons
+   ======================================== */
+
+/* Desktop (lg) and above - Show icons */
+@media (min-width: 992px) {
+    .program-features li {
+        display: flex;
+        align-items: center;
+        padding-left: 0.25rem;
+    }
+
+    .program-icon-desktop {
+        display: inline-block !important;
+        width: 20px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    /* Add subtle bullet styling for desktop */
+    .program-features li::before {
+        content: '';
+        display: none; /* Using icons instead */
+    }
 }
 
-.hero-content {
-    position: relative;
-    z-index: 2;
+/* Mobile and Tablet - Hide icons, clean text layout */
+@media (max-width: 991px) {
+    .program-features li {
+        display: block;
+        text-align: left;
+    }
+
+    .program-icon-desktop {
+        display: none !important;
+    }
+
+    /* Add clean bullet points for mobile without icons */
+    .program-features li {
+        position: relative;
+        padding-left: 1rem;
+    }
+
+    .program-features li::before {
+        content: '•';
+        position: absolute;
+        left: 0;
+        color: var(--gray-600);
+    }
 }
 
-.hero-title {
-    font-size: 2.5rem;
-    line-height: 1.2;
-}
-
-.hero-subtitle {
-    font-size: 1rem;
-    line-height: 1.6;
-    opacity: 0.95;
-    max-width: 750px;
-}
-
-.hero-buttons .btn {
-    font-size: 1rem;
-}
-
-/* Section Titles */
-.section-title {
-    font-size: 2rem;
-    line-height: 1.3;
-}
-
-.section-subtitle {
-    font-size: 1rem;
-}
-
-.section-text {
-    font-size: 1rem;
-    line-height: 1.6;
-}
-
-/* Program Cards */
-.program-card {
-    transition: all 0.3s ease;
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-.program-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
-}
-
-.program-icon {
-    transition: transform 0.3s ease;
-}
-
-.program-card:hover .program-icon {
-    transform: scale(1.05);
-}
-
-/* Story Cards */
-.story-card {
-    transition: all 0.3s ease;
-    border-radius: 12px;
-}
-
-.story-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
-}
-
-/* Feature Items */
-.feature-item {
-    padding: 0.5rem;
-    transition: transform 0.2s ease;
-}
-
-.feature-item:hover {
-    transform: translateX(5px);
-}
-
-/* Sections Spacing */
-.py-5 {
-    padding-top: 3rem !important;
-    padding-bottom: 3rem !important;
-}
-
-/* Mobile Responsive */
-@media (max-width: 576px) {
+/* Hero Section - Desktop */
+@media (min-width: 992px) {
     .hero-section {
         min-height: 85vh;
+        max-height: 900px;
+        padding-top: 80px;
+    }
+
+    .hero-content {
         padding: 2rem 0;
-    }
-
-    .hero-title {
-        font-size: 1.75rem;
-    }
-
-    .hero-subtitle {
-        font-size: 0.9rem;
-    }
-
-    .hero-buttons .btn {
-        font-size: 0.9rem;
-        padding: 0.75rem 1.5rem !important;
-    }
-
-    .section-title {
-        font-size: 1.5rem;
-    }
-
-    .section-subtitle,
-    .section-text {
-        font-size: 0.9rem;
-    }
-
-    .py-5 {
-        padding-top: 2.5rem !important;
-        padding-bottom: 2.5rem !important;
-    }
-
-    .programs-section {
-        padding-bottom: 1rem !important;
-    }
-
-    .program-card .card-body,
-    .story-card .card-body {
-        padding: 1.25rem !important;
-    }
-
-    .feature-item {
-        padding: 0.25rem;
-    }
-
-    .feature-item i {
-        font-size: 1rem !important;
-    }
-
-    .feature-item .fw-semibold {
-        font-size: 0.85rem;
-    }
-
-    .feature-item small {
-        font-size: 0.75rem;
-    }
-}
-
-/* Tablet */
-@media (min-width: 577px) and (max-width: 768px) {
-    .hero-section {
-        min-height: 75vh;
-    }
-
-    .hero-title {
-        font-size: 2rem;
-    }
-
-    .hero-subtitle {
-        font-size: 0.95rem;
-    }
-
-    .section-title {
-        font-size: 1.75rem;
-    }
-}
-
-/* Desktop */
-@media (min-width: 1200px) {
-    .hero-section {
-        min-height: 65vh;
     }
 
     .hero-title {
@@ -645,186 +520,375 @@
         font-size: 1.1rem;
     }
 
-    .section-title {
+    .hero-buttons .btn {
+        font-size: 1rem;
+        padding: 0.75rem 1.5rem;
+    }
+}
+
+/* Tablet */
+@media (min-width: 576px) and (max-width: 991px) {
+    .hero-section {
+        min-height: 65vh;
+        padding-top: 80px;
+    }
+
+    .hero-title {
         font-size: 2.25rem;
     }
+}
 
-    .container {
-        max-width: 1200px;
+/* Mobile */
+@media (max-width: 575px) {
+    .hero-section {
+        min-height: 60vh;
+        padding-top: 70px;
+        padding-bottom: 2rem;
+    }
+
+    .hero-title {
+        font-size: 1.75rem;
+    }
+
+    .hero-subtitle {
+        font-size: 0.95rem;
+    }
+
+    /* ========================================
+       HERO BUTTONS - 2x2 GRID LAYOUT ON MOBILE
+       Two rows of two buttons each
+       ======================================== */
+    .hero-buttons {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+        width: 100%;
+    }
+
+    .hero-buttons .btn {
+        width: 100% !important;
+        text-align: center;
+        padding: 14px 12px !important;
+        font-size: 0.875rem !important;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        border-radius: 8px;
+    }
+
+    .hero-buttons .btn i {
+        font-size: 0.9rem;
+        margin-right: 6px;
     }
 }
 
-/* Partners Section Styles */
-.partners-section {
-    position: relative;
+/* Partners Section - Desktop Override */
+@media (min-width: 1200px) {
+    .partners-section {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .partners-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #ea1c4d, #fbc761, #ea1c4d);
+    }
+}
+
+/* Mobile styles for partners */
+@media (max-width: 576px) {
+    .partners-section .stats-card {
+        margin-bottom: 0.5rem;
+    }
+
+    .partners-carousel-container {
+        padding: 0.5rem;
+    }
+}
+
+/* ========================================
+   CONTINUOUS HORIZONTAL SCROLLING CAROUSEL
+   Seamless infinite scroll from right to left
+   ======================================== */
+
+.partners-carousel-wrapper {
     overflow: hidden;
+    position: relative;
+    width: 100%;
+    padding: 1rem 0;
+    background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(248,249,250,1) 50%, rgba(255,255,255,1) 100%);
+    border-top: 1px solid rgba(0,0,0,0.05);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
-.partners-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #0d6efd, #198754, #0d6efd);
+.partners-carousel-track {
+    display: flex;
+    gap: 1.5rem;
+    width: max-content;
+    animation: scroll-left 30s linear infinite;
+    padding-left: 0;
+    padding-right: 0;
 }
 
-/* Platinum Partner Cards */
-.partner-card-platinum {
-    border-radius: 16px;
-    transition: all 0.4s ease;
-    background: linear-gradient(145deg, #ffffff 0%, #fffbf0 100%);
+.partners-carousel-track:hover {
+    animation-play-state: paused;
 }
 
-.partner-card-platinum:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(255, 193, 7, 0.2) !important;
+@keyframes scroll-left {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
 }
 
-.partner-logo-container-platinum {
-    width: 60px;
-    height: 60px;
+.partner-logo-item {
+    flex-shrink: 0;
+    width: 180px;
+}
+
+.partner-logo-card {
+    background: #fff;
     border-radius: 12px;
-    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+    padding: 1.25rem 1rem;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border: 1px solid rgba(0,0,0,0.04);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.partner-logo-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.partner-logo-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+    height: 60px;
+    width: 100%;
+    margin-bottom: 0.75rem;
 }
 
-.partner-logo-platinum {
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: white;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+.partner-logo-img {
+    max-width: 100%;
+    max-height: 50px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: grayscale(20%);
+    transition: filter 0.3s ease;
 }
 
-/* Gold Partner Cards */
-.partner-card-gold {
-    border-radius: 12px;
-    transition: all 0.3s ease;
-    background: linear-gradient(145deg, #ffffff 0%, #f0fff4 100%);
+.partner-logo-card:hover .partner-logo-img {
+    filter: grayscale(0%);
 }
 
-.partner-card-gold:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(25, 135, 84, 0.15) !important;
-}
-
-.partner-logo-container-gold {
+.partner-initials {
     width: 50px;
     height: 50px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+    border-radius: 50%;
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
-}
-
-.partner-logo-gold {
-    font-size: 1rem;
     font-weight: 700;
-    color: white;
+    font-size: 1.1rem;
 }
 
-/* Silver Partner Cards */
-.partner-card-silver {
-    border-radius: 10px;
-    transition: all 0.3s ease;
-    background: #ffffff;
-}
-
-.partner-card-silver:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(13, 110, 253, 0.1) !important;
-}
-
-.partner-logo-container-silver {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #0d6efd 0%, #6ea8fe 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 3px 10px rgba(13, 110, 253, 0.25);
-}
-
-.partner-logo-silver {
+.partner-name {
     font-size: 0.85rem;
     font-weight: 600;
-    color: white;
+    color: #333;
+    line-height: 1.3;
 }
 
-/* Partner Stats Cards */
-.stats-card {
-    border-radius: 16px;
-    transition: all 0.3s ease;
-}
+/* ========================================
+   CAROUSEL RESPONSIVE STYLES
+   ======================================== */
 
-.stats-card:hover {
-    transform: scale(1.02);
-}
-
-.stats-icon i {
-    transition: transform 0.3s ease;
-}
-
-.stats-card:hover .stats-icon i {
-    transform: scale(1.1);
-}
-
-/* Partner CTA Gradient Card */
-.bg-gradient {
-    border-radius: 20px;
-    overflow: hidden;
-}
-
-/* Partner Section Animations */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
+/* Tablet */
+@media (max-width: 991px) {
+    .partners-carousel-track {
+        gap: 1.25rem;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+
+    .partner-logo-item {
+        width: 150px;
     }
-}
 
-.partner-card-platinum,
-.partner-card-gold,
-.partner-card-silver {
-    animation: fadeInUp 0.6s ease forwards;
-}
+    .partner-logo-card {
+        padding: 1rem 0.75rem;
+    }
 
-/* Responsive Partner Styles */
-@media (max-width: 768px) {
-    .partner-logo-container-platinum {
-        width: 50px;
+    .partner-logo-wrapper {
         height: 50px;
     }
 
-    .partner-logo-platinum {
-        font-size: 1rem;
-    }
-
-    .partner-logo-container-gold {
-        width: 40px;
-        height: 40px;
-    }
-
-    .partner-logo-gold {
-        font-size: 0.85rem;
+    .partner-logo-img {
+        max-height: 40px;
     }
 }
 
-/* Partner Badge Styles */
-.badge {
-    font-weight: 600;
-    letter-spacing: 0.5px;
+/* Mobile Landscape */
+@media (max-width: 576px) {
+    .partners-carousel-track {
+        gap: 1rem;
+        animation-duration: 25s;
+    }
+
+    .partner-logo-item {
+        width: 130px;
+    }
+
+    .partner-logo-card {
+        padding: 0.875rem 0.5rem;
+        border-radius: 10px;
+    }
+
+    .partner-logo-wrapper {
+        height: 45px;
+        margin-bottom: 0.5rem;
+    }
+
+    .partner-logo-img {
+        max-height: 35px;
+    }
+
+    .partner-initials {
+        width: 40px;
+        height: 40px;
+        font-size: 0.9rem;
+    }
+
+    .partner-name {
+        font-size: 0.75rem;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 400px) {
+    .partners-carousel-track {
+        gap: 0.75rem;
+    }
+
+    .partner-logo-item {
+        width: 110px;
+    }
+
+    .partner-logo-card {
+        padding: 0.75rem 0.375rem;
+    }
+
+    .partner-logo-wrapper {
+        height: 40px;
+    }
+
+    .partner-logo-img {
+        max-height: 30px;
+    }
+
+    .partner-initials {
+        width: 35px;
+        height: 35px;
+        font-size: 0.8rem;
+    }
+
+    .partner-name {
+        font-size: 0.7rem;
+    }
+}
+
+/* ========================================
+   STATS/IMPACT CARDS - MOBILE HEIGHT REDUCTION
+   Reduce height by 50% on screens < 992px
+   ======================================== */
+
+@media (max-width: 991px) {
+    .stat-card {
+        min-height: auto !important;
+        padding: 1rem !important;
+    }
+
+    .stat-card .stat-icon {
+        margin-bottom: 0.5rem !important;
+    }
+
+    .stat-card .stat-icon i {
+        font-size: 1.5rem !important;
+    }
+
+    .stat-card .stat-number {
+        font-size: 1.5rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+
+    .stat-card .stat-label {
+        font-size: 0.75rem !important;
+        line-height: 1.3;
+    }
+}
+
+/* ========================================
+   STATS/IMPACT CARDS - 2-COLUMN GRID ON MOBILE
+   Max-width 576px: 2-column grid layout
+   ======================================== */
+
+@media (max-width: 576px) {
+    #impact-stats {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.75rem !important;
+    }
+
+    #impact-stats > div {
+        grid-column: span 1 !important;
+    }
+
+    #impact-stats .stat-card {
+        padding: 0.75rem !important;
+        min-height: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        text-align: center !important;
+    }
+
+    #impact-stats .stat-card .stat-icon {
+        margin-bottom: 0.35rem !important;
+    }
+
+    #impact-stats .stat-card .stat-icon i {
+        font-size: 1.25rem !important;
+    }
+
+    #impact-stats .stat-card .stat-number {
+        font-size: 1.25rem !important;
+        margin-bottom: 0.15rem !important;
+        line-height: 1.2;
+    }
+
+    #impact-stats .stat-card .stat-label {
+        font-size: 0.65rem !important;
+        line-height: 1.2;
+        margin-bottom: 0 !important;
+    }
 }
 </style>
 @endsection
@@ -832,40 +896,70 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Intersection Observer for count-up animation
     const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.3
     };
 
-    const observer = new IntersectionObserver((entries) => {
+    const countUpObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                const counters = entry.target.querySelectorAll('.stats-number');
-                counters.forEach(counter => {
-                    const target = parseInt(counter.textContent.replace(/,/g, ''));
-                    let current = 0;
-                    const increment = target / 100;
-                    const step = 20;
+                const statCards = entry.target.querySelectorAll('.stat-card');
 
-                    const timer = setInterval(() => {
-                        current += increment;
-                        if (current >= target) {
-                            counter.textContent = target.toLocaleString();
-                            clearInterval(timer);
-                        } else {
-                            counter.textContent = Math.floor(current).toLocaleString();
-                        }
-                    }, step);
+                statCards.forEach((card, index) => {
+                    const numberEl = card.querySelector('.stat-number');
+                    if (numberEl) {
+                        const target = parseInt(numberEl.dataset.target);
+                        const suffix = numberEl.dataset.suffix || '';
+                        const delay = index * 150;
+
+                        setTimeout(() => {
+                            animateCounter(numberEl, target, suffix);
+                        }, delay);
+                    }
                 });
+
                 observer.unobserve(entry.target);
             }
         });
     }, observerOptions);
 
-    const statsSection = document.querySelector('.stats-section');
-    if (statsSection) {
-        observer.observe(statsSection);
+    const impactStats = document.getElementById('impact-stats');
+    if (impactStats) {
+        countUpObserver.observe(impactStats);
+    }
+
+    function animateCounter(element, target, suffix) {
+        const duration = 2000;
+        const startTime = performance.now();
+        const startValue = 0;
+
+        function easeOutQuart(t) {
+            return 1 - Math.pow(1 - t, 4);
+        }
+
+        function updateCounter(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const easedProgress = easeOutQuart(progress);
+            const currentValue = Math.round(startValue + (target - startValue) * easedProgress);
+
+            element.textContent = currentValue + suffix;
+            element.classList.add('counting');
+
+            if (progress < 1) {
+                requestAnimationFrame(updateCounter);
+            } else {
+                element.textContent = target + suffix;
+                element.classList.remove('counting');
+            }
+        }
+
+        requestAnimationFrame(updateCounter);
     }
 });
 </script>
 @endpush
+

@@ -24,7 +24,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', __('Dashboard - Vipers Academy'))</title>
+    <title>@yield('title', __('Dashboard - GameSuite'))</title>
 
     {{-- Favicon --}}
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
@@ -94,13 +94,18 @@
         </div>
         @endif
 
+        {{-- Trial Notification --}}
+        @auth
+            @include('components.trial-notification')
+        @endauth
+
         {{-- Page Content --}}
         @yield('content')
 
         {{-- Footer --}}
         <footer class="dashboard-footer">
             <div class="dashboard-footer-content">
-                <div>&copy; {{ date('Y') }} {{ __('Vipers Academy') }}. {{ __('All rights reserved.') }}</div>
+                <div>&copy; {{ date('Y') }} {{ __('GameSuite') }}. {{ __('All rights reserved.') }}</div>
             </div>
         </footer>
     </main>
@@ -256,3 +261,4 @@
 </body>
 
 </html>
+

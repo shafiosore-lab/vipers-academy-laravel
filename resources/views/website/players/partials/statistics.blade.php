@@ -38,3 +38,4 @@
         <canvas id="performanceChart"></canvas>
     </div>
 @endif
+

@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', __('Dashboard - ') . $organizationName)
 
@@ -118,7 +118,7 @@
         <div class="dashboard-card">
             <div class="card-header">
                 <h3><i class="fas fa-users me-2" aria-hidden="true"></i>{{ __('Recent Players') }}</h3>
-                <a href="{{ route('admin.players.index') }}" class="card-link">{{ __('View All') }}</a>
+                <span class="card-link">{{ __('View All') }}</span>
             </div>
             <div class="card-body">
                 @forelse($recentPlayers as $player)
@@ -144,7 +144,7 @@
         <div class="dashboard-card">
             <div class="card-header">
                 <h3><i class="fas fa-user-plus me-2" aria-hidden="true"></i>{{ __('Recent Enrollments') }}</h3>
-                <a href="{{ route('admin.enrollment.index') }}" class="card-link">{{ __('View All') }}</a>
+                <span class="card-link">{{ __('View All') }}</span>
             </div>
             <div class="card-body">
                 @forelse($recentEnrollments as $enrollment)
@@ -254,7 +254,7 @@
     <div class="quick-actions">
         <h2><i class="fas fa-bolt me-2" aria-hidden="true"></i>{{ __('Quick Actions') }}</h2>
         <div class="actions-grid">
-            <a href="{{ route('admin.players.create') }}" class="action-card">
+            <a href="#" class="action-card">
                 <div class="action-icon">
                     <i class="fas fa-user-plus" aria-hidden="true"></i>
                 </div>
@@ -264,7 +264,7 @@
                 </div>
             </a>
 
-            <a href="{{ route('admin.programs.create') }}" class="action-card">
+            <a href="#" class="action-card">
                 <div class="action-icon">
                     <i class="fas fa-graduation-cap" aria-hidden="true"></i>
                 </div>
@@ -274,7 +274,7 @@
                 </div>
             </a>
 
-            <a href="{{ route('admin.staff.create') }}" class="action-card">
+            <a href="#" class="action-card">
                 <div class="action-icon">
                     <i class="fas fa-user-tie" aria-hidden="true"></i>
                 </div>
@@ -284,7 +284,7 @@
                 </div>
             </a>
 
-            <a href="{{ route('admin.enrollment.create') }}" class="action-card">
+            <a href="#" class="action-card">
                 <div class="action-icon">
                     <i class="fas fa-clipboard-check" aria-hidden="true"></i>
                 </div>
@@ -294,7 +294,7 @@
                 </div>
             </a>
 
-            <a href="{{ route('admin.attendance.index') }}" class="action-card">
+            <a href="#" class="action-card">
                 <div class="action-icon">
                     <i class="fas fa-calendar-check" aria-hidden="true"></i>
                 </div>
@@ -304,7 +304,7 @@
                 </div>
             </a>
 
-            <a href="{{ route('admin.settings.company') }}" class="action-card">
+            <a href="#" class="action-card">
                 <div class="action-icon">
                     <i class="fas fa-cog" aria-hidden="true"></i>
                 </div>
@@ -943,4 +943,3 @@
 </style>
 @endpush
 
-@endpush

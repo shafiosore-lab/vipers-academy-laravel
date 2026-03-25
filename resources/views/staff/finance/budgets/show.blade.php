@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', $budget->name)
 
@@ -252,3 +252,4 @@
     </div>
 </div>
 @endsection
+

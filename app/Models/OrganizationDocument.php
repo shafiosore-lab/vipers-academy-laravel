@@ -5,34 +5,50 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class OrganizationDocument extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'organization_id',
-        'letterhead_id',
-        'created_by',
-        'title',
+        'name',
+        'description',
         'content',
+        'document_type',
+        'version',
         'status',
-        'page_count',
-        'views',
+        'is_template',
+        'category',
+        'file_path',
+        'file_size',
+        'mime_type',
+        'created_by',
+        'approved_by',
+        'approved_at',
     ];
-
-    protected $casts = [
-        'views' => 'integer',
-        'page_count' => 'integer',
-    ];
-
-    const STATUS_DRAFT = 'draft';
-    const STATUS_PUBLISHED = 'published';
-
-    const MAX_PAGES = 20;
 
     /**
-     * Get the organization that owns this document.
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'content' => 'array',
+        'status' => 'string',
+        'is_template' => 'boolean',
+        'file_size' => 'integer',
+        'approved_at' => 'datetime',
+    ];
+
+    /**
+     * Get the organization that owns the document.
      */
     public function organization(): BelongsTo
     {
@@ -40,15 +56,7 @@ class OrganizationDocument extends Model
     }
 
     /**
-     * Get the letterhead used by this document.
-     */
-    public function letterhead(): BelongsTo
-    {
-        return $this->belongsTo(OrganizationLetterhead::class, 'letterhead_id');
-    }
-
-    /**
-     * Get the user who created this document.
+     * Get the user who created the document.
      */
     public function creator(): BelongsTo
     {
@@ -56,61 +64,91 @@ class OrganizationDocument extends Model
     }
 
     /**
-     * Get available statuses.
+     * Get the user who approved the document.
      */
-    public static function getStatuses(): array
+    public function approver(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    /**
+     * Get the approval workflow for this document.
+     */
+    public function approvals(): HasMany
+    {
+        return $this->hasMany(DocumentApproval::class);
+    }
+
+    /**
+     * Scope a query to only include active documents.
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
+
+    /**
+     * Scope a query to only include templates.
+     */
+    public function scopeTemplates($query)
+    {
+        return $query->where('is_template', true);
+    }
+
+    /**
+     * Scope a query to only include documents for a specific organization.
+     */
+    public function scopeForOrganization($query, $organizationId)
+    {
+        return $query->where('organization_id', $organizationId);
+    }
+
+    /**
+     * Get available document types.
+     */
+    public static function getDocumentTypes()
     {
         return [
-            self::STATUS_DRAFT => 'Draft',
-            self::STATUS_PUBLISHED => 'Published',
+            'contract' => 'Contract',
+            'policy' => 'Policy',
+            'procedure' => 'Procedure',
+            'form' => 'Form',
+            'template' => 'Template',
+            'report' => 'Report',
+            'letter' => 'Letter',
+            'agreement' => 'Agreement',
         ];
     }
 
     /**
-     * Scope to get draft documents.
+     * Get available document categories.
      */
-    public function scopeDraft($query)
+    public static function getCategories()
     {
-        return $query->where('status', self::STATUS_DRAFT);
+        return [
+            'hr' => 'Human Resources',
+            'finance' => 'Finance',
+            'operations' => 'Operations',
+            'legal' => 'Legal',
+            'compliance' => 'Compliance',
+            'marketing' => 'Marketing',
+            'training' => 'Training',
+            'administrative' => 'Administrative',
+        ];
     }
 
     /**
-     * Scope to get published documents.
+     * Get available document statuses.
      */
-    public function scopePublished($query)
+    public static function getStatuses()
     {
-        return $query->where('status', self::STATUS_PUBLISHED);
-    }
-
-    /**
-     * Increment view count.
-     */
-    public function incrementViews(): void
-    {
-        $this->increment('views');
-    }
-
-    /**
-     * Check if document is within page limit.
-     */
-    public function isWithinPageLimit(int $pages = null): bool
-    {
-        $pages = $pages ?? $this->page_count;
-        return $pages <= self::MAX_PAGES;
-    }
-
-    /**
-     * Get excerpt of content (strip HTML tags).
-     */
-    public function getExcerptAttribute(): string
-    {
-        if (!$this->content) {
-            return '';
-        }
-
-        $text = strip_tags($this->content);
-        $text = html_entity_decode($text);
-
-        return substr($text, 0, 150) . (strlen($text) > 150 ? '...' : '');
+        return [
+            'draft' => 'Draft',
+            'pending_approval' => 'Pending Approval',
+            'approved' => 'Approved',
+            'rejected' => 'Rejected',
+            'archived' => 'Archived',
+            'expired' => 'Expired',
+        ];
     }
 }

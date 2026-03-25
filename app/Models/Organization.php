@@ -43,6 +43,7 @@ class Organization extends Model
     const STATUS_SUSPENDED = 'suspended';
     const STATUS_TRIAL = 'trial';
     const STATUS_PENDING = 'pending';
+    const STATUS_SPAM = 'suspended_spam';
 
     // Relationships
     public function users(): HasMany
@@ -53,6 +54,26 @@ class Organization extends Model
     public function players(): HasMany
     {
         return $this->hasMany(Player::class);
+    }
+
+    public function letterheads(): HasMany
+    {
+        return $this->hasMany(OrganizationLetterhead::class);
+    }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(OrganizationDocument::class);
+    }
+
+    public function teams(): HasMany
+    {
+        return $this->hasMany(Team::class);
+    }
+
+    public function branding(): HasMany
+    {
+        return $this->hasMany(OrganizationBranding::class);
     }
 
     public function subscription(): BelongsTo
@@ -88,6 +109,43 @@ class Organization extends Model
         });
     }
 
+    public function scopeInactive($query)
+    {
+        return $query->where('status', self::STATUS_INACTIVE);
+    }
+
+    public function scopeSuspended($query)
+    {
+        return $query->where('status', self::STATUS_SUSPENDED);
+    }
+
+    public function scopeSpam($query)
+    {
+        return $query->where('status', self::STATUS_SPAM);
+    }
+
+    public function scopePending($query)
+    {
+        return $query->where('status', self::STATUS_PENDING);
+    }
+
+    public function scopeExpiredTrial($query)
+    {
+        return $query->where('status', self::STATUS_TRIAL)
+            ->where('trial_ends_at', '<', now());
+    }
+
+    public function scopeWithActiveSubscription($query)
+    {
+        return $query->where(function($q) {
+            $q->where('status', self::STATUS_ACTIVE)
+              ->orWhere(function($subQ) {
+                  $subQ->where('status', self::STATUS_TRIAL)
+                       ->where('trial_ends_at', '>', now());
+              });
+        });
+    }
+
     // Helper methods
     public function isActive(): bool
     {
@@ -101,11 +159,50 @@ class Organization extends Model
                $this->trial_ends_at->isFuture();
     }
 
+    public function isTrialExpired(): bool
+    {
+        return $this->status === self::STATUS_TRIAL &&
+               $this->trial_ends_at &&
+               $this->trial_ends_at->isPast();
+    }
+
     public function hasActiveSubscription(): bool
     {
+        // Check if on active trial
+        if ($this->isOnTrial()) {
+            return true;
+        }
+
+        // Check if has active paid subscription
         return $this->subscription &&
                $this->subscription->status === 'active' &&
                (!$this->subscription->ends_at || $this->subscription->ends_at->isFuture());
+    }
+
+    public function isSuspended(): bool
+    {
+        return $this->status === self::STATUS_SUSPENDED;
+    }
+
+    public function isSpam(): bool
+    {
+        return $this->status === self::STATUS_SPAM;
+    }
+
+    public function canAccessDashboard(): bool
+    {
+        // Active organizations can access
+        if ($this->isActive()) {
+            return true;
+        }
+
+        // Organizations on unexpired trial can access
+        if ($this->isOnTrial()) {
+            return true;
+        }
+
+        // Suspended or spam cannot access
+        return false;
     }
 
     public function canAddUser(): bool

@@ -1,6 +1,6 @@
 @extends('player.portal.layout')
 
-@section('title', 'My Payments - Mumias Vipers Academy')
+@section('title', 'My Payments - GameSuite')
 
 @section('content')
 <div class="content-header">
@@ -216,3 +216,4 @@
     </div>
 </section>
 @endsection
+

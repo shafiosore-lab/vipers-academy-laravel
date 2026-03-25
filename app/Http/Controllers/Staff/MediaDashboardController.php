@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Staff;
 
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
-use App\Models\Gallery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -24,9 +23,6 @@ class MediaDashboardController extends Controller
         $publishedBlogs = Blog::whereNotNull('published_at')->where('published_at', '<=', now())->count();
         $draftBlogs = Blog::whereNull('published_at')->count();
 
-        $totalGallery = Gallery::count();
-        $recentGallery = Gallery::latest()->take(6)->get();
-
         // Announcements - use Blog with 'Announcements' category
         $totalAnnouncements = Blog::where('category', 'Announcements')->count();
         $recentAnnouncements = Blog::where('category', 'Announcements')->latest()->take(5)->get();
@@ -45,8 +41,6 @@ class MediaDashboardController extends Controller
             'totalBlogs',
             'publishedBlogs',
             'draftBlogs',
-            'totalGallery',
-            'recentGallery',
             'totalAnnouncements',
             'recentAnnouncements',
             'blogsByCategory',
@@ -143,11 +137,5 @@ class MediaDashboardController extends Controller
         $blog->update($data);
 
         return redirect()->route('media.blogs')->with('success', 'Blog post updated successfully.');
-    }
-
-    public function gallery()
-    {
-        $gallery = Gallery::orderBy('created_at', 'desc')->paginate(15);
-        return view('staff.media.gallery', compact('gallery'));
     }
 }

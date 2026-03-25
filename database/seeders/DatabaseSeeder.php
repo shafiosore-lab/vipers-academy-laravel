@@ -15,11 +15,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Seed roles and permissions first
+        // Seed authentication (roles, permissions, and test users) - consolidated
         $this->call([
-            RoleSeeder::class,
-            PermissionSeeder::class,
-            RolePermissionSeeder::class,
+            AuthenticationSeeder::class,
         ]);
 
         // Seed all other data
@@ -30,13 +28,13 @@ class DatabaseSeeder extends Seeder
             PlayerSeeder::class,
             BlogSeeder::class,
 //            PartnerSeeder::class,
-            GallerySeeder::class,
             LeagueStandingsSeeder::class,
             TopScorersSeeder::class,
             CleanSheetsSeeder::class,
             GoalkeeperRankingsSeeder::class,
             PaymentCategorySeeder::class,
             FootballTerminologySeeder::class,
+            PageContentSeeder::class,
         ]);
     }
 }

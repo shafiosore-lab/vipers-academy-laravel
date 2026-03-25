@@ -53,7 +53,6 @@ class ModulePermission extends Model
         'organizations' => 'Organizations',
         'subscriptions' => 'Subscriptions',
         'blog' => 'Blog & Media',
-        'gallery' => 'Gallery',
         'payments' => 'Payments',
         'programs' => 'Programs',
         ' standings' => 'Standings',

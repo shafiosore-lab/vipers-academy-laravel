@@ -9,13 +9,21 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Website\RegistrationController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
-    // Register routes removed - using role-based registration instead
+    // Registration route
+    Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
 
-    Route::get('login', [AuthenticatedSessionController::class, 'create'])
-        ->name('login');
+    Route::post('register', [RegisteredUserController::class, 'store']);
+
+    // Signup routes - Unified registration page
+    Route::get('signup', [RegistrationController::class, 'index'])->name('signup');
+    Route::post('signup', [RegistrationController::class, 'store'])->name('signup.post');
+
+    // Login route - shows the login form
+    Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
@@ -41,7 +49,7 @@ Route::middleware('auth')->group(function () {
         ->name('verification.verify');
 
     Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
-        ->middleware('throttle:6,1')
+        ->middleware(['throttle:6,1'])
         ->name('verification.send');
 
     Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])

@@ -138,14 +138,47 @@ class RoleHierarchyService
     }
 
     /**
-     * Get the dashboard route for a user based on their highest role
+     * Get the dashboard route for a user based on their user_type
+     *
+     * IMPORTANT: This method uses ONLY user_type to determine dashboard redirect.
+     * This ensures consistent behavior for all users regardless of their roles.
+     * Roles are ignored for redirect purposes - they only affect permissions.
      */
     public function getDashboardRouteForUser(User $user): string
     {
+        // Map user_type to dashboard route - this is the PRIMARY and ONLY method
+        // Roles are ignored for redirect to ensure consistent dashboard assignment
+        return match($user->user_type) {
+            'player' => 'player.portal.dashboard',
+            'parent' => 'parent.dashboard',
+            'staff' => 'coach.dashboard',      // All staff types go to coach dashboard
+            'partner' => 'partner.dashboard',
+            'admin' => 'admin.dashboard',
+            'super-admin' => 'super-admin.dashboard', // For users with super-admin user_type
+            default => $this->getRoleBasedDashboard($user),
+        };
+    }
+
+    /**
+     * Fallback: Get dashboard based on roles for unknown user_types
+     * This should rarely be needed as all users should have a proper user_type
+     */
+    private function getRoleBasedDashboard(User $user): string
+    {
+        // Eager load roles if not already loaded
+        if (!$user->relationLoaded('roles')) {
+            $user->load('roles');
+        }
+
         $userRoles = $user->roles->pluck('slug')->toArray();
 
         // Find the highest priority role
         $highestRole = $this->getHighestPriorityRole($userRoles);
+
+        // Special handling for super-admin role
+        if (in_array('super-admin', $userRoles)) {
+            return 'super-admin.dashboard';
+        }
 
         return self::DASHBOARD_ROUTES[$highestRole] ?? 'home';
     }

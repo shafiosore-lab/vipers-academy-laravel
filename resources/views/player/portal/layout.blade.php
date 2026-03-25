@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', __('Player Portal - Vipers Academy'))</title>
+    <title>@yield('title', __('Player Portal - GameSuite'))</title>
 
     <!-- Preload critical resources -->
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
@@ -512,10 +512,21 @@
         @media (max-width: 768px) {
             .taskbar-inner {
                 padding: 0 16px;
+                flex-wrap: wrap;
+                gap: 8px;
             }
 
-            .taskbar-brand {
-                display: none;
+            /* Row 1: Brand centered */
+            .taskbar-logo {
+                order: 1;
+                width: 100%;
+                justify-content: center;
+                margin-bottom: 4px;
+            }
+
+            .taskbar-brand,
+            .taskbar-tagline {
+                display: block;
             }
 
             .taskbar-search {
@@ -527,7 +538,18 @@
             }
 
             .taskbar-tools {
+                order: 2;
                 gap: 8px;
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .mobile-menu-toggle {
+                order: 0;
+            }
+
+            .sidebar-toggle-btn {
+                order: 0;
             }
 
             .content-wrapper {
@@ -823,9 +845,9 @@
         <div class="taskbar-inner">
             <!-- Logo -->
             <a href="{{ route('player.portal.dashboard') }}" class="taskbar-logo">
-                <img src="{{ asset('assets/img/logo/vps.jpeg') }}" alt="Vipers Academy Logo">
+                <span class="taskbar-logo-text" style="font-weight: 700; font-size: 1.5rem; color: #ea1c4d;">GameSuite</span>
                 <div>
-                    <div class="taskbar-brand">Vipers Academy</div>
+                    <div class="taskbar-brand">GameSuite</div>
                     <div class="taskbar-tagline">Player Portal</div>
                 </div>
             </a>
@@ -1130,3 +1152,4 @@
     @stack('scripts')
 </body>
 </html>
+

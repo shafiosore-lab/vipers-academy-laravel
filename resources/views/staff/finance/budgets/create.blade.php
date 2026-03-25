@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'Create Budget Plan')
 
@@ -280,3 +280,4 @@
 </script>
 @endpush
 @endsection
+

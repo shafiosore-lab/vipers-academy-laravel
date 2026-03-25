@@ -24,7 +24,14 @@ class PlayerController extends \App\Http\Controllers\Controller
             // Check if the table exists before querying
             if (!\Schema::hasTable('website_uploaded_players')) {
                 \Log::warning('PlayerController@index: website_uploaded_players table does not exist');
-                $players = collect();
+                // Return empty LengthAwarePaginator instead of Collection
+                $players = new \Illuminate\Pagination\LengthAwarePaginator(
+                    collect(),
+                    0,
+                    50,
+                    1,
+                    ['path' => \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPath()]
+                );
                 return view('website.players.index', compact('players'));
             }
 
@@ -84,8 +91,15 @@ class PlayerController extends \App\Http\Controllers\Controller
             ]);
 
         } catch (\Exception $e) {
-            // If table doesn't exist or other error, return empty collection
-            $players = collect();
+            // If table doesn't exist or other error, return empty paginator
+            // Use LengthAwarePaginator instead of Collection to support hasPages()
+            $players = new \Illuminate\Pagination\LengthAwarePaginator(
+                collect(),
+                0,
+                50,
+                1,
+                ['path' => \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPath()]
+            );
 
             // Only log if it's not a "table doesn't exist" error (we already handle that above)
             if (strpos($e->getMessage(), ' doesn\'t exist') === false) {

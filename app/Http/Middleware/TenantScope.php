@@ -10,28 +10,16 @@ use Symfony\Component\HttpFoundation\Response;
 class TenantScope
 {
     /**
-     * Handle an incoming request.
-     * This middleware automatically scopes all queries to the current user's organization.
+     * Bind the authenticated user's organization into the service container
+     * so downstream code can resolve the current tenant without touching the request.
      */
     public function handle(Request $request, Closure $next): Response
     {
         $user = Auth::user();
 
-        // If user is not authenticated or is a super admin, skip tenant scoping
-        if (!$user || $user->hasRole('super-admin')) {
-            return $next($request);
-        }
-
-        // Set the current tenant ID for global access
-        if ($user->organization_id) {
+        if ($user && !$user->hasRole('super-admin') && $user->organization_id) {
             app()->instance('tenant_id', $user->organization_id);
             app()->instance('organization_id', $user->organization_id);
-
-            // Log for debugging
-            \Log::debug('TenantScope: Set tenant_id', [
-                'user_id' => $user->id,
-                'organization_id' => $user->organization_id,
-            ]);
         }
 
         return $next($request);

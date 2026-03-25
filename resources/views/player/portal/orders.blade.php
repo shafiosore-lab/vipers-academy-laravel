@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'Order History - Player Portal')
 
@@ -727,3 +727,4 @@ document.getElementById('searchOrders').addEventListener('input', function() {
 });
 </script>
 @endsection
+

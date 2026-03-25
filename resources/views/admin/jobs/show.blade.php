@@ -263,3 +263,4 @@ function viewApplication(applicationId) {
 }
 </script>
 @endsection
+

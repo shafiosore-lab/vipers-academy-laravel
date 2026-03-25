@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'My Profile - Vipers Academy')
 
@@ -395,3 +395,4 @@
         padding: 5px 10px;
     }
 </style>
+

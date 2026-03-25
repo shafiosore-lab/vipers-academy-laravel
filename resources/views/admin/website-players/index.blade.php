@@ -11,9 +11,7 @@
             <a href="{{ route('admin.website-players.create') }}" class="btn btn-sm btn-primary me-1">
                 <i class="fas fa-plus me-1"></i>Add
             </a>
-            <a href="{{ route('admin.players.sync-gallery') }}" class="btn btn-sm btn-success">
-                <i class="fas fa-sync me-1"></i>Sync
-            </a>
+
         </div>
     </div>
 
@@ -189,3 +187,4 @@
     }
 </style>
 @endpush
+

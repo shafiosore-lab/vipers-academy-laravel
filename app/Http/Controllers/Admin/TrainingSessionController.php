@@ -27,22 +27,48 @@ class TrainingSessionController extends Controller
      * Category mapping constants
      */
     const CATEGORY_MAP = [
+        'U10' => 'u10',
+        'U12' => 'u12',
         'U13' => 'u13',
+        'U14' => 'u14',
         'U15' => 'u15',
+        'U16' => 'u16',
         'U17' => 'u17',
+        'U18' => 'u18',
+        'U20' => 'u20',
         'Senior' => 'senior',
+        'Veteran' => 'veteran',
     ];
 
     public function index(Request $request)
     {
         $query = TrainingSession::with('startedBy');
 
+        // Filter by status
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
+        // Filter by team category
         if ($request->filled('team_category')) {
             $query->where('team_category', $request->team_category);
+        }
+
+        // Filter by gender
+        if ($request->filled('gender') && $request->gender !== 'all') {
+            $query->where('gender', $request->gender);
+        }
+
+        // Filter by organization (for org-admins)
+        $organizationId = null;
+        if (Auth::user()->hasRole('org-admin') && Auth::user()->organization_id) {
+            $organizationId = Auth::user()->organization_id;
+            $query->where('organization_id', $organizationId);
+        }
+
+        // Filter by organization if provided
+        if ($request->filled('organization_id') && $request->organization_id !== 'all') {
+            $query->where('organization_id', $request->organization_id);
         }
 
         if (Auth::user()->hasRole('coach')) {
@@ -57,12 +83,16 @@ class TrainingSessionController extends Controller
             ->pluck('team_category')
             ->sort();
 
-        return view('admin.training-sessions.index', compact('sessions', 'teamCategories'));
+        // Get organizations for filter
+        $organizations = \App\Models\Organization::orderBy('name')->get();
+
+        return view('admin.training-sessions.index', compact('sessions', 'teamCategories', 'organizations'));
     }
 
     public function create()
     {
-        return view('admin.training-sessions.create');
+        $organizations = \App\Models\Organization::orderBy('name')->get();
+        return view('admin.training-sessions.create', compact('organizations'));
     }
 
     public function store(TrainingSessionFormRequest $request)
@@ -70,6 +100,13 @@ class TrainingSessionController extends Controller
         $validated = $request->validated();
         $validated['started_by'] = auth()->id();
         $validated['status'] = 'scheduled';
+
+        // Set organization_id from current user if org-admin
+        if (Auth::user()->hasRole('org-admin') && Auth::user()->organization_id) {
+            $validated['organization_id'] = Auth::user()->organization_id;
+        } elseif ($request->filled('organization_id')) {
+            $validated['organization_id'] = $request->organization_id;
+        }
 
         TrainingSession::create($validated);
 

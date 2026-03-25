@@ -413,12 +413,6 @@
                             <small class="text-muted">Published News</small>
                         </div>
                     </div>
-                    <div class="col-12">
-                        <div class="p-3 border rounded text-center">
-                            <div class="h4 mb-0 text-info">{{ $totalGallery }}</div>
-                            <small class="text-muted">Gallery Items</small>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -458,3 +452,4 @@
     </div>
 </div>
 @endsection
+

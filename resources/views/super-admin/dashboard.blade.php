@@ -105,6 +105,30 @@
     <!-- Quick Links -->
     <div class="row g-2 mb-3">
         <div class="col-md-3">
+            <a href="{{ route('super-admin.tournaments.overview') }}" class="card text-center text-decoration-none border-0 shadow-sm">
+                <div class="card-body py-2">
+                    <i class="fas fa-chart-line fa-lg mb-2 text-info"></i>
+                    <h6 class="small mb-0">Tournament Overview</h6>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ route('super-admin.page-content.index') }}" class="card text-center text-decoration-none border-0 shadow-sm">
+                <div class="card-body py-2">
+                    <i class="fas fa-globe fa-lg mb-2 text-primary"></i>
+                    <h6 class="small mb-0">Website Content</h6>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{{ route('super-admin.tournaments.index') }}" class="card text-center text-decoration-none border-0 shadow-sm">
+                <div class="card-body py-2">
+                    <i class="fas fa-trophy fa-lg mb-2 text-danger"></i>
+                    <h6 class="small mb-0">Tournaments</h6>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
             <a href="{{ route('super-admin.organizations.index') }}" class="card text-center text-decoration-none border-0 shadow-sm">
                 <div class="card-body py-2">
                     <i class="fas fa-building fa-lg mb-2 text-primary"></i>
@@ -135,6 +159,290 @@
                     <h6 class="small mb-0">Analytics</h6>
                 </div>
             </a>
+        </div>
+    </div>
+
+    <!-- Tournament Management Section -->
+    <div class="row g-2 mb-3">
+        <div class="col-12">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white py-2">
+                    <h6 class="mb-0"><i class="fas fa-trophy me-2"></i>Tournament Management</h6>
+                </div>
+                <div class="card-body py-2">
+                    <div class="row g-2">
+                        <div class="col-md-2 col-6">
+                            <a href="{{ route('super-admin.tournaments.create') }}" class="btn btn-outline-primary w-100 btn-sm">
+                                <i class="fas fa-plus"></i> New Tournament
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-primary w-100 btn-sm">
+                                <i class="fas fa-list"></i> All Tournaments
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-6">
+                            <a href="{{ route('super-admin.tournaments.overview') }}" class="btn btn-outline-info w-100 btn-sm">
+                                <i class="fas fa-chart-pie"></i> Overview
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-success w-100 btn-sm">
+                                <i class="fas fa-futbol"></i> Matches
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-warning w-100 btn-sm">
+                                <i class="fas fa-map-marker-alt"></i> Venues
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-secondary w-100 btn-sm">
+                                <i class="fas fa-users"></i> Teams
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Smart Tournament Engine & Match Scheduler -->
+    <div class="row g-2 mb-3">
+        <div class="col-md-6">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white py-2">
+                    <h6 class="mb-0"><i class="fas fa-cogs me-2"></i>Smart Tournament Engine</h6>
+                </div>
+                <div class="card-body py-2">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-success w-100 btn-sm">
+                                <i class="fas fa-puzzle-piece"></i> Custom Formats
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-info w-100 btn-sm">
+                                <i class="fas fa-star"></i> ELO Rankings
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-warning w-100 btn-sm">
+                                <i class="fas fa-user-tie"></i> Referee Allocation
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-primary w-100 btn-sm">
+                                <i class="fas fa-route"></i> Travel Optimization
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white py-2">
+                    <h6 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Match Scheduler</h6>
+                </div>
+                <div class="card-body py-2">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-info w-100 btn-sm">
+                                <i class="fas fa-magic"></i> Auto Schedule
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-warning w-100 btn-sm">
+                                <i class="fas fa-exclamation-triangle"></i> Conflict Detection
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-success w-100 btn-sm">
+                                <i class="fas fa-sitemap"></i> Bracket Generator
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-primary w-100 btn-sm">
+                                <i class="fas fa-list-ol"></i> League Schedule
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Digital Player Ecosystem & Governance -->
+    <div class="row g-2 mb-3">
+        <div class="col-md-6">
+            <div class="card border-secondary">
+                <div class="card-header bg-secondary text-white py-2">
+                    <h6 class="mb-0"><i class="fas fa-users me-2"></i>Digital Player Ecosystem</h6>
+                </div>
+                <div class="card-body py-2">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <a href="{{ route('admin.players.index') }}" class="btn btn-outline-secondary w-100 btn-sm">
+                                <i class="fas fa-user"></i> All Players
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-danger w-100 btn-sm">
+                                <i class="fas fa-user-injured"></i> Injuries
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-primary w-100 btn-sm">
+                                <i class="fas fa-exchange-alt"></i> Transfers
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-warning w-100 btn-sm">
+                                <i class="fas fa-file-contract"></i> Contracts
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark py-2">
+                    <h6 class="mb-0"><i class="fas fa-gavel me-2"></i>Governance & Compliance</h6>
+                </div>
+                <div class="card-body py-2">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-warning w-100 btn-sm">
+                                <i class="fas fa-birthday-cake"></i> Age Verification
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-danger w-100 btn-sm">
+                                <i class="fas fa-balance-scale"></i> Disciplinary
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-dark w-100 btn-sm">
+                                <i class="fas fa-hands-helping"></i> Appeals
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-info w-100 btn-sm">
+                                <i class="fas fa-flag"></i> Protests
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Infrastructure & Operations -->
+    <div class="row g-2 mb-3">
+        <div class="col-md-4">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white py-2">
+                    <h6 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Venue Management</h6>
+                </div>
+                <div class="card-body py-2">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-primary w-100 btn-sm">
+                                <i class="fas fa-plus-circle"></i> Add Venue
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-success w-100 btn-sm">
+                                <i class="fas fa-calendar-check"></i> Availability
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-warning w-100 btn-sm">
+                                <i class="fas fa-bookmark"></i> Bookings
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-info w-100 btn-sm">
+                                <i class="fas fa-building"></i> Facilities
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-secondary">
+                <div class="card-header bg-secondary text-white py-2">
+                    <h6 class="mb-0"><i class="fas fa-user-tie me-2"></i>Referee Management</h6>
+                </div>
+                <div class="card-body py-2">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-secondary w-100 btn-sm">
+                                <i class="fas fa-user-plus"></i> Add Referee
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-primary w-100 btn-sm">
+                                <i class="fas fa-graduation-cap"></i> Training
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-warning w-100 btn-sm">
+                                <i class="fas fa-star-half-alt"></i> Reviews
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-info w-100 btn-sm">
+                                <i class="fas fa-certificate"></i> Certifications
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white py-2">
+                    <h6 class="mb-0"><i class="fas fa-layer-group me-2"></i>Match Types</h6>
+                </div>
+                <div class="card-body py-2">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-primary w-100 btn-sm">
+                                <i class="fas fa-trophy"></i> Tournament
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-success w-100 btn-sm">
+                                <i class="fas fa-league"></i> League
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-warning w-100 btn-sm">
+                                <i class="fas fa-handshake"></i> Friendly
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-danger w-100 btn-sm">
+                                <i class="fas fa-eject"></i> Knockout
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-info w-100 btn-sm">
+                                <i class="fas fa-object-group"></i> Group Stage
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('super-admin.tournaments.index') }}" class="btn btn-outline-secondary w-100 btn-sm">
+                                <i class="fas fa-theater-masks"></i> Exhibition
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -205,3 +513,4 @@
     }
 </style>
 @endpush
+

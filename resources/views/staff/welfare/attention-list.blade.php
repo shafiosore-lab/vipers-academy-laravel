@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'Attention List - Welfare Officer - Vipers Academy')
 
@@ -152,3 +152,4 @@ function markFollowUp(playerId) {
 }
 </script>
 @endsection
+

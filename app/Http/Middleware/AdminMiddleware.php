@@ -10,73 +10,41 @@ use Symfony\Component\HttpFoundation\Response;
 class AdminMiddleware
 {
     /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * Role-based access control for admin/staff areas.
+     * Approval and account status checks are handled upstream by CheckUserStatus.
      */
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check()) {
-            \Log::warning('AdminMiddleware: User not authenticated', ['ip' => $request->ip(), 'url' => $request->url()]);
-            return redirect()->route('login')->with('error', 'Please login to access this area.');
+            return redirect()->route('login')
+                ->with('error', 'Please login to access this area.');
         }
 
         $user = Auth::user();
 
-        // DIAGNOSTIC LOGGING
-        \Log::info('AdminMiddleware: User details', [
-            'user_id' => $user->id,
-            'email' => $user->email,
-            'user_type' => $user->user_type,
-            'approval_status' => $user->approval_status,
-            'status' => $user->status,
-            'is_admin' => $user->isAdmin(),
-            'is_super_admin' => $user->isSuperAdmin(),
-            'is_active' => $user->isActive(),
-            'is_approved' => $user->isApproved(),
-            'roles' => $user->roles->pluck('slug', 'name')->toArray(),
-        ]);
-
-        // Allow superadmins to bypass admin role checks - they have full access
+        // Super-admins bypass all role checks — full access granted.
         if ($user->isSuperAdmin()) {
-            \Log::info('AdminMiddleware: Superadmin user bypassed admin role check', ['user_id' => $user->id]);
             return $next($request);
         }
 
-        // Check if user has any admin role or is staff with appropriate permissions
-        // Note: super-admin is handled separately by CheckSuperAdmin middleware
-        // This middleware focuses on staff/admin roles within organizations
-        $adminRoles = ['marketing-admin', 'scouting-admin', 'operations-admin', 'admin-operations', 'partner-operations', 'coaching-admin', 'finance-admin', 'org-admin'];
-        $staffRoles = ['coach', 'assistant-coach', 'head-coach']; // Staff roles that should have basic admin access
+        $permitted = [
+            'marketing-admin', 'scouting-admin', 'operations-admin',
+            'admin-operations', 'partner-operations', 'coaching-admin',
+            'finance-admin', 'org-admin',
+            // Staff roles with basic admin access
+            'coach', 'assistant-coach', 'head-coach',
+        ];
 
-        $userRoles = $user->roles->pluck('slug')->toArray();
-        $hasAdminRole = $user->hasAnyRole($adminRoles);
-        $hasStaffRole = $user->hasAnyRole($staffRoles);
-        $hasRequiredRole = $hasAdminRole || $hasStaffRole;
+        if (!$user->hasAnyRole($permitted)) {
+            // Redirect to their own dashboard rather than showing a hard 403
+            // Use RoleHierarchyService to determine correct dashboard
+            $hierarchyService = new \App\Services\RoleHierarchyService();
+            $dashboardRoute = $hierarchyService->getDashboardRouteForUser($user);
 
-        \Log::info('AdminMiddleware: Role check', [
-            'user_id' => $user->id,
-            'user_roles' => $userRoles,
-            'required_admin_roles' => $adminRoles,
-            'required_staff_roles' => $staffRoles,
-            'has_admin_role' => $hasAdminRole,
-            'has_staff_role' => $hasStaffRole,
-            'has_required_role' => $hasRequiredRole,
-        ]);
-
-        if (!$hasRequiredRole) {
-            \Log::warning('AdminMiddleware: Access denied - missing roles', ['user_id' => $user->id, 'roles' => $userRoles]);
-            abort(403, 'Access denied. Insufficient permissions.');
+            return redirect()->route($dashboardRoute)
+                ->with('error', 'You do not have permission to access that area.');
         }
 
-        // Check if user is approved
-        if (!$user->isApproved()) {
-            \Log::warning('AdminMiddleware: User not approved, logging out', ['user_id' => $user->id, 'approval_status' => $user->approval_status]);
-            Auth::logout();
-            return redirect('/')->with('error', 'Your account is pending approval. Please contact the academy administration.');
-        }
-
-        \Log::info('AdminMiddleware: Access granted', ['user_id' => $user->id]);
         return $next($request);
     }
 }

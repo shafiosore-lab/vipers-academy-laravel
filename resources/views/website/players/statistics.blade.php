@@ -330,3 +330,4 @@ function updatePlayerStatistics(playerData) {
 }
 </script>
 @endsection
+

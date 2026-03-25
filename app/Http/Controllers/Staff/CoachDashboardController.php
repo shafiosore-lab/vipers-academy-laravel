@@ -33,7 +33,7 @@ class CoachDashboardController extends Controller
         $todaySessions = TrainingSession::whereDate('scheduled_start_time', today())->get();
 
         // Get recent attendance
-        $recentAttendance = Attendance::with(['player', 'trainingSession'])
+        $recentAttendance = Attendance::with(['player', 'session'])
             ->orderBy('created_at', 'desc')
             ->take(10)
             ->get();
@@ -72,7 +72,7 @@ class CoachDashboardController extends Controller
 
     public function playerProgress($playerId)
     {
-        $player = Player::with(['attendance.trainingSession'])->findOrFail($playerId);
+        $player = Player::with(['attendance.session'])->findOrFail($playerId);
 
         $attendanceRate = $player->attendance()->count() > 0
             ? round(($player->attendance()->where('status', 'present')->count() / $player->attendance()->count()) * 100, 1)

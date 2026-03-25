@@ -147,14 +147,128 @@ class AdminStandingsController extends Controller
             ->with('success', 'Bulk import feature coming soon!');
     }
 
+    public function showExportPage(Request $request)
+    {
+        $type = $request->get('type', 'league');
+
+        // Get available seasons and leagues for filters
+        $seasons = LeagueStanding::distinct('season')->pluck('season')->sort()->reverse();
+        $leagues = LeagueStanding::distinct('league_name')->pluck('league_name')->sort();
+
+        return view('admin.standings.export', compact('type', 'seasons', 'leagues'));
+    }
+
     public function export(Request $request)
     {
         $type = $request->get('type', 'league');
         $season = $request->get('season');
         $league = $request->get('league');
 
-        return redirect()->route('admin.standings.index', ['type' => $type])
-            ->with('success', 'Export feature coming soon!');
+        $model = $this->getModel($type);
+
+        // Build query with filters
+        $query = $model::query();
+
+        if ($season) {
+            $query->where('season', $season);
+        }
+
+        if ($league && $type === 'league') {
+            $query->where('league_name', $league);
+        }
+
+        $data = $query->orderBy('season', 'desc')
+            ->orderBy($type === 'scorers' ? 'ranking_position' : 'position')
+            ->get();
+
+        if ($data->isEmpty()) {
+            return redirect()->route('admin.standings.index', ['type' => $type])
+                ->with('warning', 'No data available for export.');
+        }
+
+        $filename = $type . '_standings_' . now()->format('Y-m-d_H-i-s') . '.csv';
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"$filename\"",
+        ];
+
+        $callback = function() use ($data, $type) {
+            $file = fopen('php://output', 'w');
+
+            // Write headers based on type
+            switch ($type) {
+                case 'league':
+                    fputcsv($file, ['Position', 'Team', 'Played', 'Won', 'Drawn', 'Lost', 'GF', 'GA', 'GD', 'Points', 'Season', 'League']);
+                    foreach ($data as $item) {
+                        fputcsv($file, [
+                            $item->position,
+                            $item->team_name,
+                            $item->played,
+                            $item->won,
+                            $item->drawn,
+                            $item->lost,
+                            $item->goals_for,
+                            $item->goals_against,
+                            $item->goal_difference,
+                            $item->points,
+                            $item->season,
+                            $item->league_name
+                        ]);
+                    }
+                    break;
+
+                case 'scorers':
+                    fputcsv($file, ['Rank', 'Player', 'Team', 'Goals', 'Assists', 'Matches', 'Season', 'League']);
+                    foreach ($data as $item) {
+                        fputcsv($file, [
+                            $item->ranking_position,
+                            $item->player_name,
+                            $item->team_name,
+                            $item->goals,
+                            $item->assists,
+                            $item->matches_played,
+                            $item->season,
+                            $item->league_name
+                        ]);
+                    }
+                    break;
+
+                case 'cleansheets':
+                    fputcsv($file, ['Rank', 'Goalkeeper', 'Team', 'Clean Sheets', 'Matches', 'Season', 'League']);
+                    foreach ($data as $item) {
+                        fputcsv($file, [
+                            $item->ranking_position,
+                            $item->goalkeeper_name,
+                            $item->team_name,
+                            $item->clean_sheets,
+                            $item->matches_played,
+                            $item->season,
+                            $item->league_name
+                        ]);
+                    }
+                    break;
+
+                case 'goalkeepers':
+                    fputcsv($file, ['Rank', 'Goalkeeper', 'Team', 'Goals Conceded', 'Matches', 'Save Percentage', 'Season', 'League']);
+                    foreach ($data as $item) {
+                        fputcsv($file, [
+                            $item->ranking_position,
+                            $item->goalkeeper_name,
+                            $item->team_name,
+                            $item->goals_conceded,
+                            $item->matches_played,
+                            $item->save_percentage,
+                            $item->season,
+                            $item->league_name
+                        ]);
+                    }
+                    break;
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     protected function getModel($type)

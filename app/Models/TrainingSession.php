@@ -13,6 +13,8 @@ class TrainingSession extends Model
     protected $fillable = [
         'session_type',
         'team_category',
+        'gender',
+        'organization_id',
         'scheduled_start_time',
         'actual_start_time',
         'end_time',
@@ -40,6 +42,11 @@ class TrainingSession extends Model
         return $this->hasMany(Attendance::class, 'session_id');
     }
 
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class);
+    }
+
     // Scopes
     public function scopeActive($query)
     {
@@ -54,6 +61,24 @@ class TrainingSession extends Model
     public function scopeScheduled($query)
     {
         return $query->where('status', 'scheduled');
+    }
+
+    // Scope for gender filtering (boys/girls/mixed)
+    public function scopeForGender($query, $gender)
+    {
+        if ($gender && $gender !== 'all') {
+            return $query->where('gender', $gender);
+        }
+        return $query;
+    }
+
+    // Scope for organization filtering
+    public function scopeForOrganization($query, $organizationId)
+    {
+        if ($organizationId) {
+            return $query->where('organization_id', $organizationId);
+        }
+        return $query;
     }
 
     // Methods
@@ -242,10 +267,17 @@ class TrainingSession extends Model
     {
         // Map session team_category to player category format
         $categoryMapping = [
+            'U10' => 'u10',
+            'U12' => 'u12',
             'U13' => 'u13',
+            'U14' => 'u14',
             'U15' => 'u15',
+            'U16' => 'u16',
             'U17' => 'u17',
+            'U18' => 'u18',
+            'U20' => 'u20',
             'Senior' => 'senior',
+            'Veteran' => 'veteran',
         ];
 
         $playerCategory = $categoryMapping[$this->team_category] ?? $this->team_category;

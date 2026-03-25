@@ -52,10 +52,6 @@
                                 <h5 class="mb-1">{{ $news->total() }}</h5>
                                 <small class="text-muted">News Articles Found</small>
                             </div>
-                            <div class="col-md-3">
-                                <h5 class="mb-1">{{ $gallery->total() }}</h5>
-                                <small class="text-muted">Gallery Items Found</small>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -179,47 +175,6 @@
             </div>
             @endif
 
-            <!-- Gallery Section -->
-            @if($gallery->count() > 0)
-            <div class="row mb-5">
-                <div class="col-12">
-                    <h3 class="h2 fw-bold text-primary mb-4">
-                        <i class="fas fa-images me-2 text-warning"></i>
-                        Gallery
-                    </h3>
-                    <div class="row">
-                        @foreach($gallery as $item)
-                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                            <div class="card h-100 border-0 shadow-sm" style="border-radius: 15px; transition: transform 0.3s ease;">
-                                <div class="card-body p-4 text-center">
-                                    <div class="bg-success rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
-                                         style="width: 60px; height: 60px;">
-                                        @if($item->media_type == 'image')
-                                            <i class="fas fa-image text-white fa-lg"></i>
-                                        @elseif($item->media_type == 'video')
-                                            <i class="fas fa-video text-white fa-lg"></i>
-                                        @else
-                                            <i class="fas fa-file text-white fa-lg"></i>
-                                        @endif
-                                    </div>
-                                    <h6 class="card-title fw-bold mb-2">{{ $item->title }}</h6>
-                                    <small class="text-muted">{{ ucfirst($item->media_type) }}</small>
-                                    <br>
-                                    <a href="{{ route('gallery') }}" class="btn btn-outline-success btn-sm rounded-pill mt-3">
-                                        <i class="fas fa-eye me-1"></i>View Gallery
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
-                    </div>
-                    <div class="text-center mt-4">
-                        {{ $gallery->links() }}
-                    </div>
-                </div>
-            </div>
-            @endif
-
             <!-- No Results -->
             @if($programs->count() === 0 && $players->count() === 0 && $news->count() === 0 && $gallery->count() === 0)
             <div class="row justify-content-center">
@@ -263,10 +218,6 @@
                                     <h6 class="fw-bold"><i class="fas fa-newspaper me-2 text-info"></i>News</h6>
                                     <small class="text-muted">Search by article title or content keywords</small>
                                 </div>
-                                <div class="col-md-3 mb-3">
-                                    <h6 class="fw-bold"><i class="fas fa-images me-2 text-success"></i>Gallery</h6>
-                                    <small class="text-muted">Search by gallery item title</small>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -287,3 +238,4 @@
 }
 </style>
 @endsection
+

@@ -12,7 +12,6 @@ class AdminImageUploadController extends Controller
     protected $allowedFolders = [
         'logo' => 'Logo Images',
         'players' => 'Player Images',
-        'gallery' => 'Gallery Images',
         'news' => 'News Images',
         'programs' => 'Program Images',
         'partners' => 'Partner Images',

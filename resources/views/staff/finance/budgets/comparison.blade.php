@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'Budget vs Actual Comparison')
 
@@ -22,7 +22,7 @@
             <div class="card bg-primary text-white">
                 <div class="card-body">
                     <h6 class="card-title">Total Budgeted</h6>
-                    <h3 class="mb-0">{{ number_format($totalBudgeted, 2) }}</h3>
+                    <h3 class="mb-0">KSh {{ number_format($totalBudgeted, 2) }}</h3>
                 </div>
             </div>
         </div>
@@ -30,7 +30,7 @@
             <div class="card bg-warning text-white">
                 <div class="card-body">
                     <h6 class="card-title">Total Spent</h6>
-                    <h3 class="mb-0">{{ number_format($totalSpent, 2) }}</h3>
+                    <h3 class="mb-0">KSh {{ number_format($totalSpent, 2) }}</h3>
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
             <div class="card {{ $totalBalance >= 0 ? 'bg-success' : 'bg-danger' }} text-white">
                 <div class="card-body">
                     <h6 class="card-title">{{ $totalBalance >= 0 ? 'Total Balance' : 'Total Excess' }}</h6>
-                    <h3 class="mb-0">{{ number_format(abs($totalBalance), 2) }}</h3>
+                    <h3 class="mb-0">KSh {{ number_format(abs($totalBalance), 2) }}</h3>
                 </div>
             </div>
         </div>
@@ -147,3 +147,4 @@
     @endforelse
 </div>
 @endsection
+

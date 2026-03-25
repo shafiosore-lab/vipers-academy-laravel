@@ -7,9 +7,12 @@ use App\Models\Player;
 use App\Models\WebsitePlayer;
 use App\Models\Program;
 use App\Models\Blog;
-use App\Models\Gallery;
 use App\Models\User;
 use App\Models\Document;
+use App\Models\Subscription;
+use App\Models\SubscriptionPlan;
+use App\Models\Organization;
+use App\Services\PermissionService;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -17,6 +20,14 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        // Authorization check - only admins and higher can access dashboard
+        $user = auth()->user();
+        $permissionService = new PermissionService();
+
+        if (!$permissionService->hasRoleOrHigher($user, 'admin')) {
+            abort(403, 'Unauthorized access to dashboard');
+        }
+
         // Cache dashboard data for 5 minutes to improve performance
         $cacheKey = 'admin_dashboard_' . auth()->id();
         $cacheTime = 300; // 5 minutes
@@ -52,31 +63,17 @@ class DashboardController extends Controller
      */
     private function getDashboardData()
     {
-        // Player insights data - count from both tables
+        // Player counts
         $mainPlayersCount = Player::count();
         $websitePlayersCount = WebsitePlayer::count();
         $totalPlayers = $mainPlayersCount + $websitePlayersCount;
 
-        // Main Player table status counts
         $mainApprovedPlayers = Player::where('registration_status', 'Approved')->count();
         $mainPendingPlayers = Player::where('registration_status', 'Pending')->count();
         $mainTemporaryPlayers = Player::where('approval_type', 'temporary')->count();
 
-        // WebsitePlayer status counts (orphaned records = no player_id linked)
         $websiteOrphanedPlayers = WebsitePlayer::whereNull('player_id')->count();
-        $websiteLinkedPlayers = WebsitePlayer::whereNotNull('player_id')->count();
-
-        // Log for debugging
-        \Log::info('Player counts debug', [
-            'main_players' => $mainPlayersCount,
-            'website_players' => $websitePlayersCount,
-            'total_players' => $totalPlayers,
-            'main_approved' => $mainApprovedPlayers,
-            'main_pending' => $mainPendingPlayers,
-            'main_temporary' => $mainTemporaryPlayers,
-            'website_orphaned' => $websiteOrphanedPlayers,
-            'website_linked' => $websiteLinkedPlayers,
-        ]);
+        $websiteLinkedPlayers = $websitePlayersCount - $websiteOrphanedPlayers;
 
         $newPlayersThisMonth = Player::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count();
         $newWebsitePlayersThisMonth = WebsitePlayer::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count();
@@ -85,23 +82,20 @@ class DashboardController extends Controller
         $playersLastMonth = Player::whereBetween('created_at', [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()])->count();
         $websitePlayersLastMonth = WebsitePlayer::whereBetween('created_at', [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()])->count();
         $totalPlayersLastMonth = $playersLastMonth + $websitePlayersLastMonth;
-
         $playerGrowth = $totalPlayersLastMonth > 0 ? round((($totalNewPlayers - $totalPlayersLastMonth) / $totalPlayersLastMonth) * 100, 1) : 0;
+
         $playersWithContracts = Player::where('has_professional_contract', true)->count();
         $internationalPlayers = Player::where('international_eligible', true)->count();
         $playersNeedingAttention = Player::where('needs_attention', true)->count();
 
-        // Academic insights
         $excellentAcademic = Player::where('academic_performance', 'Excellent')->count();
         $averageAcademicGPA = Player::whereNotNull('academic_gpa')->avg('academic_gpa');
 
-        // Performance insights
-        $totalGoals = Player::sum('goals_scored');
-        $totalAssists = Player::sum('assists');
+        $totalGoals = Player::sum('goals_scored') ?: 0;
+        $totalAssists = Player::sum('assists') ?: 0;
         $highPerformers = Player::where('performance_rating', '>=', 8.0)->count();
-        $totalMatches = Player::sum('matches_played');
+        $totalMatches = Player::sum('matches_played') ?: 0;
 
-        // School distribution
         $schools = Player::whereNotNull('school_name')
             ->select('school_name')
             ->selectRaw('COUNT(*) as student_count')
@@ -110,31 +104,26 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        // Development stages
         $developmentStages = Player::select('development_stage')
             ->whereNotNull('development_stage')
             ->selectRaw('COUNT(*) as count')
             ->groupBy('development_stage')
             ->get();
 
-        // Recent follow-ups needed
         $recentFollowUps = Player::where('needs_attention', true)
             ->orWhere('last_follow_up', '<', now()->subDays(30))
             ->take(5)
             ->get();
 
-        // Top performers
         $topPerformers = Player::whereNotNull('performance_rating')
             ->orderBy('performance_rating', 'desc')
             ->take(5)
             ->get();
 
-        // Partner insights data
         $totalPartners = User::where('user_type', 'partner')->count();
         $activePartners = User::where('user_type', 'partner')->where('approval_status', 'approved')->count();
         $pendingPartners = User::where('user_type', 'partner')->where('approval_status', 'pending')->count();
 
-        // Additional metrics for dashboard
         $totalPrograms = Program::count();
         $newProgramsThisMonth = Program::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count();
         $programsLastMonth = Program::whereBetween('created_at', [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()])->count();
@@ -145,13 +134,7 @@ class DashboardController extends Controller
         $newsLastWeek = Blog::whereBetween('created_at', [now()->subWeek()->startOfWeek(), now()->subWeek()->endOfWeek()])->count();
         $newsGrowth = $newsLastWeek > 0 ? round((($newsThisWeek - $newsLastWeek) / $newsLastWeek) * 100, 1) : 0;
 
-        // Recent partner registrations
-        $recentPartners = User::where('user_type', 'partner')
-            ->latest()
-            ->take(3)
-            ->get();
-
-        // Recent player registrations (for activity feed)
+        $recentPartners = User::where('user_type', 'partner')->latest()->take(3)->get();
         $recentPlayers = Player::latest()->take(3)->get();
 
         // Generate AI insights
@@ -207,6 +190,9 @@ class DashboardController extends Controller
         $documentStats = $this->getDocumentStats();
         $metrics['document_stats'] = $documentStats;
 
+        // Subscription statistics for system status
+        $subscriptionStats = $this->getSubscriptionStats();
+
         return compact(
             'totalPlayers', 'newPlayersThisMonth', 'playerGrowth', 'playersWithContracts',
             'internationalPlayers', 'playersNeedingAttention', 'excellentAcademic',
@@ -221,12 +207,94 @@ class DashboardController extends Controller
             'mainApprovedPlayers', 'mainPendingPlayers', 'mainTemporaryPlayers',
             'websiteOrphanedPlayers', 'websiteLinkedPlayers',
             'stats',
-            'metrics'
+            'metrics',
+            'subscriptionStats'
         );
+    }
+
+    /**
+     * Get subscription statistics for system status - OPTIMIZED
+     */
+    private function getSubscriptionStats()
+    {
+        $allSubscriptions = Subscription::count();
+        $activeSubscriptions = Subscription::where('status', 'active')->count();
+        $trialingSubscriptions = Subscription::where('status', 'trialing')->count();
+        $canceledSubscriptions = Subscription::where('status', 'canceled')->count();
+        $pastDueSubscriptions = Subscription::where('status', 'past_due')->count();
+
+        $totalOrganizations = Organization::count();
+        $activeOrganizations = Organization::where('status', 'active')->count();
+        $trialOrganizations = Organization::where('status', 'trial')->count();
+        $suspendedOrganizations = Organization::where('status', 'suspended')->count();
+
+        $totalPlans = SubscriptionPlan::count();
+        $activePlans = SubscriptionPlan::where('is_active', true)->count();
+
+        $subscriptionsEndingSoon = Subscription::where('status', 'active')
+            ->whereNotNull('ends_at')
+            ->whereBetween('ends_at', [now(), now()->addDays(7)])
+            ->count();
+
+        $trialsEndingSoon = Subscription::where('status', 'trialing')
+            ->whereNotNull('trial_ends_at')
+            ->whereBetween('trial_ends_at', [now(), now()->addDays(3)])
+            ->count();
+
+        $mrr = Subscription::where('status', 'active')
+            ->with('plan')
+            ->get()
+            ->sum(function ($sub) {
+                if ($sub->plan) {
+                    return match($sub->plan->billing_cycle) {
+                        'yearly' => $sub->plan->price / 12,
+                        'monthly' => $sub->plan->price,
+                        default => $sub->plan->price,
+                    };
+                }
+                return 0;
+            });
+
+        $plans = SubscriptionPlan::active()->get();
+        $planPermissions = [];
+
+        foreach ($plans as $plan) {
+            $planPermissions[$plan->slug] = [
+                'name' => $plan->name,
+                'modules' => $plan->getAvailableModules(),
+                'module_count' => count($plan->getAvailableModules()),
+            ];
+        }
+
+        return [
+            'total_subscriptions' => $allSubscriptions,
+            'active_subscriptions' => $activeSubscriptions,
+            'trialing_subscriptions' => $trialingSubscriptions,
+            'canceled_subscriptions' => $canceledSubscriptions,
+            'past_due_subscriptions' => $pastDueSubscriptions,
+            'total_organizations' => $totalOrganizations,
+            'active_organizations' => $activeOrganizations,
+            'trial_organizations' => $trialOrganizations,
+            'suspended_organizations' => $suspendedOrganizations,
+            'total_plans' => $totalPlans,
+            'active_plans' => $activePlans,
+            'subscriptions_ending_soon' => $subscriptionsEndingSoon,
+            'trials_ending_soon' => $trialsEndingSoon,
+            'mrr' => $mrr,
+            'plan_permissions' => $planPermissions,
+        ];
     }
 
     public function performanceOverview()
     {
+        // Authorization check - only admins and higher can access performance overview
+        $user = auth()->user();
+        $permissionService = new PermissionService();
+
+        if (!$permissionService->hasRoleOrHigher($user, 'admin')) {
+            abort(403, 'Unauthorized access to performance overview');
+        }
+
         // ===== PLAYER METRICS =====
         // Use only Player table as it has complete data structure
         $totalPlayers = Player::count();
@@ -298,7 +366,6 @@ class DashboardController extends Controller
         $publishedNews = \App\Models\Blog::whereNotNull('published_at')
             ->where('published_at', '<=', now())
             ->count();
-        $totalGallery = \App\Models\Gallery::count();
 
         // ===== SYSTEM HEALTH =====
         $totalOrders = \App\Models\Order::count();
@@ -336,7 +403,7 @@ class DashboardController extends Controller
             'totalRevenue', 'monthlyRevenue', 'pendingPayments',
 
             // Content Metrics
-            'totalNews', 'publishedNews', 'totalGallery',
+            'totalNews', 'publishedNews',
 
             // System Health
             'totalOrders', 'pendingOrders', 'completedOrders'
@@ -345,6 +412,14 @@ class DashboardController extends Controller
 
     public function complianceReport()
     {
+        // Authorization check - only admins and higher can access compliance report
+        $user = auth()->user();
+        $permissionService = new PermissionService();
+
+        if (!$permissionService->hasRoleOrHigher($user, 'admin')) {
+            abort(403, 'Unauthorized access to compliance report');
+        }
+
         // Get compliance data
         $totalPlayers = Player::count();
         $fifaRegistered = Player::whereNotNull('fifa_registration_number')->count();

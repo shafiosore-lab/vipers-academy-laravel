@@ -41,12 +41,47 @@
                                 <label for="team_category" class="form-label small mb-1">Team Category <span class="text-danger">*</span></label>
                                 <select class="form-select form-select-sm @error('team_category') is-invalid @enderror" id="team_category" name="team_category" required>
                                     <option value="">Select Team</option>
-                                    <option value="U13" {{ old('team_category') == 'U13' ? 'selected' : '' }}>U13</option>
-                                    <option value="U15" {{ old('team_category') == 'U15' ? 'selected' : '' }}>U15</option>
-                                    <option value="U17" {{ old('team_category') == 'U17' ? 'selected' : '' }}>U17</option>
+                                    <option value="U10" {{ old('team_category') == 'U10' ? 'selected' : '' }}>Under 10</option>
+                                    <option value="U12" {{ old('team_category') == 'U12' ? 'selected' : '' }}>Under 12</option>
+                                    <option value="U13" {{ old('team_category') == 'U13' ? 'selected' : '' }}>Under 13</option>
+                                    <option value="U14" {{ old('team_category') == 'U14' ? 'selected' : '' }}>Under 14</option>
+                                    <option value="U15" {{ old('team_category') == 'U15' ? 'selected' : '' }}>Under 15</option>
+                                    <option value="U16" {{ old('team_category') == 'U16' ? 'selected' : '' }}>Under 16</option>
+                                    <option value="U17" {{ old('team_category') == 'U17' ? 'selected' : '' }}>Under 17</option>
+                                    <option value="U18" {{ old('team_category') == 'U18' ? 'selected' : '' }}>Under 18</option>
+                                    <option value="U20" {{ old('team_category') == 'U20' ? 'selected' : '' }}>Under 20</option>
                                     <option value="Senior" {{ old('team_category') == 'Senior' ? 'selected' : '' }}>Senior</option>
+                                    <option value="Veteran" {{ old('team_category') == 'Veteran' ? 'selected' : '' }}>Veteran</option>
                                 </select>
                                 @error('team_category')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <div class="col-md-6">
+                                <label for="gender" class="form-label small mb-1">Gender</label>
+                                <select class="form-select form-select-sm @error('gender') is-invalid @enderror" id="gender" name="gender">
+                                    <option value="">All (Mixed)</option>
+                                    <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Boys</option>
+                                    <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Girls</option>
+                                    <option value="mixed" {{ old('gender') == 'mixed' ? 'selected' : '' }}>Mixed</option>
+                                </select>
+                                @error('gender')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="organization_id" class="form-label small mb-1">Organization</label>
+                                <select class="form-select form-select-sm @error('organization_id') is-invalid @enderror" id="organization_id" name="organization_id">
+                                    <option value="">All Organizations</option>
+                                    @foreach($organizations as $org)
+                                        <option value="{{ $org->id }}" {{ old('organization_id') == $org->id ? 'selected' : '' }}>{{ $org->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('organization_id')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -102,3 +137,4 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('scheduled_start_time').min = minDateTime;
 });
 </script>
+

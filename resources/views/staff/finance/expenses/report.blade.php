@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'Expense Report')
 
@@ -213,3 +213,4 @@
     </div>
 </div>
 @endsection
+

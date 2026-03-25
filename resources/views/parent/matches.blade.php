@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'Match Records')
 
@@ -206,3 +206,4 @@
 </script>
 @endpush
 @endsection
+

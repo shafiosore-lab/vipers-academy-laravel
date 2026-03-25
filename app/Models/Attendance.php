@@ -20,6 +20,9 @@ class Attendance extends Model
         'trained_minutes',
         'missed_minutes',
         'lateness_category',
+        'gender',
+        'school_category',
+        'organization_id',
         'recorded_by',
     ];
 
@@ -43,6 +46,11 @@ class Attendance extends Model
     public function recorder()
     {
         return $this->belongsTo(User::class, 'recorded_by');
+    }
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class);
     }
 
     // Scopes
@@ -69,6 +77,33 @@ class Attendance extends Model
     public function scopeCheckedOut($query)
     {
         return $query->whereNotNull('check_out_time');
+    }
+
+    // Scope for gender filtering
+    public function scopeForGender($query, $gender)
+    {
+        if ($gender && $gender !== 'all') {
+            return $query->where('gender', $gender);
+        }
+        return $query;
+    }
+
+    // Scope for school category filtering
+    public function scopeForSchoolCategory($query, $schoolCategory)
+    {
+        if ($schoolCategory && $schoolCategory !== 'all') {
+            return $query->where('school_category', $schoolCategory);
+        }
+        return $query;
+    }
+
+    // Scope for organization filtering
+    public function scopeForOrganization($query, $organizationId)
+    {
+        if ($organizationId) {
+            return $query->where('organization_id', $organizationId);
+        }
+        return $query;
     }
 
     // Methods

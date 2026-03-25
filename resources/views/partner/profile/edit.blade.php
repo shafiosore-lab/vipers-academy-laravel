@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'My Profile - Vipers Academy Partner Portal')
 
@@ -236,3 +236,4 @@
     </div>
 </div>
 @endsection
+

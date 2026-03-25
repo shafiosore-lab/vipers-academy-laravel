@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'Parent Dashboard')
 
@@ -7,7 +7,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h2 class="mb-1">Welcome, {{ $user->name ?? 'Parent' }}!</h2>
-        <p class="text-muted mb-0">Here's an overview of your child's progress at Vipers Academy.</p>
+        <p class="text-muted mb-0">Here's an overview of your child's progress at GameSuite.</p>
     </div>
     @if($selectedPlayer)
     <div class="text-end d-none d-md-block">
@@ -370,3 +370,4 @@
 </div>
 @endif
 @endsection
+

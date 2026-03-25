@@ -17,9 +17,42 @@ use Illuminate\Validation\Rule;
 
 class FinanceDashboardController extends Controller
 {
-    public function __construct()
+    /**
+     * Check if user has finance permissions
+     */
+    private function checkFinancePermissions()
     {
-        $this->middleware(['auth', 'role:finance-officer']);
+        $user = auth()->user();
+
+        // Check if user has finance role or admin role
+        if (!$user->hasRole(['finance-officer', 'finance-admin', 'operations-admin', 'admin', 'super-admin'])) {
+            abort(403, 'Unauthorized access to finance module');
+        }
+    }
+
+    /**
+     * Check if user can perform specific finance actions
+     */
+    private function checkFinanceActionPermissions($action)
+    {
+        $user = auth()->user();
+
+        // Define permissions for different actions
+        $permissions = [
+            'create' => ['finance-officer', 'finance-admin', 'operations-admin', 'admin', 'super-admin'],
+            'update' => ['finance-admin', 'admin', 'super-admin'],
+            'delete' => ['finance-admin', 'admin', 'super-admin'],
+            'approve' => ['finance-admin', 'admin', 'super-admin'],
+            'view' => ['finance-officer', 'finance-admin', 'operations-admin', 'admin', 'super-admin'],
+        ];
+
+        if (!isset($permissions[$action])) {
+            abort(403, 'Invalid action');
+        }
+
+        if (!$user->hasAnyRole($permissions[$action])) {
+            abort(403, 'Insufficient permissions for this action');
+        }
     }
 
     /**
@@ -27,6 +60,7 @@ class FinanceDashboardController extends Controller
      */
     public function index()
     {
+        $this->checkFinancePermissions();
         $user = auth()->user();
 
         // Get payment statistics
@@ -74,6 +108,7 @@ class FinanceDashboardController extends Controller
      */
     public function payments(Request $request)
     {
+        $this->checkFinancePermissions();
         $query = Payment::with(['player', 'category']);
 
         // Search by reference or player name
@@ -125,6 +160,7 @@ class FinanceDashboardController extends Controller
      */
     public function createPayment()
     {
+        $this->checkFinanceActionPermissions('create');
         $players = Player::with('paymentCategory')->get();
         $categories = PaymentCategory::active()->get();
         $paymentMethods = ['cash', 'mpesa', 'bank_transfer', 'cheque', 'card', 'online'];
@@ -146,6 +182,7 @@ class FinanceDashboardController extends Controller
      */
     public function storePayment(Request $request)
     {
+        $this->checkFinanceActionPermissions('create');
         $validated = $request->validate([
             'player_id' => 'required|exists:players,id',
             'payment_type' => 'required|string',
@@ -205,6 +242,7 @@ class FinanceDashboardController extends Controller
      */
     public function editPayment(Payment $payment)
     {
+        $this->checkFinanceActionPermissions('view');
         $players = Player::with('paymentCategory')->get();
         $categories = PaymentCategory::active()->get();
         $paymentMethods = ['cash', 'mpesa', 'bank_transfer', 'cheque', 'card', 'online'];
@@ -226,6 +264,7 @@ class FinanceDashboardController extends Controller
      */
     public function updatePayment(Request $request, Payment $payment)
     {
+        $this->checkFinanceActionPermissions('update');
         $validated = $request->validate([
             'player_id' => 'required|exists:players,id',
             'payment_type' => 'required|string',
@@ -302,6 +341,7 @@ class FinanceDashboardController extends Controller
      */
     public function deletePayment(Request $request, Payment $payment)
     {
+        $this->checkFinanceActionPermissions('delete');
         $request->validate([
             'delete_reason' => 'required|string|min:10',
         ]);
@@ -340,6 +380,7 @@ class FinanceDashboardController extends Controller
      */
     public function viewPayment(Payment $payment)
     {
+        $this->checkFinanceActionPermissions('view');
         $payment->load(['player', 'category', 'requestedBy', 'approvedBy']);
 
         return view('staff.finance.view-payment', compact('payment'));
@@ -350,6 +391,7 @@ class FinanceDashboardController extends Controller
      */
     public function reports(Request $request)
     {
+        $this->checkFinancePermissions();
         $query = Payment::completed();
 
         // Filter by date range
@@ -389,6 +431,7 @@ class FinanceDashboardController extends Controller
 
     public function recordPayment()
     {
+        $this->checkFinancePermissions();
         $pendingPayments = Payment::pending()
             ->with('player')
             ->orderBy('due_date', 'asc')
@@ -399,6 +442,7 @@ class FinanceDashboardController extends Controller
 
     public function sendReminders()
     {
+        $this->checkFinancePermissions();
         $overduePayments = Payment::overdue()
             ->with('player')
             ->orderBy('due_date', 'asc')
@@ -415,6 +459,7 @@ class FinanceDashboardController extends Controller
 
     public function analytics()
     {
+        $this->checkFinancePermissions();
         $monthlyRevenue = Payment::completed()
             ->selectRaw('SUM(amount) as total, DATE_FORMAT(paid_at, "%Y-%m") as month')
             ->where('paid_at', '>=', now()->subMonths(6))

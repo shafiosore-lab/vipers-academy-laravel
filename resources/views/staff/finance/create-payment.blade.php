@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'Record Payment - Vipers Academy')
 
@@ -237,3 +237,4 @@ $(document).ready(function() {
 });
 </script>
 @endpush
+

@@ -10,60 +10,55 @@ use Symfony\Component\HttpFoundation\Response;
 class AdminSession
 {
     /**
+     * Paths that should never trigger an admin redirect.
+     */
+    private const BYPASS_PREFIXES = [
+        '/css/', '/js/', '/images/', '/assets/',
+        '/favicon', '/storage/', '/_debugbar/',
+        '/login', '/register', '/password/', '/logout',
+    ];
+
+    /**
      * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Skip admin session handling for logout requests
-        if ($request->is('logout') || $request->routeIs('logout')) {
+        if (!Auth::check() || !Auth::user()->isAdmin()) {
             return $next($request);
         }
 
-        // Check if user is authenticated and is admin
-        if (Auth::check() && Auth::user()->isAdmin()) {
-            // Extend session lifetime for admin users
-            $request->session()->put('admin_last_activity', now());
+        $path = $request->getPathInfo();
 
-            // Ensure admin users are redirected to admin panel if they try to access public routes
-            $currentRoute = $request->route();
-            if ($currentRoute && !str_starts_with($currentRoute->getPrefix(), '/admin')) {
-                // Check if this is not an API or asset request
-                if (!$this->isPublicAsset($request)) {
-                    // Redirect to admin dashboard
-                    return redirect()->route('admin.dashboard');
-                }
-            }
+        // Track last activity for admin session management
+        $request->session()->put('admin_last_activity', now());
 
-            // Add admin context to all admin routes
-            if (str_starts_with($request->getPathInfo(), '/admin')) {
-                // Ensure session doesn't expire for admin users
-                $request->session()->put('_admin_token', md5(Auth::id() . config('app.key')));
-            }
+        // On admin routes, stamp a lightweight session token
+        if (str_starts_with($path, '/admin')) {
+            $request->session()->put(
+                '_admin_token',
+                md5(Auth::id() . config('app.key'))
+            );
+        }
+
+        // Redirect admins away from non-admin, non-asset routes
+        if (!str_starts_with($path, '/admin') && !$this->isBypassedPath($path)) {
+            return redirect()->route('admin.dashboard');
         }
 
         return $next($request);
     }
 
     /**
-     * Check if the request is for a public asset that shouldn't redirect
+     * Determine whether the path should bypass admin redirection.
      */
-    private function isPublicAsset(Request $request): bool
+    private function isBypassedPath(string $path): bool
     {
-        $path = $request->getPathInfo();
+        foreach (self::BYPASS_PREFIXES as $prefix) {
+            if (str_starts_with($path, $prefix)) {
+                return true;
+            }
+        }
 
-        // Allow access to public assets
-        return str_starts_with($path, '/css/') ||
-               str_starts_with($path, '/js/') ||
-               str_starts_with($path, '/images/') ||
-               str_starts_with($path, '/assets/') ||
-               str_starts_with($path, '/favicon') ||
-               str_starts_with($path, '/storage/') ||
-               str_starts_with($path, '/_debugbar/') || // Debugbar
-               $path === '/login' ||
-               $path === '/register' ||
-               str_starts_with($path, '/password/') ||
-               $path === '/logout';
+        return false;
     }
 }

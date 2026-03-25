@@ -32,3 +32,4 @@
         AI-powered personalized insights will be generated automatically.
     </div>
 @endif
+

@@ -20,20 +20,16 @@ use Illuminate\Support\Facades\Log;
 class PermissionEngine
 {
     protected RoleHierarchyService $hierarchyService;
+    protected RoleDisplayService $roleDisplayService;
 
     public function __construct()
     {
         $this->hierarchyService = new RoleHierarchyService();
+        $this->roleDisplayService = new RoleDisplayService();
     }
 
     /**
      * Check if user can perform an action on a resource
-     *
-     * @param User $user The user attempting the action
-     * @param string $action The action (view, create, edit, delete, etc.)
-     * @param string|null $module The module/resource type (players, staff, etc.)
-     * @param int|null $resourceId Optional resource ID for ownership check
-     * @return array ['allowed' => bool, 'reason' => string]
      */
     public function checkPermission(
         User $user,

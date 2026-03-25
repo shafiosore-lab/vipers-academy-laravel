@@ -107,7 +107,7 @@
                         <a href="{{ route('admin.standings.create', ['type' => $type]) }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus me-2"></i>Add New {{ ucfirst($type) }}
                         </a>
-                        <a href="{{ route('admin.standings.export', ['type' => $type]) }}" class="btn btn-outline-secondary btn-sm">
+                        <a href="{{ route('admin.standings.export.page.type', ['type' => $type]) }}" class="btn btn-outline-secondary btn-sm">
                             <i class="fas fa-download me-2"></i>Export
                         </a>
                         <button class="btn btn-outline-success btn-sm" onclick="toggleBulkImport()">
@@ -526,3 +526,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 @endpush
 @endsection
+

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('player_game_stats', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('player_id')->constrained('website_players')->onDelete('cascade');
+            $table->foreignId('player_id')->constrained('website_uploaded_players')->onDelete('cascade');
             $table->date('game_date');
             $table->integer('minutes_played')->default(0);
             $table->string('opponent_team');

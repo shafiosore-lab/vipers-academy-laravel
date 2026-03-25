@@ -7,15 +7,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Partner;
 use App\Models\Staff;
 use App\Models\Approval;
 use App\Models\LoginActivity;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -40,6 +42,11 @@ class User extends Authenticatable
         'last_login',
         'organization_id',
         'last_login_at',
+        // Trial period fields
+        'is_on_trial',
+        'trial_ends_at',
+        'trial_type',
+        'trial_auto_activated',
     ];
 
     /**
@@ -64,6 +71,9 @@ class User extends Authenticatable
             'password' => 'hashed',
             'approved_at' => 'datetime',
             'last_login' => 'datetime',
+            'is_on_trial' => 'boolean',
+            'trial_ends_at' => 'datetime',
+            'trial_auto_activated' => 'boolean',
         ];
     }
 
@@ -222,7 +232,9 @@ class User extends Authenticatable
         }
 
         // Fallback: also check by name (case-insensitive) for backwards compatibility
-        return $this->roles()->whereRaw('LOWER(name) = ?', [strtolower($role)])->exists();
+        // Convert role to title case for name matching (e.g., 'super-admin' -> 'Super Admin')
+        $roleName = ucwords(str_replace('-', ' ', $role));
+        return $this->roles()->whereRaw('LOWER(name) = ?', [strtolower($roleName)])->exists();
     }
 
     /**
@@ -345,6 +357,30 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the partners associated with this user (for staff accounts).
+     */
+    public function partners()
+    {
+        return $this->hasMany(Partner::class);
+    }
+
+    /**
+     * Get the documents associated with this user.
+     */
+    public function documents()
+    {
+        return $this->hasMany(UserDocument::class);
+    }
+
+    /**
+     * Get the payments associated with this user.
+     */
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    /**
      * Get the organization this user belongs to.
      */
     public function organization()
@@ -414,5 +450,119 @@ class User extends Authenticatable
     public function canCreateStaff(): bool
     {
         return $this->isPartner() && $this->isApproved();
+    }
+
+    // =============================================
+    // Trial Period Methods
+    // =============================================
+
+    /**
+     * Check if user is on a trial period.
+     */
+    public function isOnTrial(): bool
+    {
+        return $this->is_on_trial === true && \Carbon\Carbon::now()->lt($this->trial_ends_at);
+    }
+
+    /**
+     * Check if user's trial has expired.
+     */
+    public function isTrialExpired(): bool
+    {
+        if (!$this->is_on_trial) {
+            return false;
+        }
+        return $this->trial_ends_at && \Carbon\Carbon::now()->gte($this->trial_ends_at);
+    }
+
+    /**
+     * Get remaining trial days.
+     */
+    public function getRemainingTrialDays(): int
+    {
+        if (!$this->is_on_trial || !$this->trial_ends_at) {
+            return 0;
+        }
+        return max(0, \Carbon\Carbon::now()->diffInDays($this->trial_ends_at, false));
+    }
+
+    /**
+     * Check if user has trial access for organization dashboard.
+     */
+    public function hasOrganizationTrialAccess(): bool
+    {
+        return $this->isOnTrial() && $this->trial_type === 'organization';
+    }
+
+    /**
+     * Check if user has trial access for coach dashboard.
+     */
+    public function hasCoachTrialAccess(): bool
+    {
+        return $this->isOnTrial() && $this->trial_type === 'coach';
+    }
+
+    /**
+     * Check if user has trial access for team manager dashboard.
+     */
+    public function hasTeamManagerTrialAccess(): bool
+    {
+        return $this->isOnTrial() && $this->trial_type === 'team_manager';
+    }
+
+    /**
+     * Activate trial period for the user.
+     */
+    public function activateTrial(string $trialType, int $days = 10): void
+    {
+        $this->update([
+            'is_on_trial' => true,
+            'trial_ends_at' => now()->addDays($days),
+            'trial_type' => $trialType,
+            'trial_auto_activated' => true,
+            'approval_status' => 'approved', // Auto-approve trial users
+            'approved_at' => now(),
+            'status' => 'active',
+        ]);
+    }
+
+    /**
+     * End trial period.
+     */
+    public function endTrial(): void
+    {
+        $this->update([
+            'is_on_trial' => false,
+            'trial_ends_at' => null,
+            'trial_auto_activated' => false,
+        ]);
+    }
+
+    /**
+     * Get trial status message for display.
+     */
+    public function getTrialStatusMessage(): ?string
+    {
+        if (!$this->is_on_trial) {
+            return null;
+        }
+
+        if ($this->isTrialExpired()) {
+            return 'Your free trial has expired. Please upgrade to continue using the platform.';
+        }
+
+        $daysRemaining = $this->getRemainingTrialDays();
+        $typeLabel = match($this->trial_type) {
+            'organization' => 'Organization Dashboard',
+            'coach' => 'Coach Dashboard',
+            'team_manager' => 'Team Manager Dashboard',
+            default => 'Full Access',
+        };
+
+        if ($daysRemaining === 1) {
+            return "Your free trial ends tomorrow! You have {$typeLabel} access for 1 more day.";
+        }
+
+        return "You have {$daysRemaining} days remaining in your free trial of the {$typeLabel}.";
     }
 }

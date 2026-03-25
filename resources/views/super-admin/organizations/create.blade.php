@@ -1,200 +1,231 @@
 @extends('layouts.admin')
 
+@section('title', 'Create Organization')
+
 @section('content')
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Create New Organization</h1>
-        <a href="{{ route('super-admin.organizations.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Back to Organizations
-        </a>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-8">
-            <form method="POST" action="{{ route('super-admin.organizations.store') }}">
-                @csrf
-
-                <!-- Organization Details -->
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Organization Details</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Organization Name *</label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror"
-                                   id="name" name="name" value="{{ old('name') }}" required>
-                            @error('name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Organization Email *</label>
-                            <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                   id="email" name="email" value="{{ old('email') }}" required>
-                            @error('email')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="phone" class="form-label">Phone</label>
-                                <input type="text" class="form-control @error('phone') is-invalid @enderror"
-                                       id="phone" name="phone" value="{{ old('phone') }}">
-                                @error('phone')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="website" class="form-label">Website</label>
-                                <input type="url" class="form-control @error('website') is-invalid @enderror"
-                                       id="website" name="website" value="{{ old('website') }}" placeholder="https://">
-                                @error('website')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="address" class="form-label">Address</label>
-                            <textarea class="form-control @error('address') is-invalid @enderror"
-                                      id="address" name="address" rows="2">{{ old('address') }}</textarea>
-                            @error('address')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
-                            <textarea class="form-control @error('description') is-invalid @enderror"
-                                      id="description" name="description" rows="3">{{ old('description') }}</textarea>
-                            @error('description')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
+<div class="container-fluid py-3">
+    <!-- Page Header -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h5 mb-0 text-gray-900">Create Organization</h1>
+                    <small class="text-muted">Add a new organization to the system</small>
                 </div>
-
-                <!-- Subscription Plan -->
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Subscription Plan</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="mb-3">
-                            <label for="plan_id" class="form-label">Select Plan</label>
-                            <select class="form-select @error('plan_id') is-invalid @enderror"
-                                    id="plan_id" name="plan_id">
-                                <option value="">No Plan (Free)</option>
-                                @foreach($plans as $plan)
-                                <option value="{{ $plan->id }}" {{ old('plan_id') == $plan->id ? 'selected' : '' }}>
-                                    {{ $plan->name }} - KES {{ number_format($plan->price) }}/{{ $plan->billing_cycle }}
-                                    ({{ $plan->max_users == -1 ? 'Unlimited' : $plan->max_users }} users,
-                                    {{ $plan->max_players == -1 ? 'Unlimited' : $plan->max_players }} players)
-                                </option>
-                                @endforeach
-                            </select>
-                            @error('plan_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="max_users" class="form-label">Max Users (if no plan)</label>
-                                <input type="number" class="form-control @error('max_users') is-invalid @enderror"
-                                       id="max_users" name="max_users" value="{{ old('max_users', 10) }}" min="1">
-                                @error('max_users')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="max_players" class="form-label">Max Players (if no plan)</label>
-                                <input type="number" class="form-control @error('max_players') is-invalid @enderror"
-                                       id="max_players" name="max_players" value="{{ old('max_players', 100) }}" min="1">
-                                @error('max_players')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Organization Admin -->
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Organization Admin Account</h6>
-                    </div>
-                    <div class="card-body">
-                        <p class="text-muted mb-3">Create the main administrator account for this organization.</p>
-
-                        <div class="mb-3">
-                            <label for="admin_name" class="form-label">Admin Name *</label>
-                            <input type="text" class="form-control @error('admin_name') is-invalid @enderror"
-                                   id="admin_name" name="admin_name" value="{{ old('admin_name') }}" required>
-                            @error('admin_name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="admin_email" class="form-label">Admin Email *</label>
-                            <input type="email" class="form-control @error('admin_email') is-invalid @enderror"
-                                   id="admin_email" name="admin_email" value="{{ old('admin_email') }}" required>
-                            @error('admin_email')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="admin_password" class="form-label">Admin Password *</label>
-                            <input type="password" class="form-control @error('admin_password') is-invalid @enderror"
-                                   id="admin_password" name="admin_password" required minlength="8">
-                            @error('admin_password')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="text-muted">Minimum 8 characters</small>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        <i class="fas fa-plus"></i> Create Organization
-                    </button>
-                    <a href="{{ route('super-admin.organizations.index') }}" class="btn btn-secondary btn-lg ms-2">
-                        Cancel
+                <div>
+                    <a href="{{ route('super-admin.organizations.index') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-arrow-left"></i> Back
                     </a>
                 </div>
-            </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Organization Form -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-3">
+                    <form action="{{ route('super-admin.organizations.store') }}" method="POST">
+                        @csrf
+
+                        <!-- Basic Information -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Organization Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-sm @error('name') is-invalid @enderror"
+                                       name="name" value="{{ old('name') }}" required>
+                                @error('name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control form-control-sm @error('email') is-invalid @enderror"
+                                       name="email" value="{{ old('email') }}" required>
+                                @error('email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Domain <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-sm @error('domain') is-invalid @enderror"
+                                       name="domain" value="{{ old('domain') }}" required>
+                                @error('domain')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Country <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-sm @error('country') is-invalid @enderror"
+                                       name="country" value="{{ old('country') }}" required>
+                                @error('country')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
+                                <select class="form-select form-select-sm @error('status') is-invalid @enderror"
+                                        name="status" required>
+                                    <option value="">Select Status</option>
+                                    <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Active</option>
+                                    <option value="trial" {{ old('status') == 'trial' ? 'selected' : '' }}>Trial</option>
+                                    <option value="suspended" {{ old('status') == 'suspended' ? 'selected' : '' }}>Suspended</option>
+                                </select>
+                                @error('status')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- Subscription Information -->
+                        <div class="border-top my-3"></div>
+                        <h6 class="mb-3 fw-semibold">Subscription Details</h6>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Subscription Plan <span class="text-danger">*</span></label>
+                                <select class="form-select form-select-sm @error('plan_id') is-invalid @enderror"
+                                        name="plan_id" required>
+                                    <option value="">Select Plan</option>
+                                    @foreach($plans as $plan)
+                                        <option value="{{ $plan->id }}" {{ old('plan_id') == $plan->id ? 'selected' : '' }}>
+                                            {{ $plan->name }} - ${{ number_format($plan->price, 2) }}/{{ $plan->billing_cycle }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('plan_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Billing Cycle <span class="text-danger">*</span></label>
+                                <select class="form-select form-select-sm @error('billing_cycle') is-invalid @enderror"
+                                        name="billing_cycle" required>
+                                    <option value="">Select Billing Cycle</option>
+                                    <option value="monthly" {{ old('billing_cycle') == 'monthly' ? 'selected' : '' }}>Monthly</option>
+                                    <option value="annual" {{ old('billing_cycle') == 'annual' ? 'selected' : '' }}>Annual</option>
+                                </select>
+                                @error('billing_cycle')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Amount <span class="text-danger">*</span></label>
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" step="0.01" min="0" class="form-control form-control-sm @error('amount') is-invalid @enderror"
+                                           name="amount" value="{{ old('amount') }}" required>
+                                </div>
+                                @error('amount')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Start Date <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control form-control-sm @error('start_date') is-invalid @enderror"
+                                       name="start_date" value="{{ old('start_date') }}" required>
+                                @error('start_date')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">End Date <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control form-control-sm @error('end_date') is-invalid @enderror"
+                                       name="end_date" value="{{ old('end_date') }}" required>
+                                @error('end_date')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="row g-2">
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-save"></i> Create Organization
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
 
+        <!-- Quick Info -->
         <div class="col-lg-4">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Help</h6>
+            <div class="card shadow-sm">
+                <div class="card-header py-2">
+                    <h6 class="mb-0 fw-semibold">Quick Info</h6>
                 </div>
-                <div class="card-body">
-                    <h6>Creating an Organization</h6>
-                    <p class="text-muted">When you create an organization:</p>
-                    <ul class="text-muted">
-                        <li>A new organization record is created</li>
-                        <li>An admin user account is automatically created with <strong>org-admin</strong> role</li>
-                        <li>If a subscription plan is selected, a subscription is created</li>
-                    </ul>
-
-                    <h6 class="mt-3">Organization Admin</h6>
-                    <p class="text-muted">The organization admin will be able to:</p>
-                    <ul class="text-muted">
-                        <li>Access the organization dashboard</li>
-                        <li>Manage their organization's users and players</li>
-                        <li>View organization-specific reports</li>
+                <div class="card-body p-2">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="fas fa-info-circle text-info"></i>
+                            <small><strong>Organization Name:</strong> Must be unique across all organizations</small>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-info-circle text-info"></i>
+                            <small><strong>Domain:</strong> Used for email verification and organization identification</small>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-info-circle text-info"></i>
+                            <small><strong>Status:</strong> Active organizations can access the system</small>
+                        </li>
+                        <li class="mb-0">
+                            <i class="fas fa-info-circle text-info"></i>
+                            <small><strong>Subscription:</strong> Will be created automatically with the organization</small>
+                        </li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const planSelect = document.querySelector('select[name="plan_id"]');
+    const amountInput = document.querySelector('input[name="amount"]');
+
+    // Update amount based on selected plan
+    planSelect?.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        if (selectedOption.value) {
+            const priceMatch = selectedOption.text.match(/\$(\d+(\.\d{1,2})?)/);
+            if (priceMatch) {
+                amountInput.value = priceMatch[1];
+            }
+        }
+    });
+
+    // Set default dates
+    const startDateInput = document.querySelector('input[name="start_date"]');
+    const endDateInput = document.querySelector('input[name="end_date"]');
+
+    if (startDateInput && !startDateInput.value) {
+        startDateInput.value = new Date().toISOString().split('T')[0];
+    }
+
+    if (endDateInput && !endDateInput.value) {
+        const endDate = new Date();
+        endDate.setFullYear(endDate.getFullYear() + 1);
+        endDateInput.value = endDate.toISOString().split('T')[0];
+    }
+});
+</script>
+@endpush
 @endsection

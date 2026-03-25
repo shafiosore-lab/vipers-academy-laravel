@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'Create Blog - Media Officer - Vipers Academy')
 
@@ -145,3 +145,4 @@
     });
 </script>
 @endsection
+

@@ -38,6 +38,9 @@ class RoleUserSeeder extends Seeder
             'visitor' => ['name' => 'Visitor', 'description' => 'Website visitor'],
         ];
 
+        // Define which roles are system roles
+        $systemRoles = ['super-admin', 'marketing-admin', 'scouting-admin', 'coaching-admin', 'finance-admin', 'operations-admin', 'admin-operations', 'head-coach', 'safeguarding-officer', 'finance-officer', 'media-officer'];
+
         foreach ($roles as $slug => $data) {
             Role::updateOrCreate(
                 ['slug' => $slug],
@@ -46,6 +49,8 @@ class RoleUserSeeder extends Seeder
                     'description' => $data['description'],
                     'type' => $this->getRoleType($slug),
                     'is_default' => $slug === 'staff-base',
+                    'is_system' => in_array($slug, $systemRoles),
+                    'is_active' => true,
                 ]
             );
         }

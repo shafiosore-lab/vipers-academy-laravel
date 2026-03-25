@@ -918,3 +918,4 @@
     .metric-row:nth-child(5) { animation-delay: 0.5s; }
 </style>
 @endpush
+

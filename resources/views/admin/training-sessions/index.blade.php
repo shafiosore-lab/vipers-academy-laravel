@@ -22,9 +22,9 @@
 
                 <div class="card-body">
                     <!-- Filters -->
-                    <div class="row mb-4">
-                        <div class="col-md-3">
-                            <select class="form-select" id="statusFilter">
+                    <form method="GET" action="{{ route('admin.training-sessions.index') }}" class="row mb-4 g-2">
+                        <div class="col-md-2">
+                            <select class="form-select" name="status" id="statusFilter">
                                 <option value="">All Status</option>
                                 <option value="scheduled" {{ request('status') == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
                                 <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
@@ -32,16 +32,49 @@
                                 <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <select class="form-select" id="teamFilter">
+                        <div class="col-md-2">
+                            <select class="form-select" name="team_category" id="teamFilter">
                                 <option value="">All Teams</option>
-                                <option value="U13" {{ request('team_category') == 'U13' ? 'selected' : '' }}>U13</option>
-                                <option value="U15" {{ request('team_category') == 'U15' ? 'selected' : '' }}>U15</option>
-                                <option value="U17" {{ request('team_category') == 'U17' ? 'selected' : '' }}>U17</option>
+                                <option value="U10" {{ request('team_category') == 'U10' ? 'selected' : '' }}>Under 10</option>
+                                <option value="U12" {{ request('team_category') == 'U12' ? 'selected' : '' }}>Under 12</option>
+                                <option value="U13" {{ request('team_category') == 'U13' ? 'selected' : '' }}>Under 13</option>
+                                <option value="U14" {{ request('team_category') == 'U14' ? 'selected' : '' }}>Under 14</option>
+                                <option value="U15" {{ request('team_category') == 'U15' ? 'selected' : '' }}>Under 15</option>
+                                <option value="U16" {{ request('team_category') == 'U16' ? 'selected' : '' }}>Under 16</option>
+                                <option value="U17" {{ request('team_category') == 'U17' ? 'selected' : '' }}>Under 17</option>
+                                <option value="U18" {{ request('team_category') == 'U18' ? 'selected' : '' }}>Under 18</option>
+                                <option value="U20" {{ request('team_category') == 'U20' ? 'selected' : '' }}>Under 20</option>
                                 <option value="Senior" {{ request('team_category') == 'Senior' ? 'selected' : '' }}>Senior</option>
+                                <option value="Veteran" {{ request('team_category') == 'Veteran' ? 'selected' : '' }}>Veteran</option>
                             </select>
                         </div>
-                    </div>
+                        <div class="col-md-2">
+                            <select class="form-select" name="gender" id="genderFilter">
+                                <option value="all">All Genders</option>
+                                <option value="male" {{ request('gender') == 'male' ? 'selected' : '' }}>Boys</option>
+                                <option value="female" {{ request('gender') == 'female' ? 'selected' : '' }}>Girls</option>
+                                <option value="mixed" {{ request('gender') == 'mixed' ? 'selected' : '' }}>Mixed</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" name="organization_id" id="orgFilter">
+                                <option value="all">All Orgs</option>
+                                @foreach($organizations as $org)
+                                    <option value="{{ $org->id }}" {{ request('organization_id') == $org->id ? 'selected' : '' }}>{{ $org->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-filter me-1"></i>Filter
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <a href="{{ route('admin.training-sessions.index') }}" class="btn btn-outline-secondary w-100">
+                                <i class="fas fa-times me-1"></i>Clear
+                            </a>
+                        </div>
+                    </form>
 
                     <!-- Sessions Table -->
                     <div class="table-responsive">
@@ -193,3 +226,4 @@ document.getElementById('teamFilter').addEventListener('change', function() {
     window.location.href = url.toString();
 });
 </script>
+

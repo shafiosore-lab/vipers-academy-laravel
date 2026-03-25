@@ -269,3 +269,4 @@ function updateStatistics() {
 // Refresh statistics every 5 minutes
 setInterval(updateStatistics, 300000);
 </script>
+

@@ -62,6 +62,7 @@
                 ['name' => __('Announcements'), 'route' => 'admin.blog.index', 'icon' => 'fa-newspaper'],
                 ['name' => __('Bulk SMS'), 'route' => 'admin.sms.index', 'icon' => 'fa-sms'],
                 ['name' => __('WhatsApp'), 'route' => 'admin.whatsapp.index', 'icon' => 'fab fa-whatsapp'],
+                ['name' => __('WhatsApp Settings'), 'route' => 'admin.whatsapp.settings', 'icon' => 'fa-cogs'],
             ]
         ];
 
@@ -71,8 +72,11 @@
             'accordion' => true,
             'roles' => ['super-admin', 'admin', 'operations-admin'],
             'items' => [
+                ['name' => __('Tournaments'), 'route' => 'admin.tournaments.index', 'icon' => 'fa-trophy'],
+                ['name' => __('All Tournaments'), 'route' => 'super-admin.tournaments.index', 'icon' => 'fa-globe', 'roles' => ['super-admin']],
+                ['name' => __('Tournament Overview'), 'route' => 'super-admin.tournaments.overview', 'icon' => 'fa-chart-pie', 'roles' => ['super-admin']],
                 ['name' => __('Matches'), 'route' => 'admin.matches.index', 'icon' => 'fa-futbol'],
-                ['name' => __('Standings'), 'route' => 'admin.standings.index', 'icon' => 'fa-trophy'],
+                ['name' => __('Standings'), 'route' => 'admin.standings.index', 'icon' => 'fa-list-ol'],
             ]
         ];
 
@@ -100,27 +104,49 @@
                 ['name' => __('Equipment'), 'route' => 'equipment.categories', 'icon' => 'fa-boxes'],
                 ['name' => __('Analytics'), 'route' => 'admin.performance.overview', 'icon' => 'fa-chart-line'],
                 ['name' => __('Compliance'), 'route' => 'admin.compliance.report', 'icon' => 'fa-shield-alt'],
+                ['name' => __('Letterhead'), 'route' => $user->hasRole('super-admin') ? 'super-admin.letterhead.index' : 'admin.letterhead.index', 'icon' => 'fa-file-signature'],
             ]
         ];
 
-        $menuItems['website'] = [
-            'title' => __('Website'),
-            'icon' => 'fa-globe',
-            'accordion' => true,
-            'roles' => ['super-admin', 'admin', 'operations-admin'],
-            'items' => [
-                ['name' => __('Page Content'), 'route' => 'admin.page-content.index', 'icon' => 'fa-file-alt'],
-                ['name' => __('Home Page'), 'route' => 'admin.page-content.show', 'route_params' => ['page' => 'home'], 'icon' => 'fa-home'],
-                ['name' => __('About Us'), 'route' => 'admin.page-content.show', 'route_params' => ['page' => 'about'], 'icon' => 'fa-info-circle'],
-                ['name' => __('Programs'), 'route' => 'admin.programs.index', 'icon' => 'fa-clipboard-list'],
-                ['name' => __('Staff'), 'route' => 'admin.staff.index', 'icon' => 'fa-user-tie'],
-                ['name' => __('Website Players'), 'route' => 'admin.website-players.index', 'icon' => 'fa-futbol'],
-                ['name' => __('Gallery'), 'route' => 'admin.gallery.index', 'icon' => 'fa-images'],
-                ['name' => __('Announcements'), 'route' => 'admin.blog.index', 'icon' => 'fa-newspaper'],
-                ['name' => __('Careers'), 'route' => 'admin.jobs.index', 'icon' => 'fa-briefcase'],
-                ['name' => __('Leaders'), 'route' => 'leaders.index', 'icon' => 'fa-star'],
-            ]
-        ];
+        // Website section - separate for super-admin vs admin
+        if ($user->hasRole('super-admin')) {
+            $menuItems['website'] = [
+                'title' => __('Website'),
+                'icon' => 'fa-globe',
+                'accordion' => true,
+                'roles' => ['super-admin'],
+                'items' => [
+                    ['name' => __('Page Content'), 'route' => 'super-admin.page-content.index', 'icon' => 'fa-file-alt'],
+                    ['name' => __('Home Page'), 'route' => 'super-admin.page-content.show', 'route_params' => ['page' => 'home'], 'icon' => 'fa-home'],
+                    ['name' => __('About Us'), 'route' => 'super-admin.page-content.show', 'route_params' => ['page' => 'about'], 'icon' => 'fa-info-circle'],
+                    ['name' => __('Programs Page'), 'route' => 'super-admin.page-content.show', 'route_params' => ['page' => 'programs'], 'icon' => 'fa-clipboard-list'],
+                    ['name' => __('Announcements'), 'route' => 'super-admin.page-content.show', 'route_params' => ['page' => 'announcements'], 'icon' => 'fa-newspaper'],
+                    ['name' => __('Careers'), 'route' => 'super-admin.page-content.show', 'route_params' => ['page' => 'careers'], 'icon' => 'fa-briefcase'],
+                    ['name' => __('Leaders'), 'route' => 'super-admin.page-content.show', 'route_params' => ['page' => 'leaders'], 'icon' => 'fa-star'],
+                    ['name' => __('Website Players'), 'route' => 'admin.website-players.index', 'icon' => 'fa-futbol'],
+                    ['name' => __('Partners'), 'route' => 'admin.partners.index', 'icon' => 'fa-handshake'],
+                    ['name' => __('Blog/News'), 'route' => 'admin.blog.index', 'icon' => 'fa-newspaper'],
+                    ['name' => __('Jobs'), 'route' => 'admin.jobs.index', 'icon' => 'fa-briefcase'],
+                ]
+            ];
+        } elseif ($user->hasAnyRole(['admin', 'operations-admin'])) {
+            $menuItems['website'] = [
+                'title' => __('Website'),
+                'icon' => 'fa-globe',
+                'accordion' => true,
+                'roles' => ['admin', 'operations-admin'],
+                'items' => [
+                    ['name' => __('Page Content'), 'route' => 'admin.page-content.index', 'icon' => 'fa-file-alt'],
+                    ['name' => __('Home Page'), 'route' => 'admin.page-content.show', 'route_params' => ['page' => 'home'], 'icon' => 'fa-home'],
+                    ['name' => __('About Us'), 'route' => 'admin.page-content.show', 'route_params' => ['page' => 'about'], 'icon' => 'fa-info-circle'],
+                    ['name' => __('Programs'), 'route' => 'admin.programs.index', 'icon' => 'fa-clipboard-list'],
+                    ['name' => __('Website Players'), 'route' => 'admin.website-players.index', 'icon' => 'fa-futbol'],
+                    ['name' => __('Announcements'), 'route' => 'admin.blog.index', 'icon' => 'fa-newspaper'],
+                    ['name' => __('Careers'), 'route' => 'admin.jobs.index', 'icon' => 'fa-briefcase'],
+                    ['name' => __('Leaders'), 'route' => 'admin.leaders.index', 'icon' => 'fa-star'],
+                ]
+            ];
+        }
     }
 
     // =====================
@@ -195,7 +221,6 @@
             'items' => [
                 ['name' => __('Dashboard'), 'route' => 'media.dashboard', 'icon' => 'fa-th-large'],
                 ['name' => __('Blogs'), 'route' => 'media.blogs', 'icon' => 'fa-blog'],
-                ['name' => __('Gallery'), 'route' => 'media.gallery', 'icon' => 'fa-images'],
             ]
         ];
     }
@@ -358,7 +383,20 @@
                     <div class="sidebar-accordion-content">
                         @if(isset($section['items']))
                             @foreach($section['items'] as $item)
-                                @if(!empty($item['route']) && Route::has($item['route']))
+                                @php
+                                    // Check if item has specific roles - if so, filter by those roles
+                                    $itemHasRole = true;
+                                    if (isset($item['roles'])) {
+                                        $itemHasRole = false;
+                                        foreach ($item['roles'] as $role) {
+                                            if ($user->hasRole($role)) {
+                                                $itemHasRole = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                @endphp
+                                @if($itemHasRole && !empty($item['route']) && Route::has($item['route']))
                                 @php
                                     $routeParams = $item['route_params'] ?? [];
                                 @endphp
@@ -411,3 +449,4 @@
         </a>
     </nav>
 </aside>
+

@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'AI Insights')
 
@@ -235,3 +235,4 @@
 </script>
 @endpush
 @endsection
+

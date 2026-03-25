@@ -1,6 +1,6 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
-@section('title', 'Partner Dashboard - Vipers Academy')
+@section('title', 'Partner Dashboard - GameSuite')
 
 @section('content')
 <div class="container-fluid">
@@ -328,3 +328,4 @@
     @endif
 </div>
 @endsection
+

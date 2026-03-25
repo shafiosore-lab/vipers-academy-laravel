@@ -26,7 +26,6 @@ class RolePermissionSeeder extends Seeder
         if ($marketingAdmin) {
             $permissions = Permission::whereIn('slug', [
                 'view-blogs', 'create-blogs', 'edit-blogs',
-                'view-gallery', 'create-gallery', 'edit-gallery',
                 'view-jobs', 'create-jobs', 'edit-jobs', 'delete-jobs',
             ])->get();
             $marketingAdmin->permissions()->attach($permissions->pluck('id'));
@@ -82,7 +81,6 @@ class RolePermissionSeeder extends Seeder
         if ($partnerMarketing) {
             $permissions = Permission::whereIn('slug', [
                 'view-blogs', 'create-blogs', 'edit-blogs',
-                'view-gallery', 'create-gallery', 'edit-gallery',
                 'view-partner-analytics',
             ])->get();
             $partnerMarketing->permissions()->attach($permissions->pluck('id'));
@@ -200,7 +198,6 @@ class RolePermissionSeeder extends Seeder
         if ($mediaOfficer) {
             $permissions = Permission::whereIn('slug', [
                 'view-blogs', 'create-blogs', 'edit-blogs',
-                'view-gallery', 'create-gallery', 'edit-gallery',
                 'send_bulk_messages', 'send_team_messages', 'approve-announcements',
             ])->get();
             $mediaOfficer->permissions()->attach($permissions->pluck('id'));

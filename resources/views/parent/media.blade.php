@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'Media Gallery')
 
@@ -116,3 +116,4 @@
     </div>
 </div>
 @endsection
+

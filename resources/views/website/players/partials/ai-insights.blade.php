@@ -22,3 +22,4 @@
         <p>Dynamic {{ strtolower($player->position) }} who excels in transition play. Prefers to operate in half-spaces and create opportunities through intelligent movement off the ball.</p>
     </div>
 @endif
+

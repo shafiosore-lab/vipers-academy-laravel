@@ -48,6 +48,42 @@ class AdminAttendanceController extends Controller
             $query->where('session_id', $request->session_id);
         }
 
+        // Filter by gender (boys/girls)
+        if ($request->filled('gender') && $request->gender !== 'all') {
+            $query->whereHas('player', function ($q) use ($request) {
+                $q->where('gender', $request->gender);
+            });
+        }
+
+        // Filter by school category (primary, junior_secondary, senior_secondary)
+        if ($request->filled('school_category') && $request->school_category !== 'all') {
+            $query->whereHas('player', function ($q) use ($request) {
+                $q->where('school_category', $request->school_category);
+            });
+        }
+
+        // Filter by organization (for organization admins)
+        $organizationId = null;
+        if (Auth::user()->hasRole('org-admin') && Auth::user()->organization_id) {
+            $organizationId = Auth::user()->organization_id;
+            $query->whereHas('player', function ($q) use ($organizationId) {
+                $q->where('organization_id', $organizationId);
+            });
+            $query->orWhereHas('session', function ($q) use ($organizationId) {
+                $q->where('organization_id', $organizationId);
+            });
+        }
+
+        // Filter by organization if provided in request
+        if ($request->filled('organization_id') && $request->organization_id !== 'all') {
+            $query->whereHas('player', function ($q) use ($request) {
+                $q->where('organization_id', $request->organization_id);
+            });
+            $query->orWhereHas('session', function ($q) use ($request) {
+                $q->where('organization_id', $request->organization_id);
+            });
+        }
+
         // For coaches, only show players from their partner
         if (Auth::user()->hasRole('coach')) {
             $query->whereHas('player', function ($q) {
@@ -59,16 +95,21 @@ class AdminAttendanceController extends Controller
             ->orderBy('check_in_time', 'desc')
             ->paginate(20);
 
-        // Get active sessions for the selector
+        // Get active sessions for the selector with filters
         $activeSessions = \App\Models\TrainingSession::active()
-            ->when(Auth::user()->hasRole('coach'), function ($q) {
-                // Coaches can only see sessions for their team categories
-                // This would need to be enhanced based on coach's assigned teams
+            ->when($organizationId, function ($q) use ($organizationId) {
+                $q->where('organization_id', $organizationId);
+            })
+            ->when($request->filled('gender') && $request->gender !== 'all', function ($q) use ($request) {
+                $q->where('gender', $request->gender);
             })
             ->orderBy('scheduled_start_time', 'desc')
             ->get();
 
-        return view('admin.attendance.index', compact('attendances', 'activeSessions'));
+        // Get organizations for filter dropdown
+        $organizations = \App\Models\Organization::orderBy('name')->get();
+
+        return view('admin.attendance.index', compact('attendances', 'activeSessions', 'organizations'));
     }
 
     public function create()
@@ -214,110 +255,116 @@ class AdminAttendanceController extends Controller
 
     public function export(Request $request)
     {
-        $query = Attendance::with(['player.partner', 'recorder']);
+        try {
+            $query = Attendance::with(['player.partner', 'recorder']);
 
-        // Apply filters from the form
-        if ($request->filled('start_date')) {
-            $query->where('session_date', '>=', $request->start_date);
-        }
-
-        if ($request->filled('end_date')) {
-            $query->where('session_date', '<=', $request->end_date);
-        }
-
-        if ($request->filled('session_type')) {
-            $query->where('session_type', $request->session_type);
-        }
-
-        if ($request->filled('status')) {
-            // Map status to actual attendance status
-            switch ($request->status) {
-                case 'scheduled':
-                    $query->whereNull('check_in_time');
-                    break;
-                case 'checked_in':
-                    $query->whereNotNull('check_in_time')->whereNull('check_out_time');
-                    break;
-                case 'completed':
-                    $query->whereNotNull('check_out_time');
-                    break;
+            // Apply filters from the form
+            if ($request->filled('start_date')) {
+                $query->where('session_date', '>=', $request->start_date);
             }
-        }
 
-        if (Auth::user()->hasRole('coach')) {
-            $query->whereHas('player', function ($q) {
-                $q->where('partner_id', Auth::user()->partner_id);
-            });
-        }
+            if ($request->filled('end_date')) {
+                $query->where('session_date', '<=', $request->end_date);
+            }
 
-        $attendances = $query->orderBy('session_date', 'desc')->get();
+            if ($request->filled('session_type')) {
+                $query->where('session_type', $request->session_type);
+            }
 
-        $filename = 'attendance_export_' . now()->format('Y-m-d_H-i-s') . '.csv';
+            if ($request->filled('status')) {
+                // Map status to actual attendance status
+                switch ($request->status) {
+                    case 'scheduled':
+                        $query->whereNull('check_in_time');
+                        break;
+                    case 'checked_in':
+                        $query->whereNotNull('check_in_time')->whereNull('check_out_time');
+                        break;
+                    case 'completed':
+                        $query->whereNotNull('check_out_time');
+                        break;
+                }
+            }
 
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"$filename\"",
-        ];
+            if (Auth::user()->hasRole('coach')) {
+                $query->whereHas('player', function ($q) {
+                    $q->where('partner_id', Auth::user()->partner_id);
+                });
+            }
 
-        $includePlayerDetails = $request->boolean('include_player_details');
+            $attendances = $query->orderBy('session_date', 'desc')->get();
 
-        $callback = function () use ($attendances, $includePlayerDetails) {
-            $file = fopen('php://output', 'w');
+            $filename = 'attendance_export_' . now()->format('Y-m-d_H-i-s') . '.csv';
 
-            // Add CSV headers
-            $csvHeaders = [
-                'Player Name',
-                'Session Type',
-                'Session Date',
-                'Check In Time',
-                'Check Out Time',
-                'Duration (minutes)',
-                'Recorded By',
-                'Recorded At'
+            $headers = [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => "attachment; filename=\"$filename\"",
             ];
 
-            if ($includePlayerDetails) {
-                $csvHeaders = array_merge($csvHeaders, [
-                    'Player Email',
-                    'Player Phone',
-                    'Date of Birth',
-                    'Position',
-                    'Partner'
-                ]);
-            }
+            $includePlayerDetails = $request->boolean('include_player_details');
 
-            fputcsv($file, $csvHeaders);
+            $callback = function () use ($attendances, $includePlayerDetails) {
+                $file = fopen('php://output', 'w');
 
-            // Add data rows
-            foreach ($attendances as $attendance) {
-                $row = [
-                    $attendance->player->full_name,
-                    ucfirst($attendance->session_type),
-                    $attendance->session_date->format('Y-m-d'),
-                    $attendance->check_in_time ? $attendance->check_in_time->format('H:i:s') : 'N/A',
-                    $attendance->check_out_time ? $attendance->check_out_time->format('H:i:s') : 'N/A',
-                    $attendance->total_duration_minutes ?: 'N/A',
-                    $attendance->recorder->name ?? 'System',
-                    $attendance->created_at->format('Y-m-d H:i:s')
+                // Add CSV headers
+                $csvHeaders = [
+                    'Player Name',
+                    'Session Type',
+                    'Session Date',
+                    'Check In Time',
+                    'Check Out Time',
+                    'Duration (minutes)',
+                    'Recorded By',
+                    'Recorded At'
                 ];
 
                 if ($includePlayerDetails) {
-                    $row = array_merge($row, [
-                        $attendance->player->email ?? 'N/A',
-                        $attendance->player->phone ?? 'N/A',
-                        $attendance->player->date_of_birth ? $attendance->player->date_of_birth->format('Y-m-d') : 'N/A',
-                        $attendance->player->position ?? 'N/A',
-                        $attendance->player->partner->name ?? 'N/A'
+                    $csvHeaders = array_merge($csvHeaders, [
+                        'Player Email',
+                        'Player Phone',
+                        'Date of Birth',
+                        'Position',
+                        'Partner'
                     ]);
                 }
 
-                fputcsv($file, $row);
-            }
+                fputcsv($file, $csvHeaders);
 
-            fclose($file);
-        };
+                // Add data rows
+                foreach ($attendances as $attendance) {
+                    $row = [
+                        $attendance->player->full_name ?? 'Unknown Player',
+                        ucfirst($attendance->session_type),
+                        $attendance->session_date ? $attendance->session_date->format('Y-m-d') : 'N/A',
+                        $attendance->check_in_time ? $attendance->check_in_time->format('H:i:s') : 'N/A',
+                        $attendance->check_out_time ? $attendance->check_out_time->format('H:i:s') : 'N/A',
+                        $attendance->total_duration_minutes ?: 'N/A',
+                        $attendance->recorder->name ?? 'System',
+                        $attendance->created_at->format('Y-m-d H:i:s')
+                    ];
 
-        return response()->stream($callback, 200, $headers);
+                    if ($includePlayerDetails) {
+                        $row = array_merge($row, [
+                            $attendance->player->email ?? 'N/A',
+                            $attendance->player->phone ?? 'N/A',
+                            $attendance->player->date_of_birth ? $attendance->player->date_of_birth->format('Y-m-d') : 'N/A',
+                            $attendance->player->position ?? 'N/A',
+                            $attendance->player->partner->name ?? 'N/A'
+                        ]);
+                    }
+
+                    fputcsv($file, $row);
+                }
+
+                fclose($file);
+            };
+
+            return response()->stream($callback, 200, $headers);
+        } catch (\Exception $e) {
+            \Log::error('Attendance export failed: ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+            return back()->with('error', 'Export failed: ' . $e->getMessage());
+        }
     }
 
 

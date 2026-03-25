@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'Document Compliance - Welfare Officer - Vipers Academy')
 
@@ -131,3 +131,4 @@
         </div>
     </div>
 @endsection
+

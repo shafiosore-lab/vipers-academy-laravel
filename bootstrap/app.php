@@ -18,6 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->group(base_path('routes/auth.php'));
             Route::middleware('web')
                 ->group(base_path('routes/web_leaders.php'));
+            Route::middleware('web')
+                ->group(base_path('routes/governance.php'));
+            Route::middleware('web')
+                ->group(base_path('routes/team.php'));
         },
     )
     ->withSchedule(function ($schedule) {
@@ -43,6 +47,11 @@ return Application::configure(basePath: dirname(__DIR__))
             ->everyMinute();
     })
     ->withMiddleware(function (Middleware $middleware): void {
+        // Apply CheckUserStatus middleware globally to all web routes
+        $middleware->web(append: [
+            \App\Http\Middleware\CheckUserStatus::class,
+        ]);
+
         $middleware->alias([
             'check.status' => \App\Http\Middleware\CheckUserStatus::class,
             'admin.session' => \App\Http\Middleware\AdminSession::class,
@@ -50,7 +59,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'player' => \App\Http\Middleware\PlayerMiddleware::class,
             'partner' => \App\Http\Middleware\PartnerMiddleware::class,
             'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'permission' => \App\Http\Middleware\PermissionMiddleware::class,
             'tenant' => \App\Http\Middleware\TenantScope::class,
+            'tenant.scope' => \App\Http\Middleware\OrganizationScopeMiddleware::class,
             'super.admin' => \App\Http\Middleware\CheckSuperAdmin::class,
             'feature' => \App\Http\Middleware\CheckFeature::class,
             'subscription' => \App\Http\Middleware\CheckSubscriptionAccess::class,

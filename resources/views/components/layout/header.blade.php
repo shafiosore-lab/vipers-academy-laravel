@@ -88,14 +88,7 @@
 
         {{-- Brand / Logo --}}
         <a href="{{ $dashboardRoute }}" class="dashboard-brand" aria-label="{{ __('Go to dashboard') }}">
-            <img src="{{ asset('assets/img/logo/vps.jpeg') }}"
-                 alt="{{ __('Vipers Academy Logo') }}"
-                 class="dashboard-logo"
-                 loading="lazy">
-            <div class="dashboard-brand-text">
-                <h5>{{ __('Vipers Academy') }}</h5>
-                <small>{{ $roleDisplayName }}</small>
-            </div>
+            <span class="dashboard-logo-text" style="font-weight: 700; font-size: 1.25rem; color: #ea1c4d;">GameSuite</span>
         </a>
 
         {{-- Optional Breadcrumbs --}}
@@ -192,3 +185,4 @@
         </div>
     </div>
 </header>
+

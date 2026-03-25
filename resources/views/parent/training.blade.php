@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'Training & Attendance')
 
@@ -191,3 +191,4 @@
 </script>
 @endpush
 @endsection
+

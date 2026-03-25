@@ -83,11 +83,6 @@ class PermissionSeeder extends Seeder
             ['name' => 'Create News', 'slug' => 'content.news.create'],
             ['name' => 'Edit News', 'slug' => 'content.news.edit'],
             ['name' => 'Delete News', 'slug' => 'content.news.delete'],
-            // Gallery
-            ['name' => 'View Gallery', 'slug' => 'content.gallery.view'],
-            ['name' => 'Create Gallery', 'slug' => 'content.gallery.create'],
-            ['name' => 'Edit Gallery', 'slug' => 'content.gallery.edit'],
-            ['name' => 'Delete Gallery', 'slug' => 'content.gallery.delete'],
         ];
 
         // =====================================================================

@@ -356,6 +356,8 @@ document.addEventListener('DOMContentLoaded', function() {
 @endpush
 
 <style>
+/* Donate Page Styles */
+
 /* Hero Section */
 .hero-section {
     min-height: 70vh;
@@ -393,12 +395,12 @@ document.addEventListener('DOMContentLoaded', function() {
 /* Donation Cards */
 .donation-card {
     transition: all 0.3s ease;
-    border-radius: 15px;
+    border-radius: 20px;
 }
 
 .donation-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
 }
 
 .donation-icon {
@@ -409,14 +411,14 @@ document.addEventListener('DOMContentLoaded', function() {
     transform: scale(1.1);
 }
 
-.amount-options .btn-outline-success:hover,
-.amount-options .btn-outline-warning:hover {
+.donation-card .amount-options .btn-outline-success:hover,
+.donation-card .amount-options .btn-outline-warning:hover {
     transform: scale(1.02);
 }
 
 /* Story Cards */
 .story-card {
-    border-radius: 12px;
+    border-radius: 16px;
     transition: transform 0.3s ease;
 }
 
@@ -426,14 +428,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .story-header img {
     border: 3px solid #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Stats Cards */
 .stat-card {
     padding: 2rem 1rem;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    border-radius: 16px;
     backdrop-filter: blur(10px);
 }
 
@@ -448,7 +450,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     .hero-content h1 {
-        font-size: 2rem !important;
+        font-size: 2rem;
     }
 
     .donation-card {
@@ -460,3 +462,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 }
 </style>
+

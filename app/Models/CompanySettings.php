@@ -16,11 +16,18 @@ class CompanySettings extends Model
         'pdf_footer_enabled',
         'pdf_footer_text',
         'is_active',
+        // WhatsApp settings
+        'whatsapp_enabled',
+        'whatsapp_phone_number_id',
+        'whatsapp_business_account_id',
+        'whatsapp_access_token',
+        'whatsapp_default_template',
     ];
 
     protected $casts = [
         'pdf_footer_enabled' => 'boolean',
         'is_active' => 'boolean',
+        'whatsapp_enabled' => 'boolean',
     ];
 
     /**

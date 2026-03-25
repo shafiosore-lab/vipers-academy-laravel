@@ -186,8 +186,9 @@ class SuperAdminController extends Controller
         }
 
         $organizations = $query->latest()->paginate(20);
+        $plans = SubscriptionPlan::active()->ordered()->get();
 
-        return view('super-admin.organizations.index', compact('organizations'));
+        return view('super-admin.organizations.index', compact('organizations', 'plans'));
     }
 
     /**
@@ -316,7 +317,7 @@ class SuperAdminController extends Controller
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'description' => 'nullable|string',
-            'status' => 'required|in:active,inactive,suspended,trial,pending',
+            'status' => 'required|in:active,inactive,suspended,trial,pending,suspended_spam',
             'plan_id' => 'nullable|exists:subscription_plans,id',
             'max_users' => 'nullable|integer|min:1',
             'max_players' => 'nullable|integer|min:1',
@@ -352,6 +353,41 @@ class SuperAdminController extends Controller
         ]);
 
         return back()->with('success', "Organization status changed to '{$newStatus}'.");
+    }
+
+    /**
+     * Remove the specified organization from storage.
+     */
+    public function destroyOrganization(Organization $organization)
+    {
+        // Check if user has permission to manage organizations
+        if (!auth()->user()->hasPermission('manage_organizations')) {
+            return redirect()->route('super-admin.dashboard')->with('error', 'You do not have permission to manage organizations.');
+        }
+
+        // Check if organization has associated data that prevents deletion
+        $hasUsers = $organization->users()->exists();
+        $hasTeams = $organization->teams()->exists();
+        $hasDocuments = $organization->documents()->exists();
+
+        if ($hasUsers || $hasTeams || $hasDocuments) {
+            return redirect()->route('super-admin.organizations.index')
+                ->with('error', 'Cannot delete organization. It has associated data (users, teams, or documents).');
+        }
+
+        // Log the deletion attempt
+        \Log::info('Organization deletion attempted', [
+            'organization_id' => $organization->id,
+            'organization_name' => $organization->name,
+            'deleted_by' => auth()->id(),
+            'deleted_by_name' => auth()->user()->name
+        ]);
+
+        // Delete the organization
+        $organization->delete();
+
+        return redirect()->route('super-admin.organizations.index')
+            ->with('success', 'Organization deleted successfully.');
     }
 
     /**
@@ -661,6 +697,59 @@ class SuperAdminController extends Controller
         $monthlyRevenue = $this->calculateMonthlyRevenue();
 
         return view('super-admin.analytics', compact('subscriptionStats', 'planDistribution', 'monthlyRevenue'));
+    }
+
+    /**
+     * Delete a user (Super Admin only).
+     */
+    public function destroyUser(User $user)
+    {
+        // Prevent deletion of the current admin user
+        if ($user->id === auth()->id()) {
+            return redirect()->route('super-admin.users.index')
+                ->with('error', 'You cannot delete your own account.');
+        }
+
+        // Check if user has related data that needs to be handled
+        $relatedData = [
+            'players' => $user->managedPlayers()->count(),
+            'partners' => $user->partners()->count(),
+            'documents' => $user->documents()->count(),
+            'payments' => $user->payments()->count(),
+        ];
+
+        $hasRelatedData = collect($relatedData)->sum() > 0;
+
+        // Log the deletion attempt
+        Log::info('Super Admin: Attempting to delete user', [
+            'user_id' => $user->id,
+            'user_name' => $user->name,
+            'user_email' => $user->email,
+            'related_data' => $relatedData,
+            'deleted_by' => auth()->id(),
+        ]);
+
+        // Soft delete the user (assuming soft deletes are enabled)
+        if ($user->trashed()) {
+            // Permanently delete if already soft deleted
+            $user->forceDelete();
+            $message = "User '{$user->name}' has been permanently deleted.";
+        } else {
+            // Soft delete
+            $user->delete();
+            $message = "User '{$user->name}' has been deactivated and moved to trash.";
+        }
+
+        // Log successful deletion
+        Log::info('Super Admin: User deleted successfully', [
+            'user_id' => $user->id,
+            'user_name' => $user->name,
+            'deleted_by' => auth()->id(),
+            'has_related_data' => $hasRelatedData,
+        ]);
+
+        return redirect()->route('super-admin.users.index')
+            ->with('success', $message);
     }
 
     /**

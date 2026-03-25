@@ -60,6 +60,21 @@ class Team extends Model
         return $this->hasMany(Event::class, 'away_team_id');
     }
 
+    public function playerContracts(): HasMany
+    {
+        return $this->hasMany(PlayerContract::class, 'team_id');
+    }
+
+    public function incomingTransfers(): HasMany
+    {
+        return $this->hasMany(PlayerTransfer::class, 'to_team_id');
+    }
+
+    public function outgoingTransfers(): HasMany
+    {
+        return $this->hasMany(PlayerTransfer::class, 'from_team_id');
+    }
+
     // Scopes
     public function scopeActive($query)
     {

@@ -378,3 +378,4 @@ function printDetails() {
 }
 </script>
 @endsection
+

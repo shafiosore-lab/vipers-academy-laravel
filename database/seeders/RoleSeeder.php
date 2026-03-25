@@ -25,6 +25,8 @@ class RoleSeeder extends Seeder
                 'description' => 'Full system control with all permissions',
                 'type' => 'admin',
                 'is_default' => false,
+                'is_system' => true,
+                'is_active' => true,
             ]
         );
 
@@ -36,6 +38,8 @@ class RoleSeeder extends Seeder
                 'description' => 'Full control over their organization',
                 'type' => 'organization',
                 'is_default' => false,
+                'is_system' => true,
+                'is_active' => true,
             ]
         );
 
@@ -47,6 +51,8 @@ class RoleSeeder extends Seeder
                 'description' => 'High-level administrative access without deletion capabilities',
                 'type' => 'admin',
                 'is_default' => false,
+                'is_system' => true,
+                'is_active' => true,
             ]
         );
 
@@ -58,6 +64,8 @@ class RoleSeeder extends Seeder
                 'description' => 'Complete coaching management across all teams',
                 'type' => 'admin',
                 'is_default' => false,
+                'is_system' => true,
+                'is_active' => true,
             ]
         );
 
@@ -91,6 +99,8 @@ class RoleSeeder extends Seeder
                 'description' => 'Child protection, welfare monitoring, and safeguarding compliance',
                 'type' => 'admin',
                 'is_default' => false,
+                'is_system' => true,
+                'is_active' => true,
             ]
         );
 
@@ -102,6 +112,8 @@ class RoleSeeder extends Seeder
                 'description' => 'Financial management, payments, and reporting',
                 'type' => 'admin',
                 'is_default' => false,
+                'is_system' => true,
+                'is_active' => true,
             ]
         );
 
@@ -113,6 +125,8 @@ class RoleSeeder extends Seeder
                 'description' => 'Content creation, media management, and communications',
                 'type' => 'admin',
                 'is_default' => false,
+                'is_system' => true,
+                'is_active' => true,
             ]
         );
 

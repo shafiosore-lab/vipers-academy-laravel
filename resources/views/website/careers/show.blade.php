@@ -6,15 +6,14 @@
 
 @section('content')
 <!-- Hero Section -->
-<section class="hero-section position-relative overflow-hidden"
-    style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; min-height: 40vh;">
+<section class="hero-section position-relative overflow-hidden" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; min-height: 40vh;">
     <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100"
         style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 100%);"></div>
     <div class="container position-relative h-100">
         <div class="row align-items-center h-100">
             <div class="col-12 text-center text-white">
                 <h1 class="display-4 fw-bold mb-3">{{ $job->title }}</h1>
-                <p class="lead mb-0">{{ $job->location }} • {{ ucfirst($job->type) }} • <span class="badge bg-success">Open Position</span></p>
+                <p class="lead mb-0">{{ $job->location }} • {{ ucfirst($job->type) }} • <span class="badge" style="background: var(--accent); color: #1a1a1a;">Open Position</span></p>
             </div>
         </div>
     </div>
@@ -55,7 +54,7 @@
                 <!-- Job Description -->
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-light">
-                        <h4 class="mb-0"><i class="fas fa-file-alt me-2 text-success"></i>Job Description</h4>
+                        <h4 class="mb-0"><i class="fas fa-file-alt me-2" style="color: var(--accent);"></i>Job Description</h4>
                     </div>
                     <div class="card-body">
                         <div class="job-description">
@@ -67,7 +66,7 @@
                 <!-- Requirements -->
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-light">
-                        <h4 class="mb-0"><i class="fas fa-list-check me-2 text-warning"></i>Requirements</h4>
+                        <h4 class="mb-0"><i class="fas fa-list-check me-2" style="color: var(--highlight);"></i>Requirements</h4>
                     </div>
                     <div class="card-body">
                         <div class="job-requirements">
@@ -78,7 +77,7 @@
 
                 <!-- Apply Button -->
                 <div class="text-center mb-5">
-                    <a href="#apply" class="btn btn-success btn-lg px-5 py-3">
+                    <a href="#apply" class="btn btn-lg px-5 py-3" style="background: var(--accent); border-color: var(--accent); color: #1a1a1a;">
                         <i class="fas fa-paper-plane me-2"></i>Apply for This Position
                     </a>
                 </div>
@@ -87,13 +86,13 @@
             <div class="col-lg-4">
                 <!-- Quick Apply Card -->
                 <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-header bg-success text-white">
+                    <div class="card-header text-white" style="background: var(--accent);">
                         <h5 class="mb-0"><i class="fas fa-rocket me-2"></i>Quick Apply</h5>
                     </div>
                     <div class="card-body">
                         <p class="mb-3">Ready to join our team? Apply now and start your journey with Vipers Academy!</p>
                         <div class="d-grid">
-                            <a href="#apply" class="btn btn-success btn-lg">
+                            <a href="#apply" class="btn btn-lg" style="background: var(--accent); border-color: var(--accent); color: #1a1a1a;">
                                 <i class="fas fa-paper-plane me-2"></i>Apply Now
                             </a>
                         </div>
@@ -103,15 +102,15 @@
                 <!-- Why Join Us -->
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-light">
-                        <h5 class="mb-0"><i class="fas fa-star me-2 text-warning"></i>Why Join Vipers Academy?</h5>
+                        <h5 class="mb-0"><i class="fas fa-star me-2" style="color: var(--highlight);"></i>Why Join Vipers Academy?</h5>
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled">
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Work with passionate professionals</li>
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Make a real impact on young lives</li>
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Competitive compensation package</li>
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Professional development opportunities</li>
-                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Modern facilities and equipment</li>
+                            <li class="mb-2"><i class="fas fa-check me-2" style="color: var(--accent);"></i>Work with passionate professionals</li>
+                            <li class="mb-2"><i class="fas fa-check me-2" style="color: var(--accent);"></i>Make a real impact on young lives</li>
+                            <li class="mb-2"><i class="fas fa-check me-2" style="color: var(--accent);"></i>Competitive compensation package</li>
+                            <li class="mb-2"><i class="fas fa-check me-2" style="color: var(--accent);"></i>Professional development opportunities</li>
+                            <li class="mb-2"><i class="fas fa-check me-2" style="color: var(--accent);"></i>Modern facilities and equipment</li>
                         </ul>
                     </div>
                 </div>
@@ -119,7 +118,7 @@
                 <!-- Contact Info -->
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-light">
-                        <h5 class="mb-0"><i class="fas fa-envelope me-2 text-info"></i>Questions?</h5>
+                        <h5 class="mb-0"><i class="fas fa-envelope me-2" style="color: var(--info);"></i>Questions?</h5>
                     </div>
                     <div class="card-body">
                         <p class="mb-2">Have questions about this position?</p>
@@ -139,7 +138,7 @@
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="card border-0 shadow-lg">
-                    <div class="card-header bg-success text-white text-center">
+                    <div class="card-header text-white text-center" style="background: var(--accent);">
                         <h3 class="mb-0"><i class="fas fa-paper-plane me-2"></i>Apply for {{ $job->title }}</h3>
                     </div>
                     <div class="card-body p-4">
@@ -201,7 +200,7 @@
                             </div>
 
                             <div class="text-center">
-                                <button type="submit" class="btn btn-success btn-lg px-5 py-3">
+                                <button type="submit" class="btn btn-lg px-5 py-3" style="background: var(--accent); border-color: var(--accent); color: #1a1a1a;">
                                     <i class="fas fa-paper-plane me-2"></i>Submit Application
                                 </button>
                             </div>
@@ -215,8 +214,32 @@
 @endsection
 
 <style>
+/* Hero Section - Account for fixed navbar */
 .hero-section {
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5));
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 100%), url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+}
+
+/* Desktop - Account for 80px navbar + 40px topbar */
+@media (min-width: 1024px) {
+    .hero-section {
+        padding-top: 120px;
+    }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .hero-section {
+        padding-top: 100px;
+    }
+}
+
+/* Mobile - Topbar hidden, navbar is 60px */
+@media (max-width: 767px) {
+    .hero-section {
+        padding-top: 70px;
+    }
 }
 
 .job-description, .job-requirements {
@@ -240,20 +263,8 @@
 }
 
 .form-control:focus {
-    border-color: #198754;
-    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
-}
-
-.btn-success {
-    background: linear-gradient(45deg, #65c16e, #4a8c52);
-    border: none;
-    transition: all 0.3s ease;
-}
-
-.btn-success:hover {
-    background: linear-gradient(45deg, #4a8c52, #3a6b3f);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 15px rgba(101, 193, 110, 0.3);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 0.2rem rgba(101, 193, 110, 0.25);
 }
 </style>
 

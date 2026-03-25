@@ -10,20 +10,18 @@ use Symfony\Component\HttpFoundation\Response;
 class CheckSuperAdmin
 {
     /**
-     * Handle an incoming request.
-     * Ensures only Super Admins can access the route.
+     * Restrict access to super-admins only.
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = Auth::user();
-
-        if (!$user) {
+        if (!Auth::check()) {
             return redirect()->route('login')
                 ->with('error', 'Please login to access this area.');
         }
 
-        if (!$user->isSuperAdmin()) {
-            abort(403, 'Access denied. Super Admin privileges required.');
+        if (!Auth::user()->isSuperAdmin()) {
+            return redirect()->route('dashboard')
+                ->with('error', 'You do not have permission to access that area.');
         }
 
         return $next($request);

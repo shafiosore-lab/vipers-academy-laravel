@@ -1,6 +1,6 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
-@section('title', 'Media Officer Dashboard - Vipers Academy')
+@section('title', 'Media Officer Dashboard - GameSuite')
 
 @section('content')
     <!-- Welcome Header -->
@@ -48,14 +48,6 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card h-100">
-                <div class="card-body text-center">
-                    <div class="display-4 text-info">{{ $totalGallery ?? 0 }}</div>
-                    <p class="text-muted mb-0">Gallery Items</p>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div class="row g-4">
@@ -91,30 +83,6 @@
             </div>
         </div>
 
-        <!-- Recent Gallery -->
-        <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Recent Gallery</h5>
-                </div>
-                <div class="card-body">
-                    @if(isset($recentGallery) && $recentGallery->count() > 0)
-                        <div class="row g-2">
-                            @foreach($recentGallery as $item)
-                                <div class="col-4">
-                                    <div class="bg-light rounded p-3 text-center">
-                                        <i class="fas fa-image fa-2x text-muted"></i>
-                                        <p class="small text-muted mb-0">{{ $item->title ?? 'Gallery Item' }}</p>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <p class="text-muted text-center py-4">No gallery items yet</p>
-                    @endif
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Quick Actions -->
@@ -144,12 +112,6 @@
                                 Announcements
                             </a>
                         </div>
-                        <div class="col-md-3">
-                            <a href="{{ route('media.gallery') }}" class="btn btn-outline-info w-100">
-                                <i class="fas fa-images mb-2 d-block"></i>
-                                Gallery
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -157,3 +119,4 @@
     </div>
 </div>
 @endsection
+

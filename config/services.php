@@ -95,4 +95,24 @@ return [
         'sender_id' => env('BULKSMS_SENDER_ID', 'VipersAcademy'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | WhatsApp Cloud API Configuration (Meta)
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for WhatsApp messaging using Meta's Cloud API.
+    | Get these credentials from Meta Developer Portal:
+    | https://developers.facebook.com/
+    |
+    */
+
+    'whatsapp' => [
+        'enabled' => env('WHATSAPP_ENABLED', false),
+        'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
+        'business_account_id' => env('WHATSAPP_BUSINESS_ACCOUNT_ID'),
+        'access_token' => env('WHATSAPP_ACCESS_TOKEN'),
+        'default_template' => env('WHATSAPP_DEFAULT_TEMPLATE', 'training_reminder'),
+        'fallback_to_sms' => env('WHATSAPP_FALLBACK_TO_SMS', true),
+    ],
+
 ];

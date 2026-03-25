@@ -356,3 +356,4 @@ setInterval(updateLiveData, 30000);
 updateLiveData();
 </script>
 @endif
+

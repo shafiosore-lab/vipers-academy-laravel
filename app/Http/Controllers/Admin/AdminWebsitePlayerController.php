@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Player;
 use App\Models\WebsitePlayer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -58,9 +57,6 @@ class AdminWebsitePlayerController extends Controller
         }
 
         $websitePlayer = WebsitePlayer::create($data);
-
-        // Sync to internal player management
-        $this->syncToPlayerManagement($websitePlayer);
 
         return redirect()->route('admin.website-players.index')->with('success', 'Player added to website successfully.');
     }
@@ -119,9 +115,6 @@ class AdminWebsitePlayerController extends Controller
 
         $websitePlayer->update($data);
 
-        // Sync to internal player management
-        $this->syncToPlayerManagement($websitePlayer);
-
         return redirect()->route('admin.website-players.index')->with('success', 'Player updated successfully.');
     }
 
@@ -141,6 +134,46 @@ class AdminWebsitePlayerController extends Controller
     }
 
     /**
+     * Sync website players with main player database
+     */
+    public function sync()
+    {
+        // Get players from the main Player table that don't have corresponding website player records
+        $mainPlayers = \App\Models\Player::whereNull('website_player_id')
+            ->where('registration_status', 'Approved')
+            ->get();
+
+        $syncedCount = 0;
+
+        foreach ($mainPlayers as $player) {
+            // Create website player from main player
+            $websitePlayer = WebsitePlayer::create([
+                'first_name' => $player->first_name,
+                'last_name' => $player->last_name,
+                'category' => $player->age_group ?? 'Youth',
+                'position' => $player->position ?? 'Player',
+                'age' => $player->age ?? 18,
+                'jersey_number' => $player->jersey_number,
+                'bio' => $player->bio ?? '',
+                'player_id' => $player->id,
+            ]);
+
+            // Update the main player with the website player reference
+            $player->update(['website_player_id' => $websitePlayer->id]);
+
+            $syncedCount++;
+        }
+
+        if ($syncedCount > 0) {
+            return redirect()->route('admin.website-players.index')
+                ->with('success', "Successfully synced {$syncedCount} player(s) to website.");
+        } else {
+            return redirect()->route('admin.website-players.index')
+                ->with('info', 'No new players to sync. All approved players are already on the website.');
+        }
+    }
+
+    /**
      * Process and save image (simplified version without GD)
      */
     private function processAndSaveImage($file, $destinationPath)
@@ -157,247 +190,4 @@ class AdminWebsitePlayerController extends Controller
         $file->move($directory, basename($destinationPath));
     }
 
-    /**
-     * Sync website player to internal player management system
-     */
-    private function syncToPlayerManagement(WebsitePlayer $websitePlayer)
-    {
-        \Log::info('AdminWebsitePlayerController@syncToPlayerManagement: Starting sync', [
-            'website_player_id' => $websitePlayer->id,
-            'name' => $websitePlayer->full_name
-        ]);
-
-        // Check if player already exists
-        $player = Player::where('first_name', $websitePlayer->first_name)
-            ->where('last_name', $websitePlayer->last_name)
-            ->first();
-
-        if ($player) {
-            // Update existing player
-            $player->update([
-                'position' => $websitePlayer->position,
-                'jersey_number' => $websitePlayer->jersey_number,
-                'image_path' => $websitePlayer->image_path,
-                'bio' => $websitePlayer->bio,
-            ]);
-            \Log::info('AdminWebsitePlayerController@syncToPlayerManagement: Updated existing player', [
-                'player_id' => $player->id
-            ]);
-        } else {
-            // Create new player with minimal info
-            $player = Player::create([
-                'first_name' => $websitePlayer->first_name,
-                'last_name' => $websitePlayer->last_name,
-                'full_name' => $websitePlayer->first_name . ' ' . $websitePlayer->last_name,
-                'position' => $websitePlayer->position,
-                'age' => $websitePlayer->age,
-                'category' => $websitePlayer->category,
-                'jersey_number' => $websitePlayer->jersey_number,
-                'image_path' => $websitePlayer->image_path,
-                'bio' => $websitePlayer->bio,
-                'registration_status' => 'Active',
-                'approval_type' => 'full', // Website players are approved
-            ]);
-            \Log::info('AdminWebsitePlayerController@syncToPlayerManagement: Created new player', [
-                'player_id' => $player->id
-            ]);
-        }
-
-        // Link the website player to the internal player
-        $websitePlayer->update(['player_id' => $player->id]);
-
-        \Log::info('AdminWebsitePlayerController@syncToPlayerManagement: Sync completed');
-    }
-
-    /**
-     * Sync players from gallery images
-     */
-    public function syncFromGallery()
-    {
-        $result = $this->performSync();
-
-        return redirect()->route('admin.website-players.index')->with('success', $result['message']);
-    }
-
-    /**
-     * Perform the actual sync operation
-     */
-    public function performSync($silent = false)
-    {
-        $playersPath = public_path('assets/img/players');
-
-        // Check if directory exists
-        if (!File::exists($playersPath)) {
-            File::makeDirectory($playersPath, 0755, true);
-            \Log::info('AdminWebsitePlayerController@performSync: Players directory created');
-            return [
-                'added' => 0,
-                'updated' => 0,
-                'removed' => 0,
-                'message' => 'Players directory created. Add player images to sync.'
-            ];
-        }
-
-        $imageFiles = File::files($playersPath);
-        $syncedPlayerIds = [];
-        $addedCount = 0;
-        $updatedCount = 0;
-
-        \Log::info('AdminWebsitePlayerController@performSync: Starting sync', [
-            'image_files_count' => count($imageFiles)
-        ]);
-
-        foreach ($imageFiles as $file) {
-            // Only process image files
-            if (!in_array(strtolower($file->getExtension()), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
-                continue;
-            }
-
-            $filename = pathinfo($file->getFilename(), PATHINFO_FILENAME);
-            $playerData = $this->parseFilename($filename);
-
-            if (!$playerData) {
-                \Log::warning('AdminWebsitePlayerController@performSync: Invalid filename', [
-                    'filename' => $filename
-                ]);
-                continue; // Skip invalid filenames
-            }
-
-            // Check if player exists - FIX: Use WebsitePlayer model
-            $player = WebsitePlayer::where('first_name', $playerData['first_name'])
-                ->where('last_name', $playerData['last_name'])
-                ->where('category', $playerData['category'])
-                ->first();
-
-            $imageUrl = asset('assets/img/players/' . $file->getFilename());
-
-            if ($player) {
-                // Update existing player
-                $player->update([
-                    'position' => $playerData['position'],
-                    'age' => $playerData['age'],
-                    'image_path' => $file->getFilename(),
-                ]);
-                $updatedCount++;
-                \Log::info('AdminWebsitePlayerController@performSync: Updated website player', [
-                    'player_id' => $player->id,
-                    'name' => $player->full_name
-                ]);
-            } else {
-                // Create new player - FIX: Create WebsitePlayer, not Player
-                $player = WebsitePlayer::create([
-                    'first_name' => $playerData['first_name'],
-                    'last_name' => $playerData['last_name'],
-                    'category' => $playerData['category'],
-                    'position' => $playerData['position'],
-                    'age' => $playerData['age'],
-                    'image_path' => $file->getFilename(),
-                    'jersey_number' => null, // Can be set manually later
-                ]);
-                $addedCount++;
-                \Log::info('AdminWebsitePlayerController@performSync: Created website player', [
-                    'player_id' => $player->id,
-                    'name' => $player->full_name
-                ]);
-            }
-
-            $syncedPlayerIds[] = $player->id;
-        }
-
-        // Remove players whose images no longer exist - FIX: Use WebsitePlayer
-        $removedCount = WebsitePlayer::whereNotIn('id', $syncedPlayerIds)->delete();
-
-        $message = $this->buildSyncMessage($addedCount, $updatedCount, $removedCount);
-
-        \Log::info('AdminWebsitePlayerController@performSync: Sync completed', [
-            'added' => $addedCount,
-            'updated' => $updatedCount,
-            'removed' => $removedCount
-        ]);
-
-        return [
-            'added' => $addedCount,
-            'updated' => $updatedCount,
-            'removed' => $removedCount,
-            'message' => $message
-        ];
-    }
-
-    /**
-     * Parse filename to extract player data
-     */
-    protected function parseFilename($filename)
-    {
-        // Split by hyphen
-        $parts = explode('-', strtolower($filename));
-
-        // Must have at least 5 parts: firstname, surname, category, position, age
-        if (count($parts) < 5) {
-            return null;
-        }
-
-        // Extract parts
-        $age = array_pop($parts); // Last part is age
-        $position = array_pop($parts); // Second to last is position
-        $category = array_pop($parts); // Third to last is category
-
-        // Remaining parts are the name (could be multiple parts)
-        // Last part before category is surname, rest is first name
-        $surname = array_pop($parts);
-        $firstname = implode(' ', $parts);
-
-        // Validate age is numeric
-        if (!is_numeric($age)) {
-            return null;
-        }
-
-        // Validate category
-        $validCategories = ['u9', 'u11', 'u13', 'u15', 'u17', 'u19', 'senior', 'academy'];
-        if (!in_array($category, $validCategories)) {
-            return null;
-        }
-
-        // Validate position
-        $validPositions = [
-            'goalkeeper', 'gk',
-            'defender', 'def', 'lb', 'rb', 'cb',
-            'midfielder', 'mid', 'cdm', 'cam', 'cm', 'lm', 'rm',
-            'forward', 'fwd', 'striker', 'st', 'lw', 'rw', 'cf'
-        ];
-        if (!in_array($position, $validPositions)) {
-            return null;
-        }
-
-        return [
-            'first_name' => ucwords($firstname),
-            'last_name' => ucwords($surname),
-            'category' => $category,
-            'position' => $position,
-            'age' => (int) $age,
-        ];
-    }
-
-    /**
-     * Build sync message based on counts
-     */
-    protected function buildSyncMessage($added, $updated, $removed)
-    {
-        $messages = [];
-
-        if ($added > 0) {
-            $messages[] = "{$added} player(s) added";
-        }
-        if ($updated > 0) {
-            $messages[] = "{$updated} player(s) updated";
-        }
-        if ($removed > 0) {
-            $messages[] = "{$removed} player(s) removed";
-        }
-
-        if (empty($messages)) {
-            return "No changes detected. All players are up to date.";
-        }
-
-        return "Sync completed: " . implode(', ', $messages) . ".";
-    }
 }

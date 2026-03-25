@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'Send Payment Reminders - Vipers Academy')
 
@@ -150,3 +150,4 @@
         </div>
     </div>
 @endsection
+

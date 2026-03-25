@@ -9,6 +9,8 @@ if (str_starts_with($currentPath, 'super-admin')) {
     $routePrefix = 'super-admin';
 } elseif (str_starts_with($currentPath, 'organization')) {
     $routePrefix = 'organization';
+} elseif (str_starts_with($currentPath, 'coach')) {
+    $routePrefix = 'coach';
 } else {
     $routePrefix = 'admin';
 }
@@ -39,7 +41,7 @@ if (str_starts_with($currentPath, 'super-admin')) {
                     <h5 class="mb-0"><i class="fas fa-file-export me-2 text-primary"></i>{{ __('Export Configuration') }}</h5>
                 </div>
                 <div class="card-body">
-                    <form method="GET" action="{{ route($routePrefix . '.attendance.export.download') }}" target="_blank">
+                    <form method="GET" action="{{ route($routePrefix . '.attendance.export') }}" target="_blank">
                         <!-- Date Range -->
                         <div class="row mb-4">
                             <div class="col-12">
@@ -209,3 +211,4 @@ document.addEventListener('DOMContentLoaded', function() {
     toggleExtraColumns(); // Initial state
 });
 </script>
+

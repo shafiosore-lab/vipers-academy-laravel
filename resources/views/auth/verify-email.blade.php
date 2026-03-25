@@ -315,7 +315,7 @@
                     <i class="fas fa-futbol"></i>
                     <div class="logo-ring"></div>
                 </div>
-                <div class="club-name">Vipers Academy</div>
+                <div class="club-name">Mumias Vipers</div>
                 <div class="club-tagline">Excellence in Football</div>
             </a>
         </div>
@@ -375,3 +375,4 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+

@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PageContent extends Model
 {
     protected $fillable = [
+        'organization_id',
         'page',
         'section',
         'key',
@@ -22,44 +24,72 @@ class PageContent extends Model
     ];
 
     /**
-     * Get content for a specific page and section
+     * Get the organization that owns this page content
      */
-    public static function getSection(string $page, string $section): \Illuminate\Database\Eloquent\Collection
+    public function organization(): BelongsTo
     {
-        return self::where('page', $page)
-            ->where('section', $section)
-            ->where('is_active', true)
-            ->orderBy('sort_order')
-            ->get();
+        return $this->belongsTo(Organization::class);
+    }
+
+    /**
+     * Scope to get global (non-organization) content
+     */
+    public function scopeGlobal($query)
+    {
+        return $query->whereNull('organization_id');
+    }
+
+    /**
+     * Scope to get content for a specific organization
+     */
+    public function scopeForOrganization($query, $organizationId)
+    {
+        return $query->where('organization_id', $organizationId);
+    }
+
+    /**
+     * Scope to get active content only
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    /**
+     * Get content for a specific page and section
+     * Now supports organization-specific content with fallback to global
+     */
+    public static function getSection(string $page, string $section, ?int $organizationId = null): \Illuminate\Database\Eloquent\Collection
+    {
+        return self::getSectionWithFallback($page, $section, $organizationId);
     }
 
     /**
      * Get a single content item by page, section and key
+     * Now supports organization-specific content with fallback to global
      */
-    public static function getContent(string $page, string $section, string $key): ?self
+    public static function getContent(string $page, string $section, string $key, ?int $organizationId = null): ?self
     {
-        return self::where('page', $page)
-            ->where('section', $section)
-            ->where('key', $key)
-            ->where('is_active', true)
-            ->first();
+        return self::getContentWithFallback($page, $section, $key, $organizationId);
     }
 
     /**
      * Get title for a section
+     * Now supports organization-specific content with fallback to global
      */
-    public static function getTitle(string $page, string $section): string
+    public static function getTitle(string $page, string $section, ?int $organizationId = null): string
     {
-        $content = self::getContent($page, $section, 'title');
+        $content = self::getContent($page, $section, 'title', $organizationId);
         return $content?->value ?? '';
     }
 
     /**
      * Get all journey timeline entries
+     * Now supports organization-specific content with fallback to global
      */
-    public static function getJourneyEntries(): array
+    public static function getJourneyEntries(?int $organizationId = null): array
     {
-        $entries = self::getSection('about', 'journey')
+        $entries = self::getSection('about', 'journey', $organizationId)
             ->filter(fn($item) => str_starts_with($item->key, 'year_'));
 
         $result = [];
@@ -73,10 +103,11 @@ class PageContent extends Model
 
     /**
      * Get all core values entries
+     * Now supports organization-specific content with fallback to global
      */
-    public static function getValuesEntries(): array
+    public static function getValuesEntries(?int $organizationId = null): array
     {
-        $entries = self::getSection('about', 'values')
+        $entries = self::getSection('about', 'values', $organizationId)
             ->filter(fn($item) => !str_starts_with($item->key, 'title'));
 
         // Parse values to extract icon, title, description
@@ -132,5 +163,62 @@ class PageContent extends Model
 
         $content->value = $value;
         return $content->save();
+    }
+
+    /**
+     * Get section with fallback to global content
+     * Priority: Organization specific -> Global default
+     */
+    public static function getSectionWithFallback(string $page, string $section, ?int $organizationId = null): \Illuminate\Database\Eloquent\Collection
+    {
+        // First try to get organization-specific content
+        if ($organizationId) {
+            $orgContent = self::where('page', $page)
+                ->where('section', $section)
+                ->forOrganization($organizationId)
+                ->active()
+                ->orderBy('sort_order')
+                ->get();
+
+            if ($orgContent->isNotEmpty()) {
+                return $orgContent;
+            }
+        }
+
+        // Fallback to global content
+        return self::where('page', $page)
+            ->where('section', $section)
+            ->global()
+            ->active()
+            ->orderBy('sort_order')
+            ->get();
+    }
+
+    /**
+     * Get single content with fallback to global
+     */
+    public static function getContentWithFallback(string $page, string $section, string $key, ?int $organizationId = null): ?self
+    {
+        // First try organization-specific
+        if ($organizationId) {
+            $content = self::where('page', $page)
+                ->where('section', $section)
+                ->where('key', $key)
+                ->forOrganization($organizationId)
+                ->active()
+                ->first();
+
+            if ($content) {
+                return $content;
+            }
+        }
+
+        // Fallback to global
+        return self::where('page', $page)
+            ->where('section', $section)
+            ->where('key', $key)
+            ->global()
+            ->active()
+            ->first();
     }
 }

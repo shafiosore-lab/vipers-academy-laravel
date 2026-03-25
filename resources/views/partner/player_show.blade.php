@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'Player Details - Partner Dashboard')
 
@@ -89,3 +89,4 @@
     </div>
 </div>
 @endsection
+

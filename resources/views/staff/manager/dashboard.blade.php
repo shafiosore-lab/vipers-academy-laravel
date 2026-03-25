@@ -1,6 +1,6 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
-@section('title', 'Team Manager Dashboard - Vipers Academy')
+@section('title', 'Team Manager Dashboard - GameSuite')
 
 @section('content')
     <!-- Welcome Header -->
@@ -149,3 +149,4 @@
     </div>
 </div>
 @endsection
+

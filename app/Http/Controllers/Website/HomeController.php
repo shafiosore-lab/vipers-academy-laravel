@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Program;
 use App\Models\Player;
 use App\Models\News;
-use App\Models\Gallery;
 use App\Models\User;
 use App\Models\PageContent;
 
@@ -20,30 +19,37 @@ class HomeController extends \App\Http\Controllers\Controller
         }
 
         // Check if user is authenticated and redirect to appropriate dashboard
+        // Use centralized RoleHierarchyService for deterministic dashboard routing
         if (auth()->check()) {
-            $user = auth()->user();
-
-            if ($user->isAdmin()) {
-                return redirect()->route('admin.dashboard');
-            } elseif ($user->isPlayer()) {
-                return redirect()->route('player.portal.dashboard');
-            } elseif ($user->isPartner()) {
-                return redirect()->route('partner.dashboard');
+            try {
+                $user = auth()->user();
+                $hierarchyService = new \App\Services\RoleHierarchyService();
+                $dashboardRoute = $hierarchyService->getDashboardRouteForUser($user);
+                return redirect()->route($dashboardRoute);
+            } catch (\Exception $e) {
+                // Continue to home page if hierarchy service fails
             }
         }
 
         // Fetch active partners for the home page
-        $partners = User::where('user_type', 'partner')
-            ->where('status', 'active')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        try {
+            $partners = User::where('user_type', 'partner')
+                ->where('status', 'active')
+                ->orderBy('created_at', 'desc')
+                ->get();
+        } catch (\Exception $e) {
+            $partners = collect([]);
+        }
 
         // Fetch dynamic page content
         $pageContent = [];
-        $sections = ['hero', 'what_we_do', 'features', 'stories', 'programs'];
-
-        foreach ($sections as $section) {
-            $pageContent[$section] = PageContent::getSection('home', $section);
+        try {
+            $sections = ['hero', 'what_we_do', 'features', 'stories', 'programs'];
+            foreach ($sections as $section) {
+                $pageContent[$section] = PageContent::getSection('home', $section);
+            }
+        } catch (\Exception $e) {
+            $pageContent = [];
         }
 
         // For guests or unrecognized user types, show the home page
@@ -76,10 +82,6 @@ class HomeController extends \App\Http\Controllers\Controller
                    ->orWhere('category', 'LIKE', "%{$query}%")
                    ->paginate(20);
 
-        // Search in gallery
-        $gallery = Gallery::where('title', 'LIKE', "%{$query}%")
-                         ->paginate(20);
-
-        return view('website.search.index', compact('query', 'programs', 'players', 'news', 'gallery'));
+        return view('website.search.index', compact('query', 'programs', 'players', 'news'));
     }
 }

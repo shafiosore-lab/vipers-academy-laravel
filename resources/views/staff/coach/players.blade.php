@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'Players - Coach Dashboard')
 
@@ -120,3 +120,4 @@
     </div>
 </div>
 @endsection
+

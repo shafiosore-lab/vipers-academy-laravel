@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'Registrations - Team Manager')
 
@@ -65,3 +65,4 @@
     </div>
 </div>
 @endsection
+

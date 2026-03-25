@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'Financial Overview')
 
@@ -208,3 +208,4 @@
     </div>
 </div>
 @endsection
+

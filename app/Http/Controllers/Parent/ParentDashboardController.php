@@ -414,17 +414,10 @@ class ParentDashboardController extends Controller
             ->take(12)
             ->get();
 
-        // Get gallery images
-        $galleries = \App\Models\Gallery::orderBy('created_at', 'desc')
-            ->orderBy('created_at', 'desc')
-            ->take(20)
-            ->get();
-
         return view('parent.media', compact(
             'user',
             'players',
-            'blogs',
-            'galleries'
+            'blogs'
         ));
     }
 

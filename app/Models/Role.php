@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 use App\Models\SubscriptionPlan;
+use Spatie\Permission\Models\Role as SpatieRole;
 
-class Role extends Model
+class Role extends SpatieRole
 {
     protected $fillable = [
         'name',
@@ -185,7 +187,7 @@ class Role extends Model
     /**
      * Get all permissions for this role (including inherited permissions).
      */
-    public function getAllPermissions()
+    public function getAllPermissions(): \Illuminate\Support\Collection
     {
         // If role has combined roles (hybrid), get permissions from all
         if ($this->combined_role_ids) {
@@ -195,7 +197,7 @@ class Role extends Model
             foreach ($combinedIds as $roleId) {
                 $role = Role::find(trim($roleId));
                 if ($role) {
-                    $permissions = $permissions->merge($role->permissions);
+                    $permissions = $permissions->merge($role->getAllPermissions());
                 }
             }
 
@@ -216,8 +218,8 @@ class Role extends Model
             }
         }
 
-        // Default: return own permissions
-        return $this->permissions;
+        // Default: return own permissions as collection
+        return $this->permissions->toBase();
     }
 
     /**

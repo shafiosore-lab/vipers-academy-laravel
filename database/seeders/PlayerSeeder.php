@@ -25,62 +25,80 @@ class PlayerSeeder extends Seeder
 
         // Demo Player 1: Senior Striker
         Player::create([
-            'name' => 'John Ochieng',
+            'first_name' => 'John',
+            'last_name' => 'Ochieng',
+            'full_name' => 'John Ochieng',
             'position' => 'striker',
             'age' => 19,
-            'photo' => 'john-ochieng-senior-striker-19.jpg',
+            'image' => 'john-ochieng-senior-striker-19.jpg',
             'bio' => 'Outstanding striker with excellent finishing skills.',
-            'program_id' => 1,
+            'category' => 'senior',
+            'status' => 'active',
         ]);
 
         // Demo Player 2: Under-17 Midfielder
         Player::create([
-            'name' => 'Sarah Wanjiku',
+            'first_name' => 'Sarah',
+            'last_name' => 'Wanjiku',
+            'full_name' => 'Sarah Wanjiku',
             'position' => 'midfielder',
             'age' => 17,
-            'photo' => 'sarah-wanjiku-under-17-midfielder-17.jpg',
+            'image' => 'sarah-wanjiku-under-17-midfielder-17.jpg',
             'bio' => 'Talented attacking midfielder with excellent vision.',
-            'program_id' => 1,
+            'category' => 'u17',
+            'status' => 'active',
         ]);
 
         // Demo Player 3: Under-15 Goalkeeper
         Player::create([
-            'name' => 'Michael Kiprop',
+            'first_name' => 'Michael',
+            'last_name' => 'Kiprop',
+            'full_name' => 'Michael Kiprop',
             'position' => 'goalkeeper',
             'age' => 15,
-            'photo' => 'michael-kiprop-under-15-goalkeeper-15.jpg',
+            'image' => 'michael-kiprop-under-15-goalkeeper-15.jpg',
             'bio' => 'Exceptional shot-stopping ability.',
-            'program_id' => 1,
+            'category' => 'u15',
+            'status' => 'active',
         ]);
 
         // Demo Player 4: Under-13 Defender
         Player::create([
-            'name' => 'Grace Achieng',
+            'first_name' => 'Grace',
+            'last_name' => 'Achieng',
+            'full_name' => 'Grace Achieng',
             'position' => 'defender',
             'age' => 13,
-            'photo' => 'grace-achieng-under-13-defender-13.jpg',
+            'image' => 'grace-achieng-under-13-defender-13.jpg',
             'bio' => 'Young defender with great potential.',
-            'program_id' => 1,
+            'category' => 'u13',
+            'status' => 'active',
         ]);
 
         // Demo Player 5: Senior Midfielder
         Player::create([
-            'name' => 'David Mwangi',
+            'first_name' => 'David',
+            'last_name' => 'Mwangi',
+            'full_name' => 'David Mwangi',
             'position' => 'midfielder',
             'age' => 20,
-            'photo' => 'david-mwangi-senior-midfielder-20.jpg',
+            'image' => 'david-mwangi-senior-midfielder-20.jpg',
             'bio' => 'Captain of senior team with professional contract.',
-            'program_id' => 1,
+            'category' => 'senior',
+            'status' => 'active',
         ]);
 
         // Demo Player 6: Under-17 Striker
         Player::create([
-            'name' => 'Joyce Njeri',
+            'first_name' => 'Joyce',
+            'last_name' => 'Njeri',
+            'full_name' => 'Joyce Njeri',
             'position' => 'striker',
             'age' => 17,
-            'photo' => 'joyce-njeri-under-17-striker-17.jpg',
+            'image' => 'joyce-njeri-under-17-striker-17.jpg',
             'bio' => 'Top scorer of Under-17 team.',
-            'program_id' => 1,
+            'category' => 'u17',
+            'status' => 'active',
         ]);
 
         $this->command->info('✅ Successfully added 6 demo players!');

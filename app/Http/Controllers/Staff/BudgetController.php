@@ -15,10 +15,7 @@ use Illuminate\Validation\Rule;
 
 class BudgetController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth', 'role:finance-officer|finance-admin']);
-    }
+    // Middleware is handled at the route level via route groups
 
     // ==================== BUDGET PLANS ====================
 

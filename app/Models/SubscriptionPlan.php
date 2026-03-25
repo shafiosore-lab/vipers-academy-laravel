@@ -36,7 +36,7 @@ class SubscriptionPlan extends Model
         'sort_order' => 'integer',
     ];
 
-    // Default features for each plan
+    // Default features for each plan (legacy structure)
     const STARTER_FEATURES = [
         'players_management' => true,
         'teams' => true,
@@ -72,6 +72,161 @@ class SubscriptionPlan extends Model
         'custom_branding' => true,
         'priority_support' => true,
         'white_label' => true,
+    ];
+
+    // Module-based permissions structure
+    // Each module has an array of permission slugs
+    const MODULE_PERMISSIONS = [
+        'attendance' => [
+            'attendance.clock_in',
+            'attendance.clock_out',
+            'attendance.mark',
+            'attendance.view_history',
+        ],
+        'communication' => [
+            'communication.approve_announcements',
+            'communication.send_bulk',
+            'communication.send_team',
+        ],
+        'content' => [
+            'content.create_news',
+            'content.delete_news',
+            'content.edit_news',
+            'content.view_news',
+        ],
+        'documents' => [
+            'documents.approve',
+            'documents.upload',
+            'documents.view',
+        ],
+        'finance' => [
+            'finance.process_payments',
+            'finance.view_reports',
+            'finance.view_payments',
+        ],
+        'jobs' => [
+            'jobs.create',
+            'jobs.delete',
+            'jobs.edit',
+            'jobs.view',
+        ],
+        'matches' => [
+            'matches.create',
+            'matches.delete',
+            'matches.edit',
+            'matches.view',
+        ],
+        'orders' => [
+            'orders.manage_status',
+            'orders.process',
+            'orders.view',
+        ],
+        'partners' => [
+            'partners.approve',
+            'partners.create',
+            'partners.create_staff',
+            'partners.delete',
+            'partners.edit',
+            'partners.manage_roles',
+            'partners.view_analytics',
+            'partners.view',
+        ],
+        'players' => [
+            'players.approve',
+            'players.create',
+            'players.delete',
+            'players.edit',
+            'players.update_profile',
+            'players.view_portal',
+            'players.view',
+            'players.view_training',
+        ],
+        'programs' => [
+            'programs.create',
+            'programs.delete',
+            'programs.edit',
+            'programs.view',
+        ],
+        'reports' => [
+            'reports.export',
+            'reports.generate',
+        ],
+        'sessions' => [
+            'sessions.add_notes',
+            'sessions.end',
+            'sessions.start',
+        ],
+        'statistics' => [
+            'statistics.create',
+            'statistics.delete',
+            'statistics.edit',
+            'statistics.view',
+        ],
+        'system' => [
+            'system.manage_roles',
+            'system.manage_settings',
+            'system.view_logs',
+        ],
+        'teams' => [
+            'teams.assign_players',
+            'teams.create',
+            'teams.edit',
+        ],
+        'users' => [
+            'users.approve',
+            'users.create',
+            'users.delete',
+            'users.edit',
+            'users.view',
+        ],
+    ];
+
+    // Starter plan module access (basic modules only)
+    const STARTER_MODULES = [
+        'players' => ['players.view', 'players.create'],
+        'programs' => ['programs.view'],
+        'teams' => ['teams.view', 'teams.create'],
+        'attendance' => ['attendance.view_history'],
+        'sessions' => ['sessions.start', 'sessions.end'],
+    ];
+
+    // Professional plan module access (most modules)
+    const PROFESSIONAL_MODULES = [
+        'players' => true,
+        'programs' => true,
+        'teams' => true,
+        'attendance' => true,
+        'sessions' => true,
+        'statistics' => true,
+        'matches' => true,
+        'content' => true,
+        'documents' => true,
+        'jobs' => true,
+        'orders' => true,
+        'partners' => true,
+        'reports' => true,
+        'users' => true,
+    ];
+
+    // Enterprise plan module access (all modules)
+    const ENTERPRISE_MODULES = [
+        'players' => true,
+        'programs' => true,
+        'teams' => true,
+        'attendance' => true,
+        'sessions' => true,
+        'statistics' => true,
+        'matches' => true,
+        'content' => true,
+        'documents' => true,
+        'finance' => true,
+        'jobs' => true,
+        'orders' => true,
+        'partners' => true,
+        'reports' => true,
+        'system' => true,
+        'users' => true,
+        'communication' => true,
     ];
 
     // Relationships
@@ -200,5 +355,151 @@ class SubscriptionPlan extends Model
             return $p !== $permissionId;
         });
         $this->setPermissions(array_values($permissions));
+    }
+
+    // Module-based permission checking
+    /**
+     * Get the module access configuration for this plan
+     */
+    public function getModuleAccess(): array
+    {
+        $slug = $this->slug;
+
+        return match($slug) {
+            'starter' => self::STARTER_MODULES,
+            'professional' => self::PROFESSIONAL_MODULES,
+            'enterprise' => self::ENTERPRISE_MODULES,
+            default => [],
+        };
+    }
+
+    /**
+     * Check if a module is accessible in this plan
+     */
+    public function hasModuleAccess(string $module): bool
+    {
+        $moduleAccess = $this->getModuleAccess();
+
+        // Check if module exists in access config
+        if (!isset($moduleAccess[$module])) {
+            return false;
+        }
+
+        // If value is true, module is fully accessible
+        if ($moduleAccess[$module] === true) {
+            return true;
+        }
+
+        // If array, module has limited permissions
+        return !empty($moduleAccess[$module]);
+    }
+
+    /**
+     * Get allowed permissions for a specific module in this plan
+     */
+    public function getModulePermissions(string $module): array
+    {
+        $moduleAccess = $this->getModuleAccess();
+
+        // Check if module is fully accessible (true = all permissions)
+        if (isset($moduleAccess[$module]) && $moduleAccess[$module] === true) {
+            return self::MODULE_PERMISSIONS[$module] ?? [];
+        }
+
+        // Check if module has limited access (array of allowed permissions)
+        if (isset($moduleAccess[$module]) && is_array($moduleAccess[$module])) {
+            return $moduleAccess[$module];
+        }
+
+        return [];
+    }
+
+    /**
+     * Get all allowed permissions for this plan
+     */
+    public function getAllAllowedPermissions(): array
+    {
+        $moduleAccess = $this->getModuleAccess();
+        $allowedPermissions = [];
+
+        foreach ($moduleAccess as $module => $access) {
+            if ($access === true) {
+                // Get all permissions for this module
+                $allowedPermissions = array_merge(
+                    $allowedPermissions,
+                    self::MODULE_PERMISSIONS[$module] ?? []
+                );
+            } elseif (is_array($access)) {
+                // Get specific permissions allowed
+                $allowedPermissions = array_merge($allowedPermissions, $access);
+            }
+        }
+
+        return array_unique($allowedPermissions);
+    }
+
+    /**
+     * Check if a specific permission is allowed in this plan
+     */
+    public function allowsPermission(string $permission): bool
+    {
+        // Extract module from permission (e.g., 'players.create' -> 'players')
+        $parts = explode('.', $permission);
+        $module = $parts[0] ?? null;
+
+        if (!$module) {
+            return false;
+        }
+
+        $moduleAccess = $this->getModuleAccess();
+
+        // Check if module has full access
+        if (isset($moduleAccess[$module]) && $moduleAccess[$module] === true) {
+            return true;
+        }
+
+        // Check if specific permission is allowed
+        if (isset($moduleAccess[$module]) && is_array($moduleAccess[$module])) {
+            return in_array($permission, $moduleAccess[$module]);
+        }
+
+        return false;
+    }
+
+    /**
+     * Get available modules for this plan
+     */
+    public function getAvailableModules(): array
+    {
+        return array_keys($this->getModuleAccess());
+    }
+
+    /**
+     * Get all module permissions structured for display
+     */
+    public function getStructuredPermissions(): array
+    {
+        $result = [];
+
+        foreach (self::MODULE_PERMISSIONS as $module => $permissions) {
+            $allowedPermissions = $this->getModulePermissions($module);
+
+            $result[$module] = [
+                'name' => ucfirst($module),
+                'has_full_access' => $this->hasModuleAccess($module),
+                'permissions' => array_map(function($perm) use ($allowedPermissions) {
+                    $parts = explode('.', $perm);
+                    $action = $parts[1] ?? $perm;
+
+                    return [
+                        'slug' => $perm,
+                        'name' => ucfirst(str_replace('_', ' ', $action)),
+                        'allowed' => in_array($perm, $allowedPermissions),
+                    ];
+                }, $permissions),
+            ];
+        }
+
+        return $result;
     }
 }

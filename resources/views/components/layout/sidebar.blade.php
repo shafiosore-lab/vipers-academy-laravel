@@ -64,7 +64,6 @@
                 ['name' => __('Programs'), 'route' => 'admin.programs.index', 'icon' => 'fa-clipboard-list'],
                 ['name' => __('Staff'), 'route' => 'admin.staff.index', 'icon' => 'fa-user-tie'],
                 ['name' => __('Website Players'), 'route' => 'admin.website-players.index', 'icon' => 'fa-futbol'],
-                ['name' => __('Gallery'), 'route' => 'admin.gallery.index', 'icon' => 'fa-images'],
                 ['name' => __('Announcements'), 'route' => 'admin.blog.index', 'icon' => 'fa-newspaper'],
                 ['name' => __('Careers'), 'route' => 'admin.jobs.index', 'icon' => 'fa-briefcase'],
                 ['name' => __('Leaders'), 'route' => 'leaders.index', 'icon' => 'fa-star'],
@@ -175,3 +174,4 @@
         </a>
     </nav>
 </aside>
+

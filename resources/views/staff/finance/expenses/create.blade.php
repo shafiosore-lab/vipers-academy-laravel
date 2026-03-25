@@ -1,4 +1,4 @@
-@extends('layouts.staff')
+@extends('layouts.admin')
 
 @section('title', 'Add Expense')
 
@@ -130,3 +130,4 @@
     </form>
 </div>
 @endsection
+
