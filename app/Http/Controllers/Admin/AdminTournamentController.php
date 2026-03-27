@@ -34,6 +34,7 @@ class AdminTournamentController extends Controller
         });
     }
 
+    // === CRUD OPERATIONS ===
     /**
      * Display a listing of tournaments.
      */
@@ -254,6 +255,7 @@ class AdminTournamentController extends Controller
             ->with('success', 'Tournament deleted successfully.');
     }
 
+    // === STATUS MANAGEMENT ===
     /**
      * Open tournament for registration.
      */
@@ -326,6 +328,68 @@ class AdminTournamentController extends Controller
     }
 
     /**
+     * Cancel tournament.
+     */
+    public function cancelTournament(Tournament $tournament)
+    {
+        if ($tournament->status === Tournament::STATUS_COMPLETED) {
+            return redirect()->back()
+                ->with('error', 'Cannot cancel a completed tournament.');
+        }
+
+        $tournament->update(['status' => Tournament::STATUS_CANCELLED]);
+
+        return redirect()->back()
+            ->with('success', 'Tournament has been cancelled.');
+    }
+
+    /**
+     * Archive tournament.
+     */
+    public function archiveTournament(Tournament $tournament)
+    {
+        if ($tournament->status !== Tournament::STATUS_COMPLETED) {
+            return redirect()->back()
+                ->with('error', 'Only completed tournaments can be archived.');
+        }
+
+        $tournament->update(['status' => Tournament::STATUS_ARCHIVED]);
+
+        return redirect()->back()
+            ->with('success', 'Tournament has been archived.');
+    }
+
+    /**
+     * Restore archived tournament.
+     */
+    public function restoreTournament(Tournament $tournament)
+    {
+        if ($tournament->status !== Tournament::STATUS_ARCHIVED) {
+            return redirect()->back()
+                ->with('error', 'Only archived tournaments can be restored.');
+        }
+
+        $tournament->update(['status' => Tournament::STATUS_DRAFT]);
+
+        return redirect()->back()
+            ->with('success', 'Tournament has been restored.');
+    }
+
+    /**
+     * Toggle tournament visibility.
+     */
+    public function toggleVisibility(Tournament $tournament)
+    {
+        $tournament->update(['is_public' => !$tournament->is_public]);
+
+        $status = $tournament->is_public ? 'public' : 'private';
+
+        return redirect()->back()
+            ->with('success', "Tournament is now {$status}.");
+    }
+
+    // === DATA MANAGEMENT ===
+    /**
      * Generate fixtures for the tournament.
      */
     public function generateFixtures(Tournament $tournament)
@@ -390,107 +454,6 @@ class AdminTournamentController extends Controller
 
         return redirect()->back()
             ->with('success', 'Squads have been unlocked.');
-    }
-
-    /**
-     * Cancel tournament.
-     */
-    public function cancelTournament(Tournament $tournament)
-    {
-        if ($tournament->status === Tournament::STATUS_COMPLETED) {
-            return redirect()->back()
-                ->with('error', 'Cannot cancel a completed tournament.');
-        }
-
-        $tournament->update(['status' => Tournament::STATUS_CANCELLED]);
-
-        return redirect()->back()
-            ->with('success', 'Tournament has been cancelled.');
-    }
-
-    /**
-     * Archive tournament.
-     */
-    public function archiveTournament(Tournament $tournament)
-    {
-        if ($tournament->status !== Tournament::STATUS_COMPLETED) {
-            return redirect()->back()
-                ->with('error', 'Only completed tournaments can be archived.');
-        }
-
-        $tournament->update(['status' => Tournament::STATUS_ARCHIVED]);
-
-        return redirect()->back()
-            ->with('success', 'Tournament has been archived.');
-    }
-
-    /**
-     * Toggle tournament visibility.
-     */
-    public function toggleVisibility(Tournament $tournament)
-    {
-        $tournament->update(['is_public' => !$tournament->is_public]);
-
-        $status = $tournament->is_public ? 'public' : 'private';
-
-        return redirect()->back()
-            ->with('success', "Tournament is now {$status}.");
-    }
-
-    /**
-     * Restore archived tournament.
-     */
-    public function restoreTournament(Tournament $tournament)
-    {
-        if ($tournament->status !== Tournament::STATUS_ARCHIVED) {
-            return redirect()->back()
-                ->with('error', 'Only archived tournaments can be restored.');
-        }
-
-        $tournament->update(['status' => Tournament::STATUS_DRAFT]);
-
-        return redirect()->back()
-            ->with('success', 'Tournament has been restored.');
-    }
-
-    /**
-     * Get tournament quick stats for dashboard.
-     */
-    public function getQuickStats(Tournament $tournament)
-    {
-        $stats = [
-            'total_teams' => $tournament->teams()->count(),
-            'approved_teams' => $tournament->teams()->approved()->count(),
-            'pending_teams' => $tournament->teams()->pending()->count(),
-            'total_matches' => $tournament->matches()->count(),
-            'completed_matches' => $tournament->matches()->where('status', 'completed')->count(),
-            'pending_matches' => $tournament->matches()->where('status', 'pending')->count(),
-            'total_players' => $tournament->squads()->count(),
-            'active_players' => $tournament->squads()->where('status', 'active')->count(),
-        ];
-
-        return response()->json($stats);
-    }
-
-    /**
-     * Get tournament status summary.
-     */
-    public function getStatusSummary(Tournament $tournament)
-    {
-        $summary = [
-            'name' => $tournament->name,
-            'status' => $tournament->status,
-            'status_label' => $tournament->getStatusLabel(),
-            'start_date' => $tournament->start_date,
-            'end_date' => $tournament->end_date,
-            'registration_deadline' => $tournament->registration_deadline,
-            'is_public' => $tournament->is_public,
-            'teams_count' => $tournament->teams()->count(),
-            'matches_count' => $tournament->matches()->count(),
-            'squads_locked' => $tournament->squads_locked,
-        ];
-
-        return response()->json($summary);
     }
 
     /**
@@ -591,6 +554,47 @@ class AdminTournamentController extends Controller
 
         return redirect()->back()
             ->with('success', "{$count} matches {$request->action}ed successfully.");
+    }
+
+    // === UTILITY METHODS ===
+    /**
+     * Get tournament quick stats for dashboard.
+     */
+    public function getQuickStats(Tournament $tournament)
+    {
+        $stats = [
+            'total_teams' => $tournament->teams()->count(),
+            'approved_teams' => $tournament->teams()->approved()->count(),
+            'pending_teams' => $tournament->teams()->pending()->count(),
+            'total_matches' => $tournament->matches()->count(),
+            'completed_matches' => $tournament->matches()->where('status', 'completed')->count(),
+            'pending_matches' => $tournament->matches()->where('status', 'pending')->count(),
+            'total_players' => $tournament->squads()->count(),
+            'active_players' => $tournament->squads()->where('status', 'active')->count(),
+        ];
+
+        return response()->json($stats);
+    }
+
+    /**
+     * Get tournament status summary.
+     */
+    public function getStatusSummary(Tournament $tournament)
+    {
+        $summary = [
+            'name' => $tournament->name,
+            'status' => $tournament->status,
+            'status_label' => $tournament->getStatusLabel(),
+            'start_date' => $tournament->start_date,
+            'end_date' => $tournament->end_date,
+            'registration_deadline' => $tournament->registration_deadline,
+            'is_public' => $tournament->is_public,
+            'teams_count' => $tournament->teams()->count(),
+            'matches_count' => $tournament->matches()->count(),
+            'squads_locked' => $tournament->squads_locked,
+        ];
+
+        return response()->json($summary);
     }
 
     /**
