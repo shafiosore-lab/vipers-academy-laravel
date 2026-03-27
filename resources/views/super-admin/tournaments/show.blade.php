@@ -39,6 +39,10 @@
                     <li><a class="dropdown-item" href="{{ route('super-admin.tournaments.standings.index', $tournament->id) }}">
                         <i class="fas fa-list-ol me-1"></i> Standings
                     </a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{ route('super-admin.tournaments.statistics.index', $tournament->id) }}">
+                        <i class="fas fa-chart-bar me-1"></i> Tournament Statistics
+                    </a></li>
                 </ul>
             </div>
         </div>
@@ -175,6 +179,11 @@
                         <i class="fas fa-list-ol"></i> Standings
                     </a>
                 @endif
+
+                <!-- Tournament Statistics Button -->
+                <a href="{{ route('super-admin.tournaments.statistics.index', $tournament->id) }}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-chart-bar"></i> Statistics
+                </a>
 
                 <form action="{{ route('super-admin.tournaments.toggle-visibility', $tournament->id) }}" method="POST" class="d-inline">
                     @csrf
