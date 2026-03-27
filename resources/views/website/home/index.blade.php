@@ -1,17 +1,17 @@
 @extends('layouts.academy')
 
-@section('title', 'Vipers Academy - Transforming Lives Through Football & Education')
+@section('title', 'Mumias Vipers - Transforming Lives Through Football & Education')
 
-@section('meta_description', 'Mumias Vipers Academy: Community-based youth development using football to nurture talent, discipline, and education. Over 20 players on high school sports scholarships.')
+@section('meta_description', 'Mumias Vipers: Community-based youth development using football to nurture talent, discipline, and education. Over 20 players on high school sports scholarships.')
 
 @section('content')
 <!-- Hero Section -->
-<section class="hero-section home-hero-section" style="background-image: url('{{ asset('assets/img/home/teamb.png') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-    <div class="hero-overlay"></div>
+<section class="hero-section home-hero-section" style="background-image: url('{{ asset('assets/img/home/teamb.jpg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <div class="hero-overlay" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.75) 70%);"></div>
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-9">
-                <div class="hero-content text-white" data-aos="fade-right">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-10 col-xl-8">
+                <div class="hero-content text-white" data-aos="fade-up">
                     <h1 class="hero-title fw-bold mb-3">
                         @php
                             $heroTitle = isset($pageContent['hero']) ? $pageContent['hero']->firstWhere('key', 'hero_title') : null;
@@ -24,15 +24,15 @@
                         @endphp
                         {{ $heroSubtitle?->value ?: 'Founded in 2016, Mumias Vipers Academy is a community-based youth development organization using football to nurture talent, discipline, and education — with over 20 players currently on high school sports scholarships, accessing quality education that was once out of reach.' }}
                     </p>
-                    <div class="hero-buttons d-flex flex-wrap gap-2">
+                    <div class="hero-buttons d-flex flex-wrap gap-2 justify-content-center">
                         <a href="{{ route('programs') }}" class="btn btn-warning btn-lg px-4 py-3 fw-semibold shadow">
                             <i class="fas fa-compass me-2"></i>Explore Programs
                         </a>
                         <a href="{{ route('enrol') }}" class="btn btn-outline-light btn-lg px-4 py-3 fw-semibold">
                             <i class="fas fa-user-plus me-2"></i>Enroll Now
                         </a>
-                        <a href="{{ route('register') }}" class="btn btn-success btn-lg px-4 py-3 fw-semibold shadow">
-                            <i class="fas fa-play me-2"></i>Start Free Trial
+                        <a href="{{ route('register') }}" class="btn btn-success btn-lg px-4 py-3 fw-semibold shadow d-flex align-items-center justify-content-center">
+                            <span style="font-size: 1.25rem; font-weight: 700; color: #0a1628; background: linear-gradient(135deg, #ffd700 0%, #ffb700 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">GameSuite</span>
                         </a>
                         <a href="{{ route('contact') }}" class="btn btn-outline-light btn-lg px-4 py-3 fw-semibold">
                             <i class="fas fa-calendar-alt me-2"></i>Request Demo
@@ -196,9 +196,9 @@
     <div class="container">
         <div class="text-center mb-4" data-aos="fade-up">
             <h2 class="section-title fw-bold mb-2">
-                Football <span class="text-success">|</span> Academics <span class="text-success">|</span> Technology
+                Football <span class="text-success">|</span> Academics <span class="text-warning">|</span> Technology
             </h2>
-            <p class="section-subtitle text-muted">Choose from our comprehensive range of development programs</p>
+            <p class="section-subtitle">Choose from our comprehensive range of development programs</p>
         </div>
 
         <div class="row g-4">
@@ -211,11 +211,11 @@
                         </div>
                         <h5 class="card-title fw-bold mb-1">Football Training</h5>
                         <small class="text-muted d-block mb-3">Professional Skills Development</small>
-                        <ul class="program-features list-unstyled mb-3 text-start text-md-start text-center">
-                            <li class="mb-2 small"><i class="fas fa-calendar-week program-icon-desktop me-2 text-success"></i>Weekend training sessions</li>
-                            <li class="mb-2 small"><i class="fas fa-chalkboard-teacher program-icon-desktop me-2 text-success"></i>Theory & tactical classes</li>
-                            <li class="mb-2 small"><i class="fas fa-users program-icon-desktop me-2 text-success"></i>Age-appropriate groups</li>
-                            <li class="mb-2 small"><i class="fas fa-trophy program-icon-desktop me-2 text-success"></i>Tournament participation</li>
+                        <ul class="program-features list-unstyled mb-3">
+                            <li class="mb-2 small"><i class="fas fa-calendar-week me-2"></i>Weekend training sessions</li>
+                            <li class="mb-2 small"><i class="fas fa-chalkboard-teacher me-2"></i>Theory & tactical classes</li>
+                            <li class="mb-2 small"><i class="fas fa-users me-2"></i>Age-appropriate groups</li>
+                            <li class="mb-2 small"><i class="fas fa-trophy me-2"></i>Tournament participation</li>
                         </ul>
                         <div class="d-flex flex-wrap gap-2 justify-content-center">
                             <span class="badge bg-success">Weekend Programs</span>
@@ -234,11 +234,11 @@
                         </div>
                         <h5 class="card-title fw-bold mb-1">Academic Mentorship</h5>
                         <small class="text-muted d-block mb-3">CBC-Aligned Support</small>
-                        <ul class="program-features list-unstyled mb-3 text-start text-md-start text-center">
-                            <li class="mb-2 small"><i class="fas fa-book-open program-icon-desktop me-2 text-warning"></i>Study discipline coaching</li>
-                            <li class="mb-2 small"><i class="fas fa-clipboard-list program-icon-desktop me-2 text-warning"></i>CBC homework support</li>
-                            <li class="mb-2 small"><i class="fas fa-hands-helping program-icon-desktop me-2 text-warning"></i>Life-skills mentorship</li>
-                            <li class="mb-2 small"><i class="fas fa-chart-line program-icon-desktop me-2 text-warning"></i>Behavior tracking system</li>
+                        <ul class="program-features list-unstyled mb-3">
+                            <li class="mb-2 small"><i class="fas fa-book-open me-2"></i>Study discipline coaching</li>
+                            <li class="mb-2 small"><i class="fas fa-clipboard-list me-2"></i>CBC homework support</li>
+                            <li class="mb-2 small"><i class="fas fa-hands-helping me-2"></i>Life-skills mentorship</li>
+                            <li class="mb-2 small"><i class="fas fa-chart-line me-2"></i>Behavior tracking system</li>
                         </ul>
                         <div class="d-flex flex-wrap gap-2 justify-content-center">
                             <span class="badge bg-warning text-dark">Study Support</span>
@@ -257,11 +257,11 @@
                         </div>
                         <h5 class="card-title fw-bold mb-1">Digital Skills</h5>
                         <small class="text-muted d-block mb-3">Technology Integration</small>
-                        <ul class="program-features list-unstyled mb-3 text-start text-md-start text-center">
-                            <li class="mb-2 small"><i class="fas fa-desktop program-icon-desktop me-2 text-info"></i>Computer basics training</li>
-                            <li class="mb-2 small"><i class="fas fa-code program-icon-desktop me-2 text-info"></i>Introduction to coding</li>
-                            <li class="mb-2 small"><i class="fas fa-shield-alt program-icon-desktop me-2 text-info"></i>Digital safety education</li>
-                            <li class="mb-2 small"><i class="fas fa-lightbulb program-icon-desktop me-2 text-info"></i>Creative tech projects</li>
+                        <ul class="program-features list-unstyled mb-3">
+                            <li class="mb-2 small"><i class="fas fa-desktop me-2"></i>Computer basics training</li>
+                            <li class="mb-2 small"><i class="fas fa-code me-2"></i>Introduction to coding</li>
+                            <li class="mb-2 small"><i class="fas fa-shield-alt me-2"></i>Digital safety education</li>
+                            <li class="mb-2 small"><i class="fas fa-lightbulb me-2"></i>Creative tech projects</li>
                         </ul>
                         <div class="d-flex flex-wrap gap-2 justify-content-center">
                             <span class="badge bg-info">Computer Lab Access</span>
@@ -510,6 +510,7 @@
 
     .hero-content {
         padding: 2rem 0;
+        text-align: center;
     }
 
     .hero-title {
@@ -533,6 +534,10 @@
         padding-top: 80px;
     }
 
+    .hero-content {
+        text-align: center;
+    }
+
     .hero-title {
         font-size: 2.25rem;
     }
@@ -544,6 +549,10 @@
         min-height: 60vh;
         padding-top: 70px;
         padding-bottom: 2rem;
+    }
+
+    .hero-content {
+        text-align: center;
     }
 
     .hero-title {

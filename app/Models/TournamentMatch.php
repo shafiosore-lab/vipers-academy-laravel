@@ -196,6 +196,14 @@ class TournamentMatch extends Model
         return $this->belongsTo(TournamentVenue::class, 'venue_id');
     }
 
+    /**
+     * Get venue (alias for venueModel)
+     */
+    public function venue(): BelongsTo
+    {
+        return $this->venueModel();
+    }
+
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
@@ -349,6 +357,14 @@ class TournamentMatch extends Model
     public function isInProgress(): bool
     {
         return $this->status === self::STATUS_IN_PROGRESS;
+    }
+
+    /**
+     * Check if match is live (alias for isInProgress)
+     */
+    public function isLive(): bool
+    {
+        return $this->isInProgress();
     }
 
     public function isCompleted(): bool

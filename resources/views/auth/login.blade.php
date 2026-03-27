@@ -119,22 +119,40 @@
 @endsection
 
 @section('branding')
-    <!-- Branding Section for Login -->
-    <div class="branding-logo">
-        <div class="branding-logo-icon" style="padding: 8px; background: white; border-radius: 8px;">
-            <img src="{{ asset('assets/img/logo/GameSuite.png') }}" alt="Gamesuite Logo" style="width: 48px; height: 48px; object-fit: contain;">
+    <!-- Branding Section for Login (Enhanced) -->
+    <div class="branding-content">
+        <h2 class="branding-title">Powering Gaming Communities</h2>
+        <p class="branding-description">
+            Join thousands of tournament organizers and players who trust Gamesuite for seamless tournament management, player tracking, and community building.
+        </p>
+
+        <div style="margin-top: 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                <i class="fas fa-trophy text-warning" style="font-size: 1.25rem;"></i>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.875rem;">Professional Tournaments</div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.8);">Manage leagues, brackets, and rankings</div>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                <i class="fas fa-users text-info" style="font-size: 1.25rem;"></i>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.875rem;">Community Building</div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.8);">Connect players and teams</div>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fas fa-chart-line text-success" style="font-size: 1.25rem;"></i>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.875rem;">Advanced Analytics</div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.8);">Track performance and insights</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="branding-content">
-        <h2 class="branding-title">Level Up Your Gaming Experience</h2>
-        <p class="branding-description">
-            Access powerful tournament management tools and organize your gaming community.
-        </p>
-    </div>
-
     <div class="branding-footer">
-        <p class="branding-footer-text">© 2025 Gamesuite. All rights reserved.</p>
+        <p class="branding-footer-text">Trusted by gaming communities worldwide</p>
     </div>
 @endsection
 

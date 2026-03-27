@@ -300,6 +300,7 @@ class SuperAdminTournamentController extends Controller
 
     /**
      * View all teams registered in a tournament.
+     * Passes data for inline team creation modal.
      */
     public function teams(Request $request, Tournament $tournament)
     {
@@ -312,7 +313,222 @@ class SuperAdminTournamentController extends Controller
 
         $teams = $query->orderBy('registration_date', 'desc')->paginate(20);
 
-        return view('super-admin.tournaments.teams', compact('tournament', 'teams'));
+        // Get all teams available for registration (not already registered in this tournament)
+        $registeredTeamIds = $tournament->teams()->whereNotNull('team_id')->pluck('team_id')->toArray();
+        $availableTeams = \App\Models\Team::whereNotIn('id', $registeredTeamIds)
+            ->orderBy('name')
+            ->with('organization')
+            ->get();
+
+        // Get location fields from tournament's organization
+        $locationFields = [];
+        $locationLevel = 'country';
+        $locationOptions = [];
+
+        if ($tournament->organization) {
+            $locationFields = $tournament->organization->getLocationFields();
+            $locationLevel = $tournament->organization->getEffectiveLocationLevel();
+            $locationOptions = $tournament->organization->getLocationArray();
+        }
+
+        // Get country list
+        $countries = \App\Models\Organization::COUNTRIES;
+
+        return view('super-admin.tournaments.teams',
+            compact('tournament', 'teams', 'availableTeams', 'locationFields', 'locationLevel', 'locationOptions', 'countries'));
+    }
+
+    /**
+     * Show the form for adding a team to a tournament.
+     * Passes dynamic location fields based on tournament's organization location level.
+     */
+    public function createTeam(Tournament $tournament)
+    {
+        // Get all teams that are not already registered in this tournament (only those with team_id not null)
+        $registeredTeamIds = $tournament->teams()->whereNotNull('team_id')->pluck('team_id')->toArray();
+
+        $teams = \App\Models\Team::whereNotIn('id', $registeredTeamIds)
+            ->orderBy('name')
+            ->with('organization')
+            ->get();
+
+        // Get location fields from tournament's organization
+        $locationFields = [];
+        $locationLevel = 'country';
+        $locationOptions = [];
+
+        if ($tournament->organization) {
+            $locationFields = $tournament->organization->getLocationFields();
+            $locationLevel = $tournament->organization->getEffectiveLocationLevel();
+            $locationOptions = $tournament->organization->getLocationArray();
+        }
+
+        // Get country list
+        $countries = \App\Models\Organization::COUNTRIES;
+
+        return view('super-admin.tournaments.teams.create', compact('tournament', 'teams', 'locationFields', 'locationLevel', 'locationOptions', 'countries'));
+    }
+
+    /**
+     * Store a team in a tournament.
+     * Handles dynamic location fields based on tournament's organization.
+     * Supports both linking to an existing team OR registering with just a team name.
+     */
+    public function storeTeam(Request $request, Tournament $tournament)
+    {
+        \Log::info('storeTeam called', [
+            'tournament_id' => $tournament->id,
+            'team_id' => $request->team_id,
+            'team_name' => $request->team_name,
+            'user_id' => auth()->id()
+        ]);
+
+        // Get location fields from tournament's organization for validation
+        $locationFields = [];
+        if ($tournament->organization) {
+            $locationFields = $tournament->organization->getLocationFields();
+        }
+
+        // Build validation rules dynamically - either team_id OR team_name is required
+        $validationRules = [
+            'team_id' => 'nullable|exists:teams,id',
+            'team_name' => 'nullable|string|max:255',
+            'team_contact_name' => 'nullable|string|max:255',
+            'team_contact_email' => 'nullable|email|max:255',
+            'team_contact_phone' => 'nullable|string|max:50',
+            'auto_approve' => 'nullable|boolean',
+        ];
+
+        // Add location field validation rules
+        foreach ($locationFields as $field) {
+            if ($field === 'country') {
+                $validationRules['country'] = 'required|string|max:100';
+            } else {
+                $validationRules[$field] = 'nullable|string|max:100';
+            }
+        }
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            \Log::warning('storeTeam validation failed', $validator->errors()->toArray());
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Check if team is already registered (by team_id OR team_name)
+        if ($request->team_id) {
+            $existingRegistration = TournamentTeam::where('tournament_id', $tournament->id)
+                ->where('team_id', $request->team_id)
+                ->first();
+
+            if ($existingRegistration) {
+                \Log::warning('storeTeam: team already registered', [
+                    'tournament_id' => $tournament->id,
+                    'team_id' => $request->team_id
+                ]);
+                return redirect()->back()
+                    ->with('error', 'This team is already registered in the tournament.')
+                    ->withInput();
+            }
+        } elseif ($request->team_name) {
+            // Check for duplicate by team name (case-insensitive)
+            $existingByName = TournamentTeam::where('tournament_id', $tournament->id)
+                ->whereRaw('LOWER(team_name) = ?', [strtolower($request->team_name)])
+                ->first();
+
+            if ($existingByName) {
+                \Log::warning('storeTeam: team name already registered', [
+                    'tournament_id' => $tournament->id,
+                    'team_name' => $request->team_name
+                ]);
+                return redirect()->back()
+                    ->with('error', 'A team with this name is already registered in the tournament.')
+                    ->withInput();
+            }
+        }
+
+        // Determine team details based on what's provided
+        $teamName = null;
+        if ($request->team_id) {
+            // Get team details from existing team
+            $team = \App\Models\Team::findOrFail($request->team_id);
+            $teamName = $team->name;
+        } elseif ($request->team_name) {
+            // Use the provided team name for independent registration
+            $teamName = $request->team_name;
+        }
+
+        // Create tournament team registration with location data
+        $tournamentTeam = TournamentTeam::create([
+            'tournament_id' => $tournament->id,
+            'team_id' => $request->team_id ?? null,
+            'team_name' => $teamName,
+            'team_contact_name' => $request->team_contact_name ?? auth()->user()->name,
+            'team_contact_email' => $request->team_contact_email ?? auth()->user()->email,
+            'team_contact_phone' => $request->team_contact_phone ?? auth()->user()->phone ?? '',
+            'approval_status' => $request->boolean('auto_approve') ? TournamentTeam::STATUS_APPROVED : TournamentTeam::STATUS_PENDING,
+            'registration_date' => now(),
+            // Location fields
+            'country' => $request->country ?? null,
+            'county' => $request->county ?? null,
+            'sub_county' => $request->sub_county ?? null,
+            'ward' => $request->ward ?? null,
+        ]);
+
+        \Log::info('storeTeam: team created successfully', [
+            'tournament_team_id' => $tournamentTeam->id,
+            'tournament_id' => $tournament->id,
+            'team_id' => $request->team_id,
+            'team_name' => $teamName
+        ]);
+
+        $message = $request->boolean('auto_approve')
+            ? 'Team added and approved successfully.'
+            : 'Team registered successfully. Pending approval.';
+
+        // Check if tournament was closed (shuffled) and reopen for reshuffling
+        if ($tournament->status === Tournament::STATUS_CLOSED && $tournament->matches()->count() > 0) {
+            $result = $tournament->reopenForReshuffle();
+            if ($result['reopened']) {
+                $message .= ' ' . $result['message'];
+            }
+        }
+
+        return redirect()->route('super-admin.tournaments.teams.index', $tournament->id)
+            ->with('success', $message);
+    }
+
+    /**
+     * Delete a team from a tournament.
+     * Automatically reopens tournament for reshuffling if matches exist.
+     */
+    public function destroyTeam(Tournament $tournament, TournamentTeam $team)
+    {
+        // Ensure the team belongs to this tournament
+        if ($team->tournament_id !== $tournament->id) {
+            return redirect()->back()
+                ->with('error', 'Team does not belong to this tournament.');
+        }
+
+        $teamName = $team->team_name ?? $team->team->name ?? 'Team';
+
+        // Delete the team
+        $team->delete();
+
+        $message = "Team '{$teamName}' removed from tournament.";
+
+        // Check if tournament was closed (shuffled) and reopen for reshuffling
+        if ($tournament->status === Tournament::STATUS_CLOSED && $tournament->matches()->count() > 0) {
+            $result = $tournament->reopenForReshuffle();
+            if ($result['reopened']) {
+                $message .= ' ' . $result['message'];
+            }
+        }
+
+        return redirect()->route('super-admin.tournaments.teams.index', $tournament->id)
+            ->with('success', $message);
     }
 
     /**
@@ -460,12 +676,9 @@ class SuperAdminTournamentController extends Controller
      */
     public function matches(Tournament $tournament)
     {
-        $tournament->load([
-            'matches.homeTeam.team',
-            'matches.awayTeam.team',
-        ]);
-
+        // Eager load relationships for the matches query
         $matches = $tournament->matches()
+            ->with(['homeTeam.team', 'awayTeam.team'])
             ->orderBy('match_day')
             ->orderBy('kickoff_time')
             ->paginate(20);
@@ -637,6 +850,44 @@ class SuperAdminTournamentController extends Controller
 
         return redirect()->back()
             ->with('success', 'Fixtures generated successfully!');
+    }
+
+    /**
+     * Close registration and generate fixtures in one step.
+     * This is a convenience method for quick tournament setup.
+     */
+    public function closeAndGenerateFixtures(Tournament $tournament)
+    {
+        // Check if tournament is open
+        if ($tournament->status !== Tournament::STATUS_OPEN) {
+            return redirect()->back()
+                ->with('error', 'Tournament must be open for registration to use this feature.');
+        }
+
+        // Check if there are enough approved teams
+        $approvedTeams = $tournament->getApprovedTeamsCount();
+
+        if ($approvedTeams < 2) {
+            return redirect()->back()
+                ->with('error', 'At least 2 teams must be approved to generate fixtures. Currently: ' . $approvedTeams);
+        }
+
+        // Close registration
+        $tournament->update(['status' => Tournament::STATUS_CLOSED]);
+
+        // Generate fixtures
+        try {
+            TournamentMatch::generateFixtures($tournament);
+
+            return redirect()->route('super-admin.tournaments.show', $tournament->id)
+                ->with('success', "Registration closed and {$approvedTeams} teams shuffled into fixtures!");
+        } catch (\Exception $e) {
+            // If fixture generation fails, reopen registration
+            $tournament->update(['status' => Tournament::STATUS_OPEN]);
+
+            return redirect()->back()
+                ->with('error', 'Failed to generate fixtures: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -949,5 +1200,341 @@ class SuperAdminTournamentController extends Controller
 
         return redirect()->back()
             ->with('success', 'Tournament data imported successfully.');
+    }
+
+    /**
+     * Download team template for bulk upload.
+     * Dynamically generates columns based on tournament's organization location level.
+     */
+    public function downloadTeamTemplate(Tournament $tournament)
+    {
+        // Get location fields from tournament's organization
+        $locationFields = [];
+        $locationLevels = [];
+
+        if ($tournament->organization) {
+            $locationFields = $tournament->organization->getLocationFields();
+            $locationLevels = $tournament->organization->getLocationArray();
+        }
+
+        // Build dynamic headers based on location level
+        $headers = ['Team Name'];
+
+        // Add location headers based on organization's location level
+        foreach ($locationFields as $field) {
+            $headers[] = ucfirst(str_replace('_', ' ', $field));
+        }
+
+        // Add contact fields
+        $headers[] = 'Contact Name';
+        $headers[] = 'Contact Email';
+        $headers[] = 'Contact Phone';
+
+        $sampleData = [];
+        $sampleRow = ['FC Example United'];
+
+        // Add sample location data
+        if (in_array('country', $locationFields)) {
+            $sampleRow[] = 'Kenya';
+        }
+        if (in_array('county', $locationFields)) {
+            $sampleRow[] = 'Nairobi';
+        }
+        if (in_array('sub_county', $locationFields)) {
+            $sampleRow[] = 'Westlands';
+        }
+        if (in_array('ward', $locationFields)) {
+            $sampleRow[] = 'Kitisuru';
+        }
+
+        $sampleRow[] = 'John Doe';
+        $sampleRow[] = 'john@example.com';
+        $sampleRow[] = '+254712345678';
+
+        $sampleData[] = $sampleRow;
+
+        $filename = 'tournament_teams_template.csv';
+        $handle = fopen('php://memory', 'w');
+
+        // Add BOM for Excel UTF-8 compatibility
+        fprintf($handle, chr(0xEF).chr(0xBB).chr(0xBF));
+
+        // Add headers
+        fputcsv($handle, $headers);
+
+        // Add sample data
+        foreach ($sampleData as $row) {
+            fputcsv($handle, $row);
+        }
+
+        rewind($handle);
+        $content = stream_get_contents($handle);
+        fclose($handle);
+
+        return response($content, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ]);
+    }
+
+    /**
+     * Bulk upload teams from Excel/CSV file.
+     * Optimized for performance with bulk inserts and N+1 prevention.
+     */
+    public function bulkUploadTeams(Request $request, Tournament $tournament)
+    {
+        \Log::info('bulkUploadTeams called', [
+            'tournament_id' => $tournament->id,
+            'file_name' => $request->file('teams_file')?->getClientOriginalName(),
+            'user_id' => auth()->id()
+        ]);
+
+        $validator = Validator::make($request->all(), [
+            'teams_file' => 'required|file|mimes:xlsx,xls,csv|max:5120',
+            'auto_approve' => 'nullable|boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $file = $request->file('teams_file');
+        $autoApprove = $request->boolean('auto_approve', false);
+        $batchSize = 500;
+
+        // Read the file
+        $extension = $file->getClientOriginalExtension();
+        $path = $file->getRealPath();
+
+        // Pre-load all organizations and ALL teams (not just tournament's org) to avoid N+1 queries
+        $organizations = \App\Models\Organization::all()->keyBy('name');
+        $existingTeams = \App\Models\Team::with('organization')->get();
+
+        // Get already registered team names and IDs for this tournament to prevent duplicates
+        $registeredTeamIds = $tournament->teams()->whereNotNull('team_id')->pluck('team_id')->toArray();
+        $registeredTeamNames = $tournament->teams()->whereNotNull('team_name')->pluck('team_name')->toArray();
+
+        $insertData = [];
+        $successCount = 0;
+        $errorRows = [];
+        $skippedDuplicates = 0;
+
+        if (in_array($extension, ['xlsx', 'xls'])) {
+            // Use PhpSpreadsheet for Excel files - optimized chunked reading
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($path);
+            $worksheet = $spreadsheet->getActiveSheet();
+            $totalRows = $worksheet->getHighestRow();
+
+            // Skip header row
+            $startRow = 2;
+
+            // Process in batches to manage memory
+            while ($startRow <= $totalRows) {
+                $endRow = min($startRow + $batchSize - 1, $totalRows);
+                $batchRows = $worksheet->rangeToArray("A{$startRow}:E{$endRow}");
+
+                foreach ($batchRows as $rowIndex => $row) {
+                    if (empty(array_filter($row))) continue;
+
+                    $result = $this->processTeamRow($row, $tournament, $organizations, $existingTeams, $autoApprove, $registeredTeamIds, $registeredTeamNames);
+
+                    if ($result['duplicate']) {
+                        $skippedDuplicates++;
+                    } elseif ($result['success']) {
+                        $insertData[] = $result['data'];
+                        $successCount++;
+                        // Add to registered lists so subsequent rows don't duplicate
+                        if ($result['data']['team_id']) {
+                            $registeredTeamIds[] = $result['data']['team_id'];
+                        }
+                        if ($result['data']['team_name']) {
+                            $registeredTeamNames[] = $result['data']['team_name'];
+                        }
+
+                        // Bulk insert when batch is full
+                        if (count($insertData) >= $batchSize) {
+                            \App\Models\TournamentTeam::insert($insertData);
+                            $insertData = [];
+                        }
+                    } else {
+                        $errorRows[] = $result['error'];
+                    }
+                }
+
+                $startRow = $endRow + 1;
+            }
+        } else {
+            // CSV file - use streaming for better performance
+            $handle = fopen($path, 'r');
+
+            // Skip header row
+            fgetcsv($handle, 1000, ',');
+
+            $rowIndex = 1;
+            while (($row = fgetcsv($handle, 1000, ',')) !== false) {
+                $rowIndex++;
+                if (empty(array_filter($row))) continue;
+
+                $result = $this->processTeamRow($row, $tournament, $organizations, $existingTeams, $autoApprove, $registeredTeamIds, $registeredTeamNames);
+
+                if ($result['duplicate']) {
+                    $skippedDuplicates++;
+                } elseif ($result['success']) {
+                    $insertData[] = $result['data'];
+                    $successCount++;
+                    // Add to registered lists so subsequent rows don't duplicate
+                    if ($result['data']['team_id']) {
+                        $registeredTeamIds[] = $result['data']['team_id'];
+                    }
+                    if ($result['data']['team_name']) {
+                        $registeredTeamNames[] = $result['data']['team_name'];
+                    }
+
+                    // Bulk insert when batch is full
+                    if (count($insertData) >= $batchSize) {
+                        \App\Models\TournamentTeam::insert($insertData);
+                        $insertData = [];
+                    }
+                } else {
+                    $errorRows[] = $result['error'];
+                }
+            }
+            fclose($handle);
+        }
+
+        // Insert any remaining records
+        if (!empty($insertData)) {
+            \App\Models\TournamentTeam::insert($insertData);
+        }
+
+        \Log::info('bulkUploadTeams completed', [
+            'success' => $successCount,
+            'duplicates' => $skippedDuplicates,
+            'errors' => count($errorRows)
+        ]);
+
+        $messageParts = [];
+        if ($successCount > 0) {
+            $messageParts[] = "{$successCount} team(s) uploaded successfully";
+            if ($autoApprove) {
+                $messageParts[] = "all auto-approved";
+            }
+        }
+        if ($skippedDuplicates > 0) {
+            $messageParts[] = "{$skippedDuplicates} duplicate(s) skipped";
+        }
+
+        $message = implode(". ", $messageParts) . ".";
+
+        if (empty($messageParts)) {
+            $message = "No teams were uploaded.";
+        }
+
+        if (!empty($errorRows)) {
+            return redirect()->back()
+                ->with('warning', $message . " Errors: " . implode("; ", array_slice($errorRows, 0, 3)));
+        }
+
+        // Check if tournament was closed (shuffled) and reopen for reshuffling
+        if ($successCount > 0 && $tournament->status === Tournament::STATUS_CLOSED && $tournament->matches()->count() > 0) {
+            $result = $tournament->reopenForReshuffle();
+            if ($result['reopened']) {
+                $message .= ' ' . $result['message'];
+            }
+        }
+
+        return redirect()->back()
+            ->with('success', $message);
+    }
+
+    /**
+     * Process a single team row from the uploaded file.
+     *
+     * @param array $row Row data from Excel/CSV
+     * @param Tournament $tournament Target tournament
+     * @param \Illuminate\Support\Collection $organizations Pre-loaded organizations
+     * @param \Illuminate\Support\Collection $existingTeams Pre-loaded teams (ALL teams)
+     * @param bool $autoApprove Whether to auto-approve teams
+     * @param array $registeredTeamIds Already registered team IDs
+     * @param array $registeredTeamNames Already registered team names
+     * @return array ['success' => bool, 'data' => array|null, 'error' => string|null, 'duplicate' => bool]
+     */
+    private function processTeamRow(array $row, Tournament $tournament, $organizations, $existingTeams, bool $autoApprove, array $registeredTeamIds = [], array $registeredTeamNames = []): array
+    {
+        try {
+            $teamName = trim($row[0] ?? '');
+            $contactName = trim($row[1] ?? '');
+            $contactEmail = trim($row[2] ?? '');
+            $contactPhone = trim($row[3] ?? '');
+            $orgName = trim($row[4] ?? '');
+
+            if (empty($teamName)) {
+                return ['success' => false, 'data' => null, 'error' => 'Team name is required', 'duplicate' => false];
+            }
+
+            // Check for duplicate by team name (case-insensitive)
+            $teamNameLower = strtolower($teamName);
+            foreach ($registeredTeamNames as $registeredName) {
+                if (strtolower($registeredName) === $teamNameLower) {
+                    return ['success' => false, 'data' => null, 'error' => "Team '{$teamName}' already registered", 'duplicate' => true];
+                }
+            }
+
+            // Find organization from pre-loaded data (try exact match first, then partial)
+            $teamId = null;
+            $matchedOrg = null;
+
+            if (!empty($orgName)) {
+                // Try exact match
+                $matchedOrg = $organizations->get($orgName);
+
+                // Then try case-insensitive partial match
+                if (!$matchedOrg) {
+                    $matchedOrg = $organizations->first(function ($org) use ($orgName) {
+                        return stripos($org->name, $orgName) !== false;
+                    });
+                }
+
+                if ($matchedOrg) {
+                    // Find team by name within the matched organization
+                    $team = $existingTeams->filter(function ($team) use ($teamName, $matchedOrg) {
+                        return $team->organization_id === $matchedOrg->id
+                            && strtolower($team->name) === strtolower($teamName);
+                    })->first();
+
+                    if ($team) {
+                        // Check if this team ID is already registered
+                        if (!in_array($team->id, $registeredTeamIds)) {
+                            $teamId = $team->id;
+                        } else {
+                            return ['success' => false, 'data' => null, 'error' => "Team '{$teamName}' already registered in this tournament", 'duplicate' => true];
+                        }
+                    }
+                }
+            }
+
+            // If no team_id found but we have a team name, create as independent registration (team_id = null)
+            return [
+                'success' => true,
+                'data' => [
+                    'tournament_id' => $tournament->id,
+                    'team_id' => $teamId,
+                    'team_name' => $teamName,
+                    'team_contact_name' => $contactName,
+                    'team_contact_email' => $contactEmail,
+                    'team_contact_phone' => $contactPhone,
+                    'approval_status' => $autoApprove ? \App\Models\TournamentTeam::STATUS_APPROVED : \App\Models\TournamentTeam::STATUS_PENDING,
+                    'registration_date' => now(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+                'error' => null,
+                'duplicate' => false,
+            ];
+        } catch (\Exception $e) {
+            return ['success' => false, 'data' => null, 'error' => $e->getMessage(), 'duplicate' => false];
+        }
     }
 }

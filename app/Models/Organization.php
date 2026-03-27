@@ -29,6 +29,12 @@ class Organization extends Model
         'max_players',
         'billing_cycle',
         'created_by',
+        // Location hierarchy fields
+        'country',
+        'county',
+        'sub_county',
+        'ward',
+        'location_level',
     ];
 
     protected $casts = [
@@ -36,6 +42,24 @@ class Organization extends Model
         'subscription_ends_at' => 'datetime',
         'max_users' => 'integer',
         'max_players' => 'integer',
+    ];
+
+    // Location level constants
+    const LEVEL_COUNTRY = 'country';
+    const LEVEL_COUNTY = 'county';
+    const LEVEL_SUB_COUNTY = 'sub_county';
+    const LEVEL_WARD = 'ward';
+
+    // Default countries
+    const COUNTRIES = [
+        'KE' => 'Kenya',
+        'TZ' => 'Tanzania',
+        'UG' => 'Uganda',
+        'RW' => 'Rwanda',
+        'NG' => 'Nigeria',
+        'ZA' => 'South Africa',
+        'GH' => 'Ghana',
+        'OTHER' => 'Other',
     ];
 
     const STATUS_ACTIVE = 'active';
@@ -284,5 +308,113 @@ class Organization extends Model
         }
 
         return $slug;
+    }
+
+    // ==================== Location Hierarchy Methods ====================
+
+    /**
+     * Get the location level (country, county, sub_county, ward)
+     */
+    public function getLocationLevel(): string
+    {
+        return $this->location_level ?? self::LEVEL_WARD;
+    }
+
+    /**
+     * Check if organization has location data at specific level
+     */
+    public function hasLocationLevel(string $level): bool
+    {
+        return match($level) {
+            self::LEVEL_WARD => !empty($this->ward),
+            self::LEVEL_SUB_COUNTY => !empty($this->sub_county),
+            self::LEVEL_COUNTY => !empty($this->county),
+            self::LEVEL_COUNTRY => !empty($this->country),
+            default => false,
+        };
+    }
+
+    /**
+     * Get the effective location level based on available data
+     */
+    public function getEffectiveLocationLevel(): string
+    {
+        if ($this->hasLocationLevel(self::LEVEL_WARD)) {
+            return self::LEVEL_WARD;
+        }
+        if ($this->hasLocationLevel(self::LEVEL_SUB_COUNTY)) {
+            return self::LEVEL_SUB_COUNTY;
+        }
+        if ($this->hasLocationLevel(self::LEVEL_COUNTY)) {
+            return self::LEVEL_COUNTY;
+        }
+        if ($this->hasLocationLevel(self::LEVEL_COUNTRY)) {
+            return self::LEVEL_COUNTRY;
+        }
+        return self::LEVEL_COUNTRY; // Default to country level
+    }
+
+    /**
+     * Get location fields based on organization's level
+     * Returns array of field names that should be displayed
+     */
+    public function getLocationFields(): array
+    {
+        $level = $this->getEffectiveLocationLevel();
+
+        $fields = ['country'];
+
+        if (in_array($level, [self::LEVEL_COUNTY, self::LEVEL_SUB_COUNTY, self::LEVEL_WARD])) {
+            $fields[] = 'county';
+        }
+
+        if (in_array($level, [self::LEVEL_SUB_COUNTY, self::LEVEL_WARD])) {
+            $fields[] = 'sub_county';
+        }
+
+        if ($level === self::LEVEL_WARD) {
+            $fields[] = 'ward';
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Get location display name
+     */
+    public function getLocationDisplay(): string
+    {
+        $parts = [];
+
+        if ($this->country) {
+            $parts[] = self::COUNTRIES[$this->country] ?? $this->country;
+        }
+        if ($this->county) {
+            $parts[] = $this->county;
+        }
+        if ($this->sub_county) {
+            $parts[] = $this->sub_county;
+        }
+        if ($this->ward) {
+            $parts[] = $this->ward;
+        }
+
+        return implode(' > ', $parts);
+    }
+
+    /**
+     * Get location as array for API/JSON
+     */
+    public function getLocationArray(): array
+    {
+        return [
+            'country' => $this->country,
+            'country_name' => self::COUNTRIES[$this->country] ?? $this->country,
+            'county' => $this->county,
+            'sub_county' => $this->sub_county,
+            'ward' => $this->ward,
+            'level' => $this->getEffectiveLocationLevel(),
+            'fields' => $this->getLocationFields(),
+        ];
     }
 }

@@ -81,7 +81,7 @@
                             <td class="py-1 align-middle small">Match {{ $match->match_day ?? '-' }}</td>
                             <td class="py-1 align-middle small">
                                 @if($match->home_team_id)
-                                    <span class="fw-bold">{{ $match->homeTeam->team->name ?? 'Unknown' }}</span>
+                                    <span class="fw-bold">{{ $match->homeTeam->team->name ?? $match->homeTeam->team_name ?? 'Unknown' }}</span>
                                 @else
                                     <span class="text-muted">TBD</span>
                                 @endif
@@ -97,7 +97,7 @@
                             </td>
                             <td class="py-1 align-middle small">
                                 @if($match->away_team_id)
-                                    <span class="fw-bold">{{ $match->awayTeam->team->name ?? 'Unknown' }}</span>
+                                    <span class="fw-bold">{{ $match->awayTeam->team->name ?? $match->awayTeam->team_name ?? 'Unknown' }}</span>
                                 @else
                                     <span class="text-muted">TBD</span>
                                 @endif

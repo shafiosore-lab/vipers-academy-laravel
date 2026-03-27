@@ -15,75 +15,65 @@
 @section('content')
 <div class="dashboard-container">
     {{-- Welcome Header --}}
-    <div class="welcome-section">
-        <div class="user-avatar">
-            {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+    <x-dashboard-card variant="default" spacing="lg" class="welcome-card">
+        <div class="welcome-content">
+            <div class="user-avatar">
+                {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+            </div>
+            <div class="welcome-text">
+                <h1>{{ __('Welcome back') }}, {{ Auth::user()->name }}! 👋</h1>
+                <p>{{ __("Here's what's happening with") }} {{ $organizationName }} {{ __('today') }}</p>
+            </div>
+            <div class="current-date">
+                <span>{{ now()->format('M d, Y') }}</span>
+                <span>{{ now()->format('l') }}</span>
+            </div>
         </div>
-        <div class="welcome-text">
-            <h1>{{ __('Welcome back') }}, {{ Auth::user()->name }}! 👋</h1>
-            <p>{{ __("Here's what's happening with") }} {{ $organizationName }} {{ __('today') }}</p>
-        </div>
-        <div class="current-date">
-            <span>{{ now()->format('M d, Y') }}</span>
-            <span>{{ now()->format('l') }}</span>
-        </div>
-    </div>
+    </x-dashboard-card>
 
     {{-- Key Metrics Cards --}}
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-icon players">
-                <i class="fas fa-users" aria-hidden="true"></i>
-            </div>
+    <x-dashboard-grid columns="4" gap="lg" variant="default" class="stats-grid">
+        <x-dashboard-card variant="default" spacing="md">
             <div class="stat-content">
-                <span class="stat-label">{{ __('Total Players') }}</span>
-                <span class="stat-value">{{ $totalPlayers }}</span>
-                <span class="stat-change {{ $playerGrowth >= 0 ? 'positive' : 'negative' }}">
+                <div class="stat-value">{{ $totalPlayers }}</div>
+                <div class="stat-label">{{ __('Total Players') }}</div>
+                <div class="stat-change {{ $playerGrowth >= 0 ? 'positive' : 'negative' }}">
                     <i class="fas {{ $playerGrowth >= 0 ? 'fa-arrow-up' : 'fa-arrow-down' }}" aria-hidden="true"></i>
                     {{ abs($playerGrowth) }}% {{ __('vs last month') }}
-                </span>
+                </div>
             </div>
-        </div>
+        </x-dashboard-card>
 
-        <div class="stat-card">
-            <div class="stat-icon active">
-                <i class="fas fa-user-check" aria-hidden="true"></i>
-            </div>
+        <x-dashboard-card variant="default" spacing="md">
             <div class="stat-content">
-                <span class="stat-label">{{ __('Active Players') }}</span>
-                <span class="stat-value">{{ $activePlayers }}</span>
-                <span class="stat-change neutral">
+                <div class="stat-value">{{ $activePlayers }}</div>
+                <div class="stat-label">{{ __('Active Players') }}</div>
+                <div class="stat-change neutral">
                     {{ $pendingPlayers }} {{ __('pending') }}
-                </span>
+                </div>
             </div>
-        </div>
+        </x-dashboard-card>
 
-        <div class="stat-card">
-            <div class="stat-icon programs">
-                <i class="fas fa-graduation-cap" aria-hidden="true"></i>
-            </div>
+        <x-dashboard-card variant="default" spacing="md">
             <div class="stat-content">
-                <span class="stat-label">{{ __('Active Programs') }}</span>
-                <span class="stat-value">{{ $activePrograms }}</span>
-                <span class="stat-change neutral">
+                <div class="stat-value">{{ $activePrograms }}</div>
+                <div class="stat-label">{{ __('Active Programs') }}</div>
+                <div class="stat-change neutral">
                     {{ $totalPrograms }} {{ __('total') }}
-                </span>
+                </div>
             </div>
-        </div>
+        </x-dashboard-card>
 
-        <div class="stat-card">
-            <div class="stat-icon revenue">
-                <i class="fas fa-money-bill-wave" aria-hidden="true"></i>
-            </div>
+        <x-dashboard-card variant="default" spacing="md">
             <div class="stat-content">
-                <span class="stat-label">{{ __('Monthly Revenue') }}</span>
-                <span class="stat-value">${{ number_format($monthlyRevenue, 0) }}</span>
-                <span class="stat-change neutral">
+                <div class="stat-value">${{ number_format($monthlyRevenue, 0) }}</div>
+                <div class="stat-label">{{ __('Monthly Revenue') }}</div>
+                <div class="stat-change neutral">
                     ${{ number_format($totalRevenue, 0) }} {{ __('total') }}
-                </span>
+                </div>
             </div>
-        </div>
-    </div>
+        </x-dashboard-card>
+    </x-dashboard-grid>
 
     <!-- Compact Analytics Dashboard -->
     <div class="mb-4">
@@ -92,30 +82,32 @@
 
     {{-- AI Insights --}}
     @if(!empty($aiInsights))
-    <div class="insights-section">
-        <div class="section-header">
-            <h2><i class="fas fa-robot me-2" aria-hidden="true"></i>{{ __('AI Insights') }}</h2>
+    <x-dashboard-card variant="default" spacing="md">
+        <div class="card-header">
+            <h3><i class="fas fa-robot me-2" aria-hidden="true"></i>{{ __('AI Insights') }}</h3>
         </div>
-        <div class="insights-grid">
-            @foreach($aiInsights as $insight)
-            <div class="insight-card insight-{{ $insight['type'] }}">
-                <div class="insight-icon">
-                    <i class="{{ $insight['icon'] }}" aria-hidden="true"></i>
+        <div class="card-body">
+            <x-dashboard-grid columns="3" gap="md" variant="minimal" class="insights-grid">
+                @foreach($aiInsights as $insight)
+                <div class="insight-card insight-{{ $insight['type'] }}">
+                    <div class="insight-icon">
+                        <i class="{{ $insight['icon'] }}" aria-hidden="true"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h4>{{ __($insight['title']) }}</h4>
+                        <p>{{ __($insight['message']) }}</p>
+                    </div>
                 </div>
-                <div class="insight-content">
-                    <h4>{{ __($insight['title']) }}</h4>
-                    <p>{{ __($insight['message']) }}</p>
-                </div>
-            </div>
-            @endforeach
+                @endforeach
+            </x-dashboard-grid>
         </div>
-    </div>
+    </x-dashboard-card>
     @endif
 
     {{-- Main Content Grid --}}
-    <div class="dashboard-grid">
+    <x-dashboard-grid columns="2" gap="lg" variant="default" class="dashboard-grid">
         {{-- Recent Players --}}
-        <div class="dashboard-card">
+        <x-dashboard-card variant="default" spacing="md">
             <div class="card-header">
                 <h3><i class="fas fa-users me-2" aria-hidden="true"></i>{{ __('Recent Players') }}</h3>
                 <span class="card-link">{{ __('View All') }}</span>
@@ -138,10 +130,10 @@
                 <p class="no-data">{{ __('No players yet') }}</p>
                 @endforelse
             </div>
-        </div>
+        </x-dashboard-card>
 
         {{-- Recent Enrollments --}}
-        <div class="dashboard-card">
+        <x-dashboard-card variant="default" spacing="md">
             <div class="card-header">
                 <h3><i class="fas fa-user-plus me-2" aria-hidden="true"></i>{{ __('Recent Enrollments') }}</h3>
                 <span class="card-link">{{ __('View All') }}</span>
@@ -161,10 +153,10 @@
                 <p class="no-data">{{ __('No enrollments yet') }}</p>
                 @endforelse
             </div>
-        </div>
+        </x-dashboard-card>
 
         {{-- Quick Stats --}}
-        <div class="dashboard-card">
+        <x-dashboard-card variant="default" spacing="md">
             <div class="card-header">
                 <h3><i class="fas fa-chart-pie me-2" aria-hidden="true"></i>{{ __('Quick Stats') }}</h3>
             </div>
@@ -209,10 +201,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </x-dashboard-card>
 
         {{-- Attendance Today --}}
-        <div class="dashboard-card">
+        <x-dashboard-card variant="default" spacing="md">
             <div class="card-header">
                 <h3><i class="fas fa-calendar-day me-2" aria-hidden="true"></i>{{ __('Attendance Today') }}</h3>
             </div>
@@ -247,74 +239,78 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </x-dashboard-card>
+    </x-dashboard-grid>
 
     {{-- Quick Actions --}}
-    <div class="quick-actions">
-        <h2><i class="fas fa-bolt me-2" aria-hidden="true"></i>{{ __('Quick Actions') }}</h2>
-        <div class="actions-grid">
-            <a href="#" class="action-card">
-                <div class="action-icon">
-                    <i class="fas fa-user-plus" aria-hidden="true"></i>
-                </div>
-                <div class="action-content">
-                    <h4>{{ __('Add Player') }}</h4>
-                    <p>{{ __('Register new player') }}</p>
-                </div>
-            </a>
-
-            <a href="#" class="action-card">
-                <div class="action-icon">
-                    <i class="fas fa-graduation-cap" aria-hidden="true"></i>
-                </div>
-                <div class="action-content">
-                    <h4>{{ __('Create Program') }}</h4>
-                    <p>{{ __('New training program') }}</p>
-                </div>
-            </a>
-
-            <a href="#" class="action-card">
-                <div class="action-icon">
-                    <i class="fas fa-user-tie" aria-hidden="true"></i>
-                </div>
-                <div class="action-content">
-                    <h4>{{ __('Add Staff') }}</h4>
-                    <p>{{ __('Invite team member') }}</p>
-                </div>
-            </a>
-
-            <a href="#" class="action-card">
-                <div class="action-icon">
-                    <i class="fas fa-clipboard-check" aria-hidden="true"></i>
-                </div>
-                <div class="action-content">
-                    <h4>{{ __('New Enrollment') }}</h4>
-                    <p>{{ __('Enroll player in program') }}</p>
-                </div>
-            </a>
-
-            <a href="#" class="action-card">
-                <div class="action-icon">
-                    <i class="fas fa-calendar-check" aria-hidden="true"></i>
-                </div>
-                <div class="action-content">
-                    <h4>{{ __('Take Attendance') }}</h4>
-                    <p>{{ __('Record session attendance') }}</p>
-                </div>
-            </a>
-
-            <a href="#" class="action-card">
-                <div class="action-icon">
-                    <i class="fas fa-cog" aria-hidden="true"></i>
-                </div>
-                <div class="action-content">
-                    <h4>{{ __('Settings') }}</h4>
-                    <p>{{ __('Organization settings') }}</p>
-                </div>
-            </a>
+    <x-dashboard-card variant="default" spacing="md">
+        <div class="card-header">
+            <h3><i class="fas fa-bolt me-2" aria-hidden="true"></i>{{ __('Quick Actions') }}</h3>
         </div>
-    </div>
+        <div class="card-body">
+            <x-dashboard-grid columns="3" gap="md" variant="minimal" class="actions-grid">
+                <a href="#" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-user-plus" aria-hidden="true"></i>
+                    </div>
+                    <div class="action-content">
+                        <h4>{{ __('Add Player') }}</h4>
+                        <p>{{ __('Register new player') }}</p>
+                    </div>
+                </a>
+
+                <a href="#" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-graduation-cap" aria-hidden="true"></i>
+                    </div>
+                    <div class="action-content">
+                        <h4>{{ __('Create Program') }}</h4>
+                        <p>{{ __('New training program') }}</p>
+                    </div>
+                </a>
+
+                <a href="#" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-user-tie" aria-hidden="true"></i>
+                    </div>
+                    <div class="action-content">
+                        <h4>{{ __('Add Staff') }}</h4>
+                        <p>{{ __('Invite team member') }}</p>
+                    </div>
+                </a>
+
+                <a href="#" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-clipboard-check" aria-hidden="true"></i>
+                    </div>
+                    <div class="action-content">
+                        <h4>{{ __('New Enrollment') }}</h4>
+                        <p>{{ __('Enroll player in program') }}</p>
+                    </div>
+                </a>
+
+                <a href="#" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-calendar-check" aria-hidden="true"></i>
+                    </div>
+                    <div class="action-content">
+                        <h4>{{ __('Take Attendance') }}</h4>
+                        <p>{{ __('Record session attendance') }}</p>
+                    </div>
+                </a>
+
+                <a href="#" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-cog" aria-hidden="true"></i>
+                    </div>
+                    <div class="action-content">
+                        <h4>{{ __('Settings') }}</h4>
+                        <p>{{ __('Organization settings') }}</p>
+                    </div>
+                </a>
+            </x-dashboard-grid>
+        </div>
+    </x-dashboard-card>
 </div>
 @endsection
 
@@ -330,49 +326,44 @@
 }
 
 /* Welcome Section */
-.welcome-section {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    color: var(--white);
-    padding: 2rem;
-    border-radius: 12px;
-    margin-bottom: 2rem;
+.welcome-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 1rem;
-    box-shadow: var(--shadow-lg);
 }
 
 .user-avatar {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 24px;
     font-weight: 600;
+    color: var(--white);
     border: 3px solid rgba(255, 255, 255, 0.3);
 }
 
 .welcome-text h1 {
     font-size: 28px;
     margin-bottom: 0.5rem;
-    color: var(--white);
+    color: var(--text-color);
 }
 
 .welcome-text p {
     margin: 0;
-    opacity: 0.9;
+    color: var(--text-muted);
     font-size: 16px;
 }
 
 .current-date {
     text-align: right;
     font-size: 14px;
-    opacity: 0.9;
+    color: var(--text-muted);
 }
 
 .current-date span:first-child {
@@ -381,109 +372,7 @@
     font-size: 16px;
 }
 
-/* Stats Grid */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.stat-card {
-    background: var(--white);
-    border-radius: 12px;
-    padding: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--gray-300);
-    transition: var(--transition);
-}
-
-.stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-}
-
-.stat-icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    color: var(--white);
-}
-
-.stat-icon.players {
-    background: linear-gradient(135deg, var(--primary), #ff6b8a);
-}
-
-.stat-icon.active {
-    background: linear-gradient(135deg, var(--secondary), #8dd97e);
-}
-
-.stat-icon.programs {
-    background: linear-gradient(135deg, #6366f1, #818cf8);
-}
-
-.stat-icon.revenue {
-    background: linear-gradient(135deg, #f59e0b, #fbbf24);
-}
-
-.stat-content {
-    flex: 1;
-}
-
-.stat-label {
-    display: block;
-    font-size: 13px;
-    color: var(--gray-600);
-    margin-bottom: 4px;
-}
-
-.stat-value {
-    display: block;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--gray-900);
-}
-
-.stat-change {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    margin-top: 4px;
-}
-
-.stat-change.positive {
-    color: var(--secondary);
-}
-
-.stat-change.negative {
-    color: var(--danger);
-}
-
-.stat-change.neutral {
-    color: var(--gray-600);
-}
-
-/* Insights Section */
-.insights-section {
-    margin-bottom: 2rem;
-}
-
-.insights-section .section-header h2 {
-    font-size: 20px;
-    color: var(--gray-900);
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-}
-
+/* Insights Grid */
 .insights-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -491,13 +380,13 @@
 }
 
 .insight-card {
-    background: var(--white);
+    background: var(--card-bg);
     border-radius: 10px;
     padding: 1.25rem;
     display: flex;
     align-items: flex-start;
     gap: 1rem;
-    border: 1px solid var(--gray-300);
+    border: 1px solid var(--border-color);
     box-shadow: var(--shadow-sm);
 }
 
@@ -543,70 +432,15 @@
 .insight-content h4 {
     font-size: 14px;
     font-weight: 600;
-    color: var(--gray-900);
+    color: var(--text-color);
     margin-bottom: 4px;
 }
 
 .insight-content p {
     font-size: 13px;
-    color: var(--gray-600);
+    color: var(--text-muted);
     margin: 0;
     line-height: 1.4;
-}
-
-/* Dashboard Grid */
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-@media (max-width: 992px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-.dashboard-card {
-    background: var(--white);
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--gray-300);
-    overflow: hidden;
-}
-
-.card-header {
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--gray-300);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #f8f9fa;
-}
-
-.card-header h3 {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--gray-900);
-    margin: 0;
-    display: flex;
-    align-items: center;
-}
-
-.card-link {
-    font-size: 13px;
-    color: var(--primary);
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.card-link:hover {
-    text-decoration: underline;
-}
-
-.card-body {
-    padding: 1rem;
 }
 
 /* Player Item */
@@ -619,7 +453,7 @@
 }
 
 .player-item:hover {
-    background: #f8f9fa;
+    background: var(--hover-bg);
 }
 
 .player-avatar {
@@ -643,13 +477,13 @@
 .player-info h4 {
     font-size: 14px;
     font-weight: 600;
-    color: var(--gray-900);
+    color: var(--text-color);
     margin: 0 0 2px 0;
 }
 
 .player-info p {
     font-size: 12px;
-    color: var(--gray-600);
+    color: var(--text-muted);
     margin: 0;
 }
 
@@ -680,7 +514,7 @@
 }
 
 .enrollment-item:hover {
-    background: #f8f9fa;
+    background: var(--hover-bg);
 }
 
 .enrollment-icon {
@@ -702,13 +536,13 @@
 .enrollment-info h4 {
     font-size: 14px;
     font-weight: 600;
-    color: var(--gray-900);
+    color: var(--text-color);
     margin: 0 0 2px 0;
 }
 
 .enrollment-info p {
     font-size: 12px;
-    color: var(--gray-600);
+    color: var(--text-muted);
     margin: 0;
 }
 
@@ -726,7 +560,7 @@
 }
 
 .quick-stat:hover {
-    background: #f8f9fa;
+    background: var(--hover-bg);
 }
 
 .quick-stat-icon {
@@ -753,12 +587,12 @@
     display: block;
     font-size: 20px;
     font-weight: 700;
-    color: var(--gray-900);
+    color: var(--text-color);
 }
 
 .quick-stat-label {
     font-size: 12px;
-    color: var(--gray-600);
+    color: var(--text-muted);
 }
 
 /* Attendance Card */
@@ -783,7 +617,7 @@
 
 .circle-bg {
     fill: none;
-    stroke: #eee;
+    stroke: var(--border-color);
     stroke-width: 2.5;
 }
 
@@ -813,12 +647,12 @@
     display: block;
     font-size: 28px;
     font-weight: 700;
-    color: var(--gray-900);
+    color: var(--text-color);
 }
 
 .attendance-value .label {
     font-size: 12px;
-    color: var(--gray-600);
+    color: var(--text-muted);
 }
 
 .attendance-stats {
@@ -834,39 +668,23 @@
     display: block;
     font-size: 24px;
     font-weight: 700;
-    color: var(--gray-900);
+    color: var(--text-color);
 }
 
 .attendance-stat .stat-label {
     font-size: 12px;
-    color: var(--gray-600);
+    color: var(--text-muted);
 }
 
 /* No Data */
 .no-data {
     text-align: center;
-    color: var(--gray-600);
+    color: var(--text-muted);
     font-style: italic;
     padding: 2rem;
 }
 
 /* Quick Actions */
-.quick-actions {
-    background: var(--white);
-    border-radius: 12px;
-    padding: 2rem;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--gray-300);
-}
-
-.quick-actions h2 {
-    font-size: 20px;
-    color: var(--gray-900);
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-}
-
 .actions-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -877,11 +695,11 @@
     display: flex;
     align-items: center;
     padding: 1rem;
-    background: #f8f9fa;
+    background: var(--card-bg);
     border-radius: 10px;
     text-decoration: none;
     transition: var(--transition);
-    border: 1px solid var(--gray-300);
+    border: 1px solid var(--border-color);
 }
 
 .action-card:hover {
@@ -907,19 +725,19 @@
 .action-content h4 {
     font-size: 14px;
     font-weight: 600;
-    color: var(--gray-900);
+    color: var(--text-color);
     margin: 0 0 4px 0;
 }
 
 .action-content p {
     font-size: 12px;
-    color: var(--gray-600);
+    color: var(--text-muted);
     margin: 0;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .welcome-section {
+    .welcome-content {
         flex-direction: column;
         text-align: center;
     }
@@ -942,4 +760,3 @@
 }
 </style>
 @endpush
-

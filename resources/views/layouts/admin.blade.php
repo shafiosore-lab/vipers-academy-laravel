@@ -430,21 +430,163 @@
             .admin-sidebar {
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
+                position: fixed;
+                top: var(--header-height);
+                left: 0;
+                z-index: 1030;
+                height: calc(100vh - var(--header-height));
+                box-shadow: 2px 0 15px rgba(0,0,0,0.2);
             }
 
-            .admin-sidebar.show { transform: translateX(0); }
+            .admin-sidebar.show {
+                transform: translateX(0);
+            }
 
-            .admin-content { margin-left: 0; }
+            .admin-content {
+                margin-left: 0;
+                padding: 15px;
+            }
 
             .sidebar-toggle-mobile { display: block !important; }
+
+            /* Fix content overlap when sidebar is open */
+            .admin-sidebar.show ~ .admin-content {
+                margin-left: 0;
+                filter: blur(2px);
+            }
+
+            /* Improve mobile header */
+            .top-header {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1040;
+            }
+
+            .admin-content {
+                margin-top: var(--header-height);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .top-header {
+                height: auto;
+                padding: 10px 15px;
+                min-height: 60px;
+            }
+
+            .top-header .container-fluid {
+                flex-wrap: wrap;
+                gap: 10px;
+                align-items: center;
+            }
+
+            .admin-brand-text {
+                font-size: 1.25rem;
+            }
+
+            .admin-user-name {
+                display: none;
+            }
+
+            /* Mobile stats cards - stack vertically */
+            .admin-content .row.g-2.mb-3 {
+                --bs-gutter-x: 1rem;
+            }
+
+            .admin-content .col-lg-8, .admin-content .col-lg-4 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+
+            /* Mobile table improvements */
+            .table-responsive {
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            .table th, .table td {
+                font-size: 0.85rem;
+                padding: 0.5rem;
+            }
+
+            /* Mobile pagination */
+            .d-flex.justify-content-center.mt-2 {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
         }
 
         @media (max-width: 576px) {
-            .top-header { height: auto; padding: 8px 0; }
+            .top-header {
+                padding: 8px 12px;
+                min-height: 55px;
+            }
 
-            .top-header .container-fluid { flex-wrap: wrap; gap: 8px; }
+            .admin-brand-text {
+                font-size: 1.1rem;
+            }
 
-            .admin-user-name { display: none; }
+            /* Further reduce padding on very small screens */
+            .admin-content {
+                padding: 10px;
+            }
+
+            /* Mobile header actions spacing */
+            .header-right {
+                gap: 6px;
+            }
+
+            .header-action-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+
+            /* Mobile sidebar content adjustments */
+            .sidebar-accordion-header {
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+
+            .sidebar-link {
+                padding: 8px 12px;
+                font-size: 11px;
+            }
+
+            .sidebar-badge {
+                font-size: 8px;
+                padding: 1px 4px;
+            }
+        }
+
+        /* Extra small screens optimization */
+        @media (max-width: 425px) {
+            .admin-content {
+                padding: 8px;
+            }
+
+            .card.border-0.shadow-sm {
+                margin-bottom: 10px;
+            }
+
+            .card-body.p-2 {
+                padding: 8px !important;
+            }
+
+            /* Mobile table text wrapping */
+            .table td.wrap, .table th.wrap {
+                white-space: normal;
+                word-wrap: break-word;
+            }
+
+            /* Mobile button sizing */
+            .btn-sm {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
         }
     </style>
 
@@ -578,7 +720,7 @@
 
             {{-- Players --}}
             <div class="sidebar-accordion" data-accordion="players">
-                <button class="sidebar-accordion-header {{ request()->routeIs('admin.players.*', 'admin.attendance.*', 'admin.training-sessions.*', 'admin.game-statistics.*') ? 'active' : '' }}"
+                <button class="sidebar-accordion-header {{ request()->routeIs('admin.players.*', 'admin.attendance.*', 'admin.training-sessions.*', 'admin.game-statistics.*', 'admin.website-players.*') ? 'active' : '' }}"
                         type="button"
                         onclick="toggleAccordion('players')">
                     <span><i class="fas fa-users"></i> {{ __('Players') }}</span>
@@ -598,6 +740,9 @@
                     </a>
                     <a href="{{ route('admin.game-statistics.index') }}" class="sidebar-link {{ request()->routeIs('admin.game-statistics.*') ? 'active' : '' }}">
                         <i class="fas fa-chart-bar"></i><span>{{ __('Statistics') }}</span>
+                    </a>
+                    <a href="{{ route('admin.website-players.index') }}" class="sidebar-link {{ request()->routeIs('admin.website-players.*') ? 'active' : '' }}">
+                        <i class="fas fa-globe"></i><span>{{ __('Website Players') }}</span>
                     </a>
                 </div>
             </div>
@@ -787,7 +932,7 @@
 
             {{-- Website (super-admin only) --}}
             <div class="sidebar-accordion" data-accordion="website">
-                <button class="sidebar-accordion-header {{ request()->routeIs('admin.page-content.*', 'leaders.*', 'admin.website-players.*', 'admin.jobs.*', 'admin.blog.*') ? 'active' : '' }}"
+                <button class="sidebar-accordion-header {{ request()->routeIs('admin.page-content.*', 'leaders.*', 'admin.jobs.*', 'admin.blog.*') ? 'active' : '' }}"
                         type="button"
                         onclick="toggleAccordion('website')">
                     <span><i class="fas fa-globe"></i> {{ __('Website') }}</span>

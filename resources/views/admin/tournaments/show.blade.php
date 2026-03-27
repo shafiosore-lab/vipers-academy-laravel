@@ -86,6 +86,13 @@
                 <i class="fas fa-futbol me-1"></i> All Matches ({{ $tournament->matches()->count() }})
             </a>
 
+            <!-- Reshuffle Teams Button - Prominently displayed before tournament starts -->
+            @if(in_array($tournament->status, ['open', 'closed']) && $tournament->getApprovedTeamsCount() >= 2)
+                <a href="{{ route('admin.tournaments.pools.reshuffle', $tournament->id) }}" class="btn btn-warning btn-sm">
+                    <i class="fas fa-shuffle me-1"></i> Reshuffle Teams
+                </a>
+            @endif
+
             <!-- Manage Pools -->
             <a href="{{ route('admin.tournaments.pools.index', $tournament->id) }}" class="btn btn-outline-warning btn-sm">
                 <i class="fas fa-layer-group me-1"></i> Pools
@@ -280,6 +287,15 @@
                         </div>
                     </div>
 
+                    <!-- Reshuffle Teams Button - Prominent quick action -->
+                    @if(in_array($tournament->status, ['open', 'closed']) && $tournament->getApprovedTeamsCount() >= 2)
+                    <div class="col-auto">
+                        <a href="{{ route('admin.tournaments.pools.reshuffle', $tournament->id) }}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-shuffle me-1"></i> Reshuffle Teams
+                        </a>
+                    </div>
+                    @endif
+
                     <!-- Manage Pools -->
                     <div class="col-auto">
                         <a href="{{ route('admin.tournaments.pools.index', $tournament->id) }}" class="btn btn-outline-warning btn-sm">
@@ -301,12 +317,45 @@
                         </a>
                     </div>
 
+                    <!-- Schedule Management -->
+                    <div class="col-auto">
+                        <a href="{{ route('admin.tournaments.schedule.index', $tournament->id) }}" class="btn btn-outline-dark btn-sm">
+                            <i class="fas fa-calendar-alt me-1"></i> Schedule
+                        </a>
+                    </div>
+
+                    <!-- Auto Schedule -->
+                    <div class="col-auto">
+                        <form action="{{ route('admin.tournaments.schedule.auto-schedule', $tournament->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-success btn-sm" {{ $tournament->matches()->count() > 0 ? 'disabled' : '' }}>
+                                <i class="fas fa-magic me-1"></i> Auto Schedule
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Manual Schedule -->
+                    <div class="col-auto">
+                        <a href="{{ route('admin.tournaments.schedule.bulk-schedule', $tournament->id) }}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-pencil-alt me-1"></i> Manual Schedule
+                        </a>
+                    </div>
+
                     <!-- View All Matches -->
                     <div class="col-auto">
                         <a href="{{ route('admin.tournaments.matches.index', $tournament->id) }}" class="btn btn-outline-dark btn-sm">
                             <i class="fas fa-futbol me-1"></i> All Matches ({{ $tournament->matches()->count() }})
                         </a>
                     </div>
+
+                    <!-- View Standings -->
+                    @if($tournament->teams()->count() > 0)
+                    <div class="col-auto">
+                        <a href="{{ route('admin.tournaments.standings.index', $tournament->id) }}" class="btn btn-info btn-sm">
+                            <i class="fas fa-list-ol me-1"></i> Standings
+                        </a>
+                    </div>
+                    @endif
                 </div>
             </div>
         </div>

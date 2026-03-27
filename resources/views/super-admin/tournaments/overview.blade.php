@@ -25,7 +25,7 @@
 
     <!-- Statistics Cards -->
     <div class="row g-3 mb-3">
-        <div class="col-md-2 col-6">
+        <div class="col-12 col-sm-6 col-md-2">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body p-2">
                     <div class="d-flex justify-content-between align-items-center">
@@ -41,7 +41,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2 col-6">
+        <div class="col-12 col-sm-6 col-md-2">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body p-2">
                     <div class="d-flex justify-content-between align-items-center">
@@ -57,7 +57,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2 col-6">
+        <div class="col-12 col-sm-6 col-md-2">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body p-2">
                     <div class="d-flex justify-content-between align-items-center">
@@ -72,7 +72,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2 col-6">
+        <div class="col-12 col-sm-6 col-md-2">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body p-2">
                     <div class="d-flex justify-content-between align-items-center">
@@ -87,7 +87,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2 col-6">
+        <div class="col-12 col-sm-6 col-md-2">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body p-2">
                     <div class="d-flex justify-content-between align-items-center">
@@ -102,7 +102,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2 col-6">
+        <div class="col-12 col-sm-6 col-md-2">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body p-2">
                     <div class="d-flex justify-content-between align-items-center">
@@ -120,7 +120,7 @@
     </div>
 
     <div class="row g-3 mb-3">
-        <div class="col-md-4 col-6">
+        <div class="col-12 col-sm-6 col-md-4">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body p-2">
                     <div class="d-flex justify-content-between align-items-center">
@@ -135,7 +135,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 col-6">
+        <div class="col-12 col-sm-6 col-md-4">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body p-2">
                     <div class="d-flex justify-content-between align-items-center">

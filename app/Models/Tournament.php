@@ -283,54 +283,152 @@ class Tournament extends Model
         return $slug;
     }
 
+    /**
+     * Calculate comprehensive standings for the tournament
+     * Includes: wins, draws, losses, goals, points, cards, clean sheets, home/away breakdown, form
+     */
     public function calculateStandings(): void
     {
-        $teams = $this->teams()->where('approval_status', 'approved')->get();
+        // Check if tournament format supports standings
+        if (!$this->hasStandings()) {
+            return;
+        }
 
+        $teams = $this->teams()->where('approval_status', 'approved')->get();
         $standingsData = [];
 
+        // Get point system from match format or use defaults
+        $winPoints = 3;
+        $drawPoints = 1;
+        $lossPoints = 0;
+
+        // Check first match for scoring rules
+        $sampleMatch = $this->matches()->where('status', 'completed')->first();
+        if ($sampleMatch && !empty($sampleMatch->scoring_rules)) {
+            $winPoints = $sampleMatch->scoring_rules['win_points'] ?? 3;
+            $drawPoints = $sampleMatch->scoring_rules['draw_points'] ?? 1;
+            $lossPoints = $sampleMatch->scoring_rules['loss_points'] ?? 0;
+        }
+
         foreach ($teams as $team) {
+            // Initialize all statistics
             $played = 0;
             $won = 0;
             $drawn = 0;
             $lost = 0;
             $goalsFor = 0;
             $goalsAgainst = 0;
+            $yellowCards = 0;
+            $redCards = 0;
+            $cleanSheets = 0;
 
-            // Get all matches for this team
-            $homeMatches = $this->matches()->where('home_team_id', $team->id)->where('status', 'completed')->get();
-            $awayMatches = $this->matches()->where('away_team_id', $team->id)->where('status', 'completed')->get();
+            // Home/Away breakdown
+            $homePlayed = 0;
+            $homeWon = 0;
+            $homeDrawn = 0;
+            $homeLost = 0;
+            $homeGoalsFor = 0;
+            $homeGoalsAgainst = 0;
 
+            $awayPlayed = 0;
+            $awayWon = 0;
+            $awayDrawn = 0;
+            $awayLost = 0;
+            $awayGoalsFor = 0;
+            $awayGoalsAgainst = 0;
+
+            // Form (last 5 matches)
+            $form = [];
+
+            // Get all completed matches for this team, ordered by date (most recent last)
+            $homeMatches = $this->matches()
+                ->where('home_team_id', $team->id)
+                ->where('status', 'completed')
+                ->orderBy('kickoff_time', 'asc')
+                ->get();
+
+            $awayMatches = $this->matches()
+                ->where('away_team_id', $team->id)
+                ->where('status', 'completed')
+                ->orderBy('kickoff_time', 'asc')
+                ->get();
+
+            // Process home matches
             foreach ($homeMatches as $match) {
+                $homePlayed++;
                 $played++;
+
+                $homeGoalsFor += $match->home_score;
+                $homeGoalsAgainst += $match->away_score;
                 $goalsFor += $match->home_score;
                 $goalsAgainst += $match->away_score;
 
+                // Cards
+                $yellowCards += $match->home_yellow_cards ?? 0;
+                $redCards += $match->home_red_cards ?? 0;
+
+                // Clean sheet (conceded 0)
+                if ($match->away_score == 0) {
+                    $cleanSheets++;
+                }
+
+                // Result
                 if ($match->home_score > $match->away_score) {
                     $won++;
+                    $homeWon++;
+                    $form[] = 'W';
                 } elseif ($match->home_score == $match->away_score) {
                     $drawn++;
+                    $homeDrawn++;
+                    $form[] = 'D';
                 } else {
                     $lost++;
+                    $homeLost++;
+                    $form[] = 'L';
                 }
             }
 
+            // Process away matches
             foreach ($awayMatches as $match) {
+                $awayPlayed++;
                 $played++;
+
+                $awayGoalsFor += $match->away_score;
+                $awayGoalsAgainst += $match->home_score;
                 $goalsFor += $match->away_score;
                 $goalsAgainst += $match->home_score;
 
+                // Cards
+                $yellowCards += $match->away_yellow_cards ?? 0;
+                $redCards += $match->away_red_cards ?? 0;
+
+                // Clean sheet (conceded 0)
+                if ($match->home_score == 0) {
+                    $cleanSheets++;
+                }
+
+                // Result
                 if ($match->away_score > $match->home_score) {
                     $won++;
+                    $awayWon++;
+                    $form[] = 'W';
                 } elseif ($match->away_score == $match->home_score) {
                     $drawn++;
+                    $awayDrawn++;
+                    $form[] = 'D';
                 } else {
                     $lost++;
+                    $awayLost++;
+                    $form[] = 'L';
                 }
             }
 
-            $points = ($won * 3) + $drawn;
+            // Calculate points
+            $points = ($won * $winPoints) + ($drawn * $drawPoints) + ($lost * $lossPoints);
             $goalDifference = $goalsFor - $goalsAgainst;
+
+            // Get last 5 results
+            $formArray = array_slice($form, -5);
 
             $standingsData[] = [
                 'team_id' => $team->id,
@@ -342,6 +440,27 @@ class Tournament extends Model
                 'goals_against' => $goalsAgainst,
                 'goal_difference' => $goalDifference,
                 'points' => $points,
+                // Cards
+                'yellow_cards' => $yellowCards,
+                'red_cards' => $redCards,
+                // Clean sheets
+                'clean_sheets' => $cleanSheets,
+                // Home breakdown
+                'home_played' => $homePlayed,
+                'home_won' => $homeWon,
+                'home_drawn' => $homeDrawn,
+                'home_lost' => $homeLost,
+                'home_goals_for' => $homeGoalsFor,
+                'home_goals_against' => $homeGoalsAgainst,
+                // Away breakdown
+                'away_played' => $awayPlayed,
+                'away_won' => $awayWon,
+                'away_drawn' => $awayDrawn,
+                'away_lost' => $awayLost,
+                'away_goals_for' => $awayGoalsFor,
+                'away_goals_against' => $awayGoalsAgainst,
+                // Form
+                'form' => $formArray,
             ];
         }
 
@@ -373,6 +492,27 @@ class Tournament extends Model
                     'goal_difference' => $data['goal_difference'],
                     'points' => $data['points'],
                     'position' => $index + 1,
+                    // Cards
+                    'yellow_cards' => $data['yellow_cards'],
+                    'red_cards' => $data['red_cards'],
+                    // Clean sheets
+                    'clean_sheets' => $data['clean_sheets'],
+                    // Home breakdown
+                    'home_played' => $data['home_played'],
+                    'home_won' => $data['home_won'],
+                    'home_drawn' => $data['home_drawn'],
+                    'home_lost' => $data['home_lost'],
+                    'home_goals_for' => $data['home_goals_for'],
+                    'home_goals_against' => $data['home_goals_against'],
+                    // Away breakdown
+                    'away_played' => $data['away_played'],
+                    'away_won' => $data['away_won'],
+                    'away_drawn' => $data['away_drawn'],
+                    'away_lost' => $data['away_lost'],
+                    'away_goals_for' => $data['away_goals_for'],
+                    'away_goals_against' => $data['away_goals_against'],
+                    // Form
+                    'form' => json_encode($data['form']),
                 ]
             );
         }
@@ -392,6 +532,62 @@ class Tournament extends Model
         $this->teams()->each(function ($team) {
             $team->squads()->update(['is_locked' => false]);
         });
+    }
+
+    /**
+     * Reopen tournament for reshuffling when teams are added/removed after fixtures generated
+     * This clears existing matches and standings, and reopens registration
+     * Returns array with 'reopened' boolean and 'message' string
+     */
+    public function reopenForReshuffle(): array
+    {
+        // Only reopen if tournament is closed (has matches generated but not started)
+        if ($this->status !== self::STATUS_CLOSED) {
+            return [
+                'reopened' => false,
+                'message' => 'Tournament is not in closed status'
+            ];
+        }
+
+        // Check if there are any completed matches - if so, don't allow reshuffling
+        $completedMatches = $this->matches()->where('status', 'completed')->count();
+        if ($completedMatches > 0) {
+            return [
+                'reopened' => false,
+                'message' => 'Cannot reshuffle - some matches have already been completed'
+            ];
+        }
+
+        // Delete all matches
+        $matchesDeleted = $this->matches()->count();
+        $this->matches()->delete();
+
+        // Delete all standings
+        $this->standings()->delete();
+
+        // Reopen registration
+        $this->update(['status' => self::STATUS_OPEN]);
+
+        // Unlock squads if they were locked
+        $this->unlockSquads();
+
+        return [
+            'reopened' => true,
+            'message' => "Tournament reopened for reshuffling. {$matchesDeleted} matches and standings cleared."
+        ];
+    }
+
+    /**
+     * Check if tournament can be reshuffled (has matches but no completed ones)
+     */
+    public function canReshuffle(): bool
+    {
+        if ($this->status !== self::STATUS_CLOSED) {
+            return false;
+        }
+
+        // Can't reshuffle if any matches are completed
+        return $this->matches()->where('status', 'completed')->count() === 0;
     }
 
     // Competition Format Methods

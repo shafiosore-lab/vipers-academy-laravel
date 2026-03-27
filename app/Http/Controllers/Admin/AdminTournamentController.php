@@ -365,6 +365,16 @@ class AdminTournamentController extends Controller
     }
 
     /**
+     * View tournament standings.
+     */
+    public function standings(Tournament $tournament)
+    {
+        $tournament->load(['standings.team.team', 'teams.team']);
+
+        return view('admin.tournaments.standings', compact('tournament'));
+    }
+
+    /**
      * Force unlock squads (Super Admin only).
      */
     public function unlockSquads(Tournament $tournament)

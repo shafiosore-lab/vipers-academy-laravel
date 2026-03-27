@@ -19,7 +19,7 @@
         <!-- Players Grid -->
         <div class="row g-2">
             @foreach($players as $player)
-                <div class="col-lg-3 col-md-6 col-6">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="player-card">
                         <!-- Player Image -->
                         <div class="player-image-container">

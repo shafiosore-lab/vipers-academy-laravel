@@ -55,13 +55,25 @@
     --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
     --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
 
-    /* Spacing */
-    --spacing-xs: 0.25rem;
-    --spacing-sm: 0.5rem;
-    --spacing-md: 1rem;
-    --spacing-lg: 1.5rem;
-    --spacing-xl: 2rem;
-    --spacing-2xl: 3rem;
+    /* Spacing Scale */
+    --spacing-xs: 0.25rem;    /* 4px */
+    --spacing-sm: 0.5rem;     /* 8px */
+    --spacing-md: 1rem;       /* 16px */
+    --spacing-lg: 1.5rem;     /* 24px */
+    --spacing-xl: 2rem;       /* 32px */
+    --spacing-2xl: 3rem;      /* 48px */
+    --spacing-3xl: 4rem;      /* 64px */
+    --spacing-4xl: 6rem;      /* 96px */
+
+    /* Component Spacing */
+    --card-padding-xs: 0.5rem;    /* 8px */
+    --card-padding-sm: 0.75rem;   /* 12px */
+    --card-padding-md: 1rem;      /* 16px */
+    --card-padding-lg: 1.25rem;   /* 20px */
+    --card-padding-xl: 1.5rem;    /* 24px */
+    --card-gap: 1rem;             /* 16px */
+    --stat-gap: 1.5rem;           /* 24px */
+    --grid-gap: 1.5rem;           /* 24px */
 
     /* Layout */
     --sidebar-width: 260px;

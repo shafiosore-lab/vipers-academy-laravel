@@ -19,7 +19,7 @@
 
     <!-- Stats Cards Row -->
     <div class="row g-2 mb-3">
-        <div class="col-6 col-md-3">
+        <div class="col-12 col-sm-6 col-md-3">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body p-3">
                     <div class="d-flex align-items-center">
@@ -36,7 +36,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-12 col-sm-6 col-md-3">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body p-3">
                     <div class="d-flex align-items-center">
@@ -53,7 +53,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-12 col-sm-6 col-md-3">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body p-3">
                     <div class="d-flex align-items-center">
@@ -70,7 +70,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-12 col-sm-6 col-md-3">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body p-3">
                     <div class="d-flex align-items-center">
@@ -128,23 +128,25 @@
         <div class="card-header py-2 bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h6 class="mb-0 small fw-bold">All Payments</h6>
             <!-- Filters -->
-            <form method="GET" class="d-flex gap-1">
-                <input type="text" name="search" class="form-control form-control-sm" placeholder="Search..." value="{{ request('search') }}" style="width: 120px;">
-                <select name="status" class="form-select form-select-sm" style="width: 100px;">
+            <form method="GET" class="d-flex flex-wrap gap-2">
+                <div class="input-group input-group-sm" style="min-width: 140px;">
+                    <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ request('search') }}">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <select name="status" class="form-select form-select-sm" style="min-width: 120px;">
                     <option value="">All Status</option>
                     <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                     <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
                     <option value="failed" {{ request('status') == 'failed' ? 'selected' : '' }}>Failed</option>
                 </select>
-                <select name="type" class="form-select form-select-sm" style="width: 100px;">
+                <select name="type" class="form-select form-select-sm" style="min-width: 120px;">
                     <option value="">All Types</option>
                     <option value="registration_fee" {{ request('type') == 'registration_fee' ? 'selected' : '' }}>Registration</option>
                     <option value="program_fee" {{ request('type') == 'program_fee' ? 'selected' : '' }}>Program</option>
                     <option value="donation" {{ request('type') == 'donation' ? 'selected' : '' }}>Donation</option>
                 </select>
-                <button type="submit" class="btn btn-sm btn-outline-primary">
-                    <i class="fas fa-search"></i>
-                </button>
             </form>
         </div>
         <div class="card-body p-2">
@@ -188,13 +190,40 @@
                                 <td class="py-1 align-middle small">{{ ucfirst(str_replace('_', ' ', $payment->payment_method)) }}</td>
                                 <td class="py-1 align-middle small">{{ $payment->created_at->format('M d, Y') }}</td>
                                 <td class="py-1 align-middle">
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <a href="{{ route('admin.payments.show', $payment) }}" class="btn btn-sm btn-outline-primary py-0 px-1" title="View">
-                                            <i class="fas fa-eye"></i>
+                                    <div class="d-flex gap-1">
+                                        <a href="{{ route('admin.payments.show', $payment) }}" class="btn btn-sm btn-outline-primary py-1 px-2" title="View">
+                                            <i class="fas fa-eye me-1"></i><span class="d-none d-md-inline">View</span>
                                         </a>
-                                        <a href="{{ route('admin.payments.edit', $payment) }}" class="btn btn-sm btn-outline-secondary py-0 px-1" title="Edit">
-                                            <i class="fas fa-edit"></i>
+                                        <a href="{{ route('admin.payments.edit', $payment) }}" class="btn btn-sm btn-outline-secondary py-1 px-2" title="Edit">
+                                            <i class="fas fa-edit me-1"></i><span class="d-none d-md-inline">Edit</span>
                                         </a>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-danger py-1 px-2 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="More Actions">
+                                                <i class="fas fa-ellipsis-h"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ route('admin.payments.show', $payment) }}">
+                                                        <i class="fas fa-eye me-2"></i>View Details
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ route('admin.payments.edit', $payment) }}">
+                                                        <i class="fas fa-edit me-2"></i>Edit Payment
+                                                    </a>
+                                                </li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li>
+                                                    <form action="{{ route('admin.payments.destroy', $payment) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this payment?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="dropdown-item text-danger">
+                                                            <i class="fas fa-trash me-2"></i>Delete Payment
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>

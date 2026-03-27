@@ -246,6 +246,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/tournaments/{tournament}/recalculate-standings', [App\Http\Controllers\Admin\AdminTournamentController::class, 'recalculateStandings'])->name('tournaments.recalculate-standings');
     Route::post('/tournaments/{tournament}/unlock-squads', [App\Http\Controllers\Admin\AdminTournamentController::class, 'unlockSquads'])->name('tournaments.unlock-squads');
 
+    // Tournament Standings
+    Route::get('/tournaments/{tournament}/standings', [App\Http\Controllers\Admin\AdminTournamentController::class, 'standings'])->name('tournaments.standings.index');
+
     // Tournament Teams
     Route::get('/tournaments/{tournament}/teams', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'index'])->name('tournaments.teams.index');
     Route::get('/tournaments/{tournament}/teams/create', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'create'])->name('tournaments.teams.create');
@@ -257,6 +260,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/tournaments/{tournament}/teams/{team}/approve', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'approve'])->name('tournaments.teams.approve');
     Route::post('/tournaments/{tournament}/teams/{team}/reject', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'reject'])->name('tournaments.teams.reject');
     Route::post('/tournaments/{tournament}/teams/{team}/request-correction', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'requestCorrection'])->name('tournaments.teams.request-correction');
+    Route::post('/tournaments/{tournament}/teams/bulk-upload', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'bulkUploadTeams'])->name('tournaments.teams.bulk-upload');
+    Route::get('/tournaments/teams/template', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'downloadTeamTemplate'])->name('tournaments.teams.template');
 
     // Tournament Squads
     Route::get('/tournaments/{tournament}/teams/{team}/squads', [App\Http\Controllers\Admin\AdminTournamentSquadController::class, 'index'])->name('tournaments.squads.index');
@@ -291,6 +296,20 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::delete('/tournaments/{tournament}/matches/fixtures', [App\Http\Controllers\Admin\AdminTournamentMatchController::class, 'deleteFixtures'])->name('tournaments.matches.delete-fixtures');
     Route::get('/tournaments/{tournament}/matches/check-conflicts', [App\Http\Controllers\Admin\AdminTournamentMatchController::class, 'checkConflicts'])->name('tournaments.matches.check-conflicts');
 
+    // Tournament Scheduling
+    Route::get('/tournaments/{tournament}/schedule', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'index'])->name('tournaments.schedule.index');
+    Route::get('/tournaments/{tournament}/schedule/config', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'config'])->name('tournaments.schedule.config');
+    Route::put('/tournaments/{tournament}/schedule/config', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'saveConfig'])->name('tournaments.schedule.config.save');
+    Route::get('/tournaments/{tournament}/schedule/time-slots', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'timeSlots'])->name('tournaments.schedule.time-slots');
+    Route::post('/tournaments/{tournament}/schedule/auto-schedule', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'autoSchedule'])->name('tournaments.schedule.auto-schedule');
+    Route::get('/tournaments/{tournament}/schedule/bulk-schedule', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'bulkSchedule'])->name('tournaments.schedule.bulk-schedule');
+    Route::post('/tournaments/{tournament}/schedule/bulk-schedule', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'processBulkSchedule'])->name('tournaments.schedule.bulk-schedule.save');
+    Route::get('/tournaments/{tournament}/schedule/constraints', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'checkConstraints'])->name('tournaments.schedule.constraints');
+    Route::post('/tournaments/{tournament}/schedule/clear', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'clearSchedule'])->name('tournaments.schedule.clear');
+    Route::delete('/tournaments/{tournament}/schedule/matches', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'deleteMatches'])->name('tournaments.schedule.delete-matches');
+    Route::get('/tournaments/{tournament}/schedule/slots/available', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'getAvailableSlots'])->name('tournaments.schedule.slots.available');
+    Route::post('/tournaments/{tournament}/schedule/slots/validate', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'validateSlot'])->name('tournaments.schedule.slots.validate');
+
     // Tournament Pools
     Route::get('/tournaments/{tournament}/pools', [App\Http\Controllers\Admin\TournamentPoolController::class, 'index'])->name('tournaments.pools.index');
     Route::get('/tournaments/{tournament}/pools/create', [App\Http\Controllers\Admin\TournamentPoolController::class, 'create'])->name('tournaments.pools.create');
@@ -306,6 +325,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/tournaments/{tournament}/pools/redistribute', [App\Http\Controllers\Admin\TournamentPoolController::class, 'redistribute'])->name('tournaments.pools.redistribute');
     Route::delete('/tournaments/{tournament}/pools/clear', [App\Http\Controllers\Admin\TournamentPoolController::class, 'clearPools'])->name('tournaments.pools.clear');
     Route::post('/tournaments/{tournament}/pools/auto-create', [App\Http\Controllers\Admin\TournamentPoolController::class, 'autoCreatePools'])->name('tournaments.pools.auto-create');
+
+    // Tournament Pool Reshuffle (FIFA-style)
+    Route::get('/tournaments/{tournament}/pools/reshuffle', [App\Http\Controllers\Admin\TournamentPoolController::class, 'reshuffle'])->name('tournaments.pools.reshuffle');
+    Route::post('/tournaments/{tournament}/pools/reshuffle', [App\Http\Controllers\Admin\TournamentPoolController::class, 'performReshuffle'])->name('tournaments.pools.reshuffle.perform');
+    Route::post('/tournaments/{tournament}/pools/reshuffle/reset', [App\Http\Controllers\Admin\TournamentPoolController::class, 'resetReshuffleCount'])->name('tournaments.pools.reshuffle.reset');
+    Route::post('/tournaments/{tournament}/pools/update-positions', [App\Http\Controllers\Admin\TournamentPoolController::class, 'updateTeamPositions'])->name('tournaments.pools.update-positions');
 
     // Tournament Venues
     Route::get('/tournaments/{tournament}/venues', [App\Http\Controllers\Admin\TournamentVenueController::class, 'index'])->name('tournaments.venues.index');
@@ -986,6 +1011,88 @@ Route::middleware(['auth', 'super.admin'])->prefix('super-admin')->name('super-a
     Route::post('/tournaments/{tournament}/complete', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'completeTournament'])->name('tournaments.complete');
     Route::post('/tournaments/{tournament}/cancel', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'cancelTournament'])->name('tournaments.cancel');
 
+    // Tournament Teams
+    Route::get('/tournaments/{tournament}/teams', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'teams'])->name('tournaments.teams.index');
+    Route::get('/tournaments/{tournament}/teams/create', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'createTeam'])->name('tournaments.teams.create');
+    Route::post('/tournaments/{tournament}/teams', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'storeTeam'])->name('tournaments.teams.store');
+    Route::get('/tournaments/{tournament}/teams/{team}', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'teamPlayers'])->name('tournaments.teams.show');
+    Route::get('/tournaments/{tournament}/teams/{team}/edit', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'edit'])->name('tournaments.teams.edit');
+    Route::put('/tournaments/{tournament}/teams/{team}', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'update'])->name('tournaments.teams.update');
+    Route::delete('/tournaments/{tournament}/teams/{team}', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'destroy'])->name('tournaments.teams.destroy');
+    Route::get('/tournaments/{tournament}/teams/{team}/players', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'teamPlayers'])->name('tournaments.teams.players.index');
+    Route::post('/tournaments/{tournament}/teams/{team}/approve', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'approveTeam'])->name('tournaments.teams.approve');
+    Route::post('/tournaments/{tournament}/teams/{team}/reject', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'rejectTeam'])->name('tournaments.teams.reject');
+    Route::get('/tournaments/teams/template', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'downloadTeamTemplate'])->name('tournaments.teams.template');
+    Route::post('/tournaments/{tournament}/teams/bulk-upload', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'bulkUploadTeams'])->name('tournaments.teams.bulk-upload');
+
+    // Tournament Players
+    Route::get('/tournaments/{tournament}/players', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'players'])->name('tournaments.players.index');
+    Route::post('/tournaments/{tournament}/players/{squad}/approve', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'approvePlayer'])->name('tournaments.players.approve');
+    Route::post('/tournaments/{tournament}/players/{squad}/reject', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'rejectPlayer'])->name('tournaments.players.reject');
+    Route::delete('/tournaments/{tournament}/players/{squad}', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'removePlayer'])->name('tournaments.players.destroy');
+
+    // Tournament Matches
+    Route::get('/tournaments/{tournament}/matches', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'matches'])->name('tournaments.matches.index');
+
+    // Tournament Standings
+    Route::get('/tournaments/{tournament}/standings', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'standings'])->name('tournaments.standings.index');
+
+    // Tournament Statistics
+    Route::get('/tournaments/{tournament}/statistics', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'index'])->name('tournaments.statistics.index');
+    Route::get('/tournaments/{tournament}/statistics/top-scorers', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'topScorers'])->name('tournaments.statistics.top-scorers');
+    Route::get('/tournaments/{tournament}/statistics/discipline', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'discipline'])->name('tournaments.statistics.discipline');
+    Route::get('/tournaments/{tournament}/statistics/groups', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'groups'])->name('tournaments.statistics.groups');
+    Route::get('/tournaments/{tournament}/statistics/rankings', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'rankings'])->name('tournaments.statistics.rankings');
+    Route::get('/tournaments/{tournament}/statistics/summary', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'summary'])->name('tournaments.statistics.summary');
+    Route::get('/tournaments/{tournament}/statistics/live', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'live'])->name('tournaments.statistics.live');
+
+    // Tournament Recalculate Standings
+    Route::post('/tournaments/{tournament}/recalculate-standings', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'recalculateStandings'])->name('tournaments.recalculate-standings');
+
+    // Tournament Statistics Routes (Admin)
+    Route::prefix('tournaments/{tournament}')->name('tournaments.')->group(function () {
+        Route::prefix('statistics')->name('statistics.')->group(function () {
+            Route::get('/', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'index'])->name('statistics.index');
+            Route::get('/top-scorers', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'topScorers'])->name('statistics.top-scorers');
+            Route::get('/discipline', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'discipline'])->name('statistics.discipline');
+            Route::get('/groups', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'groups'])->name('statistics.groups');
+            Route::get('/rankings', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'rankings'])->name('statistics.rankings');
+            Route::get('/summary', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'summary'])->name('statistics.summary');
+
+            // API endpoints for real-time updates
+            Route::get('/api/live', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'liveData'])->name('statistics.api.live');
+        });
+    });
+
+    // Tournament Pool Reshuffle (FIFA-style)
+    Route::get('/tournaments/{tournament}/pools/reshuffle', [App\Http\Controllers\Admin\TournamentPoolController::class, 'reshuffle'])->name('tournaments.pools.reshuffle');
+    Route::post('/tournaments/{tournament}/pools/reshuffle', [App\Http\Controllers\Admin\TournamentPoolController::class, 'performReshuffle'])->name('tournaments.pools.reshuffle.perform');
+    Route::post('/tournaments/{tournament}/pools/reshuffle/reset', [App\Http\Controllers\Admin\TournamentPoolController::class, 'resetReshuffleCount'])->name('tournaments.pools.reshuffle.reset');
+    Route::post('/tournaments/{tournament}/pools/update-positions', [App\Http\Controllers\Admin\TournamentPoolController::class, 'updateTeamPositions'])->name('tournaments.pools.update-positions');
+
+    // Tournament Fixtures
+    Route::post('/tournaments/{tournament}/generate-fixtures', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'generateFixtures'])->name('tournaments.generate-fixtures');
+
+    // Tournament Scheduling (Super Admin)
+    Route::get('/tournaments/{tournament}/schedule', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'index'])->name('tournaments.schedule.index');
+    Route::get('/tournaments/{tournament}/schedule/config', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'config'])->name('tournaments.schedule.config');
+    Route::put('/tournaments/{tournament}/schedule/config', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'saveConfig'])->name('tournaments.schedule.config.save');
+    Route::get('/tournaments/{tournament}/schedule/time-slots', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'timeSlots'])->name('tournaments.schedule.time-slots');
+    Route::post('/tournaments/{tournament}/schedule/auto-schedule', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'autoSchedule'])->name('tournaments.schedule.auto-schedule');
+    Route::get('/tournaments/{tournament}/schedule/bulk-schedule', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'bulkSchedule'])->name('tournaments.schedule.bulk-schedule');
+    Route::post('/tournaments/{tournament}/schedule/bulk-schedule', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'processBulkSchedule'])->name('tournaments.schedule.bulk-schedule.save');
+    Route::get('/tournaments/{tournament}/schedule/constraints', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'checkConstraints'])->name('tournaments.schedule.constraints');
+    Route::post('/tournaments/{tournament}/schedule/clear', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'clearSchedule'])->name('tournaments.schedule.clear');
+    Route::delete('/tournaments/{tournament}/schedule/matches', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'deleteMatches'])->name('tournaments.schedule.delete-matches');
+    Route::get('/tournaments/{tournament}/schedule/slots/available', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'getAvailableSlots'])->name('tournaments.schedule.slots.available');
+    Route::post('/tournaments/{tournament}/schedule/slots/validate', [App\Http\Controllers\Admin\TournamentScheduleController::class, 'validateSlot'])->name('tournaments.schedule.slots.validate');
+
+    // Close Registration and Generate Fixtures (one-click)
+    Route::post('/tournaments/{tournament}/close-and-generate', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'closeAndGenerateFixtures'])->name('tournaments.close-and-generate');
+
+    // Tournament Visibility
+    Route::post('/tournaments/{tournament}/toggle-visibility', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'toggleVisibility'])->name('tournaments.toggle-visibility');
+
     // Training Sessions (Super Admin access)
     Route::resource('training-sessions', App\Http\Controllers\Admin\TrainingSessionController::class);
     Route::post('/training-sessions/{trainingSession}/start', [App\Http\Controllers\Admin\TrainingSessionController::class, 'start'])->name('training-sessions.start');
@@ -1015,6 +1122,71 @@ Route::middleware(['auth', 'super.admin'])->prefix('super-admin')->name('super-a
 // Organization Admin Routes
 Route::middleware(['auth', 'role:org-admin|super-admin'])->prefix('organization')->name('organization.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Organization\OrganizationDashboardController::class, 'index'])->name('dashboard');
+
+    // Tournament Management (Organization Admin)
+    Route::get('/tournaments', [App\Http\Controllers\Admin\AdminTournamentController::class, 'index'])->name('tournaments.index');
+    Route::get('/tournaments/create', [App\Http\Controllers\Admin\AdminTournamentController::class, 'create'])->name('tournaments.create');
+    Route::post('/tournaments', [App\Http\Controllers\Admin\AdminTournamentController::class, 'store'])->name('tournaments.store');
+    Route::get('/tournaments/{tournament}', [App\Http\Controllers\Admin\AdminTournamentController::class, 'show'])->name('tournaments.show');
+    Route::get('/tournaments/{tournament}/edit', [App\Http\Controllers\Admin\AdminTournamentController::class, 'edit'])->name('tournaments.edit');
+    Route::put('/tournaments/{tournament}', [App\Http\Controllers\Admin\AdminTournamentController::class, 'update'])->name('tournaments.update');
+    Route::delete('/tournaments/{tournament}', [App\Http\Controllers\Admin\AdminTournamentController::class, 'destroy'])->name('tournaments.destroy');
+
+    // Tournament Actions
+    Route::post('/tournaments/{tournament}/open-registration', [App\Http\Controllers\Admin\AdminTournamentController::class, 'openRegistration'])->name('tournaments.open-registration');
+    Route::post('/tournaments/{tournament}/close-registration', [App\Http\Controllers\Admin\AdminTournamentController::class, 'closeRegistration'])->name('tournaments.close-registration');
+    Route::post('/tournaments/{tournament}/start', [App\Http\Controllers\Admin\AdminTournamentController::class, 'startTournament'])->name('tournaments.start');
+    Route::post('/tournaments/{tournament}/complete', [App\Http\Controllers\Admin\AdminTournamentController::class, 'completeTournament'])->name('tournaments.complete');
+    Route::post('/tournaments/{tournament}/generate-fixtures', [App\Http\Controllers\Admin\AdminTournamentController::class, 'generateFixtures'])->name('tournaments.generate-fixtures');
+    Route::post('/tournaments/{tournament}/recalculate-standings', [App\Http\Controllers\Admin\AdminTournamentController::class, 'recalculateStandings'])->name('tournaments.recalculate-standings');
+    Route::post('/tournaments/{tournament}/unlock-squads', [App\Http\Controllers\Admin\AdminTournamentController::class, 'unlockSquads'])->name('tournaments.unlock-squads');
+
+    // Tournament Standings
+    Route::get('/tournaments/{tournament}/standings', [App\Http\Controllers\Admin\AdminTournamentController::class, 'standings'])->name('tournaments.standings.index');
+
+    // Tournament Teams Management
+    Route::get('/tournaments/{tournament}/teams', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'index'])->name('tournaments.teams.index');
+    Route::get('/tournaments/{tournament}/teams/create', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'create'])->name('tournaments.teams.create');
+    Route::post('/tournaments/{tournament}/teams', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'store'])->name('tournaments.teams.store');
+    Route::get('/tournaments/{tournament}/teams/{team}', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'show'])->name('tournaments.teams.show');
+    Route::get('/tournaments/{tournament}/teams/{team}/edit', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'edit'])->name('tournaments.teams.edit');
+    Route::put('/tournaments/{tournament}/teams/{team}', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'update'])->name('tournaments.teams.update');
+    Route::delete('/tournaments/{tournament}/teams/{team}', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'destroy'])->name('tournaments.teams.destroy');
+    Route::post('/tournaments/{tournament}/teams/{team}/approve', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'approve'])->name('tournaments.teams.approve');
+    Route::post('/tournaments/{tournament}/teams/{team}/reject', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'reject'])->name('tournaments.teams.reject');
+    Route::post('/tournaments/{tournament}/teams/{team}/request-correction', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'requestCorrection'])->name('tournaments.teams.request-correction');
+    Route::post('/tournaments/{tournament}/teams/bulk-upload', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'bulkUploadTeams'])->name('tournaments.teams.bulk-upload');
+    Route::get('/tournaments/teams/template', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'downloadTeamTemplate'])->name('tournaments.teams.template');
+
+    // Tournament Squads
+    Route::get('/tournaments/{tournament}/teams/{team}/squads', [App\Http\Controllers\Admin\AdminTournamentSquadController::class, 'index'])->name('tournaments.squads.index');
+    Route::get('/tournaments/{tournament}/teams/{team}/squads/create', [App\Http\Controllers\Admin\AdminTournamentSquadController::class, 'create'])->name('tournaments.squads.create');
+    Route::post('/tournaments/{tournament}/teams/{team}/squads', [App\Http\Controllers\Admin\AdminTournamentSquadController::class, 'store'])->name('tournaments.squads.store');
+    Route::put('/tournaments/{tournament}/teams/{team}/squads/{squad}', [App\Http\Controllers\Admin\AdminTournamentSquadController::class, 'update'])->name('tournaments.squads.update');
+    Route::delete('/tournaments/{tournament}/teams/{team}/squads/{squad}', [App\Http\Controllers\Admin\AdminTournamentSquadController::class, 'destroy'])->name('tournaments.squads.destroy');
+    Route::post('/tournaments/{tournament}/teams/{team}/squads/{squad}/verify', [App\Http\Controllers\Admin\AdminTournamentSquadController::class, 'verify'])->name('tournaments.squads.verify');
+    Route::post('/tournaments/{tournament}/teams/{team}/squads/{squad}/reject', [App\Http\Controllers\Admin\AdminTournamentSquadController::class, 'reject'])->name('tournaments.squads.reject');
+
+    // Tournament Matches
+    Route::get('/tournaments/{tournament}/matches', [App\Http\Controllers\Admin\AdminTournamentMatchController::class, 'index'])->name('tournaments.matches.index');
+    Route::get('/tournaments/{tournament}/matches/create', [App\Http\Controllers\Admin\AdminTournamentMatchController::class, 'create'])->name('tournaments.matches.create');
+    Route::post('/tournaments/{tournament}/matches', [App\Http\Controllers\Admin\AdminTournamentMatchController::class, 'store'])->name('tournaments.matches.store');
+    Route::get('/tournaments/{tournament}/matches/{match}', [App\Http\Controllers\Admin\AdminTournamentMatchController::class, 'show'])->name('tournaments.matches.show');
+    Route::get('/tournaments/{tournament}/matches/{match}/edit', [App\Http\Controllers\Admin\AdminTournamentMatchController::class, 'edit'])->name('tournaments.matches.edit');
+    Route::put('/tournaments/{tournament}/matches/{match}', [App\Http\Controllers\Admin\AdminTournamentMatchController::class, 'update'])->name('tournaments.matches.update');
+    Route::delete('/tournaments/{tournament}/matches/{match}', [App\Http\Controllers\Admin\AdminTournamentMatchController::class, 'destroy'])->name('tournaments.matches.destroy');
+    Route::post('/tournaments/{tournament}/matches/{match}/record-result', [App\Http\Controllers\Admin\AdminTournamentMatchController::class, 'recordResult'])->name('tournaments.matches.record-result');
+
+    // Tournament Pools
+    Route::get('/tournaments/{tournament}/pools', [App\Http\Controllers\Admin\TournamentPoolController::class, 'index'])->name('tournaments.pools.index');
+    Route::get('/tournaments/{tournament}/pools/create', [App\Http\Controllers\Admin\TournamentPoolController::class, 'create'])->name('tournaments.pools.create');
+    Route::post('/tournaments/{tournament}/pools', [App\Http\Controllers\Admin\TournamentPoolController::class, 'store'])->name('tournaments.pools.store');
+
+    // Tournament Pool Reshuffle (FIFA-style)
+    Route::get('/tournaments/{tournament}/pools/reshuffle', [App\Http\Controllers\Admin\TournamentPoolController::class, 'reshuffle'])->name('tournaments.pools.reshuffle');
+    Route::post('/tournaments/{tournament}/pools/reshuffle', [App\Http\Controllers\Admin\TournamentPoolController::class, 'performReshuffle'])->name('tournaments.pools.reshuffle.perform');
+    Route::post('/tournaments/{tournament}/pools/reshuffle/reset', [App\Http\Controllers\Admin\TournamentPoolController::class, 'resetReshuffleCount'])->name('tournaments.pools.reshuffle.reset');
+    Route::post('/tournaments/{tournament}/pools/update-positions', [App\Http\Controllers\Admin\TournamentPoolController::class, 'updateTeamPositions'])->name('tournaments.pools.update-positions');
 
     // Attendance Management
     Route::get('/attendance', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'index'])->name('attendance.index');

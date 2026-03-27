@@ -1,4 +1,3 @@
-@extends('layouts.auth')
 
 @section('title', 'Create Account')
 
@@ -260,22 +259,47 @@
 @endsection
 
 @section('branding')
-    <!-- Branding Section for Signup -->
-    <div class="branding-logo">
-        <div class="branding-logo-icon" style="padding: 8px; background: white; border-radius: 8px;">
-            <img src="{{ asset('assets/img/logo/GameSuite.png') }}" alt="Gamesuite Logo" style="width: 48px; height: 48px; object-fit: contain;">
+    <!-- Branding Section for Signup (Enhanced) -->
+    <div class="branding-content">
+        <h2 class="branding-title">Join the Gaming Revolution</h2>
+        <p class="branding-description">
+            Whether you're a player, coach, or organizer, Gamesuite provides the tools you need to take your gaming experience to the next level.
+        </p>
+
+        <div style="margin-top: 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                <i class="fas fa-user text-success" style="font-size: 1.25rem;"></i>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.875rem;">For Players</div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.8);">Track stats, join tournaments</div>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                <i class="fas fa-chalkboard-teacher text-warning" style="font-size: 1.25rem;"></i>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.875rem;">For Coaches</div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.8);">Manage teams, analyze performance</div>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                <i class="fas fa-trophy text-info" style="font-size: 1.25rem;"></i>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.875rem;">For Organizers</div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.8);">Create tournaments, manage events</div>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fas fa-building text-primary" style="font-size: 1.25rem;"></i>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.875rem;">For Organizations</div>
+                    <div style="font-size: 0.75rem; color: rgba(255,255,255,0.8);">Build communities, track growth</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="branding-content">
-        <h2 class="branding-title">Join Our Gaming Community</h2>
-        <p class="branding-description">
-            Create an account to access powerful tournament tools and connect with gamers.
-        </p>
-    </div>
-
     <div class="branding-footer">
-        <p class="branding-footer-text">© 2025 Gamesuite. All rights reserved.</p>
+        <p class="branding-footer-text">Join 50,000+ users worldwide</p>
     </div>
 @endsection
 

@@ -68,6 +68,95 @@
                 </div>
             </div>
         </div>
+
+        <!-- Dynamic Location Fields (based on tournament's organization location level) -->
+        @if(!empty($locationFields))
+        <div class="col-md-6">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h6 class="mb-0">Team Location</h6>
+                    <small class="text-muted">Location level: {{ $locationLevel }}</small>
+                </div>
+                <div class="card-body">
+                    @if(in_array('country', $locationFields))
+                    <div class="mb-2">
+                        <label class="form-label">Country <span class="text-danger">*</span></label>
+                        <select class="form-select form-select-sm @error('country') is-invalid @enderror"
+                                id="country" name="country" required>
+                            <option value="">-- Select Country --</option>
+                            @foreach($countries as $code => $name)
+                                <option value="{{ $code }}" {{ old('country') == $code ? 'selected' : '' }}>{{ $name }}</option>
+                            @endforeach
+                        </select>
+                        @error('country')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    @endif
+
+                    @if(in_array('county', $locationFields))
+                    <div class="mb-2">
+                        <label class="form-label">County</label>
+                        <input type="text" class="form-control form-control-sm @error('county') is-invalid @enderror"
+                               id="county" name="county" value="{{ old('county') }}"
+                               placeholder="Enter county name"
+                               list="countyOptions">
+                        @if(!empty($locationOptions['counties']))
+                        <datalist id="countyOptions">
+                            @foreach($locationOptions['counties'] as $county)
+                                <option value="{{ $county }}">
+                            @endforeach
+                        </datalist>
+                        @endif
+                        @error('county')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    @endif
+
+                    @if(in_array('sub_county', $locationFields))
+                    <div class="mb-2">
+                        <label class="form-label">Sub-County</label>
+                        <input type="text" class="form-control form-control-sm @error('sub_county') is-invalid @enderror"
+                               id="sub_county" name="sub_county" value="{{ old('sub_county') }}"
+                               placeholder="Enter sub-county name"
+                               list="subCountyOptions">
+                        @if(!empty($locationOptions['sub_counties']))
+                        <datalist id="subCountyOptions">
+                            @foreach($locationOptions['sub_counties'] as $subCounty)
+                                <option value="{{ $subCounty }}">
+                            @endforeach
+                        </datalist>
+                        @endif
+                        @error('sub_county')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    @endif
+
+                    @if(in_array('ward', $locationFields))
+                    <div class="mb-2">
+                        <label class="form-label">Ward</label>
+                        <input type="text" class="form-control form-control-sm @error('ward') is-invalid @enderror"
+                               id="ward" name="ward" value="{{ old('ward') }}"
+                               placeholder="Enter ward name"
+                               list="wardOptions">
+                        @if(!empty($locationOptions['wards']))
+                        <datalist id="wardOptions">
+                            @foreach($locationOptions['wards'] as $ward)
+                                <option value="{{ $ward }}">
+                            @endforeach
+                        </datalist>
+                        @endif
+                        @error('ward')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        @endif
     </div>
     <div class="d-flex justify-content-end gap-2">
         <a href="{{ route('admin.tournaments.teams.index', $tournament->id) }}" class="btn btn-outline-secondary btn-sm">Cancel</a>

@@ -27,6 +27,11 @@ class TournamentTeam extends Model
         'registration_date',
         'seed_number',
         'pool_position',
+        // Location fields (based on tournament's organization level)
+        'country',
+        'county',
+        'sub_county',
+        'ward',
     ];
 
     protected $casts = [
@@ -295,5 +300,67 @@ class TournamentTeam extends Model
     public function hasReliableElo(): bool
     {
         return ($this->elo_matches ?? 0) >= 5;
+    }
+
+    // ==================== Location Methods ====================
+
+    /**
+     * Get location fields based on tournament's organization level
+     */
+    public function getLocationFields(): array
+    {
+        $organization = $this->tournament->organization ?? null;
+
+        if (!$organization) {
+            return ['country']; // Default
+        }
+
+        return $organization->getLocationFields();
+    }
+
+    /**
+     * Get location level from tournament's organization
+     */
+    public function getLocationLevel(): string
+    {
+        $organization = $this->tournament->organization ?? null;
+
+        if (!$organization) {
+            return 'country'; // Default
+        }
+
+        return $organization->getEffectiveLocationLevel();
+    }
+
+    /**
+     * Get location display string
+     */
+    public function getLocationDisplay(): string
+    {
+        $parts = [];
+
+        if ($this->country) {
+            $parts[] = \App\Models\Organization::COUNTRIES[$this->country] ?? $this->country;
+        }
+        if ($this->county) {
+            $parts[] = $this->county;
+        }
+        if ($this->sub_county) {
+            $parts[] = $this->sub_county;
+        }
+        if ($this->ward) {
+            $parts[] = $this->ward;
+        }
+
+        return implode(' > ', $parts);
+    }
+
+    /**
+     * Get display name for the team (handles both linked and independent teams)
+     */
+    public function getDisplayNameAttribute(): string
+    {
+        // First try linked team name, then fallback to independent team_name
+        return $this->team->name ?? $this->team_name ?? 'Unknown Team';
     }
 }
