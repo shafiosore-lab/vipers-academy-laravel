@@ -356,6 +356,13 @@
                         </a>
                     </div>
                     @endif
+
+                    <!-- Tournament Statistics -->
+                    <div class="col-auto">
+                        <a href="{{ route('admin.tournaments.statistics.index', $tournament->id) }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-chart-pie me-1"></i> Statistics
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

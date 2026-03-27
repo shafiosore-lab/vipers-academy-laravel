@@ -297,6 +297,33 @@
                             </x-slot:footer>
                         </x-tournament-cards.action-card>
                     </div>
+
+                    <!-- Tournament Statistics -->
+                    <div class="col-md-3">
+                        <x-tournament-cards.action-card
+                            :title="'Tournament Statistics'"
+                            :subtitle="'Overview, groups, rankings'"
+                            :icon="'fa-chart-pie'"
+                            :color="'info'"
+                            :description="'View comprehensive tournament statistics and analysis'"
+                            :actions="[
+                                ['url' => route('admin.tournaments.statistics.index', $tournament->id), 'label' => 'Overview', 'icon' => 'fa-chart-bar', 'style' => 'info'],
+                                ['url' => route('admin.tournaments.statistics.groups', $tournament->id), 'label' => 'Groups', 'icon' => 'fa-layer-group', 'style' => 'warning']
+                            ]"
+                            :secondaryActions="[
+                                ['url' => route('admin.tournaments.statistics.rankings', $tournament->id), 'label' => 'Rankings', 'style' => 'primary'],
+                                ['url' => route('admin.tournaments.statistics.top-scorers', $tournament->id), 'label' => 'Top Scorers', 'style' => 'success'],
+                                ['url' => route('admin.tournaments.statistics.discipline', $tournament->id), 'label' => 'Discipline', 'style' => 'danger']
+                            ]"
+                            :badge="['color' => $totalGoals > 0 ? 'success' : 'secondary', 'text' => $totalGoals . ' goals scored']"
+                        >
+                            <x-slot:footer>
+                                <div class="text-end">
+                                    <span class="badge bg-light text-dark">{{ $tournament->matches()->where('status', 'completed')->count() }} matches completed</span>
+                                </div>
+                            </x-slot:footer>
+                        </x-tournament-cards.action-card>
+                    </div>
                 </div>
             </div>
         </div>

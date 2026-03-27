@@ -249,6 +249,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Tournament Standings
     Route::get('/tournaments/{tournament}/standings', [App\Http\Controllers\Admin\AdminTournamentController::class, 'standings'])->name('tournaments.standings.index');
 
+    // Tournament Statistics
+    Route::get('/tournaments/{tournament}/statistics', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'index'])->name('tournaments.statistics.index');
+    Route::get('/tournaments/{tournament}/statistics/top-scorers', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'topScorers'])->name('tournaments.statistics.top-scorers');
+    Route::get('/tournaments/{tournament}/statistics/discipline', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'discipline'])->name('tournaments.statistics.discipline');
+    Route::get('/tournaments/{tournament}/statistics/groups', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'groups'])->name('tournaments.statistics.groups');
+    Route::get('/tournaments/{tournament}/statistics/rankings', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'rankings'])->name('tournaments.statistics.rankings');
+    Route::get('/tournaments/{tournament}/statistics/summary', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'summary'])->name('tournaments.statistics.summary');
+
     // Tournament Teams
     Route::get('/tournaments/{tournament}/teams', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'index'])->name('tournaments.teams.index');
     Route::get('/tournaments/{tournament}/teams/create', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'create'])->name('tournaments.teams.create');
