@@ -4,203 +4,102 @@
 @section('meta_description', 'Celebrating the achievements and community impact of Vipers Academy\'s youth development programs.')
 
 @section('content')
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="text-center mb-5" data-aos="fade-up">
+        <h1 class="fw-bold mb-3">Our Achievements</h1>
+        <p class="text-muted mx-auto" style="max-width: 700px; font-size: 1.05rem;">
+            Celebrating the milestones and community impact of Vipers Academy's journey in developing youth through football, education, and digital skills.
+        </p>
+    </div>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Achievements - Vipers Academy</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: #f8f9fa;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .hero {
-            text-align: center;
-            padding: 40px 20px 30px;
-            margin-bottom: 50px;
-        }
-
-        .hero h1 {
-            font-size: 2.2em;
-            color: #1a1a1a;
-            margin-bottom: 12px;
-            font-weight: 700;
-        }
-
-        .hero p {
-            font-size: 1.05em;
-            color: #666;
-            max-width: 700px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
-
-        .achievements-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 50px;
-        }
-
-        .achievement-card {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-            transition: all 0.2s ease;
-        }
-
-        .achievement-card:hover {
-            border-color: #ea1c4d;
-            box-shadow: 0 4px 12px rgba(234, 28, 77, 0.1);
-        }
-
-        .achievement-icon {
-            font-size: 2.5em;
-            margin-bottom: 15px;
-        }
-
-        .achievement-card h3 {
-            font-size: 1.3em;
-            color: #1a1a1a;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .achievement-card p {
-            font-size: 0.95em;
-            color: #6b7280;
-            line-height: 1.5;
-        }
-
-        .stats-section {
-            background: white;
-            padding: 50px 30px;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-            text-align: center;
-        }
-
-        .stats-section h2 {
-            font-size: 1.8em;
-            color: #1a1a1a;
-            margin-bottom: 30px;
-            font-weight: 600;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .stat-card {
-            background: #ea1c4d;
-            padding: 25px 15px;
-            border-radius: 10px;
-            color: white;
-            transition: all 0.2s ease;
-        }
-
-        .stat-card:hover {
-            background: #c0173f;
-            transform: translateY(-2px);
-        }
-
-        .stat-number {
-            font-size: 2em;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 0.9em;
-            font-weight: 500;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <!-- Hero Section -->
-        <div class="hero">
-            <h1>Our Achievements</h1>
-            <p>Celebrating the milestones and community impact of Vipers Academy's journey in developing youth through football, education, and digital skills.</p>
-        </div>
-
-        <!-- Achievements Grid -->
-        <div class="achievements-grid">
-            <div class="achievement-card">
-                <div class="achievement-icon">🏆</div>
-                <h3>Professional Pathways Created</h3>
-                <p>Over 50 players have progressed to professional football clubs and national team selections through our community-based programs.</p>
-            </div>
-            <div class="achievement-card">
-                <div class="achievement-icon">🌍</div>
-                <h3>International Recognition</h3>
-                <p>Players representing Kenya at various international youth tournaments and competitions.</p>
-            </div>
-            <div class="achievement-card">
-                <div class="achievement-icon">📚</div>
-                <h3>Academic Excellence</h3>
-                <p>Maintaining high academic standards while pursuing football excellence, with 85% success rate among scholarship recipients.</p>
-            </div>
-            <div class="achievement-card">
-                <div class="achievement-icon">⚽</div>
-                <h3>Tournament Success</h3>
-                <p>Multiple championship wins in regional and national youth competitions, with 15+ tournament titles.</p>
-            </div>
-            <div class="achievement-card">
-                <div class="achievement-icon">🤝</div>
-                <h3>Community Impact</h3>
-                <p>Contributing to grassroots youth development through football, digital skills training, and mentorship programs.</p>
-            </div>
-            <div class="achievement-card">
-                <div class="achievement-icon">🎓</div>
-                <h3>Player Development</h3>
-                <p>Comprehensive development programs focusing on technical, tactical, academic, and digital skills.</p>
+    <!-- Achievements Grid -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
+                <div class="card-body p-4 text-center">
+                    <div class="mb-3" style="font-size: 2.5rem;">🏆</div>
+                    <h5 class="fw-bold mb-2">Professional Pathways Created</h5>
+                    <p class="text-muted mb-0">Over 50 players have progressed to professional football clubs and national team selections through our community-based programs.</p>
+                </div>
             </div>
         </div>
-
-        <!-- Stats Section -->
-        <div class="stats-section">
-            <h2>By the Numbers</h2>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number">500+</div>
-                    <div class="stat-label">Youth Empowered</div>
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
+                <div class="card-body p-4 text-center">
+                    <div class="mb-3" style="font-size: 2.5rem;">🌍</div>
+                    <h5 class="fw-bold mb-2">International Recognition</h5>
+                    <p class="text-muted mb-0">Players representing Kenya at various international youth tournaments and competitions.</p>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">50+</div>
-                    <div class="stat-label">Professional Pathways</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
+                <div class="card-body p-4 text-center">
+                    <div class="mb-3" style="font-size: 2.5rem;">📚</div>
+                    <h5 class="fw-bold mb-2">Academic Excellence</h5>
+                    <p class="text-muted mb-0">Maintaining high academic standards while pursuing football excellence, with 85% success rate among scholarship recipients.</p>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">10+</div>
-                    <div class="stat-label">Years of Community Impact</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
+                <div class="card-body p-4 text-center">
+                    <div class="mb-3" style="font-size: 2.5rem;">⚽</div>
+                    <h5 class="fw-bold mb-2">Tournament Success</h5>
+                    <p class="text-muted mb-0">Multiple championship wins in regional and national youth competitions, with 15+ tournament titles.</p>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">15+</div>
-                    <div class="stat-label">Tournament Championships</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
+                <div class="card-body p-4 text-center">
+                    <div class="mb-3" style="font-size: 2.5rem;">🤝</div>
+                    <h5 class="fw-bold mb-2">Community Impact</h5>
+                    <p class="text-muted mb-0">Contributing to grassroots youth development through football, digital skills training, and mentorship programs.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="card border-0 shadow-sm h-100" style="border-radius: 12px;">
+                <div class="card-body p-4 text-center">
+                    <div class="mb-3" style="font-size: 2.5rem;">🎓</div>
+                    <h5 class="fw-bold mb-2">Player Development</h5>
+                    <p class="text-muted mb-0">Comprehensive development programs focusing on technical, tactical, academic, and digital skills.</p>
                 </div>
             </div>
         </div>
     </div>
-</body>
-</html>
+
+    <!-- Stats Section -->
+    <div class="card border-0 shadow-sm p-5 text-center" data-aos="fade-up">
+        <h2 class="fw-bold mb-4">By the Numbers</h2>
+        <div class="row g-3 justify-content-center">
+            <div class="col-6 col-md-3">
+                <div class="p-4 rounded-3 text-white" style="background: var(--primary, #ea1c4d);">
+                    <div class="fw-bold" style="font-size: 2rem;">500+</div>
+                    <div class="fw-medium" style="font-size: 0.9rem;">Youth Empowered</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-4 rounded-3 text-white" style="background: var(--primary, #ea1c4d);">
+                    <div class="fw-bold" style="font-size: 2rem;">50+</div>
+                    <div class="fw-medium" style="font-size: 0.9rem;">Professional Pathways</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-4 rounded-3 text-white" style="background: var(--primary, #ea1c4d);">
+                    <div class="fw-bold" style="font-size: 2rem;">10+</div>
+                    <div class="fw-medium" style="font-size: 0.9rem;">Years of Impact</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="p-4 rounded-3 text-white" style="background: var(--primary, #ea1c4d);">
+                    <div class="fw-bold" style="font-size: 2rem;">15+</div>
+                    <div class="fw-medium" style="font-size: 0.9rem;">Championships</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection

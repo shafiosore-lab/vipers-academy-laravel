@@ -143,17 +143,6 @@
         h5 { font-size: clamp(1rem, 1.75vw, 1.125rem); margin-bottom: var(--space-xs); }
         h6 { font-size: clamp(0.875rem, 1.5vw, 1rem); margin-bottom: var(--space-xs); }
 
-        p, .text-muted, .small {
-            line-height: 1.5;
-            letter-spacing: 0.01em;
-            margin-bottom: var(--space-md);
-        }
-
-        .section-title, .card-title {
-            font-weight: 800;
-            letter-spacing: -0.025em;
-        }
-
         .nav-links a, .top-bar-content span {
             letter-spacing: 0.02em;
             font-weight: 600;

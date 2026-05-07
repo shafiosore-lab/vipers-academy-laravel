@@ -324,10 +324,6 @@
     }
 }
 
-/* Smooth Scrolling */
-html {
-    scroll-behavior: smooth;
-}
 </style>
 @endpush
 

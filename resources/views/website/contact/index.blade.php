@@ -345,13 +345,13 @@
 }
 
 /* Contact Info Items */
-.contact-form .info-item {
+.info-item {
     display: flex;
     gap: 1.25rem;
     margin-bottom: 1.875rem;
 }
 
-.contact-form .info-icon {
+.info-icon {
     width: 50px;
     height: 50px;
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
@@ -364,49 +364,49 @@
     flex-shrink: 0;
 }
 
-.contact-form .info-text h4 {
+.info-text h4 {
     font-size: 1.125rem;
     font-weight: 700;
     margin-bottom: 0.3125rem;
     color: var(--gray-900);
 }
 
-.contact-form .info-text p {
+.info-text p {
     color: var(--gray-600);
     margin: 0;
     line-height: 1.6;
 }
 
-.contact-form .info-text a {
+.info-text a {
     color: var(--primary);
     text-decoration: none;
     transition: color var(--transition-fast);
 }
 
-.contact-form .info-text a:hover {
+.info-text a:hover {
     color: var(--primary-dark);
 }
 
 /* Social Links */
-.contact-form .social-links {
+.social-links {
     margin-top: 2.5rem;
     padding-top: 1.875rem;
     border-top: 2px solid var(--gray-200);
 }
 
-.contact-form .social-links h4 {
+.social-links h4 {
     font-size: 1.125rem;
     font-weight: 700;
     margin-bottom: 0.9375rem;
     color: var(--gray-900);
 }
 
-.contact-form .social-icons {
+.social-icons {
     display: flex;
     gap: 0.625rem;
 }
 
-.contact-form .social-icons a {
+.social-icons a {
     width: 40px;
     height: 40px;
     background: var(--gray-200);
@@ -419,7 +419,7 @@
     transition: all var(--transition-fast);
 }
 
-.contact-form .social-icons a:hover {
+.social-icons a:hover {
     background: var(--primary);
     color: var(--white);
     transform: translateY(-3px);
