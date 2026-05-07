@@ -492,4 +492,69 @@ class TournamentPoolController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Team positions updated successfully.']);
     }
+
+    /**
+     * Perform reshuffle via AJAX (for Match Center modal).
+     */
+    public function performReshuffleAjax(Request $request, Tournament $tournament)
+    {
+        $sessionKey = 'tournament_' . $tournament->id . '_reshuffle_count';
+        $reshuffleCount = session($sessionKey, 0);
+        $maxReshuffles = 4;
+
+        if ($reshuffleCount >= $maxReshuffles) {
+            return response()->json([
+                'success' => false,
+                'error' => "Maximum reshuffle limit ({$maxReshuffles}) reached for this session."
+            ], 422);
+        }
+
+        $teams = $tournament->approvedTeams()->with('standing')->get();
+        $pools = $tournament->pools()->ordered()->get();
+
+        if ($teams->isEmpty() || $pools->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'error' => 'No teams or pools to shuffle.'
+            ], 422);
+        }
+
+        $numPools = $pools->count();
+        $method = 'random';
+        $hasSeeding = $teams->whereNotNull('seed_number')->isNotEmpty();
+        $hasPerformance = $teams->filter(function($team) {
+            return $team->standing && $team->standing->points > 0;
+        })->isNotEmpty();
+
+        if ($hasSeeding) {
+            $method = 'seeding';
+        } elseif ($hasPerformance && $request->input('use_performance', false)) {
+            $method = 'performance';
+        }
+
+        TournamentPool::redistributeTeams($tournament, $numPools, $method);
+
+        session([$sessionKey => $reshuffleCount + 1]);
+
+        return response()->json([
+            'success' => true,
+            'reshuffle_count' => $reshuffleCount + 1,
+            'max_reshuffles' => $maxReshuffles,
+            'message' => 'Teams reshuffled successfully!'
+        ]);
+    }
+
+    /**
+     * Reset reshuffle count via AJAX (for Match Center modal).
+     */
+    public function resetReshuffleCountAjax(Request $request, Tournament $tournament)
+    {
+        $sessionKey = 'tournament_' . $tournament->id . '_reshuffle_count';
+        session([$sessionKey => 0]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Reshuffle counter has been reset.'
+        ]);
+    }
 }

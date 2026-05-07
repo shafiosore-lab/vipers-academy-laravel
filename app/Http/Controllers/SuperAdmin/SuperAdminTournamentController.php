@@ -127,7 +127,7 @@ class SuperAdminTournamentController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('super-admin.tournaments.index', compact('tournaments', 'organizations'));
+        return view('admin.tournaments.index', compact('tournaments', 'organizations'));
     }
 
     /**
@@ -142,7 +142,7 @@ class SuperAdminTournamentController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('super-admin.tournaments.create', compact('organizations'));
+        return view('admin.tournaments.create', compact('organizations'));
     }
 
     /**
@@ -195,7 +195,7 @@ class SuperAdminTournamentController extends Controller
             'created_by' => Auth::id(),
         ]);
 
-        return redirect()->route('super-admin.tournaments.show', $tournament->id)
+        return redirect()->route('admin.tournaments.show', $tournament->id)
             ->with('success', 'Tournament created successfully.');
     }
 
@@ -227,7 +227,16 @@ class SuperAdminTournamentController extends Controller
             'completed_matches' => $tournament->matches()->where('status', 'completed')->count(),
         ];
 
-        return view('super-admin.tournaments.show', compact('tournament', 'stats'));
+        // Get approved teams
+        $approvedTeams = $tournament->teams()->approved()->with('team')->get();
+
+        // Get pending teams
+        $pendingTeams = $tournament->teams()->pending()->with('team')->get();
+
+        // Get standings
+        $standings = $tournament->standings()->with('team.team')->ordered()->get();
+
+        return view('admin.tournaments.show', compact('tournament', 'stats', 'approvedTeams', 'pendingTeams', 'standings'));
     }
 
     /**
@@ -242,7 +251,7 @@ class SuperAdminTournamentController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('super-admin.tournaments.edit', compact('tournament', 'organizations'));
+        return view('admin.tournaments.edit', compact('tournament', 'organizations'));
     }
 
     /**
@@ -277,7 +286,7 @@ class SuperAdminTournamentController extends Controller
 
         $tournament->update($request->all());
 
-        return redirect()->route('super-admin.tournaments.show', $tournament->id)
+        return redirect()->route('admin.tournaments.show', $tournament->id)
             ->with('success', 'Tournament updated successfully.');
     }
 
@@ -294,7 +303,7 @@ class SuperAdminTournamentController extends Controller
 
         $tournament->delete();
 
-        return redirect()->route('super-admin.tournaments.index')
+        return redirect()->route('admin.tournaments.index')
             ->with('success', 'Tournament deleted successfully.');
     }
 
@@ -334,7 +343,7 @@ class SuperAdminTournamentController extends Controller
         // Get country list
         $countries = \App\Models\Organization::COUNTRIES;
 
-        return view('super-admin.tournaments.teams',
+        return view('admin.tournaments.teams.index',
             compact('tournament', 'teams', 'availableTeams', 'locationFields', 'locationLevel', 'locationOptions', 'countries'));
     }
 
@@ -366,7 +375,7 @@ class SuperAdminTournamentController extends Controller
         // Get country list
         $countries = \App\Models\Organization::COUNTRIES;
 
-        return view('super-admin.tournaments.teams.create', compact('tournament', 'teams', 'locationFields', 'locationLevel', 'locationOptions', 'countries'));
+        return view('admin.tournaments.teams.create', compact('tournament', 'teams', 'locationFields', 'locationLevel', 'locationOptions', 'countries'));
     }
 
     /**
@@ -496,7 +505,7 @@ class SuperAdminTournamentController extends Controller
             }
         }
 
-        return redirect()->route('super-admin.tournaments.teams.index', $tournament->id)
+        return redirect()->route('admin.tournaments.teams.index', $tournament->id)
             ->with('success', $message);
     }
 
@@ -527,7 +536,7 @@ class SuperAdminTournamentController extends Controller
             }
         }
 
-        return redirect()->route('super-admin.tournaments.teams.index', $tournament->id)
+        return redirect()->route('admin.tournaments.teams.index', $tournament->id)
             ->with('success', $message);
     }
 
@@ -556,7 +565,7 @@ class SuperAdminTournamentController extends Controller
 
         $teams = $tournament->teams()->with('team')->get();
 
-        return view('super-admin.tournaments.players', compact('tournament', 'players', 'teams'));
+        return view('admin.tournaments.players', compact('tournament', 'players', 'teams'));
     }
 
     /**
@@ -621,7 +630,7 @@ class SuperAdminTournamentController extends Controller
             }
         }
 
-        return view('super-admin.tournaments.team-players', compact('tournament', 'team', 'groupedPlayers'));
+        return view('admin.tournaments.team-players', compact('tournament', 'team', 'groupedPlayers'));
     }
 
     /**
@@ -683,7 +692,7 @@ class SuperAdminTournamentController extends Controller
             ->orderBy('kickoff_time')
             ->paginate(20);
 
-        return view('super-admin.tournaments.matches', compact('tournament', 'matches'));
+        return view('admin.tournaments.matches.index', compact('tournament', 'matches'));
     }
 
     /**
@@ -693,7 +702,7 @@ class SuperAdminTournamentController extends Controller
     {
         $tournament->load(['standings.team.team', 'teams.team']);
 
-        return view('super-admin.tournaments.standings', compact('tournament'));
+        return view('admin.tournaments.standings', compact('tournament'));
     }
 
     /**
@@ -737,7 +746,7 @@ class SuperAdminTournamentController extends Controller
             ],
         ];
 
-        return view('super-admin.tournaments.statistics', compact('tournament', 'stats'));
+        return view('admin.tournaments.statistics.index', compact('tournament', 'stats'));
     }
 
     /**
@@ -879,8 +888,8 @@ class SuperAdminTournamentController extends Controller
         try {
             TournamentMatch::generateFixtures($tournament);
 
-            return redirect()->route('super-admin.tournaments.show', $tournament->id)
-                ->with('success', "Registration closed and {$approvedTeams} teams shuffled into fixtures!");
+        return redirect()->route('admin.tournaments.show', $tournament->id)
+            ->with('success', "Registration closed and {$approvedTeams} teams shuffled into fixtures!");
         } catch (\Exception $e) {
             // If fixture generation fails, reopen registration
             $tournament->update(['status' => Tournament::STATUS_OPEN]);
@@ -1536,5 +1545,180 @@ class SuperAdminTournamentController extends Controller
         } catch (\Exception $e) {
             return ['success' => false, 'data' => null, 'error' => $e->getMessage(), 'duplicate' => false];
         }
+    }
+
+    /**
+     * Check if team names already exist in the tournament (AJAX endpoint).
+     *
+     * @param Request $request
+     * @param Tournament $tournament
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function checkExistingTeams(Request $request, Tournament $tournament)
+    {
+        $teamNames = $request->input('team_names', []);
+
+        if (empty($teamNames)) {
+            return response()->json(['existing' => [], 'available' => []]);
+        }
+
+        // Get already registered team names for this tournament
+        $registeredTeamNames = $tournament->teams()
+            ->whereNotNull('team_name')
+            ->pluck('team_name')
+            ->map(function ($name) {
+                return strtolower(trim($name));
+            })
+            ->toArray();
+
+        $existing = [];
+        $available = [];
+
+        foreach ($teamNames as $teamName) {
+            $teamNameLower = strtolower(trim($teamName));
+            if (in_array($teamNameLower, $registeredTeamNames)) {
+                $existing[] = $teamName;
+            } else {
+                $available[] = $teamName;
+            }
+        }
+
+        return response()->json([
+            'existing' => $existing,
+            'available' => $available,
+        ]);
+    }
+
+    /**
+     * Bulk add teams to a tournament from a list of team names.
+     *
+     * @param Request $request
+     * @param Tournament $tournament
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function bulkAddTeams(Request $request, Tournament $tournament)
+    {
+        \Log::info('bulkAddTeams called', [
+            'tournament_id' => $tournament->id,
+            'user_id' => auth()->id()
+        ]);
+
+        $validator = Validator::make($request->all(), [
+            'team_names' => 'required|string',
+            'auto_approve' => 'nullable|boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $teamNamesInput = $request->input('team_names', '');
+        $autoApprove = $request->boolean('auto_approve', false);
+
+        // Parse team names from textarea (one per line)
+        $teamNames = array_filter(array_map('trim', explode("\n", $teamNamesInput)));
+
+        if (empty($teamNames)) {
+            return redirect()->back()
+                ->with('error', 'No team names provided.');
+        }
+
+        // Get already registered team names for this tournament
+        $registeredTeamNames = $tournament->teams()
+            ->whereNotNull('team_name')
+            ->pluck('team_name')
+            ->map(function ($name) {
+                return strtolower(trim($name));
+            })
+            ->toArray();
+
+        $insertData = [];
+        $successCount = 0;
+        $duplicateCount = 0;
+        $errorCount = 0;
+        $processedNames = [];
+
+        foreach ($teamNames as $teamName) {
+            $teamNameLower = strtolower(trim($teamName));
+
+            // Skip empty names
+            if (empty($teamName)) {
+                continue;
+            }
+
+            // Check for duplicates within the input
+            if (in_array($teamNameLower, $processedNames)) {
+                $duplicateCount++;
+                continue;
+            }
+
+            // Check if already registered in tournament
+            if (in_array($teamNameLower, $registeredTeamNames)) {
+                $duplicateCount++;
+                continue;
+            }
+
+            // Add to processed list
+            $processedNames[] = $teamNameLower;
+
+            // Create tournament team registration
+            $insertData[] = [
+                'tournament_id' => $tournament->id,
+                'team_id' => null,
+                'team_name' => trim($teamName),
+                'team_contact_name' => auth()->user()->name,
+                'team_contact_email' => auth()->user()->email,
+                'team_contact_phone' => auth()->user()->phone ?? '',
+                'approval_status' => $autoApprove ? TournamentTeam::STATUS_APPROVED : TournamentTeam::STATUS_PENDING,
+                'registration_date' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+
+            $successCount++;
+            $registeredTeamNames[] = $teamNameLower;
+        }
+
+        // Bulk insert teams
+        if (!empty($insertData)) {
+            TournamentTeam::insert($insertData);
+        }
+
+        \Log::info('bulkAddTeams completed', [
+            'success' => $successCount,
+            'duplicates' => $duplicateCount,
+            'errors' => $errorCount
+        ]);
+
+        // Build success message
+        $messageParts = [];
+        if ($successCount > 0) {
+            $messageParts[] = "{$successCount} team(s) added successfully";
+            if ($autoApprove) {
+                $messageParts[] = "all auto-approved";
+            }
+        }
+        if ($duplicateCount > 0) {
+            $messageParts[] = "{$duplicateCount} duplicate(s) skipped";
+        }
+
+        $message = implode(". ", $messageParts) . ".";
+
+        if (empty($messageParts)) {
+            $message = "No teams were added.";
+        }
+
+        // Check if tournament was closed (shuffled) and reopen for reshuffling
+        if ($successCount > 0 && $tournament->status === Tournament::STATUS_CLOSED && $tournament->matches()->count() > 0) {
+            $result = $tournament->reopenForReshuffle();
+            if ($result['reopened']) {
+                $message .= ' ' . $result['message'];
+            }
+        }
+
+        return redirect()->route('admin.tournaments.teams.index', $tournament->id)
+            ->with('success', $message);
     }
 }

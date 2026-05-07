@@ -270,6 +270,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/tournaments/{tournament}/teams/{team}/reject', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'reject'])->name('tournaments.teams.reject');
     Route::post('/tournaments/{tournament}/teams/{team}/request-correction', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'requestCorrection'])->name('tournaments.teams.request-correction');
     Route::post('/tournaments/{tournament}/teams/bulk-upload', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'bulkUploadTeams'])->name('tournaments.teams.bulk-upload');
+    Route::post('/tournaments/{tournament}/teams/bulk-add', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'bulkAddTeams'])->name('tournaments.teams.bulk-add');
+    Route::post('/tournaments/{tournament}/teams/check-existing', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'checkExistingTeams'])->name('tournaments.teams.check-existing');
     Route::get('/tournaments/teams/template', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'downloadTeamTemplate'])->name('tournaments.teams.template');
 
     // Tournament Squads
@@ -340,6 +342,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/tournaments/{tournament}/pools/reshuffle', [App\Http\Controllers\Admin\TournamentPoolController::class, 'performReshuffle'])->name('tournaments.pools.reshuffle.perform');
     Route::post('/tournaments/{tournament}/pools/reshuffle/reset', [App\Http\Controllers\Admin\TournamentPoolController::class, 'resetReshuffleCount'])->name('tournaments.pools.reshuffle.reset');
     Route::post('/tournaments/{tournament}/pools/update-positions', [App\Http\Controllers\Admin\TournamentPoolController::class, 'updateTeamPositions'])->name('tournaments.pools.update-positions');
+    // Match Center AJAX endpoints
+    Route::post('/tournaments/{tournament}/match-center/reshuffle', [App\Http\Controllers\Admin\TournamentPoolController::class, 'performReshuffleAjax'])->name('tournaments.match-center.reshuffle');
+    Route::post('/tournaments/{tournament}/match-center/reset-reshuffle', [App\Http\Controllers\Admin\TournamentPoolController::class, 'resetReshuffleCountAjax'])->name('tournaments.match-center.reset-reshuffle');
 
     // Tournament Venues
     Route::get('/tournaments/{tournament}/venues', [App\Http\Controllers\Admin\TournamentVenueController::class, 'index'])->name('tournaments.venues.index');
@@ -1033,6 +1038,8 @@ Route::middleware(['auth', 'super.admin'])->prefix('super-admin')->name('super-a
     Route::post('/tournaments/{tournament}/teams/{team}/reject', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'rejectTeam'])->name('tournaments.teams.reject');
     Route::get('/tournaments/teams/template', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'downloadTeamTemplate'])->name('tournaments.teams.template');
     Route::post('/tournaments/{tournament}/teams/bulk-upload', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'bulkUploadTeams'])->name('tournaments.teams.bulk-upload');
+    Route::post('/tournaments/{tournament}/teams/bulk-add', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'bulkAddTeams'])->name('tournaments.teams.bulk-add');
+    Route::post('/tournaments/{tournament}/teams/check-existing', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'checkExistingTeams'])->name('tournaments.teams.check-existing');
 
     // Tournament Players
     Route::get('/tournaments/{tournament}/players', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'players'])->name('tournaments.players.index');
@@ -1055,29 +1062,14 @@ Route::middleware(['auth', 'super.admin'])->prefix('super-admin')->name('super-a
     Route::get('/tournaments/{tournament}/statistics/summary', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'summary'])->name('tournaments.statistics.summary');
     Route::get('/tournaments/{tournament}/statistics/live', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'live'])->name('tournaments.statistics.live');
 
-    // Tournament Recalculate Standings
-    Route::post('/tournaments/{tournament}/recalculate-standings', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'recalculateStandings'])->name('tournaments.recalculate-standings');
-
-    // Tournament Statistics Routes (Admin)
-    Route::prefix('tournaments/{tournament}')->name('tournaments.')->group(function () {
-        Route::prefix('statistics')->name('statistics.')->group(function () {
-            Route::get('/', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'index'])->name('statistics.index');
-            Route::get('/top-scorers', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'topScorers'])->name('statistics.top-scorers');
-            Route::get('/discipline', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'discipline'])->name('statistics.discipline');
-            Route::get('/groups', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'groups'])->name('statistics.groups');
-            Route::get('/rankings', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'rankings'])->name('statistics.rankings');
-            Route::get('/summary', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'summary'])->name('statistics.summary');
-
-            // API endpoints for real-time updates
-            Route::get('/api/live', [App\Http\Controllers\Admin\TournamentStatisticsController::class, 'liveData'])->name('statistics.api.live');
-        });
-    });
-
     // Tournament Pool Reshuffle (FIFA-style)
     Route::get('/tournaments/{tournament}/pools/reshuffle', [App\Http\Controllers\Admin\TournamentPoolController::class, 'reshuffle'])->name('tournaments.pools.reshuffle');
     Route::post('/tournaments/{tournament}/pools/reshuffle', [App\Http\Controllers\Admin\TournamentPoolController::class, 'performReshuffle'])->name('tournaments.pools.reshuffle.perform');
     Route::post('/tournaments/{tournament}/pools/reshuffle/reset', [App\Http\Controllers\Admin\TournamentPoolController::class, 'resetReshuffleCount'])->name('tournaments.pools.reshuffle.reset');
     Route::post('/tournaments/{tournament}/pools/update-positions', [App\Http\Controllers\Admin\TournamentPoolController::class, 'updateTeamPositions'])->name('tournaments.pools.update-positions');
+    // Match Center AJAX endpoints (Super Admin)
+    Route::post('/tournaments/{tournament}/match-center/reshuffle', [App\Http\Controllers\Admin\TournamentPoolController::class, 'performReshuffleAjax'])->name('tournaments.match-center.reshuffle');
+    Route::post('/tournaments/{tournament}/match-center/reset-reshuffle', [App\Http\Controllers\Admin\TournamentPoolController::class, 'resetReshuffleCountAjax'])->name('tournaments.match-center.reset-reshuffle');
 
     // Tournament Fixtures
     Route::post('/tournaments/{tournament}/generate-fixtures', [App\Http\Controllers\SuperAdmin\SuperAdminTournamentController::class, 'generateFixtures'])->name('tournaments.generate-fixtures');
@@ -1165,6 +1157,8 @@ Route::middleware(['auth', 'role:org-admin|super-admin'])->prefix('organization'
     Route::post('/tournaments/{tournament}/teams/{team}/reject', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'reject'])->name('tournaments.teams.reject');
     Route::post('/tournaments/{tournament}/teams/{team}/request-correction', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'requestCorrection'])->name('tournaments.teams.request-correction');
     Route::post('/tournaments/{tournament}/teams/bulk-upload', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'bulkUploadTeams'])->name('tournaments.teams.bulk-upload');
+    Route::post('/tournaments/{tournament}/teams/bulk-add', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'bulkAddTeams'])->name('tournaments.teams.bulk-add');
+    Route::post('/tournaments/{tournament}/teams/check-existing', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'checkExistingTeams'])->name('tournaments.teams.check-existing');
     Route::get('/tournaments/teams/template', [App\Http\Controllers\Admin\AdminTournamentTeamController::class, 'downloadTeamTemplate'])->name('tournaments.teams.template');
 
     // Tournament Squads
@@ -1190,12 +1184,6 @@ Route::middleware(['auth', 'role:org-admin|super-admin'])->prefix('organization'
     Route::get('/tournaments/{tournament}/pools', [App\Http\Controllers\Admin\TournamentPoolController::class, 'index'])->name('tournaments.pools.index');
     Route::get('/tournaments/{tournament}/pools/create', [App\Http\Controllers\Admin\TournamentPoolController::class, 'create'])->name('tournaments.pools.create');
     Route::post('/tournaments/{tournament}/pools', [App\Http\Controllers\Admin\TournamentPoolController::class, 'store'])->name('tournaments.pools.store');
-
-    // Tournament Pool Reshuffle (FIFA-style)
-    Route::get('/tournaments/{tournament}/pools/reshuffle', [App\Http\Controllers\Admin\TournamentPoolController::class, 'reshuffle'])->name('tournaments.pools.reshuffle');
-    Route::post('/tournaments/{tournament}/pools/reshuffle', [App\Http\Controllers\Admin\TournamentPoolController::class, 'performReshuffle'])->name('tournaments.pools.reshuffle.perform');
-    Route::post('/tournaments/{tournament}/pools/reshuffle/reset', [App\Http\Controllers\Admin\TournamentPoolController::class, 'resetReshuffleCount'])->name('tournaments.pools.reshuffle.reset');
-    Route::post('/tournaments/{tournament}/pools/update-positions', [App\Http\Controllers\Admin\TournamentPoolController::class, 'updateTeamPositions'])->name('tournaments.pools.update-positions');
 
     // Attendance Management
     Route::get('/attendance', [App\Http\Controllers\Admin\AdminAttendanceController::class, 'index'])->name('attendance.index');

@@ -177,11 +177,11 @@ class PageContentSeeder extends Seeder
         // Hero Section
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'hero', 'key' => 'title'],
-            ['value' => 'About Mumias Vipers Academy', 'type' => 'text', 'sort_order' => 1, 'is_active' => true]
+            ['value' => 'About Mumias Vipers Football Academy', 'type' => 'text', 'sort_order' => 1, 'is_active' => true]
         );
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'hero', 'key' => 'subtitle'],
-            ['value' => 'Transforming Lives Through Football & Education', 'type' => 'text', 'sort_order' => 2, 'is_active' => true]
+            ['value' => 'A 100% FREE Not-for-Profit Youth Development Initiative Combining Sports, STEM & Education', 'type' => 'text', 'sort_order' => 2, 'is_active' => true]
         );
 
         // Story Section
@@ -191,7 +191,7 @@ class PageContentSeeder extends Seeder
         );
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'story', 'key' => 'content'],
-            ['value' => 'Founded in 2016, Mumias Vipers Academy is a community-based youth development organization using football to nurture talent, discipline, and education. We have grown to become one of the most respected youth football academies in the region, with over 20 players currently on high school sports scholarships.', 'type' => 'textarea', 'sort_order' => 2, 'is_active' => true]
+            ['value' => 'Founded in 2016, Mumias Vipers Football Academy is a community-based youth development initiative that uses football as a catalyst for holistic development. We provide 100% FREE programs in football, STEM education (powered by E.N.G.I.N.E USA), academic support, and life skills to empower underserved youth in Kenya. Our ESG-aligned model focuses on social impact, education access, and youth empowerment without any fees or costs to participants.', 'type' => 'textarea', 'sort_order' => 2, 'is_active' => true]
         );
 
         // Mission Section
@@ -201,7 +201,7 @@ class PageContentSeeder extends Seeder
         );
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'mission', 'key' => 'content'],
-            ['value' => 'To identify, nurture and develop young talent through structured football training and mentorship, while promoting education and positive life skills that transform lives and build stronger communities.', 'type' => 'textarea', 'sort_order' => 2, 'is_active' => true]
+            ['value' => 'To empower underserved youth through 100% FREE integrated programs in sports, STEM, and education that foster talent development, discipline, leadership, and academic excellence while creating safe, inclusive spaces for holistic growth.', 'type' => 'textarea', 'sort_order' => 2, 'is_active' => true]
         );
 
         // Vision Section
@@ -211,35 +211,39 @@ class PageContentSeeder extends Seeder
         );
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'vision', 'key' => 'content'],
-            ['value' => 'To be the leading youth football academy in Kenya, producing not only skilled footballers but also educated, disciplined, and responsible citizens who contribute positively to society.', 'type' => 'textarea', 'sort_order' => 2, 'is_active' => true]
+            ['value' => "To be Kenya's leading ESG-aligned youth development initiative that transforms lives through accessible sports, STEM, and education programs, creating pathways to opportunity for underserved communities while promoting gender equality and sustainable community impact.", 'type' => 'textarea', 'sort_order' => 2, 'is_active' => true]
         );
 
-        // Core Values
+        // Core Values - ESG Aligned
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'values', 'key' => 'title'],
-            ['value' => 'Our Core Values', 'type' => 'text', 'sort_order' => 1, 'is_active' => true]
+            ['value' => 'Our ESG-Aligned Core Values', 'type' => 'text', 'sort_order' => 1, 'is_active' => true]
         );
         PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'values', 'key' => 'discipline'],
-            ['value' => json_encode(['icon' => '🎯', 'title' => 'Discipline', 'description' => 'We instill discipline as the foundation of success both on and off the pitch.']), 'type' => 'json', 'sort_order' => 2, 'is_active' => true]
+            ['page' => $page, 'section' => 'values', 'key' => 'social_impact'],
+            ['value' => json_encode(['icon' => '💙', 'title' => 'Social Impact', 'description' => 'Creating measurable positive change in underserved communities through youth empowerment and education access.']), 'type' => 'json', 'sort_order' => 2, 'is_active' => true]
         );
         PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'values', 'key' => 'respect'],
-            ['value' => json_encode(['icon' => '🤝', 'title' => 'Respect', 'description' => 'We teach respect for teammates, coaches, opponents, and the community.']), 'type' => 'json', 'sort_order' => 3, 'is_active' => true]
+            ['page' => $page, 'section' => 'values', 'key' => 'education_access'],
+            ['value' => json_encode(['icon' => '📚', 'title' => 'Education Access', 'description' => 'Ensuring every child has access to quality education and learning opportunities regardless of background.']), 'type' => 'json', 'sort_order' => 3, 'is_active' => true]
         );
         PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'values', 'key' => 'education'],
-            ['value' => json_encode(['icon' => '📚', 'title' => 'Education First', 'description' => 'We prioritize academic excellence alongside football development.']), 'type' => 'json', 'sort_order' => 4, 'is_active' => true]
+            ['page' => $page, 'section' => 'values', 'key' => 'youth_empowerment'],
+            ['value' => json_encode(['icon' => '🚀', 'title' => 'Youth Empowerment', 'description' => 'Fostering leadership, confidence, and life skills that enable youth to become agents of change in their communities.']), 'type' => 'json', 'sort_order' => 4, 'is_active' => true]
         );
         PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'values', 'key' => 'teamwork'],
-            ['value' => json_encode(['icon' => '⚽', 'title' => 'Teamwork', 'description' => 'We believe success comes through collective effort and supporting each other.']), 'type' => 'json', 'sort_order' => 5, 'is_active' => true]
+            ['page' => $page, 'section' => 'values', 'key' => 'inclusion_equality'],
+            ['value' => json_encode(['icon' => '🤝', 'title' => 'Inclusion & Equality', 'description' => 'Promoting gender equality and equal access to sports and STEM opportunities for all youth, especially girls.']), 'type' => 'json', 'sort_order' => 5, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'values', 'key' => 'sustainable_growth'],
+            ['value' => json_encode(['icon' => '🌱', 'title' => 'Sustainable Growth', 'description' => 'Building structured, governed programs that create lasting impact and can scale to benefit more communities over time.']), 'type' => 'json', 'sort_order' => 6, 'is_active' => true]
         );
 
-        // Impact Stats
+        // Impact Stats - Updated for ESG focus
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'stats', 'key' => 'title'],
-            ['value' => 'Our Impact', 'type' => 'text', 'sort_order' => 1, 'is_active' => true]
+            ['value' => 'Our ESG Impact', 'type' => 'text', 'sort_order' => 1, 'is_active' => true]
         );
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'stats', 'key' => 'stat_1_value'],
@@ -255,7 +259,7 @@ class PageContentSeeder extends Seeder
         );
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'stats', 'key' => 'stat_2_label'],
-            ['value' => 'Players Trained', 'type' => 'text', 'sort_order' => 5, 'is_active' => true]
+            ['value' => 'Youth Empowered', 'type' => 'text', 'sort_order' => 5, 'is_active' => true]
         );
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'stats', 'key' => 'stat_3_value'],
@@ -263,7 +267,15 @@ class PageContentSeeder extends Seeder
         );
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'stats', 'key' => 'stat_3_label'],
-            ['value' => 'Coach Network', 'type' => 'text', 'sort_order' => 7, 'is_active' => true]
+            ['value' => 'Girls Participating', 'type' => 'text', 'sort_order' => 7, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'stats', 'key' => 'stat_4_value'],
+            ['value' => '100%', 'type' => 'text', 'sort_order' => 8, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'stats', 'key' => 'stat_4_label'],
+            ['value' => 'Programs FREE of Charge', 'type' => 'text', 'sort_order' => 9, 'is_active' => true]
         );
     }
 
@@ -274,105 +286,165 @@ class PageContentSeeder extends Seeder
         // Hero Section
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'hero', 'key' => 'title'],
-            ['value' => 'Our Programs', 'type' => 'text', 'sort_order' => 1, 'is_active' => true]
+            ['value' => 'Our ESG-Aligned Programs', 'type' => 'text', 'sort_order' => 1, 'is_active' => true]
         );
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'hero', 'key' => 'subtitle'],
-            ['value' => 'Football | Academics | Technology', 'type' => 'text', 'sort_order' => 2, 'is_active' => true]
+            ['value' => 'Sports | STEM | Education | Mentorship | Empowerment', 'type' => 'text', 'sort_order' => 2, 'is_active' => true]
         );
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'hero', 'key' => 'description'],
-            ['value' => 'Choose from our comprehensive range of development programs', 'type' => 'text', 'sort_order' => 3, 'is_active' => true]
+            ['value' => 'All programs are 100% FREE - Empowering youth through integrated sports, STEM, and education initiatives', 'type' => 'text', 'sort_order' => 3, 'is_active' => true]
         );
 
-        // Football Training Program
+        // Sports for Development Program
         PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'football', 'key' => 'title'],
-            ['value' => 'Football Training', 'type' => 'text', 'sort_order' => 1, 'is_active' => true]
+            ['page' => $page, 'section' => 'sports_development', 'key' => 'title'],
+            ['value' => 'Sports for Development Program', 'type' => 'text', 'sort_order' => 1, 'is_active' => true]
         );
         PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'football', 'key' => 'subtitle'],
-            ['value' => 'Professional Skills Development', 'type' => 'text', 'sort_order' => 2, 'is_active' => true]
+            ['page' => $page, 'section' => 'sports_development', 'key' => 'subtitle'],
+            ['value' => 'Football Training & Life Skills', 'type' => 'text', 'sort_order' => 2, 'is_active' => true]
         );
         PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'football', 'key' => 'feature_1'],
-            ['value' => 'Weekend training sessions', 'type' => 'text', 'sort_order' => 3, 'is_active' => true]
+            ['page' => $page, 'section' => 'sports_development', 'key' => 'feature_1'],
+            ['value' => 'Professional football training', 'type' => 'text', 'sort_order' => 3, 'is_active' => true]
         );
         PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'football', 'key' => 'feature_2'],
-            ['value' => 'Theory & tactical classes', 'type' => 'text', 'sort_order' => 4, 'is_active' => true]
+            ['page' => $page, 'section' => 'sports_development', 'key' => 'feature_2'],
+            ['value' => 'Discipline, teamwork & leadership development', 'type' => 'text', 'sort_order' => 4, 'is_active' => true]
         );
         PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'football', 'key' => 'feature_3'],
-            ['value' => 'Age-appropriate groups', 'type' => 'text', 'sort_order' => 5, 'is_active' => true]
+            ['page' => $page, 'section' => 'sports_development', 'key' => 'feature_3'],
+            ['value' => 'Talent identification & scholarship pathways', 'type' => 'text', 'sort_order' => 5, 'is_active' => true]
         );
         PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'football', 'key' => 'feature_4'],
-            ['value' => 'Tournament participation', 'type' => 'text', 'sort_order' => 6, 'is_active' => true]
+            ['page' => $page, 'section' => 'sports_development', 'key' => 'feature_4'],
+            ['value' => 'Age-appropriate groups & tournament participation', 'type' => 'text', 'sort_order' => 6, 'is_active' => true]
         );
         PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'football', 'key' => 'cta'],
-            ['value' => 'Weekend Programs', 'type' => 'text', 'sort_order' => 7, 'is_active' => true]
-        );
-
-        // Academic Mentorship Program
-        PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'academic', 'key' => 'title'],
-            ['value' => 'Academic Mentorship', 'type' => 'text', 'sort_order' => 1, 'is_active' => true]
-        );
-        PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'academic', 'key' => 'subtitle'],
-            ['value' => 'CBC-Aligned Support', 'type' => 'text', 'sort_order' => 2, 'is_active' => true]
-        );
-        PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'academic', 'key' => 'feature_1'],
-            ['value' => 'Study discipline coaching', 'type' => 'text', 'sort_order' => 3, 'is_active' => true]
-        );
-        PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'academic', 'key' => 'feature_2'],
-            ['value' => 'CBC homework support', 'type' => 'text', 'sort_order' => 4, 'is_active' => true]
-        );
-        PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'academic', 'key' => 'feature_3'],
-            ['value' => 'Life-skills mentorship', 'type' => 'text', 'sort_order' => 5, 'is_active' => true]
-        );
-        PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'academic', 'key' => 'feature_4'],
-            ['value' => 'Behavior tracking system', 'type' => 'text', 'sort_order' => 6, 'is_active' => true]
-        );
-        PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'academic', 'key' => 'cta'],
-            ['value' => 'Study Support', 'type' => 'text', 'sort_order' => 7, 'is_active' => true]
+            ['page' => $page, 'section' => 'sports_development', 'key' => 'cta'],
+            ['value' => 'Join Free Training', 'type' => 'text', 'sort_order' => 7, 'is_active' => true]
         );
 
-        // Digital Skills Program
+        // STEM & Digital Skills Program (Powered by E.N.G.I.N.E USA)
         PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'digital', 'key' => 'title'],
-            ['value' => 'Digital Skills', 'type' => 'text', 'sort_order' => 1, 'is_active' => true]
+            ['page' => $page, 'section' => 'stem_digital', 'key' => 'title'],
+            ['value' => 'STEM & Digital Skills Program', 'type' => 'text', 'sort_order' => 8, 'is_active' => true]
         );
         PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'digital', 'key' => 'subtitle'],
-            ['value' => 'Technology Integration', 'type' => 'text', 'sort_order' => 2, 'is_active' => true]
+            ['page' => $page, 'section' => 'stem_digital', 'key' => 'subtitle'],
+            ['value' => 'Powered by E.N.G.I.N.E USA', 'type' => 'text', 'sort_order' => 9, 'is_active' => true]
         );
         PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'digital', 'key' => 'feature_1'],
-            ['value' => 'Computer basics training', 'type' => 'text', 'sort_order' => 3, 'is_active' => true]
+            ['page' => $page, 'section' => 'stem_digital', 'key' => 'feature_1'],
+            ['value' => 'Coding basics & programming fundamentals', 'type' => 'text', 'sort_order' => 10, 'is_active' => true]
         );
         PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'digital', 'key' => 'feature_2'],
-            ['value' => 'Introduction to coding', 'type' => 'text', 'sort_order' => 4, 'is_active' => true]
+            ['page' => $page, 'section' => 'stem_digital', 'key' => 'feature_2'],
+            ['value' => 'Digital literacy & computer skills', 'type' => 'text', 'sort_order' => 11, 'is_active' => true]
         );
         PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'digital', 'key' => 'feature_3'],
-            ['value' => 'Digital safety education', 'type' => 'text', 'sort_order' => 5, 'is_active' => true]
+            ['page' => $page, 'section' => 'stem_digital', 'key' => 'feature_3'],
+            ['value' => 'Innovation & problem-solving workshops', 'type' => 'text', 'sort_order' => 12, 'is_active' => true]
         );
         PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'digital', 'key' => 'feature_4'],
-            ['value' => 'Creative tech projects', 'type' => 'text', 'sort_order' => 6, 'is_active' => true]
+            ['page' => $page, 'section' => 'stem_digital', 'key' => 'feature_4'],
+            ['value' => 'Bridging the digital divide in underserved communities', 'type' => 'text', 'sort_order' => 13, 'is_active' => true]
         );
         PageContent::updateOrCreate(
-            ['page' => $page, 'section' => 'digital', 'key' => 'cta'],
-            ['value' => 'Computer Lab Access', 'type' => 'text', 'sort_order' => 7, 'is_active' => true]
+            ['page' => $page, 'section' => 'stem_digital', 'key' => 'cta'],
+            ['value' => 'Learn Digital Skills Free', 'type' => 'text', 'sort_order' => 14, 'is_active' => true]
+        );
+
+        // Youth Mentorship & Mental Wellbeing Program
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'mentorship', 'key' => 'title'],
+            ['value' => 'Youth Mentorship & Mental Wellbeing Program', 'type' => 'text', 'sort_order' => 15, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'mentorship', 'key' => 'subtitle'],
+            ['value' => 'Life Skills & Emotional Support', 'type' => 'text', 'sort_order' => 16, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'mentorship', 'key' => 'feature_1'],
+            ['value' => 'Structured mentorship sessions', 'type' => 'text', 'sort_order' => 17, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'mentorship', 'key' => 'feature_2'],
+            ['value' => 'Life skills development workshops', 'type' => 'text', 'sort_order' => 18, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'mentorship', 'key' => 'feature_3'],
+            ['value' => 'Mental health awareness & support', 'type' => 'text', 'sort_order' => 19, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'mentorship', 'key' => 'feature_4'],
+            ['value' => 'Safe youth development spaces & counseling', 'type' => 'text', 'sort_order' => 20, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'mentorship', 'key' => 'cta'],
+            ['value' => 'Join Mentorship Program', 'type' => 'text', 'sort_order' => 21, 'is_active' => true]
+        );
+
+        // Academic & Exposure Program
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'academic_exposure', 'key' => 'title'],
+            ['value' => 'Academic & Exposure Program', 'type' => 'text', 'sort_order' => 22, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'academic_exposure', 'key' => 'subtitle'],
+            ['value' => 'Education Support & Career Pathways', 'type' => 'text', 'sort_order' => 23, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'academic_exposure', 'key' => 'feature_1'],
+            ['value' => 'Academic guidance & tutoring support', 'type' => 'text', 'sort_order' => 24, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'academic_exposure', 'key' => 'feature_2'],
+            ['value' => 'University & college exposure visits', 'type' => 'text', 'sort_order' => 25, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'academic_exposure', 'key' => 'feature_3'],
+            ['value' => 'Career awareness & job readiness training', 'type' => 'text', 'sort_order' => 26, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'academic_exposure', 'key' => 'feature_4'],
+            ['value' => 'Study skills development & exam preparation', 'type' => 'text', 'sort_order' => 27, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'academic_exposure', 'key' => 'cta'],
+            ['value' => 'Access Academic Support', 'type' => 'text', 'sort_order' => 28, 'is_active' => true]
+        );
+
+        // Girls Empowerment Program
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'girls_empowerment', 'key' => 'title'],
+            ['value' => 'Girls Empowerment Program', 'type' => 'text', 'sort_order' => 29, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'girls_empowerment', 'key' => 'subtitle'],
+            ['value' => 'Equal Access & Leadership Development', 'type' => 'text', 'sort_order' => 30, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'girls_empowerment', 'key' => 'feature_1'],
+            ['value' => 'Equal access to sports & STEM opportunities', 'type' => 'text', 'sort_order' => 31, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'girls_empowerment', 'key' => 'feature_2'],
+            ['value' => 'Girls-only training sessions & mentorship', 'type' => 'text', 'sort_order' => 32, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'girls_empowerment', 'key' => 'feature_3'],
+            ['value' => 'Leadership development & confidence building', 'type' => 'text', 'sort_order' => 33, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'girls_empowerment', 'key' => 'feature_4'],
+            ['value' => 'Safe spaces & female role models', 'type' => 'text', 'sort_order' => 34, 'is_active' => true]
+        );
+        PageContent::updateOrCreate(
+            ['page' => $page, 'section' => 'girls_empowerment', 'key' => 'cta'],
+            ['value' => 'Join Girls Empowerment', 'type' => 'text', 'sort_order' => 35, 'is_active' => true]
         );
     }
 

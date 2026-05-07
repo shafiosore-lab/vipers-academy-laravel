@@ -1,6 +1,6 @@
 @extends('layouts.academy')
 
-@section('title', 'Programs - Vipers Academy')
+@section('title', 'Youth Development Programs - Mumias Vipers Football Academy')
 
 @section('content')
 
@@ -21,19 +21,15 @@
                         <h3 class="program-title">{{ $program->title }}</h3>
 
                         <div class="program-details">
-                            <div class="detail-item">
-                                <i class="fas fa-dollar-sign"></i>
-                                <span>{{ $program->fee_display ?? 'Contact for pricing' }}</span>
-                            </div>
-                            <div class="detail-item">
-                                <i class="fas fa-calendar"></i>
-                                <span>{{ $program->schedule_display ?? $program->duration ?? 'Flexible' }}</span>
-                            </div>
-                            <div class="detail-item">
-                                <i class="fas fa-users"></i>
-                                <span>{{ $program->age_range ?? $program->age_group ?? 'All Ages' }}</span>
-                            </div>
-                        </div>
+                             <div class="detail-item">
+                                 <i class="fas fa-clock"></i>
+                                 <span>{{ $program->schedule_display ?? $program->duration ?? 'Flexible' }}</span>
+                             </div>
+                             <div class="detail-item">
+                                 <i class="fas fa-users"></i>
+                                 <span>{{ $program->age_range ?? $program->age_group ?? 'All Ages' }}</span>
+                             </div>
+                         </div>
 
                         <p class="program-description">
                             {{ $program->description }}
@@ -80,15 +76,15 @@
                             <hr>
 
                             <div class="row">
-                                <div class="col-md-6">
-                                    <h6><i class="fas fa-dollar-sign me-2"></i>Fee</h6>
-                                    <p>{{ $program->fee_display ?? 'KSH ' . number_format($program->regular_fee ?? 0, 0) }}</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <h6><i class="fas fa-clock me-2"></i>Duration</h6>
-                                    <p>{{ $program->duration ?? 'Flexible' }}</p>
-                                </div>
-                            </div>
+                                 <div class="col-md-6">
+                                     <h6><i class="fas fa-check-circle me-2"></i>Cost</h6>
+                                     <p>No participant fees — community-supported program</p>
+                                 </div>
+                                 <div class="col-md-6">
+                                     <h6><i class="fas fa-clock me-2"></i>Duration</h6>
+                                     <p>{{ $program->duration ?? 'Flexible' }}</p>
+                                 </div>
+                             </div>
 
                             <div class="row mt-3">
                                 <div class="col-md-6">
@@ -374,4 +370,3 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endpush
-

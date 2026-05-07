@@ -10,10 +10,10 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="text-center mb-4">
-                            <span class="badge bg-primary fs-6 mb-2">Fee: KSH 500/month</span><br>
-                            <span class="badge bg-secondary fs-6 mb-2">Full Year Duration</span><br>
-                            <span class="badge bg-info fs-6">Ages: 6–18 years</span>
-                        </div>
+                             <span class="badge bg-success fs-6 mb-2">100% FREE</span><br>
+                             <span class="badge bg-secondary fs-6 mb-2">Full Year Duration</span><br>
+                             <span class="badge bg-info fs-6">Ages: 6–18 years</span>
+                         </div>
                     </div>
                     <div class="col-md-8">
                         <h6 class="fw-bold text-primary">Program Overview</h6>
@@ -94,16 +94,16 @@
                 </div>
 
                 <div class="alert alert-success mt-4">
-                    <h6 class="fw-bold">Why Parents Choose This Program</h6>
-                    <ul class="mb-0">
-                        <li>Extremely affordable (KSH 500 per month)</li>
-                        <li>Covers both education and sports</li>
-                        <li>Safe environment</li>
-                        <li>Develops discipline, confidence, and social skills</li>
-                        <li>Supports CBC and improves academic focus</li>
-                        <li>Builds strong physical, mental & digital foundations</li>
-                    </ul>
-                </div>
+                     <h6 class="fw-bold">Why Parents Choose This Program</h6>
+                     <ul class="mb-0">
+                         <li>100% FREE - no costs or fees</li>
+                         <li>Covers both education and sports</li>
+                         <li>Safe environment</li>
+                         <li>Develops discipline, confidence, and social skills</li>
+                         <li>Supports CBC and improves academic focus</li>
+                         <li>Builds strong physical, mental & digital foundations</li>
+                     </ul>
+                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

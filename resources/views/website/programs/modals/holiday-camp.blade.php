@@ -10,10 +10,10 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="text-center mb-4">
-                            <span class="badge bg-warning fs-6 mb-2">Fee: KSH 5,000/holiday</span><br>
-                            <span class="badge bg-secondary fs-6 mb-2">April/August/December</span><br>
-                            <span class="badge bg-info fs-6">Ages: 7–17 years</span>
-                        </div>
+                             <span class="badge bg-success fs-6 mb-2">100% FREE</span><br>
+                             <span class="badge bg-secondary fs-6 mb-2">April/August/December</span><br>
+                             <span class="badge bg-info fs-6">Ages: 7–17 years</span>
+                         </div>
                     </div>
                     <div class="col-md-8">
                         <h6 class="fw-bold text-warning">Program Overview</h6>
@@ -89,17 +89,18 @@
                 </div>
 
                 <div class="alert alert-warning mt-4">
-                    <h6 class="fw-bold">Why Parents Love This Program</h6>
-                    <ul class="mb-0">
-                        <li>Keeps children productive</li>
-                        <li>Blends fun, education & discipline</li>
-                        <li>Safe and well-supervised</li>
-                        <li>Builds strong football and academic foundations</li>
-                        <li>Introduces computer skills early</li>
-                        <li>Helps shy children build confidence</li>
-                        <li>Reduces negative peer influence during holidays</li>
-                    </ul>
-                </div>
+                     <h6 class="fw-bold">Why Parents Love This Program</h6>
+                     <ul class="mb-0">
+                         <li>100% FREE - no costs or fees</li>
+                         <li>Keeps children productive</li>
+                         <li>Blends fun, education & discipline</li>
+                         <li>Safe and well-supervised</li>
+                         <li>Builds strong football and academic foundations</li>
+                         <li>Introduces computer skills early</li>
+                         <li>Helps shy children build confidence</li>
+                         <li>Reduces negative peer influence during holidays</li>
+                     </ul>
+                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

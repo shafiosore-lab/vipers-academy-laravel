@@ -10,10 +10,10 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="text-center mb-4">
-                            <span class="badge bg-success fs-6 mb-2">Fee: KSH 3,500/month</span><br>
-                            <span class="badge bg-secondary fs-6 mb-2">Flexible Schedule</span><br>
-                            <span class="badge bg-info fs-6">Ages: 7–18 years</span>
-                        </div>
+                             <span class="badge bg-success fs-6 mb-2">100% FREE</span><br>
+                             <span class="badge bg-secondary fs-6 mb-2">Flexible Schedule</span><br>
+                             <span class="badge bg-info fs-6">Ages: 7–18 years</span>
+                         </div>
                     </div>
                     <div class="col-md-8">
                         <h6 class="fw-bold text-success">Program Overview</h6>
@@ -85,16 +85,17 @@
                 </div>
 
                 <div class="alert alert-success mt-4">
-                    <h6 class="fw-bold">How This Program Supports Their Future</h6>
-                    <ul class="mb-0">
-                        <li>Builds digital confidence</li>
-                        <li>Introduces STEM early</li>
-                        <li>Supports schoolwork & CBC requirements</li>
-                        <li>Prepares them for high-school computer studies</li>
-                        <li>Sparks interest in tech careers</li>
-                        <li>Makes learning fun and practical</li>
-                    </ul>
-                </div>
+                     <h6 class="fw-bold">How This Program Supports Their Future</h6>
+                     <ul class="mb-0">
+                         <li>100% FREE - no costs or fees</li>
+                         <li>Builds digital confidence</li>
+                         <li>Introduces STEM early</li>
+                         <li>Supports schoolwork & CBC requirements</li>
+                         <li>Prepares them for high-school computer studies</li>
+                         <li>Sparks interest in tech careers</li>
+                         <li>Makes learning fun and practical</li>
+                     </ul>
+                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

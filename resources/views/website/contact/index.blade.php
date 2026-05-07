@@ -164,26 +164,26 @@
                 <div class="col-lg-8">
                     <div class="faq-list">
                         <div class="faq-item">
-                            <button class="faq-question" onclick="toggleFAQ(this)">
-                                <span>How do I enroll my child?</span>
-                                <i class="fas fa-plus"></i>
-                            </button>
-                            <div class="faq-answer">
-                                <p>Visit our registration page, complete the online form, and our team will contact you
-                                    within 24 hours to schedule a trial session at our Mumias facility.</p>
-                            </div>
-                        </div>
+                             <button class="faq-question" onclick="toggleFAQ(this)">
+                                 <span>How do I enroll my child?</span>
+                                 <i class="fas fa-plus"></i>
+                             </button>
+                             <div class="faq-answer">
+                                 <p>Visit our registration page, complete the online form, and our team will contact you
+                                     within 24 hours to schedule a trial session at our Mumias facility. The academy uses football as a platform for youth empowerment in digital skills, education, and life skills development.</p>
+                             </div>
+                         </div>
 
                         <div class="faq-item">
-                            <button class="faq-question" onclick="toggleFAQ(this)">
-                                <span>What age groups do you accept?</span>
-                                <i class="fas fa-plus"></i>
-                            </button>
-                            <div class="faq-answer">
-                                <p>We accept players from age 5 to 14 years old. Our programs are designed for different
-                                    skill levels and age groups.</p>
-                            </div>
-                        </div>
+                             <button class="faq-question" onclick="toggleFAQ(this)">
+                                 <span>What age groups do you accept?</span>
+                                 <i class="fas fa-plus"></i>
+                             </button>
+                             <div class="faq-answer">
+                                 <p>We accept players from age 5 to 18 years old for our community-based youth development programs. Our programs are designed for different
+                                     skill levels and age groups, with a focus on holistic development through football, academics, and digital skills.</p>
+                             </div>
+                         </div>
 
                         <div class="faq-item">
                             <button class="faq-question" onclick="toggleFAQ(this)">
@@ -215,11 +215,12 @@
                             </button>
                             <div class="faq-answer">
                                 <p>Yes. We link players with our partnered schools, colleges, and universities for
-                                    sports scholarships. Through these partnerships, talented athletes get opportunities
-                                    to further their education while advancing their football careers.
+                                     sports scholarships. Through these partnerships, talented athletes get opportunities
+                                     to further their education while advancing their football careers.
+                                     Over 20+ scholarship pathways have been created through our community-driven programs.
 
-                                    For more details, contact our admissions team at admissions@vipersacademy.com
-                                    .
+                                     For more details, contact our admissions team at admissions@vipersacademy.com
+                                     .
                             </div>
                         </div>
                     </div>
@@ -557,4 +558,3 @@ function toggleFAQ(button) {
 }
 </script>
 @endpush
-

@@ -749,6 +749,214 @@ class AdminTournamentTeamController extends Controller
     }
 
     /**
+     * Check if team names already exist in the tournament (AJAX endpoint).
+     *
+     * @param Request $request
+     * @param Tournament $tournament
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function checkExistingTeams(Request $request, Tournament $tournament)
+    {
+        // Check if user has access to this tournament's organization
+        $this->authorizeTournamentAccess($tournament);
+
+        $teamNames = $request->input('team_names', []);
+
+        if (empty($teamNames)) {
+            return response()->json(['existing' => [], 'available' => []]);
+        }
+
+        // Get already registered team names for this tournament
+        $registeredTeamNames = $tournament->teams()
+            ->whereNotNull('team_name')
+            ->pluck('team_name')
+            ->map(function ($name) {
+                return strtolower(trim($name));
+            })
+            ->toArray();
+
+        $existing = [];
+        $available = [];
+
+        foreach ($teamNames as $teamName) {
+            $teamNameLower = strtolower(trim($teamName));
+            if (in_array($teamNameLower, $registeredTeamNames)) {
+                $existing[] = $teamName;
+            } else {
+                $available[] = $teamName;
+            }
+        }
+
+        return response()->json([
+            'existing' => $existing,
+            'available' => $available,
+        ]);
+    }
+
+    /**
+     * Bulk add teams to a tournament from a list of team names.
+     *
+     * @param Request $request
+     * @param Tournament $tournament
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function bulkAddTeams(Request $request, Tournament $tournament)
+    {
+        // Check if user has access to this tournament's organization
+        $this->authorizeTournamentAccess($tournament);
+
+        \Log::info('bulkAddTeams called', [
+            'tournament_id' => $tournament->id,
+            'user_id' => auth()->id()
+        ]);
+
+        // Check if tournament is open for registration
+        if (!$tournament->canRegister()) {
+            return redirect()->back()
+                ->with('error', 'Tournament registration is not open.');
+        }
+
+        // Check if deadline has passed
+        if ($tournament->isRegistrationDeadlinePassed()) {
+            return redirect()->back()
+                ->with('error', 'Registration deadline has passed.');
+        }
+
+        $validator = Validator::make($request->all(), [
+            'team_names' => 'required|string',
+            'auto_approve' => 'nullable|boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $teamNamesInput = $request->input('team_names', '');
+        $autoApprove = $request->boolean('auto_approve', false);
+
+        // Parse team names from textarea (one per line)
+        $teamNames = array_filter(array_map('trim', explode("\n", $teamNamesInput)));
+
+        if (empty($teamNames)) {
+            return redirect()->back()
+                ->with('error', 'No team names provided.');
+        }
+
+        // Check if tournament has capacity
+        $currentTeamCount = $tournament->teams()->count();
+        $maxTeams = $tournament->max_teams;
+        $availableSlots = $maxTeams ? $maxTeams - $currentTeamCount : null;
+
+        // Get already registered team names for this tournament
+        $registeredTeamNames = $tournament->teams()
+            ->whereNotNull('team_name')
+            ->pluck('team_name')
+            ->map(function ($name) {
+                return strtolower(trim($name));
+            })
+            ->toArray();
+
+        $insertData = [];
+        $successCount = 0;
+        $duplicateCount = 0;
+        $errorCount = 0;
+        $processedNames = [];
+        $capacityReached = false;
+
+        foreach ($teamNames as $teamName) {
+            $teamNameLower = strtolower(trim($teamName));
+
+            // Skip empty names
+            if (empty($teamName)) {
+                continue;
+            }
+
+            // Check for duplicates within the input
+            if (in_array($teamNameLower, $processedNames)) {
+                $duplicateCount++;
+                continue;
+            }
+
+            // Check if already registered in tournament
+            if (in_array($teamNameLower, $registeredTeamNames)) {
+                $duplicateCount++;
+                continue;
+            }
+
+            // Check capacity
+            if ($availableSlots !== null && $successCount >= $availableSlots) {
+                $capacityReached = true;
+                break;
+            }
+
+            // Add to processed list
+            $processedNames[] = $teamNameLower;
+
+            // Create tournament team registration
+            $insertData[] = [
+                'tournament_id' => $tournament->id,
+                'team_id' => null,
+                'team_name' => trim($teamName),
+                'team_contact_name' => auth()->user()->name,
+                'team_contact_email' => auth()->user()->email,
+                'team_contact_phone' => auth()->user()->phone ?? '',
+                'approval_status' => $autoApprove ? TournamentTeam::STATUS_APPROVED : TournamentTeam::STATUS_PENDING,
+                'registration_date' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+
+            $successCount++;
+            $registeredTeamNames[] = $teamNameLower;
+        }
+
+        // Bulk insert teams
+        if (!empty($insertData)) {
+            TournamentTeam::insert($insertData);
+        }
+
+        \Log::info('bulkAddTeams completed', [
+            'success' => $successCount,
+            'duplicates' => $duplicateCount,
+            'errors' => $errorCount
+        ]);
+
+        // Build success message
+        $messageParts = [];
+        if ($successCount > 0) {
+            $messageParts[] = "{$successCount} team(s) added successfully";
+            if ($autoApprove) {
+                $messageParts[] = "all auto-approved";
+            }
+        }
+        if ($duplicateCount > 0) {
+            $messageParts[] = "{$duplicateCount} duplicate(s) skipped";
+        }
+        if ($capacityReached) {
+            $messageParts[] = "Tournament capacity reached";
+        }
+
+        $message = implode(". ", $messageParts) . ".";
+
+        if (empty($messageParts)) {
+            $message = "No teams were added.";
+        }
+
+        // Check if tournament was closed (shuffled) and reopen for reshuffling
+        if ($successCount > 0 && $tournament->status === Tournament::STATUS_CLOSED && $tournament->matches()->count() > 0) {
+            $result = $tournament->reopenForReshuffle();
+            if ($result['reopened']) {
+                $message .= ' ' . $result['message'];
+            }
+        }
+
+        return redirect()->route('admin.tournaments.teams.index', $tournament->id)
+            ->with('success', $message);
+    }
+
+    /**
      * Authorize access to tournament for org-admin users.
      * Super admins can access all tournaments, org-admins can only access their organization's tournaments.
      */

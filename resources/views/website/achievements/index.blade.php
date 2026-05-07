@@ -1,7 +1,7 @@
 @extends('layouts.academy')
 
 @section('title', 'Achievements - Vipers Academy Kenya')
-@section('meta_description', 'Celebrating the achievements and successes of Vipers Academy players and programs.')
+@section('meta_description', 'Celebrating the achievements and community impact of Vipers Academy\'s youth development programs.')
 
 @section('content')
 
@@ -141,15 +141,15 @@
         <!-- Hero Section -->
         <div class="hero">
             <h1>Our Achievements</h1>
-            <p>Celebrating the milestones and successes that define Vipers Academy's journey in developing elite football talent.</p>
+            <p>Celebrating the milestones and community impact of Vipers Academy's journey in developing youth through football, education, and digital skills.</p>
         </div>
 
         <!-- Achievements Grid -->
         <div class="achievements-grid">
             <div class="achievement-card">
                 <div class="achievement-icon">🏆</div>
-                <h3>Professional Graduates</h3>
-                <p>Over 50 players have progressed to professional football clubs and national team selections.</p>
+                <h3>Professional Pathways Created</h3>
+                <p>Over 50 players have progressed to professional football clubs and national team selections through our community-based programs.</p>
             </div>
             <div class="achievement-card">
                 <div class="achievement-icon">🌍</div>
@@ -159,22 +159,22 @@
             <div class="achievement-card">
                 <div class="achievement-icon">📚</div>
                 <h3>Academic Excellence</h3>
-                <p>Maintaining high academic standards while pursuing football excellence.</p>
+                <p>Maintaining high academic standards while pursuing football excellence, with 85% success rate among scholarship recipients.</p>
             </div>
             <div class="achievement-card">
                 <div class="achievement-icon">⚽</div>
                 <h3>Tournament Success</h3>
-                <p>Multiple championship wins in regional and national youth competitions.</p>
+                <p>Multiple championship wins in regional and national youth competitions, with 15+ tournament titles.</p>
             </div>
             <div class="achievement-card">
                 <div class="achievement-icon">🤝</div>
                 <h3>Community Impact</h3>
-                <p>Contributing to grassroots football development and community programs.</p>
+                <p>Contributing to grassroots youth development through football, digital skills training, and mentorship programs.</p>
             </div>
             <div class="achievement-card">
                 <div class="achievement-icon">🎓</div>
                 <h3>Player Development</h3>
-                <p>Comprehensive development programs focusing on technical, tactical, and mental skills.</p>
+                <p>Comprehensive development programs focusing on technical, tactical, academic, and digital skills.</p>
             </div>
         </div>
 
@@ -184,19 +184,19 @@
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-number">500+</div>
-                    <div class="stat-label">Players Trained</div>
+                    <div class="stat-label">Youth Empowered</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number">50+</div>
-                    <div class="stat-label">Pro Graduates</div>
+                    <div class="stat-label">Professional Pathways</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number">10+</div>
-                    <div class="stat-label">Years Experience</div>
+                    <div class="stat-label">Years of Community Impact</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-number">15+</div>
-                    <div class="stat-label">Tournaments Won</div>
+                    <div class="stat-label">Tournament Championships</div>
                 </div>
             </div>
         </div>
@@ -204,4 +204,3 @@
 </body>
 </html>
 @endsection
-
