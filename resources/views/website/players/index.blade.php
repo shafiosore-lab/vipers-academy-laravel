@@ -29,7 +29,7 @@
                 <svg class="search-icon-compact" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-                <input type="text" id="search-input" class="search-input-compact" placeholder="Search players..." value="{{ $search ?? '' }}">
+                <input type="text" id="search-input" class="search-input-compact" placeholder="Search by player name, position, or category..." value="{{ $search ?? '' }}">
                 <button type="button" id="clear-search" class="clear-search-compact" style="display: {{ !empty($search) ? 'block' : 'none' }};">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -73,6 +73,9 @@
 
         <!-- Mobile Filter Panel -->
         <div class="mobile-filter-panel" id="mobile-filter-panel" style="display: none;">
+            <div class="mobile-filter-header">
+                <p class="mobile-filter-note">Tap options to filter immediately</p>
+            </div>
             <div class="mobile-filter-section">
                 <h4>Gender</h4>
                 <div class="mobile-filter-options">
@@ -105,9 +108,9 @@
 
             <div class="mobile-filter-actions">
                 <button type="button" id="mobile-clear-all" class="mobile-clear-btn">Clear All</button>
-                <button type="button" id="mobile-apply-filters" class="mobile-apply-btn">Apply</button>
+                <button type="button" id="mobile-apply-filters" class="mobile-apply-btn">Done</button>
             </div>
-        </div>
+            </div>
     </div>
 
     <!-- Success Message -->
@@ -501,6 +504,18 @@
     margin-top: 1rem;
     padding-top: 1rem;
     border-top: 1px solid var(--neutral-200);
+}
+
+.mobile-filter-header {
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.mobile-filter-note {
+    font-size: 0.8125rem;
+    color: var(--neutral-600);
+    margin: 0;
+    font-style: italic;
 }
 
 .mobile-filter-section {
@@ -1416,8 +1431,25 @@ document.addEventListener('DOMContentLoaded', function() {
         siblings.forEach(s => s.classList.remove('active'));
         option.classList.add('active');
 
-        // Update filter state
+        // Update filter state and immediately apply filters
         currentFilters[filterType] = filterValue;
+        currentFilters.page = 1;
+
+        // Immediately fetch results (responsive behavior)
+        fetchPlayers();
+
+        // Update active filter count
+        updateActiveFilterCount();
+
+        // Close mobile panel after selection for better UX
+        setTimeout(() => {
+            if (mobileFilterPanel) {
+                mobileFilterPanel.style.display = 'none';
+            }
+            if (mobileFilterToggle) {
+                mobileFilterToggle.classList.remove('active');
+            }
+        }, 300);
     }
 
     // Handle mobile filter panel toggle
@@ -1427,13 +1459,14 @@ document.addEventListener('DOMContentLoaded', function() {
         mobileFilterToggle.classList.toggle('active', !isVisible);
     }
 
-    // Handle mobile filter apply
+    // Handle mobile filter apply (optional - filters apply immediately now)
     function applyMobileFilters() {
-        currentFilters.page = 1;
-        fetchPlayers();
+        // Filters are already applied immediately when selected
+        // This button just closes the panel
         mobileFilterPanel.style.display = 'none';
-        mobileFilterToggle.classList.remove('active');
-        updateActiveFilterCount();
+        if (mobileFilterToggle) {
+            mobileFilterToggle.classList.remove('active');
+        }
     }
 
     // Handle mobile clear all filters
