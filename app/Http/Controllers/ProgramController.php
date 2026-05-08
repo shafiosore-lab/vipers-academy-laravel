@@ -23,9 +23,20 @@ class ProgramController extends Controller
 
             $category = $request->get('category', 'all');
 
+            // Define the desired program order
+            $programOrder = [
+                'Computer & Coding Classes',
+                'Arduino Robotics & Electronics Program',
+                'Weekend Football & Life-Skills Program',
+                'Academic & Exposure Program',
+                'Youth Development & Mentorship Program'
+            ];
+
             $programs = Program::when($category !== 'all', function ($query) use ($category) {
                 return $query->where('category', $category);
-            })->get();
+            })
+            ->orderByRaw("FIELD(title, '" . implode("','", $programOrder) . "')")
+            ->get();
 
             return view('website.programs.index', compact('programs', 'category'));
         } catch (\Exception $e) {

@@ -15,7 +15,7 @@
             <article class="program-card">
                 <div class="program-layout {{ $index % 2 === 1 ? 'reverse' : '' }}">
                     <div class="program-content">
-                        <span class="program-badge badge-{{ $index === 0 ? 'primary' : ($index === 1 ? 'warning' : 'success') }}">
+                        <span class="program-badge badge-{{ ['primary', 'warning', 'success', 'info', 'secondary'][$index] ?? 'primary' }}">
                             {{ $program->category ?? 'Program' }}
                         </span>
                         <h3 class="program-title">{{ $program->title }}</h3>
@@ -36,12 +36,12 @@
                         </p>
 
                         <div class="program-actions">
-                            <button class="btn btn-{{ $index === 0 ? 'primary' : ($index === 1 ? 'warning' : 'success') }}" data-bs-toggle="modal" data-bs-target="#programModal{{ $program->id }}">
+                             <button class="btn btn-{{ ['primary', 'warning', 'success', 'info', 'secondary'][$index] ?? 'primary' }}" data-bs-toggle="modal" data-bs-target="#programModal{{ $program->id }}">
                                 <i class="fas fa-info-circle me-2"></i>Learn More
-                            </button>
-                            <a href="{{ route('enrol') }}" class="btn btn-outline-{{ $index === 0 ? 'primary' : ($index === 1 ? 'warning' : 'success') }}">
+                             </button>
+                             <a href="{{ route('enrol') }}" class="btn btn-outline-{{ ['primary', 'warning', 'success', 'info', 'secondary'][$index] ?? 'primary' }}">
                                 <i class="fas fa-user-plus me-2"></i>Enroll Now
-                            </a>
+                             </a>
                         </div>
                     </div>
 
@@ -51,9 +51,9 @@
                              alt="{{ $program->title }}"
                              loading="lazy">
                         @else
-                        <img src="{{ asset('assets/img/gallery/' . ($index === 0 ? 'kids.jpeg' : ($index === 1 ? 'co.jpeg' : 'coding.jpeg'))) }}"
-                             alt="{{ $program->title }}"
-                             loading="lazy">
+                         <img src="{{ asset('assets/img/gallery/' . ($index === 0 ? 'coding.jpg' : ($index === 1 ? 'arduino.jpg' : ($index === 2 ? 'lifeskills.jpg' : ($index === 3 ? 'academics.jpg' : 'co.jpg'))))) }}"
+                              alt="{{ $program->title }}"
+                              loading="lazy">
                         @endif
                     </div>
                 </div>
@@ -63,14 +63,13 @@
             <div class="modal fade" id="programModal{{ $program->id }}" tabindex="-1" aria-labelledby="programModalLabel{{ $program->id }}" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header bg-{{ $index === 0 ? 'primary' : ($index === 1 ? 'warning' : 'success') }} text-{{ $index === 1 ? 'dark' : 'white' }}">
+                        <div class="modal-header bg-{{ ['primary', 'warning', 'success', 'info', 'secondary'][$index] ?? 'primary' }} text-white">
                             <h5 class="modal-title" id="programModalLabel{{ $program->id }}">{{ $program->title }}</h5>
-                            <button type="button" class="btn-{{ $index === 1 ? 'dark' : 'light' }}" data-bs-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close">
                             </button>
                         </div>
                         <div class="modal-body">
-                            <h6 class="fw-bold text-{{ $index === 0 ? 'primary' : ($index === 1 ? 'warning' : 'success') }}">Program Overview</h6>
+                            <h6 class="fw-bold text-{{ ['primary', 'warning', 'success', 'info', 'secondary'][$index] ?? 'primary' }}">Program Overview</h6>
                             <p>{{ $program->description }}</p>
 
                             <hr>
@@ -105,7 +104,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <a href="{{ route('enrol') }}" class="btn btn-{{ $index === 0 ? 'primary' : ($index === 1 ? 'warning' : 'success') }}">
+                            <a href="{{ route('enrol') }}" class="btn btn-{{ ['primary', 'warning', 'success', 'info', 'secondary'][$index] ?? 'primary' }}">
                                 <i class="fas fa-user-plus me-2"></i>Enroll Now
                             </a>
                         </div>
@@ -197,6 +196,16 @@
 
 .badge-success {
     background: #28a745;
+    color: white;
+}
+
+.badge-info {
+    background: #17a2b8;
+    color: white;
+}
+
+.badge-secondary {
+    background: #6c757d;
     color: white;
 }
 

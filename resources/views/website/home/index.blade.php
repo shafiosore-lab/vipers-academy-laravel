@@ -6,7 +6,7 @@
 
 @section('content')
   <!-- Hero Section -->
-<section class="hero-section home-hero-section" style="background-image: url('{{ asset('assets/img/home/teamb.jpeg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+<section class="hero-section home-hero-section" style="background-image: url('{{ asset('assets/img/home/teamb.jpg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; background-color: #000;">
     <div class="hero-overlay" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.75) 70%);"></div>
     <div class="container">
         <div class="row justify-content-center text-center">
