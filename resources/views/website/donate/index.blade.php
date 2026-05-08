@@ -19,14 +19,18 @@
 
                     <!-- Title -->
                     <h1 class="donate-hero-title fw-bold mb-3">
-                        Support <span class="text-highlight">Mumias Vipers</span> Academy
+                        @php
+                            $heroTitle = isset($pageContent['hero']) ? $pageContent['hero']->firstWhere('key', 'title') : null;
+                        @endphp
+                        {{ $heroTitle?->value ?: 'Support <span class="text-highlight">Mumias Vipers</span> Academy' }}
                     </h1>
 
                     <!-- Subtitle -->
                     <p class="donate-hero-subtitle mb-4">
-                        Your contribution empowers underserved youth in Kenya through football, STEM & education.
-                        Join our Goodwill Ambassadors and help create pathways for young people to develop skills,
-                        earn scholarships, and build brighter futures.
+                        @php
+                            $heroSubtitle = isset($pageContent['hero']) ? $pageContent['hero']->firstWhere('key', 'subtitle') : null;
+                        @endphp
+                        {{ $heroSubtitle?->value ?: 'Your contribution empowers underserved youth in Kenya through football, STEM & education. Join our Goodwill Ambassadors and help create pathways for young people to develop skills, earn scholarships, and build brighter futures.' }}
                     </p>
 
                     <!-- Payment Cards -->

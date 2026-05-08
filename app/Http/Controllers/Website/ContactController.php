@@ -5,12 +5,24 @@ namespace App\Http\Controllers\Website;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use App\Models\PageContent;
 
 class ContactController extends \App\Http\Controllers\Controller
 {
     public function index()
     {
-        return view('website.contact.index');
+        // Fetch dynamic page content
+        $pageContent = [];
+        try {
+            $sections = ['contact_info', 'contact_form', 'faq'];
+            foreach ($sections as $section) {
+                $pageContent[$section] = PageContent::getSection('contact', $section);
+            }
+        } catch (\Exception $e) {
+            $pageContent = [];
+        }
+
+        return view('website.contact.index', compact('pageContent'));
     }
 
     public function store(Request $request)

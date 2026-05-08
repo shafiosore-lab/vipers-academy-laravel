@@ -28,6 +28,11 @@ class PlayerMiddleware
 
         $user = Auth::user();
 
+        // Super-admins bypass all checks
+        if ($user->isSuperAdmin()) {
+            return $next($request);
+        }
+
         // Partner/staff users pass through without player-specific checks
         if (in_array($user->user_type, self::BYPASS_TYPES) || $user->hasAnyRole(self::BYPASS_ROLES)) {
             return $next($request);

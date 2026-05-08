@@ -200,11 +200,11 @@
     /* Dashboard Preview Card */
     .gs-dashboard-card {
         background: rgba(255,255,255,0.98);
-        border-radius: 20px;
+        border-radius: 0 0 20px 20px; /* Bottom corners only */
         overflow: hidden;
         box-shadow: 0 25px 50px rgba(0,0,0,0.25);
         box-sizing: border-box;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem; /* Reduced margin for tighter layout */
     }
 
     .gs-dashboard-header {
@@ -694,9 +694,10 @@
         .gs-dashboard-card {
             width: 100%;
             max-width: 100%;
-            margin: 0 auto 0.75rem;
+            margin: 0 auto 0.5rem; /* Reduced margin for compact layout */
             overflow-x: visible;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 0 0 16px 16px; /* Bottom corners only, slightly reduced */
         }
 
         .gs-dashboard-header {
@@ -986,8 +987,12 @@
 
         /* Dashboard mobile optimizations */
         .gs-dashboard-card {
-            margin-bottom: 0.5rem;
-            border-radius: 10px;
+            margin-bottom: 0.25rem; /* Tighter spacing */
+            border-radius: 0 0 10px 10px; /* Bottom corners only */
+        }
+
+        .gs-dashboard-header {
+            padding: 0.5rem; /* Consistent with body padding */
         }
 
         .gs-dashboard-images {

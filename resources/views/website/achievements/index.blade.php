@@ -7,9 +7,17 @@
 <div class="container py-5">
     <!-- Hero Section -->
     <div class="text-center mb-5" data-aos="fade-up">
-        <h1 class="fw-bold mb-3">Our Achievements</h1>
+        <h1 class="fw-bold mb-3">
+            @php
+                $heroTitle = isset($pageContent['hero']) ? $pageContent['hero']->firstWhere('key', 'title') : null;
+            @endphp
+            {{ $heroTitle?->value ?: 'Our Achievements' }}
+        </h1>
         <p class="text-muted mx-auto" style="max-width: 700px; font-size: 1.05rem;">
-            Celebrating the milestones and community impact of Vipers Academy's journey in developing youth through football, education, and digital skills.
+            @php
+                $heroSubtitle = isset($pageContent['hero']) ? $pageContent['hero']->firstWhere('key', 'subtitle') : null;
+            @endphp
+            {{ $heroSubtitle?->value ?: 'Celebrating the milestones and community impact of Vipers Academy\'s journey in developing youth through football, education, and digital skills.' }}
         </p>
     </div>
 
@@ -73,32 +81,57 @@
 
     <!-- Stats Section -->
     <div class="card border-0 shadow-sm p-5 text-center" data-aos="fade-up">
-        <h2 class="fw-bold mb-4">By the Numbers</h2>
+        <h2 class="fw-bold mb-4">
+            @php
+                $statsTitle = isset($pageContent['stats']) ? $pageContent['stats']->firstWhere('key', 'title') : null;
+            @endphp
+            {{ $statsTitle?->value ?: 'By the Numbers' }}
+        </h2>
         <div class="row g-3 justify-content-center">
-            <div class="col-6 col-md-3">
-                <div class="p-4 rounded-3 text-white" style="background: var(--primary, #ea1c4d);">
-                    <div class="fw-bold" style="font-size: 2rem;">500+</div>
-                    <div class="fw-medium" style="font-size: 0.9rem;">Youth Empowered</div>
+            @php
+                $statsContent = isset($pageContent['stats']) ? $pageContent['stats']->where('key', 'not_like', 'title%') : collect();
+            @endphp
+            @if($statsContent->count() > 0)
+                @foreach($statsContent as $index => $stat)
+                    @php
+                        $statData = json_decode($stat->value, true);
+                    @endphp
+                    @if($statData)
+                    <div class="col-6 col-md-3">
+                        <div class="p-4 rounded-3 text-white" style="background: var(--primary, #ea1c4d);">
+                            <div class="fw-bold" style="font-size: 2rem;">{{ $statData['number'] ?? '0' }}</div>
+                            <div class="fw-medium" style="font-size: 0.9rem;">{{ $statData['label'] ?? 'Stat' }}</div>
+                        </div>
+                    </div>
+                    @endif
+                @endforeach
+            @else
+                <!-- Fallback stats -->
+                <div class="col-6 col-md-3">
+                    <div class="p-4 rounded-3 text-white" style="background: var(--primary, #ea1c4d);">
+                        <div class="fw-bold" style="font-size: 2rem;">500+</div>
+                        <div class="fw-medium" style="font-size: 0.9rem;">Youth Empowered</div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="p-4 rounded-3 text-white" style="background: var(--primary, #ea1c4d);">
-                    <div class="fw-bold" style="font-size: 2rem;">50+</div>
-                    <div class="fw-medium" style="font-size: 0.9rem;">Professional Pathways</div>
+                <div class="col-6 col-md-3">
+                    <div class="p-4 rounded-3 text-white" style="background: var(--primary, #ea1c4d);">
+                        <div class="fw-bold" style="font-size: 2rem;">50+</div>
+                        <div class="fw-medium" style="font-size: 0.9rem;">Professional Pathways</div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="p-4 rounded-3 text-white" style="background: var(--primary, #ea1c4d);">
-                    <div class="fw-bold" style="font-size: 2rem;">10+</div>
-                    <div class="fw-medium" style="font-size: 0.9rem;">Years of Impact</div>
+                <div class="col-6 col-md-3">
+                    <div class="p-4 rounded-3 text-white" style="background: var(--primary, #ea1c4d);">
+                        <div class="fw-bold" style="font-size: 2rem;">10+</div>
+                        <div class="fw-medium" style="font-size: 0.9rem;">Years of Impact</div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-6 col-md-3">
-                <div class="p-4 rounded-3 text-white" style="background: var(--primary, #ea1c4d);">
-                    <div class="fw-bold" style="font-size: 2rem;">15+</div>
-                    <div class="fw-medium" style="font-size: 0.9rem;">Championships</div>
+                <div class="col-6 col-md-3">
+                    <div class="p-4 rounded-3 text-white" style="background: var(--primary, #ea1c4d);">
+                        <div class="fw-bold" style="font-size: 2rem;">15+</div>
+                        <div class="fw-medium" style="font-size: 0.9rem;">Championships</div>
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
     </div>
 </div>

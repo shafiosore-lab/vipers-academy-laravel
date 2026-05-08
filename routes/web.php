@@ -98,9 +98,7 @@ Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
 // Donate/Scholarship Support
-Route::get('/donate', function() {
-    return view('website.donate.index');
-})->name('donate');
+Route::get('/donate', [App\Http\Controllers\Website\DonateController::class, 'index'])->name('donate');
 
 // Merchandise
 Route::get('/merchandise', function() {
@@ -678,6 +676,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 Route::prefix('api')->name('api.')->group(function () {
     Route::get('/blog', [BlogController::class, 'apiIndex'])->name('blog.index');
 
+    // Players API for filtering and search
+    Route::get('/players', [App\Http\Controllers\Website\PlayerController::class, 'apiIndex'])->name('players.index');
+
     // Staff Management - Get available roles based on user permission level
     Route::get('/staff/roles', [App\Http\Controllers\Admin\AdminStaffController::class, 'getAvailableRoles'])->name('staff.roles');
 
@@ -1102,6 +1103,16 @@ Route::middleware(['auth', 'super.admin'])->prefix('super-admin')->name('super-a
     Route::post('/training-sessions/{trainingSession}/check-out-player', [App\Http\Controllers\Admin\TrainingSessionController::class, 'checkOutPlayer'])->name('training-sessions.check-out-player');
     Route::get('/training-sessions/{trainingSession}/live-data', [App\Http\Controllers\Admin\TrainingSessionController::class, 'liveData'])->name('training-sessions.live-data');
     Route::get('/training-sessions/{trainingSession}/players-for-attendance', [App\Http\Controllers\Admin\TrainingSessionController::class, 'getPlayersForAttendance'])->name('training-sessions.players-for-attendance');
+
+    // Page Content Management (Super Admin)
+    Route::get('/page-content', [App\Http\Controllers\SuperAdmin\SuperAdminPageContentController::class, 'index'])->name('page-content.index');
+    Route::get('/page-content/{page}', [App\Http\Controllers\SuperAdmin\SuperAdminPageContentController::class, 'show'])->name('page-content.show');
+    Route::get('/page-content/{page}/{section}/edit', [App\Http\Controllers\SuperAdmin\SuperAdminPageContentController::class, 'edit'])->name('page-content.edit');
+    Route::put('/page-content/{page}/{section}', [App\Http\Controllers\SuperAdmin\SuperAdminPageContentController::class, 'update'])->name('page-content.update');
+    Route::post('/page-content/journey/add', [App\Http\Controllers\SuperAdmin\SuperAdminPageContentController::class, 'addJourneyEntry'])->name('page-content.journey.add');
+    Route::get('/page-content/journey/{id}/delete', [App\Http\Controllers\SuperAdmin\SuperAdminPageContentController::class, 'deleteJourneyEntry'])->name('page-content.journey.delete');
+    Route::post('/page-content/values/add', [App\Http\Controllers\SuperAdmin\SuperAdminPageContentController::class, 'addValueEntry'])->name('page-content.values.add');
+    Route::get('/page-content/values/{id}/delete', [App\Http\Controllers\SuperAdmin\SuperAdminPageContentController::class, 'deleteValueEntry'])->name('page-content.values.delete');
 
     // Letterhead Management (Super Admin)
     Route::get('/letterhead', [App\Http\Controllers\Admin\LetterheadController::class, 'index'])->name('letterhead.index');

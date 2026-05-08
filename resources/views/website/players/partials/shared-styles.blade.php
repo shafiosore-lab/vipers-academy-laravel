@@ -4,18 +4,36 @@
 
 @push('styles')
 <style>
+    /* ========================================
+        HIGH-DENSITY DESIGN SYSTEM VARIABLES
+        ======================================== */
+
     :root {
-        --primary-color: #ea1c4d;
-        --primary-gradient: linear-gradient(135deg, #ea1c4d 0%, #f05a7a 100%);
-        --secondary-color: #65c16e;
-        --text-dark: #1e293b;
-        --text-gray: #64748b;
-        --text-medium: #374151;
-        --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
-        --card-bg: rgba(255, 255, 255, 0.95);
-        --border-radius: 20px;
-        --transition: all 0.3s ease;
+        --primary-red: #ea1c4d;
+        --primary-red-light: #f87171;
+        --primary-red-dark: #dc2626;
+        --secondary-green: #059669;
+        --neutral-50: #fafafa;
+        --neutral-100: #f5f5f5;
+        --neutral-200: #e5e5e5;
+        --neutral-300: #d4d4d4;
+        --neutral-400: #a3a3a3;
+        --neutral-500: #737373;
+        --neutral-600: #525252;
+        --neutral-700: #404040;
+        --neutral-800: #262626;
+        --neutral-900: #171717;
+        --border-radius: 8px;
+        --border-radius-lg: 12px;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --transition: all 0.15s ease;
     }
+
+    /* ========================================
+        BASE LAYOUT
+        ======================================== */
 
     * {
         margin: 0;
@@ -23,58 +41,68 @@
         box-sizing: border-box;
     }
 
+    .compact-player-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 1rem;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: var(--neutral-50);
+        min-height: 100vh;
+    }
+
+    /* ========================================
+        BACKWARD COMPATIBILITY (for other pages)
+        ======================================== */
+
     .vipers-player-container {
-        font-family: 'Poppins', sans-serif;
-        background: var(--bg-gradient);
-        color: var(--text-dark);
-        padding: 40px 20px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: var(--neutral-50);
+        color: var(--neutral-900);
+        padding: 1rem;
         min-height: 100vh;
     }
 
     .player-profile {
-        max-width: 1150px;
+        max-width: 1000px;
         margin: auto;
     }
 
-    /* Player Header Card */
+    /* Legacy player header (for other pages) */
     .player-header {
         display: grid;
-        grid-template-columns: 280px 1fr;
-        gap: 30px;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        padding: 30px;
-        border-radius: var(--border-radius);
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(234, 28, 77, 0.2);
-        margin-bottom: 30px;
+        grid-template-columns: 200px 1fr;
+        gap: 1.5rem;
+        background: white;
+        padding: 1.5rem;
+        border-radius: var(--border-radius-lg);
+        box-shadow: var(--shadow);
+        border: 1px solid var(--neutral-200);
+        margin-bottom: 1.5rem;
     }
 
-    /* Photo */
     .player-photo {
-        width: 280px;
-        height: 320px;
+        width: 200px;
+        height: 240px;
         object-fit: cover;
         border-radius: var(--border-radius);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--shadow);
     }
 
     .player-photo-placeholder {
-        background: linear-gradient(135deg, #1a3a1a 0%, #0a1f0a 100%);
+        background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-red-light) 100%);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 60px;
-        font-weight: bold;
-        color: var(--secondary-color);
+        font-size: 3rem;
+        font-weight: 700;
+        color: white;
     }
 
-    /* Info Section */
     .player-info {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        min-height: 320px;
+        min-height: 240px;
     }
 
     .player-details {
@@ -82,34 +110,30 @@
     }
 
     .player-name {
-        font-size: 42px;
-        margin-bottom: 10px;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
         font-weight: 700;
-        background: var(--primary-gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: var(--neutral-900);
     }
 
     .player-position {
-        font-size: 20px;
-        color: var(--primary-color);
-        margin-bottom: 15px;
+        font-size: 1rem;
+        color: var(--primary-red);
+        margin-bottom: 1rem;
         font-weight: 600;
     }
 
     .player-description {
-        color: var(--text-gray);
-        font-size: 16px;
+        color: var(--neutral-600);
+        font-size: 0.875rem;
         line-height: 1.6;
     }
 
-    /* Radar Chart */
     .player-radar-container {
         width: 100%;
-        max-width: 200px;
-        height: 200px;
-        margin-top: 20px;
+        max-width: 150px;
+        height: 150px;
+        margin-top: 1rem;
         align-self: flex-end;
     }
 
@@ -118,63 +142,67 @@
         height: 100% !important;
     }
 
-    /* Navigation */
+    /* Legacy navigation */
     .section-nav {
         display: flex;
-        gap: 15px;
+        gap: 0.5rem;
         flex-wrap: wrap;
-        margin-bottom: 30px;
+        margin-bottom: 1.5rem;
     }
 
     .nav-link {
-        padding: 12px 30px;
-        background: var(--card-bg);
-        border-radius: 10px;
+        padding: 0.75rem 1.5rem;
+        background: white;
+        border-radius: 20px;
         text-decoration: none;
-        border: 2px solid transparent;
+        border: 1px solid var(--neutral-300);
         transition: var(--transition);
         font-weight: 600;
-        color: var(--text-gray);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        color: var(--neutral-600);
+        font-size: 0.875rem;
     }
 
     .nav-link.active {
-        border-color: var(--primary-color);
-        color: var(--primary-color);
+        border-color: var(--primary-red);
+        color: var(--primary-red);
         background: rgba(234, 28, 77, 0.05);
     }
 
     .nav-link:hover {
-        border-color: var(--primary-color);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(234, 28, 77, 0.2);
+        border-color: var(--primary-red);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow);
     }
 
-    /* Content Section */
+    /* Legacy content section */
     .content-section {
-        background: var(--card-bg);
-        border-radius: var(--border-radius);
-        padding: 30px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(234, 28, 77, 0.2);
+        background: white;
+        border-radius: var(--border-radius-lg);
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--neutral-200);
     }
 
-    /* Responsive Design */
-    @media (max-width: 768px) {
+    /* ========================================
+        RESPONSIVE DESIGN - MOBILE FIRST
+        ======================================== */
+
+    @media (max-width: 767px) {
+        .compact-player-container,
         .vipers-player-container {
-            padding: 20px 15px;
+            padding: 0.75rem;
         }
 
         .player-header {
             grid-template-columns: 1fr;
-            padding: 25px;
-            gap: 25px;
+            padding: 1rem;
+            gap: 1rem;
         }
 
         .player-photo {
             width: 100%;
-            max-width: 280px;
-            height: 280px;
+            max-width: 200px;
+            height: 200px;
             margin: 0 auto;
         }
 
@@ -183,19 +211,19 @@
         }
 
         .player-radar-container {
-            max-width: 180px;
-            height: 180px;
-            margin: 20px auto 0;
+            max-width: 120px;
+            height: 120px;
+            margin: 1rem auto 0;
             align-self: center;
         }
 
         .player-name {
-            font-size: 32px;
+            font-size: 1.5rem;
             text-align: center;
         }
 
         .player-position {
-            font-size: 18px;
+            font-size: 0.875rem;
             text-align: center;
         }
 
@@ -205,66 +233,64 @@
 
         .section-nav {
             justify-content: center;
-            gap: 10px;
+            gap: 0.25rem;
         }
 
         .nav-link {
-            padding: 10px 20px;
-            font-size: 14px;
+            padding: 0.5rem 1rem;
+            font-size: 0.8125rem;
         }
 
         .content-section {
-            padding: 25px 20px;
+            padding: 1rem;
         }
     }
 
     @media (max-width: 480px) {
+        .compact-player-container,
         .vipers-player-container {
-            padding: 15px 10px;
+            padding: 0.5rem;
         }
 
         .player-header {
-            padding: 20px;
-            gap: 20px;
+            padding: 0.75rem;
+            gap: 0.75rem;
         }
 
         .player-photo {
-            max-width: 240px;
-            height: 240px;
+            max-width: 160px;
+            height: 160px;
         }
 
         .player-radar-container {
-            max-width: 150px;
-            height: 150px;
-            margin-top: 15px;
+            max-width: 100px;
+            height: 100px;
+            margin-top: 0.75rem;
         }
 
         .player-name {
-            font-size: 26px;
+            font-size: 1.25rem;
         }
 
         .player-position {
-            font-size: 16px;
+            font-size: 0.8125rem;
         }
 
         .player-description {
-            font-size: 14px;
+            font-size: 0.8125rem;
         }
 
         .section-nav {
-            gap: 8px;
+            gap: 0.125rem;
         }
 
         .nav-link {
-            padding: 8px 16px;
-            font-size: 13px;
-            flex: 1;
-            min-width: 100px;
-            text-align: center;
+            padding: 0.375rem 0.75rem;
+            font-size: 0.75rem;
         }
 
         .content-section {
-            padding: 20px 15px;
+            padding: 0.75rem;
         }
     }
 </style>

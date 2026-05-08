@@ -15,6 +15,7 @@ class WebsitePlayer extends Model
         'first_name',
         'last_name',
         'category',
+        'gender',
         'age',
         'email',
         'phone',
@@ -74,6 +75,30 @@ class WebsitePlayer extends Model
     public function getFormattedPositionAttribute()
     {
         return ucfirst($this->position);
+    }
+
+    /**
+     * Get formatted gender name
+     */
+    public function getFormattedGenderAttribute()
+    {
+        return match($this->gender) {
+            'M' => 'Men',
+            'F' => 'Women',
+            default => ucfirst($this->gender ?? 'Unknown')
+        };
+    }
+
+    /**
+     * Get standardized category value
+     */
+    public function getStandardizedCategoryAttribute()
+    {
+        return match(strtolower($this->category ?? '')) {
+            'junior', 'u16', 'u15', 'u14', 'u13', 'u12', 'u11', 'u10', 'u9' => 'Junior',
+            'senior', 'adult', 'u18', 'u19', 'u20', 'u21', 'professional', 'pro', 'amateur', 'recreational' => 'Senior',
+            default => ucfirst($this->category ?? 'Unknown')
+        };
     }
 
     /**

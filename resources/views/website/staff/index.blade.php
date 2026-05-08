@@ -255,44 +255,85 @@
 <section class="section">
     <div class="container">
         <div class="section-header">
-            <h1 class="section-title">Meet Our Leaders</h1>
+            <h1 class="section-title">
+                @php
+                    $leadershipTitle = isset($pageContent['leadership']) ? $pageContent['leadership']->firstWhere('key', 'title') : null;
+                @endphp
+                {{ $leadershipTitle?->value ?: 'Meet Our Leaders' }}
+            </h1>
             <p class="section-subtitle">
-                Dedicated professionals committed to developing the next generation of football talent
+                @php
+                    $leadershipSubtitle = isset($pageContent['leadership']) ? $pageContent['leadership']->firstWhere('key', 'subtitle') : null;
+                @endphp
+                {{ $leadershipSubtitle?->value ?: 'Dedicated professionals committed to developing the next generation of football talent' }}
             </p>
         </div>
 
-        @if($leaders->count() > 0)
+        @php
+            $teamContent = isset($pageContent['leadership']) ? $pageContent['leadership']->where('key', 'not_like', 'title%')->where('key', 'not_like', 'subtitle%') : collect();
+        @endphp
+        @if($teamContent->count() > 0 || $leaders->count() > 0)
         <div class="team-grid">
-            @foreach($leaders as $index => $leader)
-            <!-- Team Member -->
-            <div class="member-card">
-                <div class="member-photo">
-                    @if($leader->photo_path)
-                    <img src="{{ asset('storage/' . $leader->photo_path) }}"
-                         alt="{{ $leader->name }} - {{ $leader->role }}"
-                         loading="lazy">
-                    @else
-                    <img src="{{ asset('assets/img/gallery/kids.jpeg') }}"
-                         alt="{{ $leader->name }} - {{ $leader->role }}"
-                         loading="lazy">
+            @if($teamContent->count() > 0)
+                @foreach($teamContent as $index => $member)
+                    @php
+                        $memberData = json_decode($member->value, true);
+                    @endphp
+                    @if($memberData)
+                    <!-- Dynamic Team Member -->
+                    <div class="member-card">
+                        <div class="member-photo">
+                            @if(isset($memberData['photo']) && $memberData['photo'])
+                                <img src="{{ asset('storage/' . $memberData['photo']) }}" alt="{{ $memberData['name'] ?? 'Team Member' }} - {{ $memberData['role'] ?? 'Role' }}" loading="lazy">
+                            @else
+                                <img src="{{ asset('assets/img/gallery/kids.jpeg') }}" alt="{{ $memberData['name'] ?? 'Team Member' }} - {{ $memberData['role'] ?? 'Role' }}" loading="lazy">
+                            @endif
+                            @if(isset($memberData['linkedin']) && $memberData['linkedin'])
+                            <a href="{{ $memberData['linkedin'] }}" target="_blank" class="linkedin-btn" aria-label="{{ $memberData['name'] ?? 'Team Member' }} LinkedIn Profile">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            @endif
+                        </div>
+                        <div class="member-info">
+                            <h3 class="member-name">{{ $memberData['name'] ?? 'Team Member' }}</h3>
+                            <p class="member-role">{{ $memberData['role'] ?? 'Role' }}</p>
+                            @if(isset($memberData['credentials']) && $memberData['credentials'])
+                            <p class="member-credentials">{{ $memberData['credentials'] }}</p>
+                            @endif
+                        </div>
+                    </div>
                     @endif
-                    @if($leader->linkedin_url)
-                    <a href="{{ $leader->linkedin_url }}" target="_blank" class="linkedin-btn" aria-label="{{ $leader->name }} LinkedIn Profile">
-                        <i class="fab fa-linkedin-in"></i>
-                    </a>
-                    @endif
+                @endforeach
+            @elseif($leaders->count() > 0)
+                @foreach($leaders as $index => $leader)
+                <!-- Team Member -->
+                <div class="member-card">
+                    <div class="member-photo">
+                        @if($leader->photo_path)
+                        <img src="{{ asset('storage/' . $leader->photo_path) }}"
+                             alt="{{ $leader->name }} - {{ $leader->role }}"
+                             loading="lazy">
+                        @else
+                        <img src="{{ asset('assets/img/gallery/kids.jpeg') }}"
+                             alt="{{ $leader->name }} - {{ $leader->role }}"
+                             loading="lazy">
+                        @endif
+                        @if($leader->linkedin_url)
+                        <a href="{{ $leader->linkedin_url }}" target="_blank" class="linkedin-btn" aria-label="{{ $leader->name }} LinkedIn Profile">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        @endif
+                    </div>
+                    <div class="member-info">
+                        <h3 class="member-name">{{ $leader->name }}</h3>
+                        <p class="member-role">{{ $leader->role }}</p>
+                        @if($leader->credentials)
+                        <p class="member-credentials">{{ $leader->credentials }}</p>
+                        @endif
+                    </div>
                 </div>
-                <div class="member-info">
-                    <h3 class="member-name">{{ $leader->name }}</h3>
-                    <p class="member-role">{{ $leader->role }}</p>
-                    @if($leader->credentials)
-                    <p class="member-credentials">{{ $leader->credentials }}</p>
-                    @endif
-                </div>
-            </div>
-            @endforeach
-        </div>
-        @else
+                @endforeach
+            @else
         <!-- Fallback content when no leaders are in database -->
         <div class="team-grid">
             <!-- Team Member 1 -->

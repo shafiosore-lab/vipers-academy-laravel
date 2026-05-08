@@ -102,8 +102,18 @@
                                 <i class="fas fa-map-marker-alt"></i>
                             </div>
                             <div class="info-text">
-                                <h4>Location</h4>
-                                <p>Mumias JuaKali <br>Mumias, Kakamega County, Kenya</p>
+                                <h4>
+                                    @php
+                                        $locationTitle = isset($pageContent['contact_info']) ? $pageContent['contact_info']->firstWhere('key', 'location_title') : null;
+                                    @endphp
+                                    {{ $locationTitle?->value ?: 'Location' }}
+                                </h4>
+                                <p>
+                                    @php
+                                        $locationAddress = isset($pageContent['contact_info']) ? $pageContent['contact_info']->firstWhere('key', 'location_address') : null;
+                                    @endphp
+                                    {!! $locationAddress?->value ?: 'Mumias JuaKali <br>Mumias, Kakamega County, Kenya' !!}
+                                </p>
                             </div>
                         </div>
 
@@ -112,8 +122,18 @@
                                 <i class="fas fa-phone"></i>
                             </div>
                             <div class="info-text">
-                                <h4>Phone</h4>
-                                <p><a href="tel:+254716305905">+254 716 305 905</a></p>
+                                <h4>
+                                    @php
+                                        $phoneTitle = isset($pageContent['contact_info']) ? $pageContent['contact_info']->firstWhere('key', 'phone_title') : null;
+                                    @endphp
+                                    {{ $phoneTitle?->value ?: 'Phone' }}
+                                </h4>
+                                <p>
+                                    @php
+                                        $phoneNumber = isset($pageContent['contact_info']) ? $pageContent['contact_info']->firstWhere('key', 'phone_number') : null;
+                                    @endphp
+                                    <a href="tel:{{ $phoneNumber?->value ?: '+254716305905' }}">{{ $phoneNumber?->value ?: '+254 716 305 905' }}</a>
+                                </p>
                             </div>
                         </div>
 
@@ -122,8 +142,18 @@
                                 <i class="fas fa-envelope"></i>
                             </div>
                             <div class="info-text">
-                                <h4>Email</h4>
-                                <p><a href="mailto:info@vipersacademy.com">info@vipersacademy.com</a></p>
+                                <h4>
+                                    @php
+                                        $emailTitle = isset($pageContent['contact_info']) ? $pageContent['contact_info']->firstWhere('key', 'email_title') : null;
+                                    @endphp
+                                    {{ $emailTitle?->value ?: 'Email' }}
+                                </h4>
+                                <p>
+                                    @php
+                                        $emailAddress = isset($pageContent['contact_info']) ? $pageContent['contact_info']->firstWhere('key', 'email_address') : null;
+                                    @endphp
+                                    <a href="mailto:{{ $emailAddress?->value ?: 'info@vipersacademy.com' }}">{{ $emailAddress?->value ?: 'info@vipersacademy.com' }}</a>
+                                </p>
                             </div>
                         </div>
 
@@ -501,27 +531,167 @@
     margin: 0;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .contact-hero {
-        padding: 3.75rem 0 2.5rem;
-    }
-
-    .contact-hero h1 {
-        font-size: 2rem;
-    }
-
-    .contact-hero p {
-        font-size: 1rem;
+/* Enhanced Mobile Responsiveness */
+@media (max-width: 1024px) {
+    .contact-main {
+        padding: 4rem 0;
     }
 
     .contact-form-wrapper,
     .contact-info-wrapper {
-        padding: 1.875rem 1.25rem;
+        margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .contact-hero {
+        padding: 3rem 0 2rem;
+    }
+
+    .contact-hero h1 {
+        font-size: 1.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .contact-hero p {
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .contact-form-wrapper,
+    .contact-info-wrapper {
+        padding: 1.5rem 1rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+    }
+
+    .contact-form .form-group {
+        margin-bottom: 1.25rem;
+    }
+
+    .contact-form label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .contact-form .form-control {
+        padding: 0.75rem;
+        font-size: 16px; /* Prevents zoom on iOS */
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .contact-form .btn {
+        width: 100%;
+        padding: 0.875rem;
+        font-size: 1rem;
+        border-radius: 8px;
+        min-height: 48px;
+    }
+
+    .contact-info-item {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+    }
+
+    .contact-info-item i {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .contact-info-item h4 {
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
     }
 
     .faq-header h2 {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
+    }
+
+    .faq-item {
+        margin-bottom: 0.75rem;
+    }
+
+    .faq-question {
+        padding: 1rem;
+        font-size: 0.95rem;
+        border-radius: 8px;
+    }
+
+    .faq-answer {
+        padding: 0 1rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .contact-hero {
+        padding: 2rem 0 1.5rem;
+    }
+
+    .contact-hero h1 {
+        font-size: 1.5rem;
+    }
+
+    .contact-hero p {
+        font-size: 0.9rem;
+    }
+
+    .contact-main {
+        padding: 2rem 0;
+    }
+
+    .contact-form-wrapper,
+    .contact-info-wrapper {
+        padding: 1.25rem 0.875rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .contact-form .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .contact-info-item {
+        padding: 0.875rem;
+        margin-bottom: 0.875rem;
+    }
+
+    .faq-section {
+        padding: 2rem 0;
+    }
+
+    .faq-header {
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .contact-hero {
+        padding: 1.5rem 0 1rem;
+    }
+
+    .contact-hero h1 {
+        font-size: 1.375rem;
+    }
+
+    .contact-main {
+        padding: 1.5rem 0;
+    }
+
+    .contact-form-wrapper,
+    .contact-info-wrapper {
+        padding: 1rem 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .contact-form .btn {
+        min-height: 44px;
+    }
+
+    .faq-section {
+        padding: 1.5rem 0;
     }
 }
 </style>

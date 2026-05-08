@@ -124,20 +124,50 @@
         </div>
     </x-dashboard-card>
 
-    <!-- Quick Links -->
+    <!-- System Management Quick Links -->
     <x-dashboard-card variant="default" spacing="md">
         <div class="card-header">
-            <h3 class="card-title">Quick Links</h3>
+            <h3 class="card-title">System Management</h3>
         </div>
         <div class="card-body">
             <x-dashboard-grid columns="4" gap="md" variant="minimal" class="quick-links-grid">
-                <a href="{{ route('super-admin.tournaments.overview') }}" class="quick-link-card">
+                <a href="{{ route('super-admin.organizations.index') }}" class="quick-link-card">
                     <div class="quick-link-icon">
-                        <i class="fas fa-chart-line"></i>
+                        <i class="fas fa-building"></i>
                     </div>
                     <div class="quick-link-content">
-                        <div class="quick-link-title">Tournament Overview</div>
-                        <div class="quick-link-desc">System analytics</div>
+                        <div class="quick-link-title">Organizations</div>
+                        <div class="quick-link-desc">Manage all orgs</div>
+                    </div>
+                </a>
+
+                <a href="{{ route('super-admin.users.index') }}" class="quick-link-card">
+                    <div class="quick-link-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="quick-link-content">
+                        <div class="quick-link-title">Users</div>
+                        <div class="quick-link-desc">User management</div>
+                    </div>
+                </a>
+
+                <a href="{{ route('super-admin.roles.index') }}" class="quick-link-card">
+                    <div class="quick-link-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="quick-link-content">
+                        <div class="quick-link-title">Roles & Permissions</div>
+                        <div class="quick-link-desc">Access control</div>
+                    </div>
+                </a>
+
+                <a href="{{ route('super-admin.plans.index') }}" class="quick-link-card">
+                    <div class="quick-link-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <div class="quick-link-content">
+                        <div class="quick-link-title">Subscription Plans</div>
+                        <div class="quick-link-desc">Pricing & billing</div>
                     </div>
                 </a>
 
@@ -151,63 +181,33 @@
                     </div>
                 </a>
 
-                <a href="{{ route('super-admin.tournaments.index') }}" class="quick-link-card">
+                <a href="{{ route('super-admin.tournaments.overview') }}" class="quick-link-card">
                     <div class="quick-link-icon">
-                        <i class="fas fa-trophy"></i>
+                        <i class="fas fa-chart-line"></i>
                     </div>
                     <div class="quick-link-content">
-                        <div class="quick-link-title">Tournaments</div>
-                        <div class="quick-link-desc">Event management</div>
+                        <div class="quick-link-title">Tournament Analytics</div>
+                        <div class="quick-link-desc">System stats</div>
+                    </div>
+                </a>
+
+                <a href="{{ route('super-admin.finance.dashboard') }}" class="quick-link-card">
+                    <div class="quick-link-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="quick-link-content">
+                        <div class="quick-link-title">Financial Overview</div>
+                        <div class="quick-link-desc">Revenue & budgets</div>
                     </div>
                 </a>
 
                 <a href="{{ route('super-admin.organizations.index') }}" class="quick-link-card">
                     <div class="quick-link-icon">
-                        <i class="fas fa-building"></i>
+                        <i class="fas fa-clock"></i>
                     </div>
                     <div class="quick-link-content">
-                        <div class="quick-link-title">Organizations</div>
-                        <div class="quick-link-desc">Manage orgs</div>
-                    </div>
-                </a>
-
-                <a href="{{ route('super-admin.roles.index') }}" class="quick-link-card">
-                    <div class="quick-link-icon">
-                        <i class="fas fa-user-shield"></i>
-                    </div>
-                    <div class="quick-link-content">
-                        <div class="quick-link-title">Role Management</div>
-                        <div class="quick-link-desc">Permissions</div>
-                    </div>
-                </a>
-
-                <a href="{{ route('super-admin.plans.index') }}" class="quick-link-card">
-                    <div class="quick-link-icon">
-                        <i class="fas fa-tags"></i>
-                    </div>
-                    <div class="quick-link-content">
-                        <div class="quick-link-title">Subscription Plans</div>
-                        <div class="quick-link-desc">Pricing</div>
-                    </div>
-                </a>
-
-                <a href="{{ route('super-admin.analytics') }}" class="quick-link-card">
-                    <div class="quick-link-icon">
-                        <i class="fas fa-chart-bar"></i>
-                    </div>
-                    <div class="quick-link-content">
-                        <div class="quick-link-title">Analytics</div>
-                        <div class="quick-link-desc">Reports</div>
-                    </div>
-                </a>
-
-                <a href="{{ route('super-admin.users.index') }}" class="quick-link-card">
-                    <div class="quick-link-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="quick-link-content">
-                        <div class="quick-link-title">Users</div>
-                        <div class="quick-link-desc">User management</div>
+                        <div class="quick-link-title">Organization Activity</div>
+                        <div class="quick-link-desc">Manage & monitor</div>
                     </div>
                 </a>
             </x-dashboard-grid>
@@ -226,18 +226,18 @@
                         <i class="fas fa-plus-circle"></i>
                     </div>
                     <div class="action-content">
-                        <div class="action-title">New Tournament</div>
-                        <div class="action-desc">Create event</div>
+                        <div class="action-title">Create Tournament</div>
+                        <div class="action-desc">New event setup</div>
                     </div>
                 </a>
 
                 <a href="{{ route('super-admin.tournaments.index') }}" class="action-card">
                     <div class="action-icon">
-                        <i class="fas fa-list"></i>
+                        <i class="fas fa-trophy"></i>
                     </div>
                     <div class="action-content">
-                        <div class="action-title">All Tournaments</div>
-                        <div class="action-desc">Manage events</div>
+                        <div class="action-title">Manage Tournaments</div>
+                        <div class="action-desc">All events</div>
                     </div>
                 </a>
 
@@ -246,190 +246,63 @@
                         <i class="fas fa-chart-pie"></i>
                     </div>
                     <div class="action-content">
-                        <div class="action-title">Overview</div>
-                        <div class="action-desc">System stats</div>
+                        <div class="action-title">Tournament Analytics</div>
+                        <div class="action-desc">Performance stats</div>
                     </div>
                 </a>
             </x-dashboard-grid>
         </div>
     </x-dashboard-card>
 
-    <!-- Smart Tournament Engine -->
-    <x-dashboard-card variant="default" spacing="md" class="engine-section">
+    <!-- System Tools & Features -->
+    <x-dashboard-card variant="default" spacing="md">
         <div class="card-header">
-            <h3 class="card-title">⚙️ Smart Tournament Engine</h3>
+            <h3 class="card-title">System Tools & Features</h3>
         </div>
         <div class="card-body">
-            <x-dashboard-grid columns="2" gap="md" variant="minimal" class="engine-actions-grid">
-                <a href="{{ route('super-admin.tournaments.index') }}" class="engine-card">
-                    <div class="engine-icon">
-                        <i class="fas fa-puzzle-piece"></i>
+            <x-dashboard-grid columns="4" gap="md" variant="minimal">
+                <a href="{{ route('admin.players.index') }}" class="tool-card">
+                    <div class="tool-icon">
+                        <i class="fas fa-users"></i>
                     </div>
-                    <div class="engine-content">
-                        <div class="engine-title">Custom Formats</div>
-                        <div class="engine-desc">Flexible tournament structures</div>
-                    </div>
-                </a>
-
-                <a href="{{ route('super-admin.tournaments.index') }}" class="engine-card">
-                    <div class="engine-icon">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <div class="engine-content">
-                        <div class="engine-title">ELO Rankings</div>
-                        <div class="engine-desc">Skill-based rankings</div>
+                    <div class="tool-content">
+                        <div class="tool-title">Player Management</div>
+                        <div class="tool-desc">All players & profiles</div>
                     </div>
                 </a>
 
-                <a href="{{ route('super-admin.tournaments.index') }}" class="engine-card">
-                    <div class="engine-icon">
-                        <i class="fas fa-user-tie"></i>
+                <a href="{{ route('super-admin.finance.budgets.index') }}" class="tool-card">
+                    <div class="tool-icon">
+                        <i class="fas fa-chart-line"></i>
                     </div>
-                    <div class="engine-content">
-                        <div class="engine-title">Referee Allocation</div>
-                        <div class="engine-desc">Smart assignment</div>
+                    <div class="tool-content">
+                        <div class="tool-title">Financial Reports</div>
+                        <div class="tool-desc">Budgets & expenses</div>
                     </div>
                 </a>
 
-                <a href="{{ route('super-admin.tournaments.index') }}" class="engine-card">
-                    <div class="engine-icon">
-                        <i class="fas fa-route"></i>
+                <a href="{{ route('super-admin.tournaments.index') }}" class="tool-card">
+                    <div class="tool-icon">
+                        <i class="fas fa-cogs"></i>
                     </div>
-                    <div class="engine-content">
-                        <div class="engine-title">Travel Optimization</div>
-                        <div class="engine-desc">Route planning</div>
+                    <div class="tool-content">
+                        <div class="tool-title">Tournament Engine</div>
+                        <div class="tool-desc">Advanced features</div>
+                    </div>
+                </a>
+
+                <a href="{{ route('super-admin.organizations.index') }}" class="tool-card">
+                    <div class="tool-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <div class="tool-content">
+                        <div class="tool-title">System Activity</div>
+                        <div class="tool-desc">Monitor operations</div>
                     </div>
                 </a>
             </x-dashboard-grid>
         </div>
     </x-dashboard-card>
-
-    <!-- Digital Player Ecosystem & Governance -->
-    <x-dashboard-grid columns="2" gap="lg" variant="default" class="ecosystem-grid">
-        <!-- Digital Player Ecosystem -->
-        <x-dashboard-card variant="default" spacing="md">
-            <div class="card-header">
-                <h3 class="card-title">🎓 Digital Player Ecosystem</h3>
-            </div>
-            <div class="card-body">
-                <x-dashboard-grid columns="2" gap="md" variant="minimal">
-                    <a href="{{ route('admin.players.index') }}" class="ecosystem-action">
-                        <i class="fas fa-user me-2"></i>All Players
-                    </a>
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="ecosystem-action">
-                        <i class="fas fa-user-injured me-2"></i>Injuries
-                    </a>
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="ecosystem-action">
-                        <i class="fas fa-exchange-alt me-2"></i>Transfers
-                    </a>
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="ecosystem-action">
-                        <i class="fas fa-file-contract me-2"></i>Contracts
-                    </a>
-                </x-dashboard-grid>
-            </div>
-        </x-dashboard-card>
-
-        <!-- Governance & Compliance -->
-        <x-dashboard-card variant="default" spacing="md">
-            <div class="card-header">
-                <h3 class="card-title">⚖️ Governance & Compliance</h3>
-            </div>
-            <div class="card-body">
-                <x-dashboard-grid columns="2" gap="md" variant="minimal">
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="governance-action">
-                        <i class="fas fa-birthday-cake me-2"></i>Age Verification
-                    </a>
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="governance-action">
-                        <i class="fas fa-balance-scale me-2"></i>Disciplinary
-                    </a>
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="governance-action">
-                        <i class="fas fa-hands-helping me-2"></i>Appeals
-                    </a>
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="governance-action">
-                        <i class="fas fa-flag me-2"></i>Protests
-                    </a>
-                </x-dashboard-grid>
-            </div>
-        </x-dashboard-card>
-    </x-dashboard-grid>
-
-    <!-- Infrastructure & Operations -->
-    <x-dashboard-grid columns="3" gap="lg" variant="default" class="infrastructure-grid">
-        <!-- Venue Management -->
-        <x-dashboard-card variant="default" spacing="md">
-            <div class="card-header">
-                <h3 class="card-title">📍 Venue Management</h3>
-            </div>
-            <div class="card-body">
-                <x-dashboard-grid columns="2" gap="md" variant="minimal">
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="venue-action">
-                        <i class="fas fa-plus-circle me-2"></i>Add Venue
-                    </a>
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="venue-action">
-                        <i class="fas fa-calendar-check me-2"></i>Availability
-                    </a>
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="venue-action">
-                        <i class="fas fa-bookmark me-2"></i>Bookings
-                    </a>
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="venue-action">
-                        <i class="fas fa-building me-2"></i>Facilities
-                    </a>
-                </x-dashboard-grid>
-            </div>
-        </x-dashboard-card>
-
-        <!-- Referee Management -->
-        <x-dashboard-card variant="default" spacing="md">
-            <div class="card-header">
-                <h3 class="card-title">👥 Referee Management</h3>
-            </div>
-            <div class="card-body">
-                <x-dashboard-grid columns="2" gap="md" variant="minimal">
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="referee-action">
-                        <i class="fas fa-user-plus me-2"></i>Add Referee
-                    </a>
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="referee-action">
-                        <i class="fas fa-graduation-cap me-2"></i>Training
-                    </a>
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="referee-action">
-                        <i class="fas fa-star-half-alt me-2"></i>Reviews
-                    </a>
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="referee-action">
-                        <i class="fas fa-certificate me-2"></i>Certifications
-                    </a>
-                </x-dashboard-grid>
-            </div>
-        </x-dashboard-card>
-
-        <!-- Match Types -->
-        <x-dashboard-card variant="default" spacing="md">
-            <div class="card-header">
-                <h3 class="card-title">⚽ Match Types</h3>
-            </div>
-            <div class="card-body">
-                <x-dashboard-grid columns="2" gap="md" variant="minimal">
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="match-action">
-                        <i class="fas fa-trophy me-2"></i>Tournament
-                    </a>
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="match-action">
-                        <i class="fas fa-league me-2"></i>League
-                    </a>
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="match-action">
-                        <i class="fas fa-handshake me-2"></i>Friendly
-                    </a>
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="match-action">
-                        <i class="fas fa-eject me-2"></i>Knockout
-                    </a>
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="match-action">
-                        <i class="fas fa-object-group me-2"></i>Group Stage
-                    </a>
-                    <a href="{{ route('super-admin.tournaments.index') }}" class="match-action">
-                        <i class="fas fa-theater-masks me-2"></i>Exhibition
-                    </a>
-                </x-dashboard-grid>
-            </div>
-        </x-dashboard-card>
-    </x-dashboard-grid>
 </div>
 @endsection
 

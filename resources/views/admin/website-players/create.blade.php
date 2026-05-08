@@ -42,20 +42,14 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="category">Category *</label>
                                     <select class="form-control @error('category') is-invalid @enderror"
                                             id="category" name="category" required>
                                         <option value="">Select Category</option>
-                                        <option value="u9" {{ old('category') == 'u9' ? 'selected' : '' }}>Under 9</option>
-                                        <option value="u11" {{ old('category') == 'u11' ? 'selected' : '' }}>Under 11</option>
-                                        <option value="u13" {{ old('category') == 'u13' ? 'selected' : '' }}>Under 13</option>
-                                        <option value="u15" {{ old('category') == 'u15' ? 'selected' : '' }}>Under 15</option>
-                                        <option value="u17" {{ old('category') == 'u17' ? 'selected' : '' }}>Under 17</option>
-                                        <option value="u19" {{ old('category') == 'u19' ? 'selected' : '' }}>Under 19</option>
+                                        <option value="junior" {{ old('category') == 'junior' ? 'selected' : '' }}>Junior</option>
                                         <option value="senior" {{ old('category') == 'senior' ? 'selected' : '' }}>Senior</option>
-                                        <option value="academy" {{ old('category') == 'academy' ? 'selected' : '' }}>Academy</option>
                                     </select>
                                     @error('category')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -63,7 +57,22 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="gender">Gender *</label>
+                                    <select class="form-control @error('gender') is-invalid @enderror"
+                                            id="gender" name="gender" required>
+                                        <option value="">Select Gender</option>
+                                        <option value="M" {{ old('gender') == 'M' ? 'selected' : '' }}>Men</option>
+                                        <option value="F" {{ old('gender') == 'F' ? 'selected' : '' }}>Women</option>
+                                    </select>
+                                    @error('gender')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="position">Position *</label>
                                     <select class="form-control @error('position') is-invalid @enderror"
@@ -80,7 +89,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="age">Age *</label>
                                     <input type="number" class="form-control @error('age') is-invalid @enderror"

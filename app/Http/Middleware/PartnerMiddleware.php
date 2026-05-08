@@ -32,6 +32,11 @@ class PartnerMiddleware
 
         $user = Auth::user();
 
+        // Super-admins bypass all checks
+        if ($user->isSuperAdmin()) {
+            return $next($request);
+        }
+
         if (in_array($user->user_type, self::PERMITTED_TYPES) || $user->hasAnyRole(self::PERMITTED_ROLES)) {
             return $next($request);
         }

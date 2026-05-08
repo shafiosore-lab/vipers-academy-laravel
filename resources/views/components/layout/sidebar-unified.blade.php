@@ -116,17 +116,20 @@
                 'accordion' => true,
                 'roles' => ['super-admin'],
                 'items' => [
+                    // Page Content Management
                     ['name' => __('Page Content'), 'route' => 'super-admin.page-content.index', 'icon' => 'fa-file-alt'],
                     ['name' => __('Home Page'), 'route' => 'super-admin.page-content.show', 'route_params' => ['page' => 'home'], 'icon' => 'fa-home'],
-                    ['name' => __('About Us'), 'route' => 'super-admin.page-content.show', 'route_params' => ['page' => 'about'], 'icon' => 'fa-info-circle'],
+                    ['name' => __('About Page'), 'route' => 'super-admin.page-content.show', 'route_params' => ['page' => 'about'], 'icon' => 'fa-info-circle'],
                     ['name' => __('Programs Page'), 'route' => 'super-admin.page-content.show', 'route_params' => ['page' => 'programs'], 'icon' => 'fa-clipboard-list'],
-                    ['name' => __('Announcements'), 'route' => 'super-admin.page-content.show', 'route_params' => ['page' => 'announcements'], 'icon' => 'fa-newspaper'],
-                    ['name' => __('Careers'), 'route' => 'super-admin.page-content.show', 'route_params' => ['page' => 'careers'], 'icon' => 'fa-briefcase'],
-                    ['name' => __('Leaders'), 'route' => 'super-admin.page-content.show', 'route_params' => ['page' => 'leaders'], 'icon' => 'fa-star'],
+                    ['name' => __('Announcements Page'), 'route' => 'super-admin.page-content.show', 'route_params' => ['page' => 'announcements'], 'icon' => 'fa-bullhorn'],
+                    ['name' => __('Careers Page'), 'route' => 'super-admin.page-content.show', 'route_params' => ['page' => 'careers'], 'icon' => 'fa-briefcase'],
+                    ['name' => __('Leaders Page'), 'route' => 'super-admin.page-content.show', 'route_params' => ['page' => 'leaders'], 'icon' => 'fa-star'],
+
+                    // Content Management
+                    ['name' => __('Blog Posts'), 'route' => 'admin.blog.index', 'icon' => 'fa-newspaper'],
+                    ['name' => __('Job Postings'), 'route' => 'admin.jobs.index', 'icon' => 'fa-briefcase'],
                     ['name' => __('Website Players'), 'route' => 'admin.website-players.index', 'icon' => 'fa-futbol'],
                     ['name' => __('Partners'), 'route' => 'admin.partners.index', 'icon' => 'fa-handshake'],
-                    ['name' => __('Blog/News'), 'route' => 'admin.blog.index', 'icon' => 'fa-newspaper'],
-                    ['name' => __('Jobs'), 'route' => 'admin.jobs.index', 'icon' => 'fa-briefcase'],
                 ]
             ];
         } elseif ($user->hasAnyRole(['admin', 'operations-admin'])) {
@@ -136,14 +139,16 @@
                 'accordion' => true,
                 'roles' => ['admin', 'operations-admin'],
                 'items' => [
+                    // Page Content Management
                     ['name' => __('Page Content'), 'route' => 'admin.page-content.index', 'icon' => 'fa-file-alt'],
                     ['name' => __('Home Page'), 'route' => 'admin.page-content.show', 'route_params' => ['page' => 'home'], 'icon' => 'fa-home'],
-                    ['name' => __('About Us'), 'route' => 'admin.page-content.show', 'route_params' => ['page' => 'about'], 'icon' => 'fa-info-circle'],
+                    ['name' => __('About Page'), 'route' => 'admin.page-content.show', 'route_params' => ['page' => 'about'], 'icon' => 'fa-info-circle'],
                     ['name' => __('Programs'), 'route' => 'admin.programs.index', 'icon' => 'fa-clipboard-list'],
+
+                    // Content Management
+                    ['name' => __('Blog Posts'), 'route' => 'admin.blog.index', 'icon' => 'fa-newspaper'],
+                    ['name' => __('Job Postings'), 'route' => 'admin.jobs.index', 'icon' => 'fa-briefcase'],
                     ['name' => __('Website Players'), 'route' => 'admin.website-players.index', 'icon' => 'fa-futbol'],
-                    ['name' => __('Announcements'), 'route' => 'admin.blog.index', 'icon' => 'fa-newspaper'],
-                    ['name' => __('Careers'), 'route' => 'admin.jobs.index', 'icon' => 'fa-briefcase'],
-                    ['name' => __('Leaders'), 'route' => 'admin.leaders.index', 'icon' => 'fa-star'],
                 ]
             ];
         }

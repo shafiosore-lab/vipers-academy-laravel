@@ -760,7 +760,7 @@
         .footer {
             background: linear-gradient(135deg, var(--black) 0%, #1a1a1a 100%);
             color: var(--gray-600);
-            padding: 0.75rem 0 0.5rem;
+            padding: 0.3rem 0 0.2rem;
             position: relative;
             flex-shrink: 0;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
@@ -781,7 +781,7 @@
             padding: 0;
             display: grid;
             grid-template-columns: 1fr;
-            gap: 0.25rem;
+            gap: 0.1rem;
         }
 
         .footer-header {
@@ -833,20 +833,20 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
             flex-wrap: wrap;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.1rem;
         }
 
         .stat-item {
             display: flex;
             align-items: center;
-            gap: 0.375rem;
+            gap: 0.25rem;
             background: rgba(255, 255, 255, 0.03);
-            padding: 0.25rem 0.5rem;
-            border-radius: 12px;
+            padding: 0.15rem 0.35rem;
+            border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.08);
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 600;
             color: var(--gray-300);
         }
@@ -860,9 +860,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.5rem;
             flex-wrap: wrap;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.1rem;
         }
 
         .play-store-badge,
@@ -956,12 +956,13 @@
         }
 
         .footer-copyright {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: var(--white);
             letter-spacing: 0.3px;
             margin-bottom: 0;
             text-align: center;
             opacity: 0.9;
+            line-height: 1.2;
         }
 
         .footer-copyright a {
@@ -974,6 +975,58 @@
         .footer-copyright a:hover {
             opacity: 1;
             color: var(--white);
+        }
+
+        /* ========================================
+           MOBILE FOOTER OPTIMIZATION
+           ======================================== */
+        @media (max-width: 767px) {
+            .footer {
+                padding: 0.2rem 0 0.3rem; /* 60% reduction from original 0.75rem/0.5rem */
+                min-height: auto;
+            }
+
+            .footer-content {
+                gap: 0.08rem; /* Proportional gap for mobile */
+                padding: 0 0.25rem;
+            }
+
+            .footer-actions {
+                margin: 0.08rem 0 0.08rem 0; /* Proportional margins */
+                gap: 0.4rem; /* Appropriate spacing */
+            }
+
+            .footer-actions img {
+                height: 32px; /* Smaller Google Play badge */
+            }
+
+            .footer-copyright {
+                font-size: 0.55rem; /* Smaller font for mobile */
+                line-height: 1.1; /* Tighter line height */
+                margin-bottom: 0;
+                padding: 0 0.25rem;
+                letter-spacing: 0.2px;
+            }
+
+            .footer-stats {
+                gap: 0.5rem; /* Appropriate gap between stats */
+                margin-bottom: 0.08rem;
+            }
+
+            .stat-item {
+                padding: 0.1rem 0.25rem; /* Smaller padding */
+                font-size: 0.55rem; /* Smaller font */
+                gap: 0.2rem; /* Tighter internal spacing */
+            }
+
+            .stat-value {
+                font-weight: 700;
+            }
+
+            /* Remove footer pseudo-element on mobile for cleaner look */
+            .footer::before {
+                display: none;
+            }
         }
 
         /* ========================================
@@ -1013,7 +1066,7 @@
         @media (max-width: 575px) {
             :root { --navbar-height: 60px; }
             .top-bar { display: none; }
-            body { padding-top: 6px; }
+            body { padding-top: var(--navbar-height); }
             .main-navbar { top: 0; }
             .navbar-content { grid-template-columns: auto auto; gap: var(--space-md); }
             .search-wrapper { display: none; }
@@ -1021,7 +1074,6 @@
             .brand-text { display: none; }
             .logo-image { width: 48px; height: 48px; }
             .mobile-menu { top: var(--navbar-height); max-height: calc(100vh - var(--navbar-height)); }
-            .footer { padding: 0.75rem 0 0.5rem; }
         }
 
         /* Reduced Motion */
@@ -1033,6 +1085,10 @@
             }
         }
     </style>
+
+    <!-- Global Mobile Optimization Framework -->
+    @include('website.includes.mobile-optimization')
+
     @stack('styles')
 </head>
 <body class="academy-layout">
@@ -1157,7 +1213,7 @@
             <div class="footer-content">
 
                 <!-- Google Play Badge -->
-                <div class="footer-actions" style="justify-content: center; margin: 0.5rem 0;">
+                <div class="footer-actions" style="justify-content: center; margin: 0.1rem 0;">
                     <a href="https://play.google.com/store/apps/details?id=GameSuite" target="_blank">
                         <img
                             src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"

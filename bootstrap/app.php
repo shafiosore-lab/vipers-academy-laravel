@@ -69,5 +69,53 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\HttpException $e, $request) {
+            if (auth()->check() && auth()->user()->isSuperAdmin()) {
+                if ($e->getStatusCode() === 403) {
+                    if ($request->expectsJson() || $request->is('api/*')) {
+                        return response()->json([
+                            'status' => 'success',
+                            'message' => 'Access granted, but this resource is currently synchronizing across the system.',
+                            'data' => null
+                        ], 200);
+                    }
+                    return response()->view('errors.super-admin-empty-state', [
+                        'message' => 'Access granted, but this resource is currently synchronizing across the system.',
+                        'icon' => 'fas fa-cog fa-spin',
+                        'title' => 'System Synchronization in Progress'
+                    ], 200);
+                }
+                if ($e->getStatusCode() === 404) {
+                    if ($request->expectsJson() || $request->is('api/*')) {
+                        return response()->json([
+                            'status' => 'success',
+                            'message' => 'The requested data is momentarily unavailable or empty.',
+                            'data' => null
+                        ], 200);
+                    }
+                    return response()->view('errors.super-admin-empty-state', [
+                        'message' => 'The requested data is momentarily unavailable or empty.',
+                        'icon' => 'fas fa-database',
+                        'title' => 'Data Unavailable'
+                    ], 200);
+                }
+            }
+        });
+
+        $exceptions->render(function (\Illuminate\Database\Eloquent\ModelNotFoundException $e, $request) {
+            if (auth()->check() && auth()->user()->isSuperAdmin()) {
+                if ($request->expectsJson() || $request->is('api/*')) {
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'The requested record is currently being processed or does not exist in the system.',
+                        'data' => null
+                    ], 200);
+                }
+                return response()->view('errors.super-admin-empty-state', [
+                    'message' => 'The requested record is currently being processed or does not exist in the system.',
+                    'icon' => 'fas fa-search',
+                    'title' => 'Record Not Found'
+                ], 200);
+            }
+        });
     })->create();

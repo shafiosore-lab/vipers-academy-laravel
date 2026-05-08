@@ -17,6 +17,7 @@ class PlayerController extends \App\Http\Controllers\Controller
 {
     /**
      * Display all players - merged from both main players table and website uploaded players
+     * Supports filtering by gender, category, and search terms
      */
     public function index(Request $request)
     {
@@ -35,8 +36,39 @@ class PlayerController extends \App\Http\Controllers\Controller
                 return view('website.players.index', compact('players'));
             }
 
-            // Get all website players (both synced and orphaned)
-            $websitePlayers = WebsitePlayer::orderBy('last_name')
+            // Get filtering parameters
+            $search = $request->get('search', '');
+            $gender = $request->get('gender', '');
+            $category = $request->get('category', '');
+
+            // Build query with filters
+            $query = WebsitePlayer::query();
+
+            // Apply search filter
+            if (!empty($search)) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
+                      ->orWhere('last_name', 'like', "%{$search}%")
+                      ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"]);
+                });
+            }
+
+            // Apply gender filter
+            if (!empty($gender)) {
+                if ($gender === 'M') {
+                    $query->where('gender', 'M');
+                } elseif ($gender === 'F') {
+                    $query->where('gender', 'F');
+                }
+            }
+
+            // Apply category filter
+            if (!empty($category)) {
+                $query->where('category', 'like', "%{$category}%");
+            }
+
+            // Get filtered website players
+            $websitePlayers = $query->orderBy('last_name')
                 ->orderBy('first_name')
                 ->get();
 
@@ -86,6 +118,9 @@ class PlayerController extends \App\Http\Controllers\Controller
 
             \Log::info('PlayerController@index: Final filtered players', [
                 'total' => $players->total(),
+                'search' => $search,
+                'gender' => $gender,
+                'category' => $category,
                 'synced_count' => $websitePlayers->where('source', 'synced')->count(),
                 'direct_upload_count' => $websitePlayers->where('source', 'direct_upload')->count(),
             ]);
@@ -110,7 +145,7 @@ class PlayerController extends \App\Http\Controllers\Controller
             }
         }
 
-        return view('website.players.index', compact('players'));
+        return view('website.players.index', compact('players', 'search', 'gender', 'category'));
     }
 
     /**
@@ -543,6 +578,116 @@ class PlayerController extends \App\Http\Controllers\Controller
             });
 
         return response()->json(['results' => $players]);
+    }
+
+    /**
+     * API endpoint for filtered players data
+     * Returns optimized JSON response for frontend filtering
+     */
+    public function apiIndex(Request $request)
+    {
+        try {
+            // Check if the table exists before querying
+            if (!\Schema::hasTable('website_uploaded_players')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Players data not available',
+                    'data' => []
+                ], 404);
+            }
+
+            // Get filtering parameters
+            $search = $request->get('search', '');
+            $gender = $request->get('gender', '');
+            $category = $request->get('category', '');
+            $page = $request->get('page', 1);
+            $perPage = $request->get('per_page', 50);
+
+            // Build query with filters
+            $query = WebsitePlayer::query();
+
+            // Apply search filter
+            if (!empty($search)) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
+                      ->orWhere('last_name', 'like', "%{$search}%")
+                      ->orWhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"]);
+                });
+            }
+
+            // Apply gender filter
+            if (!empty($gender)) {
+                if ($gender === 'M') {
+                    $query->where('gender', 'M');
+                } elseif ($gender === 'F') {
+                    $query->where('gender', 'F');
+                }
+            }
+
+            // Apply category filter
+            if (!empty($category)) {
+                $query->where('category', 'like', "%{$category}%");
+            }
+
+            // Get paginated results
+            $players = $query->orderBy('last_name')
+                ->orderBy('first_name')
+                ->paginate($perPage, ['*'], 'page', $page);
+
+            // Transform data for optimized JSON response
+            $playersData = $players->getCollection()->map(function ($player) {
+                return [
+                    'id' => $player->id,
+                    'name' => $player->name,
+                    'first_name' => $player->first_name,
+                    'last_name' => $player->last_name,
+                    'position' => $player->position,
+                    'formatted_position' => $player->formatted_position,
+                    'category' => $player->category,
+                    'standardized_category' => $player->standardized_category,
+                    'gender' => $player->gender,
+                    'formatted_gender' => $player->formatted_gender,
+                    'age' => $player->age,
+                    'image_url' => $player->image_url,
+                    'jersey_number' => $player->jersey_number,
+                    'goals' => $player->goals,
+                    'assists' => $player->assists,
+                    'appearances' => $player->appearances,
+                    'has_youtube' => !empty($player->youtube_url),
+                    'has_stats' => ($player->goals > 0 || $player->assists > 0),
+                ];
+            });
+
+            return response()->json([
+                'success' => true,
+                'data' => $playersData,
+                'pagination' => [
+                    'current_page' => $players->currentPage(),
+                    'last_page' => $players->lastPage(),
+                    'per_page' => $players->perPage(),
+                    'total' => $players->total(),
+                    'from' => $players->firstItem(),
+                    'to' => $players->lastItem(),
+                ],
+                'filters' => [
+                    'search' => $search,
+                    'gender' => $gender,
+                    'category' => $category,
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('PlayerController@apiIndex: Exception occurred', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching players',
+                'data' => []
+            ], 500);
+        }
     }
 
     /**

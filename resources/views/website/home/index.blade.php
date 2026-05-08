@@ -12,13 +12,13 @@
         <div class="row justify-content-center text-center">
             <div class="col-lg-10 col-xl-8">
                 <div class="hero-content text-white" data-aos="fade-up">
-                    <h1 class="hero-title fw-bold mb-3">
+                    <h1 class="hero-title fw-bold mb-2">
                         @php
                             $heroTitle = isset($pageContent['hero']) ? $pageContent['hero']->firstWhere('key', 'hero_title') : null;
                         @endphp
                         {{ $heroTitle?->value ?: 'Transforming Lives Through Football & Education' }}
                     </h1>
-                    <p class="hero-subtitle mb-4">
+                    <p class="hero-subtitle mb-3">
                          @php
                              $heroSubtitle = isset($pageContent['hero']) ? $pageContent['hero']->firstWhere('key', 'hero_subtitle') : null;
                          @endphp
@@ -57,13 +57,19 @@
                       </div>
                   </div>
               </div>
-              <div class="col-lg-6" data-aos="fade-left">
-                  <h2 class="section-title fw-bold mb-3">
-                      Empowering Youth Through <span class="text-primary">Sports, STEM & Education</span>
-                  </h2>
-                  <p class="section-text mb-3 text-muted">
-                      Mumias Vipers Football Academy is a community-based organization that combines football training, STEM education (powered by E.N.G.I.N.E USA), academic support, and life skills development to empower underserved youth in Kenya. We provide structured programs that nurture talent, discipline, leadership, and academic excellence.
-                  </p>
+               <div class="col-lg-6" data-aos="fade-left">
+                   <h2 class="section-title fw-bold mb-3">
+                       @php
+                           $whatWeDoTitle = isset($pageContent['what_we_do']) ? $pageContent['what_we_do']->firstWhere('key', 'title') : null;
+                       @endphp
+                       {{ $whatWeDoTitle?->value ?: 'Empowering Youth Through <span class="text-primary">Sports, STEM & Education</span>' }}
+                   </h2>
+                   <p class="section-text mb-3 text-muted">
+                       @php
+                           $whatWeDoDescription = isset($pageContent['what_we_do']) ? $pageContent['what_we_do']->firstWhere('key', 'description') : null;
+                       @endphp
+                       {{ $whatWeDoDescription?->value ?: 'Mumias Vipers Football Academy is a community-based organization that combines football training, STEM education (powered by E.N.G.I.N.E USA), academic support, and life skills development to empower underserved youth in Kenya. We provide structured programs that nurture talent, discipline, leadership, and academic excellence.' }}
+                   </p>
 
                   <div class="row g-2 mb-3">
                       <div class="col-6">
@@ -117,12 +123,20 @@
 <!-- Success Stories Section -->
   <section class="success-stories py-4 bg-white">
       <div class="container">
-          <div class="text-center mb-3" data-aos="fade-up">
-              <h2 class="section-title fw-bold mb-2">
-                  Success <span class="text-success">Stories</span>
-              </h2>
-              <p class="section-subtitle text-muted">Real lives transformed through football-powered youth development</p>
-          </div>
+           <div class="text-center mb-3" data-aos="fade-up">
+               <h2 class="section-title fw-bold mb-2">
+                   @php
+                       $storiesTitle = isset($pageContent['stories']) ? $pageContent['stories']->firstWhere('key', 'title') : null;
+                   @endphp
+                   {{ $storiesTitle?->value ?: 'Success <span class="text-success">Stories</span>' }}
+               </h2>
+               <p class="section-subtitle text-muted">
+                   @php
+                       $storiesSubtitle = isset($pageContent['stories']) ? $pageContent['stories']->firstWhere('key', 'subtitle') : null;
+                   @endphp
+                   {{ $storiesSubtitle?->value ?: 'Real lives transformed through football-powered youth development' }}
+               </p>
+           </div>
 
           <div class="row g-3">
               <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
@@ -196,9 +210,17 @@
     <div class="container">
         <div class="text-center mb-3" data-aos="fade-up">
             <h2 class="section-title fw-bold mb-2">
-                Football <span class="text-success">|</span> Academics <span class="text-warning">|</span> Technology
+                @php
+                    $programsTitle = isset($pageContent['programs']) ? $pageContent['programs']->firstWhere('key', 'title') : null;
+                @endphp
+                {{ $programsTitle?->value ?: 'Football <span class="text-success">|</span> Academics <span class="text-warning">|</span> Technology' }}
             </h2>
-            <p class="section-subtitle">Choose from our comprehensive range of youth development programs</p>
+            <p class="section-subtitle">
+                @php
+                    $programsSubtitle = isset($pageContent['programs']) ? $pageContent['programs']->firstWhere('key', 'subtitle') : null;
+                @endphp
+                {{ $programsSubtitle?->value ?: 'Choose from our comprehensive range of youth development programs' }}
+            </p>
         </div>
 
         <div class="row g-4">
@@ -450,10 +472,12 @@
     position: relative;
     min-height: 70vh;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    justify-content: center;
     background-size: cover;
     background-position: center;
     overflow: hidden;
+    padding-top: 2rem; /* Compact spacing from top */
 }
 
 .hero-overlay {
@@ -465,11 +489,31 @@
     z-index: 1;
 }
 
-.hero-content {
-    position: relative;
-    z-index: 2;
-    color: var(--white);
-}
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        color: var(--white);
+        padding-top: 1rem; /* Additional spacing from very top */
+    }
+
+    /* Responsive hero content spacing */
+    @media (min-width: 992px) {
+        .hero-content {
+            padding-top: 2rem; /* Desktop spacing */
+        }
+    }
+
+    @media (min-width: 576px) and (max-width: 991px) {
+        .hero-content {
+            padding-top: 1.5rem; /* Tablet spacing */
+        }
+    }
+
+    @media (max-width: 575px) {
+        .hero-content {
+            padding-top: 1rem; /* Mobile spacing */
+        }
+    }
 
 /* Program Cards Typography */
 .program-card .card-title {
@@ -534,21 +578,39 @@
 }
 
 @media (min-width: 992px) {
-    .hero-section { min-height: 75vh; max-height: 800px; padding-top: 80px; }
-    .hero-title { font-size: 2.75rem; }
-    .hero-subtitle { font-size: 1.05rem; }
+    .hero-section {
+        min-height: 75vh;
+        max-height: 800px;
+        padding-top: 1.5rem; /* Reduced from 80px for compact view */
+        align-items: flex-start;
+        justify-content: center;
+    }
+    .hero-title { font-size: 2.75rem; margin-bottom: 1rem; }
+    .hero-subtitle { font-size: 1.05rem; margin-bottom: 2rem; }
     .hero-buttons .btn { font-size: 0.95rem; padding: 0.65rem 1.25rem; }
 }
 
 @media (min-width: 576px) and (max-width: 991px) {
-    .hero-section { min-height: 55vh; padding-top: 80px; }
-    .hero-title { font-size: 2rem; }
+    .hero-section {
+        min-height: 55vh;
+        padding-top: 1.25rem; /* Reduced from 80px for compact view */
+        align-items: flex-start;
+        justify-content: center;
+    }
+    .hero-title { font-size: 2rem; margin-bottom: 1rem; }
+    .hero-subtitle { margin-bottom: 2rem; }
 }
 
 @media (max-width: 575px) {
-    .hero-section { min-height: 50vh; padding-top: 70px; padding-bottom: 1.5rem; }
-    .hero-title { font-size: 1.5rem; }
-    .hero-subtitle { font-size: 0.85rem; }
+    .hero-section {
+        min-height: 50vh;
+        padding-top: 1rem; /* Reduced from 70px for compact mobile view */
+        padding-bottom: 1.5rem;
+        align-items: flex-start;
+        justify-content: center;
+    }
+    .hero-title { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .hero-subtitle { font-size: 0.85rem; margin-bottom: 1.5rem; }
     .hero-buttons {
         display: grid !important;
         grid-template-columns: repeat(2, 1fr) !important;
