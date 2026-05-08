@@ -20,6 +20,20 @@
         max-width: 100vw;
     }
 
+    /* Add navbar compensation for mobile - minimal spacing */
+    @media (max-width: 1023px) {
+        .gs-hero-section {
+            padding-top: calc(var(--topbar-height) + var(--navbar-shrink) - 1.5rem) !important;
+        }
+    }
+
+    /* Mobile navbar compensation - minimal spacing */
+    @media (max-width: 575px) {
+        .gs-hero-section {
+            padding-top: calc(40px + 60px - 1.5rem) !important; /* topbar 40px + mobile navbar 60px - 1.5rem */
+        }
+    }
+
     /* Hero Section */
     .gs-hero-section {
         min-height: 90vh;
@@ -69,7 +83,7 @@
     .gs-hero-content {
         position: relative;
         z-index: 2;
-        margin-bottom: 1.5rem;
+        margin-bottom: 0.75rem;
     }
 
     .gs-badge {
@@ -365,28 +379,28 @@
 
     /* Features Section */
     .gs-features-section {
-        padding: 5rem 0;
+        padding: 4rem 0;
         background: #fff;
     }
 
     .gs-section-header {
         text-align: center;
-        margin-bottom: 3rem;
+        margin-bottom: 2.5rem;
     }
 
     .gs-section-tag {
         display: inline-block;
         background: rgba(26, 58, 82, 0.1);
         color: #1a3a52;
-        padding: 6px 16px;
-        border-radius: 20px;
-        font-size: 0.85rem;
+        padding: 5px 14px;
+        border-radius: 18px;
+        font-size: 0.8rem;
         font-weight: 600;
-        margin-bottom: 1rem;
+        margin-bottom: 0.75rem;
     }
 
     .gs-section-title {
-        font-size: 2rem;
+        font-size: 1.8rem;
         font-weight: 700;
         color: #0a1628;
         margin-bottom: 0.5rem;
@@ -396,12 +410,13 @@
         color: #64748b;
         max-width: 600px;
         margin: 0 auto;
+        font-size: 0.95rem;
     }
 
     .gs-feature-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
+        gap: 1.25rem;
     }
 
     .gs-feature-card {
@@ -455,13 +470,13 @@
 
     /* Stats Section */
     .gs-stats-section {
-        padding: 4rem 0;
+        padding: 3.5rem 0;
         background: linear-gradient(135deg, #0a1628 0%, #1a3a52 100%);
     }
 
     .gs-stats-title {
         text-align: center;
-        font-size: 1.75rem;
+        font-size: 1.6rem;
         font-weight: 700;
         color: #fff;
         margin-bottom: 0.5rem;
@@ -470,18 +485,19 @@
     .gs-stats-subtitle {
         text-align: center;
         color: rgba(255,255,255,0.7);
-        margin-bottom: 2rem;
+        margin-bottom: 1.75rem;
+        font-size: 0.9rem;
     }
 
     .gs-stats-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        gap: 1.5rem;
+        gap: 1.25rem;
         text-align: center;
     }
 
     .gs-stat-number {
-        font-size: 2rem;
+        font-size: 1.8rem;
         font-weight: 700;
         margin-bottom: 0.25rem;
     }
@@ -493,27 +509,28 @@
 
     /* CTA Section */
     .gs-cta-section {
-        padding: 5rem 0;
+        padding: 4rem 0;
         background: linear-gradient(135deg, #0a1628 0%, #1a3a52 100%);
         text-align: center;
     }
 
     .gs-cta-title {
-        font-size: 2rem;
+        font-size: 1.8rem;
         font-weight: 700;
         color: #fff;
-        margin-bottom: 1rem;
+        margin-bottom: 0.75rem;
     }
 
     .gs-cta-desc {
         color: rgba(255,255,255,0.8);
         max-width: 600px;
-        margin: 0 auto 2rem;
+        margin: 0 auto 1.75rem;
+        font-size: 0.95rem;
     }
 
     .gs-cta-buttons {
         display: flex;
-        gap: 1rem;
+        gap: 0.875rem;
         justify-content: center;
         flex-wrap: wrap;
         width: 100%;
@@ -551,7 +568,7 @@
     @media (max-width: 992px) {
         .gs-hero-section {
             min-height: auto;
-            padding: 2rem 0;
+            padding: 0.25rem 0 1.5rem 0; /* minimal top padding */
         }
 
         .gs-hero-title {
@@ -575,31 +592,69 @@
         .gs-floating-orb-2 {
             display: none;
         }
+
+        .gs-features-section {
+            padding: 3rem 0;
+        }
+
+        .gs-section-title {
+            font-size: 1.75rem;
+        }
+
+        .gs-feature-card {
+            padding: 1.25rem;
+        }
     }
 
     @media (max-width: 576px) {
+        .gs-hero-section {
+            min-height: auto;
+            padding: 0.1rem 0 1rem 0; /* minimal top padding */
+            height: auto;
+        }
+
         .gs-hero-title {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
+            margin-bottom: 0.75rem;
         }
 
         .gs-hero-desc {
-            font-size: 0.9rem;
-            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            max-width: none;
+        }
+
+        .gs-badge {
+            font-size: 0.7rem;
+            padding: 4px 12px;
+            margin-bottom: 0.25rem;
+        }
+
+        .gs-hero-cta {
+            margin-bottom: 1rem;
+        }
+
+        .gs-btn-primary,
+        .gs-btn-secondary {
+            padding: 10px 16px;
+            font-size: 0.85rem;
+            min-height: 40px;
         }
 
         .gs-metrics-row {
             grid-template-columns: repeat(2, 1fr);
             grid-auto-rows: auto;
             grid-auto-flow: row;
+            gap: 0.4rem;
         }
 
         .gs-stats-grid {
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0.75rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
         }
 
         .gs-stat-number {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
         }
 
         .gs-stat-label {
@@ -613,9 +668,9 @@
 
         /* Trust indicators mobile layout with Bootstrap grid */
         .gs-trust-indicators {
-            flex-direction: row;
-            gap: 1rem;
-            padding-top: 1rem;
+            gap: 0.75rem;
+            padding-top: 0.75rem;
+            margin-top: 0.75rem;
         }
 
         .gs-trust-indicators .row {
@@ -627,12 +682,38 @@
             justify-content: center;
         }
 
+        .gs-trust-number {
+            font-size: 1.2rem;
+        }
+
+        .gs-trust-label {
+            font-size: 0.65rem;
+        }
+
         /* Mobile Dashboard - Full width with proper scaling */
         .gs-dashboard-card {
             width: 100%;
             max-width: 100%;
-            margin: 0 auto 1rem;
+            margin: 0 auto 0.75rem;
             overflow-x: visible;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .gs-dashboard-header {
+            padding: 0.75rem;
+        }
+
+        .gs-dashboard-title {
+            font-size: 0.8rem;
+        }
+
+        .gs-dashboard-subtitle {
+            font-size: 0.65rem;
+        }
+
+        .gs-live-badge {
+            padding: 1px 6px;
+            font-size: 0.6rem;
         }
 
         .gs-dashboard-images {
@@ -642,53 +723,199 @@
             box-sizing: border-box;
             padding: 0;
             margin: 0;
+            gap: 0.25rem;
         }
 
         .gs-dashboard-img {
-            min-height: 60px;
-            padding: 0.5rem;
+            min-height: 50px;
+            padding: 0.4rem;
         }
 
         .gs-dashboard-img i {
-            font-size: 1.25rem !important;
+            font-size: 1rem !important;
+            margin-bottom: 0.15rem;
         }
 
         .gs-dashboard-img span {
-            font-size: 0.55rem;
+            font-size: 0.5rem;
+            line-height: 1.1;
         }
 
         .gs-quick-actions {
             grid-template-columns: repeat(2, 1fr);
             grid-auto-rows: auto;
             grid-auto-flow: row;
+            gap: 0.4rem;
+        }
+
+        .gs-quick-action {
+            padding: 0.5rem;
+            font-size: 0.7rem;
+            min-height: 36px;
+        }
+
+        .gs-dashboard-tabs {
+            gap: 0.3rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .gs-dashboard-tab {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.7rem;
         }
 
         .gs-dashboard-body {
-            padding: 0.75rem;
+            padding: 0.6rem;
         }
 
         .gs-metric-card {
-            padding: 0.5rem;
+            padding: 0.4rem;
+        }
+
+        .gs-metric-label {
+            font-size: 0.65rem;
         }
 
         .gs-metric-value {
+            font-size: 0.95rem;
+        }
+
+        /* Features section mobile */
+        .gs-features-section {
+            padding: 2rem 0;
+        }
+
+        .gs-section-header {
+            margin-bottom: 2rem;
+        }
+
+        .gs-section-tag {
+            font-size: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .gs-section-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .gs-section-desc {
+            font-size: 0.9rem;
+        }
+
+        .gs-feature-grid {
+            gap: 1rem;
+        }
+
+        .gs-feature-card {
+            padding: 1rem;
+            border-radius: 12px;
+        }
+
+        .gs-feature-icon {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 0.75rem;
+        }
+
+        .gs-feature-icon i {
+            font-size: 0.9rem;
+        }
+
+        .gs-feature-title {
             font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .gs-feature-desc {
+            font-size: 0.85rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .gs-feature-item {
+            font-size: 0.8rem;
+            gap: 0.4rem;
+        }
+
+        /* Stats section mobile */
+        .gs-stats-section {
+            padding: 3rem 0;
+        }
+
+        .gs-stats-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .gs-stats-subtitle {
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* CTA section mobile */
+        .gs-cta-section {
+            padding: 3rem 0;
+        }
+
+        .gs-cta-title {
+            font-size: 1.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .gs-cta-desc {
+            font-size: 0.9rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .gs-cta-buttons {
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
         }
     }
 
     /* Mobile CTA buttons - 320px to 480px viewport */
     @media (max-width: 480px) {
+        .gs-hero-section {
+            padding: 0.1rem 0 0.75rem 0; /* minimal top padding */
+            height: auto;
+            min-height: auto;
+        }
+
+        .gs-hero-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .gs-hero-desc {
+            font-size: 0.8rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .gs-badge {
+            font-size: 0.65rem;
+            padding: 3px 10px;
+            margin-bottom: 0.5rem;
+        }
+
         /* Reduce vertical spacing between dashboard and trust indicators */
         .gs-trust-indicators {
-            padding-top: 1rem !important;
-            margin-top: 1rem !important;
+            padding-top: 0.75rem !important;
+            margin-top: 0.75rem !important;
+        }
+
+        .gs-trust-number {
+            font-size: 1rem;
+        }
+
+        .gs-trust-label {
+            font-size: 0.6rem;
         }
 
         /* Container constraints for mobile */
         .gs-hero-section .container {
             max-width: 100%;
-            padding-left: 12px;
-            padding-right: 12px;
+            padding-left: 15px;
+            padding-right: 15px;
         }
 
         .gs-hero-section .row {
@@ -702,26 +929,54 @@
             padding-right: 8px;
         }
 
+        /* Ensure proper column stacking on mobile */
+        @media (max-width: 991px) {
+            .gs-hero-section .col-lg-5 {
+                order: 1;
+                margin-bottom: 1rem;
+            }
+
+            .gs-hero-section .col-lg-7 {
+                order: 2;
+            }
+        }
+
+        /* Ensure hero content is visible */
+        .gs-hero-content {
+            opacity: 1 !important;
+            visibility: visible !important;
+            display: block !important;
+        }
+
+        .gs-badge,
+        .gs-hero-title,
+        .gs-hero-desc {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
         /* Hero Section CTA - Keep buttons side by side */
         .gs-hero-cta {
             flex-direction: row !important;
             flex-wrap: nowrap !important;
             justify-content: flex-start;
-            gap: 0.5rem !important;
+            gap: 0.4rem !important;
             width: 100%;
-            margin-bottom: 1rem !important;
+            margin-bottom: 0.75rem !important;
         }
 
         .gs-hero-cta .gs-btn-primary,
         .gs-hero-cta .gs-btn-secondary {
             flex: 1;
             min-width: 0;
-            padding: 10px 12px;
-            font-size: 0.85rem;
+            padding: 8px 10px;
+            font-size: 0.8rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             justify-content: center;
+            min-height: 36px;
         }
 
         .gs-hero-cta .gs-btn-primary i,
@@ -729,47 +984,340 @@
             display: none;
         }
 
+        /* Dashboard mobile optimizations */
+        .gs-dashboard-card {
+            margin-bottom: 0.5rem;
+            border-radius: 10px;
+        }
+
+        .gs-dashboard-images {
+            gap: 0.2rem;
+        }
+
+        .gs-dashboard-img {
+            min-height: 45px;
+            padding: 0.3rem;
+            border-radius: 6px;
+        }
+
+        .gs-dashboard-img i {
+            font-size: 0.9rem !important;
+            margin-bottom: 0.1rem;
+        }
+
+        .gs-dashboard-img span {
+            font-size: 0.45rem;
+        }
+
+        .gs-quick-actions {
+            gap: 0.3rem;
+        }
+
+        .gs-quick-action {
+            padding: 0.4rem;
+            font-size: 0.65rem;
+            min-height: 32px;
+            border-radius: 6px;
+        }
+
+        .gs-dashboard-tabs {
+            gap: 0.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .gs-dashboard-tab {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.65rem;
+            border-radius: 4px;
+        }
+
+        .gs-dashboard-body {
+            padding: 0.5rem;
+        }
+
+        .gs-metric-card {
+            padding: 0.35rem;
+            border-radius: 6px;
+        }
+
+        .gs-metric-label {
+            font-size: 0.6rem;
+        }
+
+        .gs-metric-value {
+            font-size: 0.85rem;
+        }
+
         /* CTA Section buttons */
         .gs-cta-buttons {
-            flex-direction: row !important;
-            flex-wrap: nowrap !important;
-            justify-content: center;
+            flex-direction: column !important;
             gap: 0.5rem !important;
             width: 100%;
-            padding: 0 0.5rem;
+            padding: 0;
         }
 
         .gs-cta-buttons .gs-btn-primary,
         .gs-cta-buttons .gs-btn-secondary {
-            flex: 1;
-            min-width: 0;
-            padding: 10px 12px;
-            font-size: 0.85rem;
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 0.9rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             justify-content: center;
+            min-height: 44px;
         }
 
         .gs-cta-buttons .gs-btn-primary i,
         .gs-cta-buttons .gs-btn-secondary i {
-            display: none;
+            display: inline-block !important;
+            margin-right: 0.5rem !important;
+        }
+
+        /* Trust indicators at bottom */
+        .gs-cta-section .gs-trust-indicators {
+            margin-top: 1.5rem;
+            gap: 1rem;
+        }
+
+        .gs-cta-section .gs-trust-indicators .gs-trust-item {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .gs-cta-section .gs-trust-indicators .gs-trust-item span {
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
         }
     }
 
-    /* Extra small devices - 320px and below */
+    /* Extra small devices - 360px and below */
     @media (max-width: 360px) {
+        .gs-hero-section {
+            padding: 0.05rem 0 0.5rem 0; /* ultra minimal top padding */
+            height: auto;
+            min-height: auto;
+        }
+
+        .gs-hero-title {
+            font-size: 1rem;
+            margin-bottom: 0.1rem;
+        }
+
+        .gs-hero-title span {
+            display: block;
+        }
+
+        .gs-hero-desc {
+            font-size: 0.75rem;
+            margin-bottom: 0.3rem;
+        }
+
+        /* Ensure hero content is visible on extra small screens */
+        .gs-hero-content,
+        .gs-badge,
+        .gs-hero-title,
+        .gs-hero-desc {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            overflow: visible !important;
+        }
+
+        .gs-badge {
+            font-size: 0.6rem;
+            padding: 2px 8px;
+            margin-bottom: 0.1rem;
+        }
+
         .gs-hero-cta,
         .gs-cta-buttons {
-            gap: 0.35rem !important;
+            gap: 0.3rem !important;
         }
 
         .gs-hero-cta .gs-btn-primary,
         .gs-hero-cta .gs-btn-secondary,
         .gs-cta-buttons .gs-btn-primary,
         .gs-cta-buttons .gs-btn-secondary {
-            padding: 8px 10px;
+            padding: 6px 8px;
+            font-size: 0.7rem;
+            min-height: 32px;
+        }
+
+        .gs-trust-indicators {
+            gap: 0.5rem;
+            padding-top: 0.5rem !important;
+            margin-top: 0.5rem !important;
+        }
+
+        .gs-trust-number {
+            font-size: 0.9rem;
+        }
+
+        .gs-trust-label {
+            font-size: 0.55rem;
+        }
+
+        /* Dashboard ultra compact */
+        .gs-dashboard-header {
+            padding: 0.5rem;
+        }
+
+        .gs-dashboard-title {
             font-size: 0.75rem;
+        }
+
+        .gs-dashboard-subtitle {
+            font-size: 0.6rem;
+        }
+
+        .gs-live-badge {
+            padding: 1px 4px;
+            font-size: 0.55rem;
+        }
+
+        .gs-dashboard-img {
+            min-height: 40px;
+            padding: 0.25rem;
+        }
+
+        .gs-dashboard-img i {
+            font-size: 0.8rem !important;
+            margin-bottom: 0.1rem;
+        }
+
+        .gs-dashboard-img span {
+            font-size: 0.4rem;
+        }
+
+        .gs-quick-action {
+            padding: 0.35rem;
+            font-size: 0.6rem;
+            min-height: 28px;
+        }
+
+        .gs-dashboard-tab {
+            padding: 0.2rem 0.4rem;
+            font-size: 0.6rem;
+        }
+
+        .gs-dashboard-body {
+            padding: 0.4rem;
+        }
+
+        .gs-metric-card {
+            padding: 0.3rem;
+        }
+
+        .gs-metric-label {
+            font-size: 0.55rem;
+        }
+
+        .gs-metric-value {
+            font-size: 0.8rem;
+        }
+
+        /* Features section ultra compact */
+        .gs-features-section {
+            padding: 1.5rem 0;
+        }
+
+        .gs-section-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .gs-section-tag {
+            font-size: 0.7rem;
+        }
+
+        .gs-section-title {
+            font-size: 1.3rem;
+        }
+
+        .gs-section-desc {
+            font-size: 0.85rem;
+        }
+
+        .gs-feature-grid {
+            gap: 0.75rem;
+        }
+
+        .gs-feature-card {
+            padding: 0.8rem;
+        }
+
+        .gs-feature-icon {
+            width: 36px;
+            height: 36px;
+            margin-bottom: 0.6rem;
+        }
+
+        .gs-feature-icon i {
+            font-size: 0.8rem;
+        }
+
+        .gs-feature-title {
+            font-size: 0.9rem;
+        }
+
+        .gs-feature-desc {
+            font-size: 0.8rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .gs-feature-item {
+            font-size: 0.75rem;
+            gap: 0.3rem;
+        }
+
+        /* Stats section ultra compact */
+        .gs-stats-section {
+            padding: 2rem 0;
+        }
+
+        .gs-stats-title {
+            font-size: 1.3rem;
+        }
+
+        .gs-stats-subtitle {
+            font-size: 0.8rem;
+        }
+
+        .gs-stats-grid {
+            gap: 0.75rem;
+        }
+
+        .gs-stat-number {
+            font-size: 1.1rem;
+        }
+
+        .gs-stat-label {
+            font-size: 0.65rem;
+        }
+
+        /* CTA section ultra compact */
+        .gs-cta-section {
+            padding: 2rem 0;
+        }
+
+        .gs-cta-title {
+            font-size: 1.5rem;
+        }
+
+        .gs-cta-desc {
+            font-size: 0.85rem;
+        }
+
+        .gs-cta-buttons {
+            gap: 0.4rem !important;
+        }
+
+        .gs-cta-buttons .gs-btn-primary,
+        .gs-cta-buttons .gs-btn-secondary {
+            padding: 10px 14px;
+            font-size: 0.85rem;
+            min-height: 40px;
         }
     }
 </style>
