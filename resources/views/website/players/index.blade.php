@@ -2,78 +2,424 @@
 
 @section('title', 'Our Players - Mumias Vipers Academy')
 
- @php
-     $isAdmin = auth()->check() && auth()->user()->is_admin;
+@php
+    $isAdmin = auth()->check() && auth()->user()->is_admin;
 
-     $filters = [
-         'gender' => [
-             ['label' => 'All', 'value' => '', 'icon' => ''],
-             ['label' => 'Men', 'value' => 'M', 'icon' => 'mars'],
-             ['label' => 'Women', 'value' => 'F', 'icon' => 'venus'],
-         ],
+    $filters = [
+        'gender' => [
+            ['label' => 'All',   'value' => '',  'icon' => ''],
+            ['label' => 'Men',   'value' => 'M', 'icon' => 'mars'],
+            ['label' => 'Women', 'value' => 'F', 'icon' => 'venus'],
+        ],
+        'category' => [
+            ['label' => 'All', 'value' => '',       'icon' => ''],
+            ['label' => 'Jr',  'value' => 'junior', 'icon' => 'seedling'],
+            ['label' => 'Sr',  'value' => 'senior', 'icon' => 'crown'],
+        ],
+    ];
+@endphp
 
-         'category' => [
-             ['label' => 'All', 'value' => '', 'icon' => ''],
-             ['label' => 'Jr', 'value' => 'junior', 'icon' => 'seedling'],
-             ['label' => 'Sr', 'value' => 'senior', 'icon' => 'crown'],
-         ]
-     ];
- @endphp
+@push('styles')
+<style>
+    /* ── Variables ──────────────────────────────────────── */
+    :root {
+        --primary-red: #e63946;
+    }
 
- @section('content')
+    /* ── Layout ─────────────────────────────────────────── */
+    .p-container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 10px;
+        font-family: system-ui, -apple-system, sans-serif;
+    }
 
- @if($isAdmin)
- <a href="{{ route('players.sync') }}" class="sync-btn" style="position:fixed;top:10px;right:10px;z-index:999;background:var(--primary-red);color:#fff;padding:6px 10px;border-radius:6px;text-decoration:none;font-size:12px;box-shadow:0 2px 6px rgba(0,0,0,0.15);">Sync</a>
- @endif
+    /* ── Search bar row ─────────────────────────────────── */
+    .search-row {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 10px;
+        align-items: center;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;          /* Firefox */
+    }
 
- <div class="p-container" style="max-width:1200px;margin:auto;padding:10px;font-family:system-ui,-apple-system,sans-serif;">
+    .search-row::-webkit-scrollbar {
+        display: none;                  /* Chrome/Safari */
+    }
 
-  <div style="margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
-   <h1 style="margin:0;font-size:20px;font-weight:700;color:#111;">Players</h1>
-  </div>
+    .search-wrapper {
+        position: relative;
+        flex-shrink: 0;
+        width: 110px;                   /* compact fixed width on mobile */
+    }
 
-  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:stretch;">
+    .search-wrapper input {
+        width: 100%;
+        padding: 5px 24px 5px 8px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 12px;
+        outline: none;
+        transition: border-color 0.15s ease;
+        height: 28px;
+        box-sizing: border-box;
+    }
 
-   <input type="text" id="search-input" placeholder="Search..." value="{{ $search ?? '' }}" style="flex:1;min-width:160px;padding:6px 28px 6px 10px;border:1px solid #ddd;border-radius:6px;font-size:13px;">
+    .search-wrapper input:focus {
+        border-color: var(--primary-red);
+    }
 
-   <button type="button" id="clear-search" class="{{ empty($search) ? 'hidden' : '' }}" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;font-size:14px;color:#999;padding:2px 4px;line-height:1;">✕</button>
+    .clear-btn {
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-size: 11px;
+        color: #999;
+        padding: 0;
+        line-height: 1;
+    }
 
-   @foreach($filters as $type => $items)
-    @foreach($items as $item)
-     @php
-         $active = (($$type ?? '') === $item['value']) || (empty($$type) && $item['value'] === '');
-     @endphp
-     <button type="button" class="filter-chip {{ $active ? 'active' : '' }}" data-filter="{{ $type }}" data-value="{{ $item['value'] }}" style="display:inline-flex;align-items:center;gap:4px;padding:5px 8px;border:1px solid #ddd;border-radius:99px;background:#fff;cursor:pointer;font-size:12px;font-weight:500;white-space:nowrap;flex-shrink:0;transition:all .15s ease;min-height:28px;{{ $active ? 'background:#e63946;color:#fff;border-color:#e63946;' : '' }}">
-      @if($item['icon'])
-       <i class="fas fa-{{ $item['icon'] }}" style="font-size:10px;"></i>
-      @endif
-      <span>{{ $item['label'] }}</span>
-     </button>
-    @endforeach
-   @endforeach
+    /* ── Filter chips ───────────────────────────────────── */
+    .filter-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        padding: 4px 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background: #fff;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 500;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: all 0.15s ease;
+        height: 28px;
+        color: #555;
+    }
 
-  </div>
+    .filter-chip:hover {
+        border-color: var(--primary-red);
+        color: var(--primary-red);
+    }
 
-  @if(session('success'))
-   <div style="background:#d4edda;color:#155724;padding:6px 10px;border-radius:4px;margin-bottom:10px;font-size:13px;">{{ session('success') }}</div>
-  @endif
+    .filter-chip.active {
+        background: var(--primary-red);
+        color: #fff;
+        border-color: var(--primary-red);
+    }
 
-  <div id="players-content">
+    /* ── Divider between filter groups ─────────────────── */
+    .filter-divider {
+        width: 1px;
+        height: 20px;
+        background: #ddd;
+        flex-shrink: 0;
+    }
+
+    /* ── Players grid — 4 col mobile, 6 col desktop ─────── */
+    .players-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+    }
+
+    @media (min-width: 768px) {
+        .players-grid {
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+        }
+
+        .search-wrapper {
+            width: 160px;
+        }
+    }
+
+    /* ── Player card ────────────────────────────────────── */
+    .player-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        padding: 8px 6px;
+        border: 0.5px solid #e5e5e5;
+        border-radius: 8px;
+        background: #fff;
+        text-decoration: none;
+        color: inherit;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+        cursor: pointer;
+        min-width: 0;                   /* prevent grid blowout */
+    }
+
+    .player-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--primary-red);
+        box-shadow: 0 4px 10px rgba(230, 57, 70, 0.12);
+    }
+
+    /* ── Avatar ─────────────────────────────────────────── */
+    .player-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+        border: 2px solid var(--primary-red);
+    }
+
+    @media (min-width: 768px) {
+        .player-avatar {
+            width: 56px;
+            height: 56px;
+        }
+    }
+
+    .player-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .avatar-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--primary-red);
+        color: #fff;
+        font-weight: 700;
+        font-size: 16px;
+    }
+
+    @media (min-width: 768px) {
+        .avatar-placeholder {
+            font-size: 20px;
+        }
+    }
+
+    /* ── Player info ────────────────────────────────────── */
+    .player-info {
+        text-align: center;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .player-name {
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1.2;
+        color: #111;
+        margin: 0 0 3px 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    @media (min-width: 768px) {
+        .player-name {
+            font-size: 13px;
+        }
+    }
+
+    .player-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2px;
+        justify-content: center;
+        font-size: 10px;
+        color: #666;
+    }
+
+    @media (min-width: 768px) {
+        .player-meta {
+            font-size: 11px;
+            gap: 4px;
+        }
+    }
+
+    .player-meta span {
+        background: #f1efe8;
+        padding: 1px 5px;
+        border-radius: 99px;
+        white-space: nowrap;
+    }
+
+    /* ── Pagination ─────────────────────────────────────── */
+    .pagination {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 14px;
+        font-size: 12px;
+        color: #666;
+    }
+
+    .pagination-buttons {
+        display: flex;
+        gap: 6px;
+    }
+
+    .pagination-buttons button {
+        width: 30px;
+        height: 30px;
+        border: 1px solid #ddd;
+        background: #fff;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+        transition: border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .pagination-buttons button:hover:not(:disabled) {
+        border-color: var(--primary-red);
+        color: var(--primary-red);
+    }
+
+    .pagination-buttons button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+
+    /* ── Empty state ────────────────────────────────────── */
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #666;
+    }
+
+    .empty-state h3 {
+        font-size: 16px;
+        margin: 0 0 6px 0;
+        color: #111;
+    }
+
+    .empty-state p {
+        font-size: 13px;
+        margin: 0;
+    }
+
+    .sync-button {
+        display: inline-block;
+        margin-top: 12px;
+        background: var(--primary-red);
+        color: #fff;
+        padding: 7px 14px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 12px;
+    }
+
+    /* ── Sync btn (fixed top-right, admin only) ─────────── */
+    .sync-btn {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 999;
+        background: var(--primary-red);
+        color: #fff;
+        padding: 6px 10px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 12px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    /* ── Flash message ──────────────────────────────────── */
+    .flash-success {
+        background: #d4edda;
+        color: #155724;
+        padding: 6px 10px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+        font-size: 13px;
+    }
+
+    /* ── Utility ────────────────────────────────────────── */
+    .hidden {
+        display: none !important;
+    }
+</style>
+@endpush
+
+@section('content')
+
+@if($isAdmin)
+    <a href="{{ route('players.sync') }}" class="sync-btn">Sync</a>
+@endif
+
+<div class="p-container">
+
+    {{-- Header --}}
+    <div style="margin-bottom:8px;">
+        <h1 style="margin:0;font-size:20px;font-weight:700;color:#111;">Players</h1>
+    </div>
+
+    {{-- Search & Filters --}}
+    <div class="search-row">
+
+        <div class="search-wrapper">
+            <input
+                type="text"
+                id="search-input"
+                placeholder="Search..."
+                value="{{ $search ?? '' }}"
+            >
+            <button
+                type="button"
+                id="clear-search"
+                class="clear-btn {{ empty($search) ? 'hidden' : '' }}"
+                aria-label="Clear search"
+            >✕</button>
+        </div>
+
+        @foreach($filters as $type => $items)
+            <span class="filter-divider" aria-hidden="true"></span>
+            @foreach($items as $item)
+                @php
+                    $active = (($$type ?? '') === $item['value']) || (empty($$type) && $item['value'] === '');
+                @endphp
+                <button
+                    type="button"
+                    class="filter-chip {{ $active ? 'active' : '' }}"
+                    data-filter="{{ $type }}"
+                    data-value="{{ $item['value'] }}"
+                >
+                    @if($item['icon'])
+                        <i class="fas fa-{{ $item['icon'] }}" style="font-size:9px;" aria-hidden="true"></i>
+                    @endif
+                    <span>{{ $item['label'] }}</span>
+                </button>
+            @endforeach
+        @endforeach
+
+    </div>
+    {{-- /.search-row --}}
+
+    {{-- Flash message --}}
+    @if(session('success'))
+        <div class="flash-success">{{ session('success') }}</div>
+    @endif
+
+    {{-- Players content — replaced by JS on filter/search/paginate --}}
+    <div id="players-content">
 
         @if($players->count())
 
             <div class="players-grid">
 
                 @foreach($players as $player)
+                    <a href="{{ route('players.overview', $player->id) }}" class="player-card">
 
-                    <a
-                        href="{{ route('players.overview', $player->id) }}"
-                        class="player-card"
-                    >
-
-                        {{-- IMAGE --}}
                         <div class="player-avatar">
-
                             @if($player->image_url)
                                 <img
                                     src="{{ $player->image_url }}"
@@ -85,385 +431,184 @@
                                     {{ strtoupper(substr($player->name, 0, 1)) }}
                                 </div>
                             @endif
-
                         </div>
 
-                            {{-- INFO --}}
                         <div class="player-info">
-
-                            <h3 class="player-name">
-                                {{ $player->name }}
-                            </h3>
-
+                            <h3 class="player-name">{{ $player->name }}</h3>
                             <div class="player-meta">
                                 <span>{{ ucfirst($player->position) }}</span>
-
-                                <span>
-                                    {{ $player->standardized_category }}
-                                </span>
+                                <span>{{ $player->standardized_category }}</span>
                             </div>
-
                         </div>
 
                     </a>
-
                 @endforeach
 
             </div>
+            {{-- /.players-grid --}}
 
         @else
 
             <div class="empty-state">
                 <h3>No Players Found</h3>
                 <p>Try adjusting your filters.</p>
-
                 @if($isAdmin)
-                    <a href="{{ route('players.sync') }}" class="sync-button">
-                        Sync Players
-                    </a>
+                    <a href="{{ route('players.sync') }}" class="sync-button">Sync Players</a>
                 @endif
             </div>
 
         @endif
 
     </div>
+    {{-- /#players-content --}}
 
-    {{-- PAGINATION --}}
+    {{-- Pagination (server-rendered initial state) --}}
     @if($players->hasPages())
-
         <div class="pagination">
-
             <span>
-                {{ $players->firstItem() }}
-                -
-                {{ $players->lastItem() }}
-                of
-                {{ $players->total() }}
+                {{ $players->firstItem() }} - {{ $players->lastItem() }} of {{ $players->total() }}
             </span>
-
             <div class="pagination-buttons">
-
-                <button
-                    id="prev-page"
-                    {{ $players->onFirstPage() ? 'disabled' : '' }}
-                >
-                    ←
-                </button>
-
-                <button
-                    id="next-page"
-                    {{ $players->hasMorePages() ? '' : 'disabled' }}
-                >
-                    →
-                </button>
-
+                <button id="prev-page" {{ $players->onFirstPage() ? 'disabled' : '' }}>←</button>
+                <button id="next-page" {{ $players->hasMorePages() ? '' : 'disabled' }}>→</button>
             </div>
-
         </div>
-
     @endif
 
 </div>
+{{-- /.p-container --}}
 
-  <div id="players-content"></div>
-
- </div>
-
- @endsection
-
- @push('scripts')
- <script>
- document.addEventListener('DOMContentLoaded', () => {
-     const searchInput = document.getElementById('search-input');
-     const clearBtn = document.getElementById('clear-search');
-
-     let filters = {
-         search: @json($search ?? ''),
-         gender: @json($gender ?? ''),
-         category: @json($category ?? ''),
-         page: {{ $players->currentPage() }}
-     };
-
-     function escapeHtml(text) {
-         if (text === null || text === undefined) return '';
-         return String(text)
-             .replace(/&/g, '&amp;')
-             .replace(/</g, '&lt;')
-             .replace(/>/g, '&gt;')
-             .replace(/"/g, '&quot;')
-             .replace(/'/g, '&#039;');
-     }
-
-     function toggleClearButton() {
-         clearBtn.classList.toggle('hidden', !searchInput.value.trim());
-     }
-     toggleClearButton();
-
-     let timeout;
-     searchInput?.addEventListener('input', () => {
-         clearTimeout(timeout);
-         toggleClearButton();
-         timeout = setTimeout(() => {
-             filters.search = searchInput.value.trim();
-             filters.page = 1;
-             fetchPlayers();
-         }, 300);
-     });
-
-     clearBtn?.addEventListener('click', () => {
-         searchInput.value = '';
-         filters.search = '';
-         filters.page = 1;
-         toggleClearButton();
-         fetchPlayers();
-     });
-
-     document.addEventListener('click', e => {
-         const chip = e.target.closest('.filter-chip');
-         if (!chip) return;
-         const group = chip.parentElement;
-         group.querySelectorAll('.filter-chip').forEach(btn => btn.classList.remove('active'));
-         chip.classList.add('active');
-         filters[chip.dataset.filter] = chip.dataset.value;
-         filters.page = 1;
-         if (window.innerWidth <= 768) {
-             chip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-         }
-         fetchPlayers();
-     });
-
-     function fetchPlayers() {
-         const params = new URLSearchParams(filters);
-         window.history.pushState({}, '', `${window.location.pathname}?${params}`);
-         fetch(`/api/players?${params}`)
-             .then(res => { if (!res.ok) throw new Error('Network error'); return res.json(); })
-             .then(data => renderPlayers(data))
-             .catch(err => console.error('Fetch error:', err));
-     }
-
-     function renderPlayers(response) {
-         const container = document.getElementById('players-content');
-         if (!response.success || !response.data || response.data.length === 0) {
-             container.innerHTML = `
-              <div style="text-align:center;padding:30px 10px;">
-               <h3 style="margin:0 0 8px 0;font-size:16px;color:#333;">No Players Found</h3>
-               <p style="margin:0 0 12px 0;color:#666;font-size:13px;">Adjust filters</p>
-               @if($isAdmin)
-                <a href="{{ route('players.sync') }}" class="sync-button" style="display:inline-block;background:var(--primary-red);color:#fff;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:12px;">Sync</a>
-               @endif
-              </div>`;
-             return;
-         }
-
-         const players = response.data;
-         let html = '<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;justify-content:start;justify-items:stretch;align-items:start;">';
-         html += players.map(player => {
-             const name = escapeHtml(player.name);
-             const initial = name ? name.charAt(0) : '';
-             const position = player.position ? escapeHtml(player.position.charAt(0).toUpperCase() + player.position.slice(1)) : '';
-             const category = escapeHtml(player.standardized_category || player.category);
-             const imageUrl = player.image_url ? escapeHtml(player.image_url) : null;
-             return `
-              <a href="/players/${player.id}/overview" class="player-card" style="display:flex;flex-direction:column;gap:6px;padding:10px;border:1px solid #eee;border-radius:8px;background:#fff;text-decoration:none;color:inherit;transition:.2s;width:100%;">
-               <div class="player-avatar" style="width:50px;height:50px;border-radius:50%;overflow:hidden;flex-shrink:0;margin:0 auto;border:2px solid var(--primary-red,#e63946);">
-                ${imageUrl ? `<img src="${imageUrl}" alt="${name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--primary-red,#e63946);color:#fff;font-weight:700;font-size:14px;">${initial}</div>`}
-               </div>
-               <div class="player-info" style="text-align:center;">
-                <h3 class="player-name" style="margin:0;font-size:13px;line-height:1.2;color:#111;">${name}</h3>
-                <div class="player-meta" style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;font-size:11px;color:#666;margin-top:2px;">
-                 <span>${position}</span>
-                 <span>${category}</span>
-                </div>
-               </div>
-              </a>`;
-         }).join('') + '</div>';
-
-         if (response.pagination && response.pagination.last_page > 1) {
-             const prevDisabled = response.pagination.current_page <= 1 ? 'disabled style="opacity:.5;cursor:not-allowed;"' : '';
-             const nextDisabled = response.pagination.current_page >= response.pagination.last_page ? 'disabled style="opacity:.5;cursor:not-allowed;"' : '';
-             html += `
-              <div class="pagination" style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;">
-               <span style="font-size:12px;color:#666;">${response.pagination.from} - ${response.pagination.to} of ${response.pagination.total}</span>
-               <div class="pagination-buttons" style="display:flex;gap:6px;">
-                <button id="prev-page" ${prevDisabled} style="width:28px;height:28px;border:1px solid #ddd;background:#fff;border-radius:6px;cursor:pointer;font-size:12px;">←</button>
-                <button id="next-page" ${nextDisabled} style="width:28px;height:28px;border:1px solid #ddd;background:#fff;border-radius:6px;cursor:pointer;font-size:12px;">→</button>
-               </div>
-              </div>`;
-         }
-
-         container.innerHTML = html;
-     }
-
-     document.addEventListener('click', (e) => {
-         if (e.target.id === 'prev-page' && !e.target.disabled) {
-             filters.page = Math.max(1, filters.page - 1);
-             fetchPlayers();
-         }
-         if (e.target.id === 'next-page' && !e.target.disabled) {
-             filters.page = filters.page + 1;
-             fetchPlayers();
-         }
-     });
-
- });
- </script>
- @endpush
-
+@endsection
 
 @push('scripts')
-
 <script>
-
 document.addEventListener('DOMContentLoaded', () => {
 
     const searchInput = document.getElementById('search-input');
-    const clearBtn = document.getElementById('clear-search');
+    const clearBtn    = document.getElementById('clear-search');
 
     let filters = {
-        search: @json($search ?? ''),
-        gender: @json($gender ?? ''),
+        search:   @json($search   ?? ''),
+        gender:   @json($gender   ?? ''),
         category: @json($category ?? ''),
-        page: {{ $players->currentPage() }}
+        page:     {{ $players->currentPage() }}
     };
 
-    // Utility: escape HTML to prevent XSS
+    /* ── Helpers ─────────────────────────────────────────── */
+
     function escapeHtml(text) {
         if (text === null || text === undefined) return '';
         return String(text)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
+            .replace(/&/g,  '&amp;')
+            .replace(/</g,  '&lt;')
+            .replace(/>/g,  '&gt;')
+            .replace(/"/g,  '&quot;')
+            .replace(/'/g,  '&#039;');
     }
 
-    /* SEARCH */
+    function toggleClearButton() {
+        clearBtn.classList.toggle('hidden', !searchInput.value.trim());
+    }
+
+    toggleClearButton();
+
+    /* ── Search ──────────────────────────────────────────── */
 
     let timeout;
 
     searchInput?.addEventListener('input', () => {
-
         clearTimeout(timeout);
-
         toggleClearButton();
-
         timeout = setTimeout(() => {
             filters.search = searchInput.value.trim();
-            filters.page = 1; // Reset to page 1 on new search
+            filters.page   = 1;
             fetchPlayers();
         }, 300);
-
     });
 
     clearBtn?.addEventListener('click', () => {
-
         searchInput.value = '';
-        filters.search = '';
-        filters.page = 1;
-
+        filters.search    = '';
+        filters.page      = 1;
         toggleClearButton();
-
         fetchPlayers();
-
     });
 
-    function toggleClearButton() {
-        clearBtn.classList.toggle(
-            'hidden',
-            !searchInput.value.trim()
-        );
-    }
+    /* ── Filter chips ────────────────────────────────────── */
 
-    // Set initial clear button state
-    toggleClearButton();
+    document.addEventListener('click', e => {
+        const chip = e.target.closest('.filter-chip');
+        if (!chip) return;
 
-    /* FILTERS */
+        // Deactivate all chips sharing the same data-filter group
+        const filterKey = chip.dataset.filter;
+        document.querySelectorAll(`.filter-chip[data-filter="${filterKey}"]`)
+            .forEach(btn => btn.classList.remove('active'));
 
-      document.addEventListener('click', e => {
+        chip.classList.add('active');
+        filters[filterKey] = chip.dataset.value;
+        filters.page = 1;
 
-          const chip = e.target.closest('.filter-chip');
+        if (window.innerWidth <= 768) {
+            chip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
 
-          if(!chip) return;
+        fetchPlayers();
+    });
 
-          const group = chip.parentElement;
+    /* ── Pagination (delegated — works on both server & JS-rendered buttons) ── */
 
-          group.querySelectorAll('.filter-chip')
-              .forEach(btn => btn.classList.remove('active'));
+    document.addEventListener('click', e => {
+        if (e.target.id === 'prev-page' && !e.target.disabled) {
+            filters.page = Math.max(1, filters.page - 1);
+            fetchPlayers();
+        }
+        if (e.target.id === 'next-page' && !e.target.disabled) {
+            filters.page += 1;
+            fetchPlayers();
+        }
+    });
 
-          chip.classList.add('active');
+    /* ── Fetch ───────────────────────────────────────────── */
 
-          filters[chip.dataset.filter] = chip.dataset.value;
-          filters.page = 1; // Reset to first page when filter changes
-
-          // Scroll active chip into view center on mobile
-          if(window.innerWidth <= 768){
-              chip.scrollIntoView({
-                  behavior: 'smooth',
-                  inline: 'center',
-                  block: 'nearest'
-              });
-          }
-
-          fetchPlayers();
-
-      });
-
-    /* FETCH */
-
-    function fetchPlayers(){
-
+    function fetchPlayers() {
         const params = new URLSearchParams(filters);
-
-        // Update URL without page reload
-        window.history.pushState(
-            {},
-            '',
-            `${window.location.pathname}?${params}`
-        );
+        window.history.pushState({}, '', `${window.location.pathname}?${params}`);
 
         fetch(`/api/players?${params}`)
             .then(res => {
-                if (!res.ok) {
-                    throw new Error('Network response was not ok');
-                }
+                if (!res.ok) throw new Error('Network error');
                 return res.json();
             })
-            .then(data => {
-                renderPlayers(data);
-            })
-            .catch(err => {
-                console.error('Fetch error:', err);
-            });
-
+            .then(data => renderPlayers(data))
+            .catch(err => console.error('Fetch error:', err));
     }
+
+    /* ── Render ──────────────────────────────────────────── */
 
     function renderPlayers(response) {
         const container = document.getElementById('players-content');
 
-        // Empty state
         if (!response.success || !response.data || response.data.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
                     <h3>No Players Found</h3>
                     <p>Try adjusting your filters.</p>
                     @if($isAdmin)
-                        <a href="{{ route('players.sync') }}" class="sync-button">
-                            Sync Players
-                        </a>
+                        <a href="{{ route('players.sync') }}" class="sync-button">Sync Players</a>
                     @endif
-                </div>
-            `;
+                </div>`;
             return;
         }
 
-        const players = response.data;
-
-        // Build players grid
         let html = '<div class="players-grid">';
-        html += players.map(player => {
-            const name = escapeHtml(player.name);
-            const initial = name ? name.charAt(0) : '';
-            const position = player.position ? escapeHtml(player.position.charAt(0).toUpperCase() + player.position.slice(1)) : '';
+
+        html += response.data.map(player => {
+            const name     = escapeHtml(player.name);
+            const initial  = name ? name.charAt(0) : '';
+            const position = player.position
+                ? escapeHtml(player.position.charAt(0).toUpperCase() + player.position.slice(1))
+                : '';
             const category = escapeHtml(player.standardized_category || player.category);
             const imageUrl = player.image_url ? escapeHtml(player.image_url) : null;
 
@@ -482,40 +627,26 @@ document.addEventListener('DOMContentLoaded', () => {
                             <span>${category}</span>
                         </div>
                     </div>
-                </a>
-            `;
-        }).join('') + '</div>';
+                </a>`;
+        }).join('');
 
-        // Add pagination if multiple pages
+        html += '</div>'; {{-- /.players-grid --}}
+
         if (response.pagination && response.pagination.last_page > 1) {
+            const p = response.pagination;
             html += `
                 <div class="pagination">
-                    <span>${response.pagination.from} - ${response.pagination.to} of ${response.pagination.total}</span>
+                    <span>${p.from} - ${p.to} of ${p.total}</span>
                     <div class="pagination-buttons">
-                        <button id="prev-page" ${response.pagination.current_page <= 1 ? 'disabled' : ''}>←</button>
-                        <button id="next-page" ${response.pagination.current_page >= response.pagination.last_page ? 'disabled' : ''}>→</button>
+                        <button id="prev-page" ${p.current_page <= 1             ? 'disabled' : ''}>←</button>
+                        <button id="next-page" ${p.current_page >= p.last_page   ? 'disabled' : ''}>→</button>
                     </div>
-                </div>
-            `;
+                </div>`;
         }
 
         container.innerHTML = html;
     }
 
-    // Pagination button event delegation
-    document.addEventListener('click', (e) => {
-        if (e.target.id === 'prev-page' && !e.target.disabled) {
-            filters.page = Math.max(1, filters.page - 1);
-            fetchPlayers();
-        }
-        if (e.target.id === 'next-page' && !e.target.disabled) {
-            filters.page = filters.page + 1;
-            fetchPlayers();
-        }
-    });
-
 });
-
 </script>
-
 @endpush
