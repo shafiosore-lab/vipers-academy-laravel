@@ -1,6 +1,6 @@
 @extends('layouts.academy')
 
-@section('title', 'Privacy Policy - Vipers Academy')
+@section('title', 'Privacy Policy - Mumias Vipers Academy')
 
 @section('content')
 <div class="container py-5">

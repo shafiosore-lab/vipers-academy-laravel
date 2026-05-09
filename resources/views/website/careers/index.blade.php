@@ -1,39 +1,10 @@
 @extends('layouts.academy')
 
-@section('title', 'Careers - Join Vipers Academy Team')
+@section('title', 'Careers - Join Mumias Vipers Academy Team')
 
-@section('meta_description', 'Explore exciting career opportunities at Vipers Academy. Join our team of football professionals and contribute to youth development.')
+@section('meta_description', 'Explore exciting career opportunities at Mumias Vipers Academy. Join our team of football professionals and contribute to youth development.')
 
-@section('content')
-
-{{-- ===================== Hero Section ===================== --}}
-<section
-    class="hero-section position-relative overflow-hidden"
-    style="
-        background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
-        background-size: cover;
-        background-position: center;
-        min-height: 60vh;
-    "
->
-    <div
-        class="hero-overlay position-absolute top-0 start-0 w-100 h-100"
-        style="background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 100%);"
-    ></div>
-
-    <div class="container position-relative h-100">
-        <div class="row align-items-center h-100">
-            <div class="col-lg-8">
-                <div class="hero-content text-white" data-aos="fade-right">
-                    <span class="badge mb-3" style="background: var(--accent); color: #1a1a1a; font-size: 0.875rem; padding: 0.5rem 0.75rem;">
-                        Join Our Team
-                    </span>
-                    <h1 class="display-4 fw-bold mb-4">
-                        <span class="text-white">Shape the Future of </span>
-                        <span class="text-warning">Football</span>
-                    </h1>
-                    <p class="lead mb-4 fs-5 opacity-90">
-                        Join Vipers Academy and be part of Kenya's premier football development institution.
+Join Mumias Vipers Academy and be part of Kenya's premier football development institution.
                         We're looking for passionate professionals to help us nurture the next generation of football stars.
                     </p>
                     <div class="d-flex flex-column flex-sm-row gap-3">

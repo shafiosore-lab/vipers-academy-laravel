@@ -1,23 +1,10 @@
 @extends('layouts.academy')
 
-@section('title', 'Achievements - Vipers Academy Kenya')
-@section('meta_description', 'Celebrating the achievements and community impact of Vipers Academy\'s youth development programs.')
+@section('title', 'Achievements - Mumias Vipers Academy Kenya')
 
-@section('content')
-<div class="container py-5">
-    <!-- Hero Section -->
-    <div class="text-center mb-5" data-aos="fade-up">
-        <h1 class="fw-bold mb-3">
-            @php
-                $heroTitle = isset($pageContent['hero']) ? $pageContent['hero']->firstWhere('key', 'title') : null;
-            @endphp
-            {{ $heroTitle?->value ?: 'Our Achievements' }}
-        </h1>
-        <p class="text-muted mx-auto" style="max-width: 700px; font-size: 1.05rem;">
-            @php
-                $heroSubtitle = isset($pageContent['hero']) ? $pageContent['hero']->firstWhere('key', 'subtitle') : null;
-            @endphp
-            {{ $heroSubtitle?->value ?: 'Celebrating the milestones and community impact of Vipers Academy\'s journey in developing youth through football, education, and digital skills.' }}
+@section('meta_description', 'Celebrating the achievements and community impact of Mumias Vipers Academy\'s youth development programs.')
+
+{{ $heroSubtitle?->value ?: 'Celebrating the milestones and community impact of Mumias Vipers Academy\'s journey in developing youth through football, education, and digital skills.' }}
         </p>
     </div>
 

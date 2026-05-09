@@ -1,6 +1,6 @@
 @extends('layouts.academy')
 
-@section('title', 'Search Results - Vipers Academy')
+@section('title', 'Search Results - Mumias Vipers Academy')
 
 @section('content')
 <div class="container my-5">

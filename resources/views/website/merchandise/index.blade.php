@@ -1,8 +1,8 @@
 @extends('layouts.academy')
 
-@section('title', 'Vipers Academy Merchandise - Official Football Gear')
+@section('title', 'Mumias Vipers Academy Merchandise - Official Football Gear')
 
-@section('meta_description', 'Shop official Vipers Academy merchandise including football boots, bibs, balls, jerseys and custom jersey branding services. Order via WhatsApp.')
+@section('meta_description', 'Shop official Mumias Vipers Academy merchandise including football boots, bibs, balls, jerseys and custom jersey branding services. Order via WhatsApp.')
 
 @section('content')
 

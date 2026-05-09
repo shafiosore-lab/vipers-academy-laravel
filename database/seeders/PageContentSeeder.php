@@ -126,7 +126,7 @@ class PageContentSeeder extends Seeder
         );
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'success_stories', 'key' => 'story_1_quote'],
-            ['value' => '"Thanks to Vipers Academy, I received a full sports scholarship to secondary school. Football opened doors to education I never thought possible."', 'type' => 'textarea', 'sort_order' => 5, 'is_active' => true]
+            ['value' => '"Thanks to Mumias Vipers Academy, I received a full sports scholarship to secondary school. Football opened doors to education I never thought possible."', 'type' => 'textarea', 'sort_order' => 5, 'is_active' => true]
         );
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'success_stories', 'key' => 'story_1_author'],

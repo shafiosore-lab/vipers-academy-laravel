@@ -1,96 +1,10 @@
 @extends('layouts.academy')
 
-@section('title', $job->title . ' - Career Opportunity at Vipers Academy')
+@section('title', $job->title . ' - Career Opportunity at Mumias Vipers Academy')
 
-@section('meta_description', 'Apply for ' . $job->title . ' position at Vipers Academy. ' . Str::limit($job->description, 150))
+@section('meta_description', 'Apply for ' . $job->title . ' position at Mumias Vipers Academy. ' . Str::limit($job->description, 150))
 
-@section('content')
-<!-- Hero Section -->
-<section class="hero-section position-relative overflow-hidden" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80'); background-size: cover; background-position: center; min-height: 40vh;">
-    <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100"
-        style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 100%);"></div>
-    <div class="container position-relative h-100">
-        <div class="row align-items-center h-100">
-            <div class="col-12 text-center text-white">
-                <h1 class="display-4 fw-bold mb-3">{{ $job->title }}</h1>
-                <p class="lead mb-0">{{ $job->location }} • {{ ucfirst($job->type) }} • <span class="badge" style="background: var(--accent); color: #1a1a1a;">Open Position</span></p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Job Details Section -->
-<section class="job-details-section py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8">
-                <!-- Job Information -->
-                <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-header bg-light">
-                        <h4 class="mb-0">Job Information</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p><strong>Location:</strong> {{ $job->location }}</p>
-                                <p><strong>Job Type:</strong> {{ ucfirst($job->type) }}</p>
-                                @if($job->department)
-                                    <p><strong>Department:</strong> {{ $job->department }}</p>
-                                @endif
-                            </div>
-                            <div class="col-md-6">
-                                @if($job->salary)
-                                    <p><strong>Salary:</strong> {{ $job->salary }}</p>
-                                @endif
-                                @if($job->application_deadline)
-                                    <p><strong>Application Deadline:</strong> {{ $job->application_deadline->format('M d, Y') }}</p>
-                                @endif
-                                <p><strong>Posted:</strong> {{ $job->created_at->format('M d, Y') }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Job Description -->
-                <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-header bg-light">
-                        <h4 class="mb-0"><i class="fas fa-file-alt me-2" style="color: var(--accent);"></i>Job Description</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="job-description">
-                            {!! nl2br(e($job->description)) !!}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Requirements -->
-                <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-header bg-light">
-                        <h4 class="mb-0"><i class="fas fa-list-check me-2" style="color: var(--highlight);"></i>Requirements</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="job-requirements">
-                            {!! nl2br(e($job->requirements)) !!}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Apply Button -->
-                <div class="text-center mb-5">
-                    <a href="#apply" class="btn btn-lg px-5 py-3" style="background: var(--accent); border-color: var(--accent); color: #1a1a1a;">
-                        <i class="fas fa-paper-plane me-2"></i>Apply for This Position
-                    </a>
-                </div>
-            </div>
-
-            <div class="col-lg-4">
-                <!-- Quick Apply Card -->
-                <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-header text-white" style="background: var(--accent);">
-                        <h5 class="mb-0"><i class="fas fa-rocket me-2"></i>Quick Apply</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="mb-3">Ready to join our team? Apply now and start your journey with Vipers Academy!</p>
+<p class="mb-3">Ready to join our team? Apply now and start your journey with Mumias Vipers Academy!</p>
                         <div class="d-grid">
                             <a href="#apply" class="btn btn-lg" style="background: var(--accent); border-color: var(--accent); color: #1a1a1a;">
                                 <i class="fas fa-paper-plane me-2"></i>Apply Now

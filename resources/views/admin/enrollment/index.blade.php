@@ -1,42 +1,8 @@
 @extends('layouts.academy')
 
-@section('title', 'Enroll in Program - Vipers Academy')
+@section('title', 'Enroll in Program - Mumias Vipers Academy')
 
-@section('content')
-<div class="container py-5">
-    {{-- Success Message --}}
-    @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-        <div class="d-flex align-items-center">
-            <i class="fas fa-check-circle me-2" style="font-size: 1.5rem;"></i>
-            <div>
-                <strong>Data Captured Successfully!</strong>
-                <p class="mb-0">{{ session('success') }}</p>
-            </div>
-        </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    @endif
-
-    {{-- Error Message --}}
-    @if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-        <div class="d-flex align-items-center">
-            <i class="fas fa-exclamation-circle me-2" style="font-size: 1.5rem;"></i>
-            <div>
-                <strong>Error!</strong>
-                <p class="mb-0">{{ session('error') }}</p>
-            </div>
-        </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    @endif
-
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="card-title mb-0">Enroll in Vipers Academy Program</h3>
+<h3 class="card-title mb-0">Enroll in Mumias Vipers Academy Program</h3>
                 </div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('enrol.store') }}">

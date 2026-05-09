@@ -1,6 +1,6 @@
 @extends('layouts.academy')
 
-@section('title', 'Contact Us - Vipers Academy')
+@section('title', 'Contact Us - Mumias Vipers Academy')
 
 @section('content')
 <div class="contact-page">

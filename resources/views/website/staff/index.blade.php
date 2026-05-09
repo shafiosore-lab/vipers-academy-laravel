@@ -1,7 +1,7 @@
 @extends('layouts.academy')
 
-@section('title', 'Leadership Team - Vipers Football Academy')
-@section('meta_description', 'Meet the visionary leadership team driving Vipers Football Academy towards excellence.')
+@section('title', 'Our Team - Mumias Vipers Academy Staff')
+@section('meta_description', 'Meet the visionary leadership team driving Mumias Vipers Academy towards excellence.')
 
 @section('content')
 <style>

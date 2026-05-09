@@ -1,7 +1,7 @@
 @extends('layouts.academy')
+@section('title', 'Events - Mumias Vipers Academy Kenya')
 
-@section('title', 'Events - Vipers Academy Kenya')
-@section('meta_description', 'Upcoming events, tournaments, and activities at Vipers Academy Kenya.')
+@section('meta_description', 'Upcoming events, tournaments, and activities at Mumias Vipers Academy Kenya.')
 
 @section('content')
 <div class="container py-5">
