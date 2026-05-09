@@ -192,7 +192,7 @@ class TrainingSessionController extends Controller
                 "Your child {$player->full_name} attended the {$trainingSession->team_category} {$trainingSession->session_type} session.\n\n" .
                 "Duration: {$trainingSession->total_duration_minutes} minutes\n" .
                 "End Time: {$trainingSession->end_time->format('M j, Y g:i A')}\n\n" .
-                "Vipers Academy";
+                "Mumias Vipers Academy";
 
             $result = $this->smsService->sendSms($player->parent_phone, $message);
 

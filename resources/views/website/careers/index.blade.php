@@ -25,7 +25,7 @@ Join Mumias Vipers Academy and be part of Kenya's premier football development i
 <section class="why-join-section py-5 bg-light">
     <div class="container">
         <div class="text-center mb-5" data-aos="fade-up">
-            <h2 class="display-5 fw-bold mb-3">Why Join Vipers Academy?</h2>
+            <h2 class="display-5 fw-bold mb-3">Why Join Mumias Vipers Academy?</h2>
             <p class="lead text-muted">Be part of a winning team that makes a real difference in young lives</p>
         </div>
 

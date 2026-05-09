@@ -16,7 +16,7 @@
                 <!-- Why Join Us -->
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-light">
-                        <h5 class="mb-0"><i class="fas fa-star me-2" style="color: var(--highlight);"></i>Why Join Vipers Academy?</h5>
+                        <h5 class="mb-0"><i class="fas fa-star me-2" style="color: var(--highlight);"></i>Why Join Mumias Vipers Academy?</h5>
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled">

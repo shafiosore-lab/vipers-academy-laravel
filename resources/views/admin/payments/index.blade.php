@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', __('Payments Management - Vipers Academy Admin'))
+@section('title', __('Payments Management - Mumias Vipers Academy Admin'))
 
 @section('content')
 <div class="container-fluid px-2">

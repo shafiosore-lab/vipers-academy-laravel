@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', __('Performance Overview - Vipers Academy Admin'))
+@section('title', __('Performance Overview - Mumias Vipers Academy Admin'))
 
 @section('breadcrumb')
 <nav aria="{{ __('Breadcrumb navigation') }}">

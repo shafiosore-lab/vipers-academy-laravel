@@ -154,7 +154,7 @@
                                alt="Scholarship recipient" class="rounded-circle mb-2" style="width: 60px; height: 60px; object-fit: cover;" loading="lazy">
                           <h5 class="card-title fw-bold mb-1">Education Through Football</h5>
                           <p class="card-text text-muted mb-2 small">
-                              "Thanks to Vipers Academy's community programs, I received a full sports scholarship to secondary school. Football opened doors to education I never thought possible. The mentorship and discipline I gained here changed my life."
+                               "Thanks to Mumias Vipers Academy's community programs, I received a full sports scholarship to secondary school. Football opened doors to education I never thought possible. The mentorship and discipline I gained here changed my life."
                           </p>
                           <div class="text-warning mb-1">
                               <i class="fas fa-star"></i>

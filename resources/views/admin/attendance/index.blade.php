@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', __('Attendance Management - Vipers Academy Admin'))
+@section('title', __('Attendance Management - Mumias Vipers Academy Admin'))
 
 @php
 // Determine route prefix based on the current URL path (not just user role)

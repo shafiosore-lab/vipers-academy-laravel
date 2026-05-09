@@ -30,7 +30,7 @@ class SuperAdminSeeder extends Seeder
         $superAdmin = User::updateOrCreate(
             ['email' => 'superadmin@viperzacademy.com'],
             [
-                'name' => 'Vipers Academy Super Admin',
+                'name' => 'Mumias Vipers Academy Super Admin',
                 'first_name' => 'Super',
                 'last_name' => 'Admin',
                 'email' => 'superadmin@viperzacademy.com',
@@ -55,7 +55,7 @@ class SuperAdminSeeder extends Seeder
         $backupAdmin = User::updateOrCreate(
             ['email' => 'admin@viperzacademy.com'],
             [
-                'name' => 'Vipers Academy Administrator',
+                'name' => 'Mumias Vipers Academy Administrator',
                 'first_name' => 'Admin',
                 'last_name' => 'User',
                 'email' => 'admin@viperzacademy.com',

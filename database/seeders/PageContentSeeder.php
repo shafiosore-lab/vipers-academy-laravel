@@ -460,7 +460,7 @@ class PageContentSeeder extends Seeder
         );
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'hero', 'key' => 'subtitle'],
-            ['value' => 'Stay Updated with Vipers Academy', 'type' => 'text', 'sort_order' => 2, 'is_active' => true]
+            ['value' => 'Stay Updated with Mumias Vipers Academy', 'type' => 'text', 'sort_order' => 2, 'is_active' => true]
         );
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'hero', 'key' => 'description'],
@@ -479,7 +479,7 @@ class PageContentSeeder extends Seeder
         );
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'hero', 'key' => 'subtitle'],
-            ['value' => 'Build Your Career with Vipers Academy', 'type' => 'text', 'sort_order' => 2, 'is_active' => true]
+            ['value' => 'Build Your Career with Mumias Vipers Academy', 'type' => 'text', 'sort_order' => 2, 'is_active' => true]
         );
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'hero', 'key' => 'description'],
@@ -516,7 +516,7 @@ class PageContentSeeder extends Seeder
         );
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'hero', 'key' => 'subtitle'],
-            ['value' => 'Meet the Team Behind Vipers Academy', 'type' => 'text', 'sort_order' => 2, 'is_active' => true]
+            ['value' => 'Meet the Team Behind Mumias Vipers Academy', 'type' => 'text', 'sort_order' => 2, 'is_active' => true]
         );
         PageContent::updateOrCreate(
             ['page' => $page, 'section' => 'hero', 'key' => 'description'],

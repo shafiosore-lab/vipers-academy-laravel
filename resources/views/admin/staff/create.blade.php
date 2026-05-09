@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', __('Create Staff Member - Vipers Academy Admin'))
+@section('title', __('Create Staff Member - Mumias Vipers Academy Admin'))
 
 @push('styles')
 <style>
