@@ -9,29 +9,6 @@
     HIGH-DENSITY PLAYER PROFILE SYSTEM
     ======================================== */
 
-:root {
-    --primary-red: #ea1c4d;
-    --primary-red-light: #f87171;
-    --primary-red-dark: #dc2626;
-    --secondary-green: #059669;
-    --neutral-50: #fafafa;
-    --neutral-100: #f5f5f5;
-    --neutral-200: #e5e5e5;
-    --neutral-300: #d4d4d4;
-    --neutral-400: #a3a3a3;
-    --neutral-500: #737373;
-    --neutral-600: #525252;
-    --neutral-700: #404040;
-    --neutral-800: #262626;
-    --neutral-900: #171717;
-    --border-radius: 8px;
-    --border-radius-lg: 12px;
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --transition: all 0.15s ease;
-}
-
 /* ========================================
     COMPACT PLAYER HEADER
     ======================================== */
@@ -544,9 +521,6 @@
                 <div class="player-position-badge">{{ ucfirst($player->position) }}</div>
                 <div class="player-meta-compact">
                     <span class="player-category-badge">{{ $player->standardized_category }}</span>
-                    @if($player->age)
-                    <span>{{ $player->age }}y</span>
-                    @endif
                     @if($player->jersey_number)
                     <span>#{{ $player->jersey_number }}</span>
                     @endif
@@ -615,12 +589,6 @@
             </div>
             <div class="collapsible-content">
                 <div class="profile-data-compact">
-                    @if($player->age)
-                    <div class="profile-data-item">
-                        <span class="profile-data-label">Age</span>
-                        <span class="profile-data-value">{{ $player->age }} years</span>
-                    </div>
-                    @endif
                     @if($player->position)
                     <div class="profile-data-item">
                         <span class="profile-data-label">Position</span>

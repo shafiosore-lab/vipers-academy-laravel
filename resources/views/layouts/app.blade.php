@@ -15,13 +15,11 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
-
-            <main class="py-4">
+        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+            <!-- No conflicting navbar - using layouts.academy for website pages -->
+            <main>
                 @yield('content')
             </main>
         </div>
     </body>
 </html>
-

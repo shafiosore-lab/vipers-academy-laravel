@@ -90,6 +90,22 @@
             --z-mobile: 1048;
             --z-topbar: 1050;
 
+            /* Player System Colors - Consolidated */
+            --primary-red: #ea1c4d;
+            --primary-red-light: #f87171;
+            --primary-red-dark: #dc2626;
+            --secondary-green: #059669;
+            --neutral-50: #fafafa;
+            --neutral-100: #f5f5f5;
+            --neutral-200: #e5e5e5;
+            --neutral-300: #d4d4d4;
+            --neutral-400: #a3a3a3;
+            --neutral-500: #737373;
+            --neutral-600: #525252;
+            --neutral-700: #404040;
+            --neutral-800: #262626;
+            --neutral-900: #171717;
+
             /* Heights */
             --topbar-height: 40px;
             --navbar-height: 80px;

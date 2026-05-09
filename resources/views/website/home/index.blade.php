@@ -7,7 +7,7 @@
 @section('content')
   <!-- Hero Section -->
 <section class="hero-section home-hero-section" style="background-image: url('{{ asset('assets/img/home/teamb.jpg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; background-color: #000;">
-    <div class="hero-overlay" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.75) 70%);"></div>
+    <div class="hero-overlay" style="background: linear-gradient(135deg, rgba(0, 0, 0, 0.70) 0%, rgba(0, 0, 0, 0.60) 70%);"></div>
     <div class="container">
         <div class="row justify-content-center text-center">
             <div class="col-lg-10 col-xl-8">
@@ -62,7 +62,11 @@
                        @php
                            $whatWeDoTitle = isset($pageContent['what_we_do']) ? $pageContent['what_we_do']->firstWhere('key', 'title') : null;
                        @endphp
-                       {{ $whatWeDoTitle?->value ?: 'Empowering Youth Through <span class="text-primary">Sports, STEM & Education</span>' }}
+                       @if($whatWeDoTitle?->value)
+                           {{ $whatWeDoTitle->value }}
+                       @else
+                           {!! 'Empowering Youth Through <span class="text-primary">Sports, STEM & Education</span>' !!}
+                       @endif
                    </h2>
                    <p class="section-text mb-3 text-muted">
                        @php
@@ -128,7 +132,11 @@
                    @php
                        $storiesTitle = isset($pageContent['stories']) ? $pageContent['stories']->firstWhere('key', 'title') : null;
                    @endphp
-                   {{ $storiesTitle?->value ?: 'Success <span class="text-success">Stories</span>' }}
+                   @if($storiesTitle?->value)
+                       {{ $storiesTitle->value }}
+                   @else
+                       {!! 'Success <span class="text-success">Stories</span>' !!}
+                   @endif
                </h2>
                <p class="section-subtitle text-muted">
                    @php
@@ -213,7 +221,11 @@
                 @php
                     $programsTitle = isset($pageContent['programs']) ? $pageContent['programs']->firstWhere('key', 'title') : null;
                 @endphp
-                {{ $programsTitle?->value ?: 'Football <span class="text-success">|</span> Academics <span class="text-warning">|</span> Technology' }}
+                @if($programsTitle?->value)
+                    {{ $programsTitle->value }}
+                @else
+                    {!! 'Football <span class="text-success">|</span> Academics <span class="text-warning">|</span> Technology' !!}
+                @endif
             </h2>
             <p class="section-subtitle">
                 @php
@@ -478,6 +490,8 @@
     background-position: center;
     overflow: hidden;
     padding-top: 2rem; /* Compact spacing from top */
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
 }
 
 .hero-overlay {
@@ -487,6 +501,8 @@
     width: 100%;
     height: 100%;
     z-index: 1;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
 }
 
     .hero-content {

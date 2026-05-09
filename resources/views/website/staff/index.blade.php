@@ -406,6 +406,7 @@
         </div>
         @endif
     </div>
+    @endif
 </section>
 @endsection
 

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.academy')
 
 @section('title', 'Document Upload')
 
