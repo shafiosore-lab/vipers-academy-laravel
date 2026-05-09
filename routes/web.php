@@ -51,6 +51,7 @@ Route::get('/players/{id}/career', [PlayerController::class, 'career'])->name('p
 Route::post('/players/{id}/record-stats', [PlayerController::class, 'recordGameStats'])->name('players.record-stats')->where('id', '[0-9]+');
 Route::get('/players/search', [PlayerController::class, 'searchPlayers'])->name('players.search');
 Route::get('/players/{id}', [PlayerController::class, 'overview'])->name('players.show')->where('id', '[0-9]+');
+Route::get('/api/players', [PlayerController::class, 'apiIndex'])->name('players.api');
 
 
 

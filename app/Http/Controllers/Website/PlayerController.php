@@ -21,6 +21,11 @@ class PlayerController extends \App\Http\Controllers\Controller
      */
     public function index(Request $request)
     {
+        // Initialize filtering parameters (must be before try/catch)
+        $search = $request->get('search', '');
+        $gender = $request->get('gender', '');
+        $category = $request->get('category', '');
+
         try {
             // Check if the table exists before querying
             if (!\Schema::hasTable('website_uploaded_players')) {
@@ -33,13 +38,8 @@ class PlayerController extends \App\Http\Controllers\Controller
                     1,
                     ['path' => \Illuminate\Pagination\LengthAwarePaginator::resolveCurrentPath()]
                 );
-                return view('website.players.index', compact('players'));
+                return view('website.players.index', compact('players', 'search', 'gender', 'category'));
             }
-
-            // Get filtering parameters
-            $search = $request->get('search', '');
-            $gender = $request->get('gender', '');
-            $category = $request->get('category', '');
 
             // Build query with filters
             $query = WebsitePlayer::query();
@@ -628,6 +628,13 @@ class PlayerController extends \App\Http\Controllers\Controller
             if (!empty($category)) {
                 $query->where('category', 'like', "%{$category}%");
             }
+
+            // Apply approval filter: only show approved synced players OR direct uploads
+            $query->where(function($q) {
+                $q->whereHas('player', function($q2) {
+                    $q2->whereIn('approval_type', ['full', 'temporary']);
+                })->orWhereNull('player_id');
+            });
 
             // Get paginated results
             $players = $query->orderBy('last_name')

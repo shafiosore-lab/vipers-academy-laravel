@@ -223,26 +223,27 @@
      }
  }
 
- /* HEADER */
+  /* HEADER */
 
- .page-header{
-     display:flex;
-     justify-content:space-between;
-     align-items:center;
-     margin-bottom:.75rem;
-     gap:.5rem;
- }
+  .page-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:.5rem;
+      gap:.4rem;
+  }
 
- @media(max-width:768px){
-     .page-header{
-         margin-bottom:.5rem;
-     }
- }
+  @media(max-width:768px){
+      .page-header{
+          margin-bottom:.4rem;
+          gap:.3rem;
+      }
+  }
 
- .page-title{
-     font-size:1.5rem;
-     font-weight:700;
- }
+  .page-title{
+      font-size:1.5rem;
+      font-weight:700;
+  }
 
 /* BUTTON */
 
@@ -254,67 +255,67 @@
     text-decoration:none;
 }
 
- /* FILTERS */
+  /* FILTERS */
 
- .filters-bar{
-     display:flex;
-     gap:.75rem;
-     flex-wrap:wrap;
-     margin-bottom:1rem;
-     align-items:stretch;
- }
+  .filters-bar{
+      display:flex;
+      gap:.4rem;
+      flex-wrap:wrap;
+      margin-bottom:.5rem;
+      align-items:stretch;
+  }
 
- @media(max-width:768px){
-     .filters-bar{
-         margin-bottom:.75rem;
-         gap:.5rem;
-     }
- }
+  @media(max-width:768px){
+      .filters-bar{
+          margin-bottom:.5rem;
+          gap:.3rem;
+      }
+  }
 
- .search-box{
-     position:relative;
-     flex:1;
-     min-width:200px;
- }
+  .search-box{
+      position:relative;
+      flex:1;
+      min-width:180px;
+  }
 
- .search-box input{
-     width:100%;
-     padding:.5rem 2rem .5rem .75rem;
-     border:1px solid #ddd;
-     border-radius:8px;
-     font-size:.875rem;
- }
+  .search-box input{
+      width:100%;
+      padding:.4rem 1.8rem .4rem .6rem;
+      border:1px solid #ddd;
+      border-radius:6px;
+      font-size:.813rem;
+  }
 
- #clear-search{
-     position:absolute;
-     right:.5rem;
-     top:50%;
-     transform:translateY(-50%);
-     border:none;
-     background:none;
-     cursor:pointer;
-     font-size:1rem;
-     color:#999;
-     padding:.25rem;
-     line-height:1;
- }
+  #clear-search{
+      position:absolute;
+      right:.4rem;
+      top:50%;
+      transform:translateY(-50%);
+      border:none;
+      background:none;
+      cursor:pointer;
+      font-size:.875rem;
+      color:#999;
+      padding:.2rem;
+      line-height:1;
+  }
 
- .filter-group{
-     display:flex;
-     gap:.4rem;
-     flex-wrap:nowrap;
-     overflow-x:auto;
-     -webkit-overflow-scrolling:touch;
-     scrollbar-width:none;
-     -ms-overflow-style:none;
-     min-width:0;
-     flex:1;
-     max-width:100%;
-     padding:.2rem 0;
-     position:relative;
-     mask-image:linear-gradient(to right, transparent, black 5%, black 95%, transparent);
-     -webkit-mask-image:linear-gradient(to right, transparent, black 5%, black 95%, transparent);
- }
+  .filter-group{
+      display:flex;
+      gap:.25rem;
+      flex-wrap:nowrap;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+      -ms-overflow-style:none;
+      min-width:0;
+      flex:1;
+      max-width:100%;
+      padding:.15rem 0;
+      position:relative;
+      mask-image:linear-gradient(to right, transparent, black 3%, black 97%, transparent);
+      -webkit-mask-image:linear-gradient(to right, transparent, black 3%, black 97%, transparent);
+  }
 
  .filter-group::-webkit-scrollbar{
      display:none;
@@ -339,46 +340,46 @@
      }
  }
 
- .filter-chip{
-     display:inline-flex;
-     align-items:center;
-     gap:.3rem;
-     padding:.5rem .7rem;
-     border:1px solid #ddd;
-     border-radius:999px;
-     background:#fff;
-     cursor:pointer;
-     font-size:.75rem;
-     font-weight:500;
-     white-space:nowrap;
-     flex-shrink:0;
-     transition:all .15s ease;
-     min-height:36px;
-     scroll-margin-inline:6px;
- }
+  .filter-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:.2rem;
+      padding:.35rem .5rem;
+      border:1px solid #ddd;
+      border-radius:999px;
+      background:#fff;
+      cursor:pointer;
+      font-size:.75rem;
+      font-weight:500;
+      white-space:nowrap;
+      flex-shrink:0;
+      transition:all .15s ease;
+      min-height:32px;
+      scroll-margin-inline:4px;
+  }
 
- .filter-chip i{
-     font-size:.65rem;
-     line-height:1;
- }
+  .filter-chip i{
+      font-size:.6rem;
+      line-height:1;
+  }
 
- @media(max-width:768px){
-     .filter-group{
-         scroll-snap-type:x mandatory;
-         -webkit-overflow-scrolling:touch;
-     }
+  @media(max-width:768px){
+      .filter-group{
+          scroll-snap-type:x mandatory;
+          -webkit-overflow-scrolling:touch;
+      }
 
-     .filter-chip{
-         scroll-snap-align:start;
-         min-height:40px;
-         padding:.5rem .65rem;
-         font-size:.7rem;
-     }
+      .filter-chip{
+          scroll-snap-align:start;
+          min-height:36px;
+          padding:.4rem .55rem;
+          font-size:.7rem;
+      }
 
-     .filter-chip i{
-         font-size:.6rem;
-     }
- }
+      .filter-chip i{
+          font-size:.55rem;
+      }
+  }
 
  .filter-chip.active{
      background:var(--primary-red);
@@ -512,64 +513,64 @@
          padding:.75rem;
      }
 
-     .page-header{
-         margin-bottom:.5rem;
-         gap:.5rem;
-     }
+      .page-header{
+          margin-bottom:.4rem;
+          gap:.3rem;
+      }
 
-     .page-title{
-         font-size:1.25rem;
-     }
+      .page-title{
+          font-size:1.25rem;
+      }
 
-     .sync-button{
-         padding:.5rem .75rem;
-         font-size:.75rem;
-     }
+      .sync-button{
+          padding:.45rem .65rem;
+          font-size:.7rem;
+      }
 
-     .filters-bar{
-         flex-direction:column;
-         gap:.5rem;
-     }
+      .filters-bar{
+          flex-direction:column;
+          gap:.3rem;
+      }
 
-     .search-box{
-         flex:0 0 auto;
-         width:100%;
-     }
+      .search-box{
+          flex:0 0 auto;
+          width:100%;
+      }
 
-     .search-box input{
-         padding:.5rem 2rem .5rem .75rem;
-         font-size:.85rem;
-     }
+      .search-box input{
+          padding:.4rem 1.8rem .4rem .6rem;
+          font-size:.813rem;
+      }
 
-     .filter-group{
-         flex:0 0 auto;
-         width:100%;
-         overflow-x:auto;
-         -webkit-overflow-scrolling:touch;
-         scrollbar-width:none;
-         -ms-overflow-style:none;
-         padding:.15rem 0;
-         scroll-behavior:smooth;
-         position:relative;
-         mask-image:linear-gradient(to right, transparent, black 3%, black 97%, transparent);
-         -webkit-mask-image:linear-gradient(to right, transparent, black 3%, black 97%, transparent);
-         scroll-snap-type:x mandatory;
-         gap:.3rem;
-     }
+      .filter-group{
+          flex:0 0 auto;
+          width:100%;
+          overflow-x:auto;
+          -webkit-overflow-scrolling:touch;
+          scrollbar-width:none;
+          -ms-overflow-style:none;
+          padding:.1rem 0;
+          scroll-behavior:smooth;
+          position:relative;
+          mask-image:linear-gradient(to right, transparent, black 3%, black 97%, transparent);
+          -webkit-mask-image:linear-gradient(to right, transparent, black 3%, black 97%, transparent);
+          scroll-snap-type:x mandatory;
+          gap:.2rem;
+      }
 
      .filter-group::-webkit-scrollbar{
          display:none;
      }
 
-      .filter-chip{
-          scroll-snap-align:start;
-          min-height:44px;
-          padding:.6rem .75rem;
-          font-size:.75rem;
-          border-width:1px;
-          border-radius:999px;
-          scroll-margin-inline:6px;
-      }
+       .filter-chip{
+           scroll-snap-align:start;
+           min-height:38px;
+           padding:.45rem .6rem;
+           font-size:.7rem;
+           border-width:1px;
+           border-radius:999px;
+           scroll-margin-inline:5px;
+       }
 
      .filter-chip i{
          font-size:.65rem;
@@ -647,11 +648,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const clearBtn = document.getElementById('clear-search');
 
     let filters = {
-        search: '{{ $search ?? '' }}',
-        gender: '{{ $gender ?? '' }}',
-        category: '{{ $category ?? '' }}',
-        page: 1
+        search: @json($search ?? ''),
+        gender: @json($gender ?? ''),
+        category: @json($category ?? ''),
+        page: {{ $players->currentPage() }}
     };
+
+    // Utility: escape HTML to prevent XSS
+    function escapeHtml(text) {
+        if (text === null || text === undefined) return '';
+        return String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
 
     /* SEARCH */
 
@@ -665,6 +677,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         timeout = setTimeout(() => {
             filters.search = searchInput.value.trim();
+            filters.page = 1; // Reset to page 1 on new search
             fetchPlayers();
         }, 300);
 
@@ -674,6 +687,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         searchInput.value = '';
         filters.search = '';
+        filters.page = 1;
 
         toggleClearButton();
 
@@ -688,35 +702,39 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     }
 
-     /* FILTERS */
+    // Set initial clear button state
+    toggleClearButton();
 
-     document.addEventListener('click', e => {
+    /* FILTERS */
 
-         const chip = e.target.closest('.filter-chip');
+      document.addEventListener('click', e => {
 
-         if(!chip) return;
+          const chip = e.target.closest('.filter-chip');
 
-         const group = chip.parentElement;
+          if(!chip) return;
 
-         group.querySelectorAll('.filter-chip')
-             .forEach(btn => btn.classList.remove('active'));
+          const group = chip.parentElement;
 
-         chip.classList.add('active');
+          group.querySelectorAll('.filter-chip')
+              .forEach(btn => btn.classList.remove('active'));
 
-         filters[chip.dataset.filter] = chip.dataset.value;
+          chip.classList.add('active');
 
-         // Scroll active chip into view center on mobile
-         if(window.innerWidth <= 768){
-             chip.scrollIntoView({
-                 behavior: 'smooth',
-                 inline: 'center',
-                 block: 'nearest'
-             });
-         }
+          filters[chip.dataset.filter] = chip.dataset.value;
+          filters.page = 1; // Reset to first page when filter changes
 
-         fetchPlayers();
+          // Scroll active chip into view center on mobile
+          if(window.innerWidth <= 768){
+              chip.scrollIntoView({
+                  behavior: 'smooth',
+                  inline: 'center',
+                  block: 'nearest'
+              });
+          }
 
-     });
+          fetchPlayers();
+
+      });
 
     /* FETCH */
 
@@ -724,6 +742,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const params = new URLSearchParams(filters);
 
+        // Update URL without page reload
         window.history.pushState(
             {},
             '',
@@ -731,18 +750,97 @@ document.addEventListener('DOMContentLoaded', () => {
         );
 
         fetch(`/api/players?${params}`)
-            .then(res => res.json())
-            .then(data => {
-
-                console.log(data);
-
-                // OPTIONAL:
-                // render dynamic HTML here
-
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return res.json();
             })
-            .catch(console.error);
+            .then(data => {
+                renderPlayers(data);
+            })
+            .catch(err => {
+                console.error('Fetch error:', err);
+            });
 
     }
+
+    function renderPlayers(response) {
+        const container = document.getElementById('players-content');
+
+        // Empty state
+        if (!response.success || !response.data || response.data.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <h3>No Players Found</h3>
+                    <p>Try adjusting your filters.</p>
+                    @if($isAdmin)
+                        <a href="{{ route('players.sync') }}" class="sync-button">
+                            Sync Players
+                        </a>
+                    @endif
+                </div>
+            `;
+            return;
+        }
+
+        const players = response.data;
+
+        // Build players grid
+        let html = '<div class="players-grid">';
+        html += players.map(player => {
+            const name = escapeHtml(player.name);
+            const initial = name ? name.charAt(0) : '';
+            const position = player.position ? escapeHtml(player.position.charAt(0).toUpperCase() + player.position.slice(1)) : '';
+            const category = escapeHtml(player.standardized_category || player.category);
+            const imageUrl = player.image_url ? escapeHtml(player.image_url) : null;
+
+            return `
+                <a href="/players/${player.id}/overview" class="player-card">
+                    <div class="player-avatar">
+                        ${imageUrl
+                            ? `<img src="${imageUrl}" alt="${name}" loading="lazy">`
+                            : `<div class="avatar-placeholder">${initial}</div>`
+                        }
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">${name}</h3>
+                        <div class="player-meta">
+                            <span>${position}</span>
+                            <span>${category}</span>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }).join('') + '</div>';
+
+        // Add pagination if multiple pages
+        if (response.pagination && response.pagination.last_page > 1) {
+            html += `
+                <div class="pagination">
+                    <span>${response.pagination.from} - ${response.pagination.to} of ${response.pagination.total}</span>
+                    <div class="pagination-buttons">
+                        <button id="prev-page" ${response.pagination.current_page <= 1 ? 'disabled' : ''}>←</button>
+                        <button id="next-page" ${response.pagination.current_page >= response.pagination.last_page ? 'disabled' : ''}>→</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        container.innerHTML = html;
+    }
+
+    // Pagination button event delegation
+    document.addEventListener('click', (e) => {
+        if (e.target.id === 'prev-page' && !e.target.disabled) {
+            filters.page = Math.max(1, filters.page - 1);
+            fetchPlayers();
+        }
+        if (e.target.id === 'next-page' && !e.target.disabled) {
+            filters.page = filters.page + 1;
+            fetchPlayers();
+        }
+    });
 
 });
 
