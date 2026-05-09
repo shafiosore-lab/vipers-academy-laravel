@@ -2,66 +2,79 @@
 
 @section('title', 'Enroll in Program - Mumias Vipers Academy')
 
-<h3 class="card-title mb-0">Enroll in Mumias Vipers Academy Program</h3>
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">Enroll in Mumias Vipers Academy Program</h3>
                 </div>
                 <div class="card-body">
                     <form method="POST" action="{{ route('enrol.store') }}">
                         @csrf
 
-                        <div class="mb-3">
-                            <label for="first_name" class="form-label">First Name</label>
-                            <input type="text" name="first_name" id="first_name" class="form-control @error('first_name') is-invalid @enderror" value="{{ old('first_name') }}" required>
-                            @error('first_name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label for="first_name" class="form-label">First Name</label>
+                                <input type="text" name="first_name" id="first_name" class="form-control @error('first_name') is-invalid @enderror" value="{{ old('first_name') }}" required>
+                                @error('first_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6 mb-2">
+                                <label for="last_name" class="form-label">Last Name</label>
+                                <input type="text" name="last_name" id="last_name" class="form-control @error('last_name') is-invalid @enderror" value="{{ old('last_name') }}" required>
+                                @error('last_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="last_name" class="form-label">Last Name</label>
-                            <input type="text" name="last_name" id="last_name" class="form-control @error('last_name') is-invalid @enderror" value="{{ old('last_name') }}" required>
-                            @error('last_name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label for="email" class="form-label">Email Address</label>
+                                <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" required>
+                                @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6 mb-2">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="text" name="phone" id="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone') }}" required>
+                                @error('phone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email Address</label>
-                            <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" required>
-                            @error('email')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <div class="row">
+                            <div class="col-md-6 mb-2">
+                                <label for="residence" class="form-label">Residence</label>
+                                <input type="text" name="residence" id="residence" class="form-control @error('residence') is-invalid @enderror" value="{{ old('residence') }}" required>
+                                @error('residence')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6 mb-2">
+                                <label for="learning_option" class="form-label">Learning Option</label>
+                                <select name="learning_option" id="learning_option" class="form-control @error('learning_option') is-invalid @enderror" required>
+                                    <option value="">Select learning option</option>
+                                    <option value="Online" {{ old('learning_option') == 'Online' ? 'selected' : '' }}>Online</option>
+                                    <option value="Physical" {{ old('learning_option') == 'Physical' ? 'selected' : '' }}>Physical</option>
+                                </select>
+                                @error('learning_option')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">Phone Number</label>
-                            <input type="text" name="phone" id="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone') }}" required>
-                            @error('phone')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="residence" class="form-label">Residence</label>
-                            <input type="text" name="residence" id="residence" class="form-control @error('residence') is-invalid @enderror" value="{{ old('residence') }}" required>
-                            @error('residence')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="learning_option" class="form-label">Learning Option</label>
-                            <select name="learning_option" id="learning_option" class="form-control @error('learning_option') is-invalid @enderror" required>
-                                <option value="">Select learning option</option>
-                                <option value="Online" {{ old('learning_option') == 'Online' ? 'selected' : '' }}>Online</option>
-                                <option value="Physical" {{ old('learning_option') == 'Physical' ? 'selected' : '' }}>Physical</option>
-                            </select>
-                            @error('learning_option')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="program_id" class="form-label">Select Program <span class="text-danger">*</span></label>
+                        <div class="row">
+                            <div class="col-12 mb-2">
+                                <label for="program_id" class="form-label">Select Program <span class="text-danger">*</span></label>
 
                             <!-- Hidden Select for Form Submission -->
                             <select name="program_id" id="program_id" class="form-control @error('program_id') is-invalid @enderror" required style="display: none;">
@@ -115,8 +128,9 @@
                                                 </div>
                                             </button>
                                         @endforeach
-                                    </div>
-                                </div>
+                            </div>
+                            </div>
+                        </div>
                             </div>
 
                             @error('program_id')
@@ -135,11 +149,14 @@
                         </div>
 
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg">Enroll Now</button>
+                            <button type="submit" class="btn btn-primary">Enroll Now</button>
                         </div>
                     </form>
-                </div>
-            </div>
+                </div><!-- card-body -->
+            </div><!-- card -->
+        </div><!-- col -->
+    </div><!-- row -->
+</div><!-- container -->
         </div>
     </div>
 </div>
