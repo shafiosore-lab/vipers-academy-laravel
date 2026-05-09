@@ -1,6 +1,6 @@
 @extends('layouts.academy')
 
-@section('title', 'Our Players - Vipers Academy')
+@section('title', 'Our Players - Mumias Vipers Academy')
 
  @php
      $isAdmin = auth()->check() && auth()->user()->is_admin;

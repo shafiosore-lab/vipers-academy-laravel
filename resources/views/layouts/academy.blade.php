@@ -4,22 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Vipers Academy - Professional Football Training')</title>
-    <meta name="description" content="@yield('meta_description', 'Join Vipers Academy for world-class football training')">
+    <title>@yield('title', 'Mumias Vipers Academy - Professional Football Training')</title>
+    <meta name="description" content="@yield('meta_description', 'Join Mumias Vipers Academy for world-class football training')">
 
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="@yield('og:title', 'Vipers Academy - Professional Football Training')">
-    <meta property="og:description" content="@yield('og:description', 'Join Vipers Academy for world-class football training')">
+    <meta property="og:title" content="@yield('og:title', 'Mumias Vipers Academy - Professional Football Training')">
+    <meta property="og:description" content="@yield('og:description', 'Join Mumias Vipers Academy for world-class football training')">
     <meta property="og:image" content="@yield('og:image', asset('assets/img/logo/vps.jpeg'))">
     <meta property="og:url" content="@yield('og:url', url()->current())">
     <meta property="og:type" content="@yield('og:type', 'website')">
-    <meta property="og:site_name" content="@yield('og:site_name', 'Vipers Academy')">
+    <meta property="og:site_name" content="@yield('og:site_name', 'Mumias Vipers Academy')">
     <meta property="og:locale" content="@yield('og:locale', 'en_US')">
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="@yield('twitter:card', 'summary_large_image')">
-    <meta name="twitter:title" content="@yield('twitter:title', 'Vipers Academy - Professional Football Training')">
-    <meta name="twitter:description" content="@yield('twitter:description', 'Join Vipers Academy for world-class football training')">
+    <meta name="twitter:title" content="@yield('twitter:title', 'Mumias Vipers Academy - Professional Football Training')">
+    <meta name="twitter:description" content="@yield('twitter:description', 'Join Mumias Vipers Academy for world-class football training')">
     <meta name="twitter:image" content="@yield('twitter:image', asset('assets/img/logo/vps.jpeg'))">
 
     <!-- Article Schema Meta Tags -->
@@ -1128,7 +1128,7 @@
         <div class="navbar-content">
             <!-- Brand -->
             <a class="navbar-brand" href="{{ route('home') }}">
-                <img src="{{ asset('assets/img/logo/vps.jpeg') }}" alt="Vipers Academy" class="logo-image">
+                 <img src="{{ asset('assets/img/logo/vps.jpeg') }}" alt="Mumias Vipers Academy" class="logo-image">
                 <div class="brand-text">
                     <span class="brand-name">Mumias Vipers Academy</span>
                     <span class="brand-tagline">Excellence in Football</span>
@@ -1242,7 +1242,7 @@
 
                 <!-- Copyright -->
                 <p class="footer-copyright">
-                    2026 Vipers Academy. All rights reserved.
+                     2026 Mumias Vipers Academy. All rights reserved.
                     <a href="{{ route('terms') }}">Terms</a>
                     <a href="{{ route('privacy') }}">Privacy</a>
                 </p>

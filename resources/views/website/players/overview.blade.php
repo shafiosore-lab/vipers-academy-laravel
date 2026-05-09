@@ -1,6 +1,6 @@
 @extends('layouts.academy')
 
-@section('title', $player->name . ' - Overview - Vipers Academy')
+@section('title', $player->name . ' - Overview - Mumias Vipers Academy')
 
 @section('content')
 @push('styles')

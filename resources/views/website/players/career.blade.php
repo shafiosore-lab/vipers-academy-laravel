@@ -1,6 +1,6 @@
 @extends('layouts.academy')
 
-@section('title', $player->name . ' - Career - Vipers Academy')
+@section('title', $player->name . ' - Career - Mumias Vipers Academy')
 
 @section('content')
 @push('styles')
@@ -572,7 +572,7 @@
                     <div class="career-milestone">
                         <div class="career-milestone-dot"></div>
                         <div class="career-milestone-date">{{ $player->joined_date->format('M Y') }}</div>
-                        <div class="career-milestone-title">Joined Vipers Academy</div>
+                         <div class="career-milestone-title">Joined Mumias Vipers Academy</div>
                         <div class="career-milestone-description">
                             Started journey as a {{ $player->standardized_category }} player in the {{ $player->position }} position.
                         </div>

@@ -7,12 +7,12 @@
             <p class="bio-text">{{ $player->bio }}</p>
         @else
             <p class="bio-text">
-                {{ $player->name }} is a talented {{ strtolower($player->position) }} at Vipers Academy,
+                 {{ $player->name }} is a talented {{ strtolower($player->position) }} at Mumias Vipers Academy,
                 demonstrating exceptional skill and dedication on the field. At {{ $player->age }} years old,
                 {{ explode(' ', $player->name)[0] }} has shown remarkable growth and continues to be an
                 integral part of the team's development. Known for strong work ethic and commitment to
                 excellence, {{ explode(' ', $player->name)[0] }} embodies the values and spirit of
-                Vipers Academy both on and off the pitch.
+                     Mumias Vipers Academy both on and off the pitch.
             </p>
         @endif
     </div>
