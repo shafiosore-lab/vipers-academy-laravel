@@ -192,8 +192,8 @@
               <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
                   <div class="story-card card border-0 shadow-sm h-100">
                       <div class="card-body p-3 text-center">
-                          <img src="{{ asset('assets/img/home/ddd.jpeg') }}"
-                               alt="Young player" class="rounded-circle mb-2" style="width: 60px; height: 60px; object-fit: cover;" loading="lazy">
+                           <img src="{{ asset('assets/img/home/ddd.png') }}"
+                                alt="Young player" class="rounded-circle mb-2" style="width: 60px; height: 60px; object-fit: cover;" loading="lazy">
                           <h5 class="card-title fw-bold mb-1">Life Skills Development</h5>
                           <p class="card-text text-muted mb-2 small">
                               "Vipers taught me more than football. I learned responsibility, teamwork, digital literacy, and how to balance sports with studies. These skills will guide me through life."

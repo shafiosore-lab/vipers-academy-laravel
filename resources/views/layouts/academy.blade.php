@@ -1158,6 +1158,7 @@
                         <li class="dropdown-section">
                             <span class="dropdown-section-title">Community</span>
                             <a href="{{ route('contact') }}">Contact</a>
+                            <a href="{{ route('donate') }}">Donate</a>
                         </li>
                         <li class="dropdown-divider"></li>
                         <li class="dropdown-section">
@@ -1197,22 +1198,23 @@
                     More
                     <span class="more-indicator">+</span>
                 </a>
-                <div class="mobile-more-menu" id="mobileMoreMenu">
-                    <div class="mobile-dropdown-section">
-                        <span class="mobile-dropdown-section-title">Community</span>
-                        <a href="{{ route('contact') }}">Contact</a>
-                    </div>
-                    <div class="mobile-dropdown-section">
-                        <span class="mobile-dropdown-section-title">Resources</span>
-                        <a href="{{ route('blog') }}">Blog</a>
-                        <a href="{{ route('merchandise') }}">Merchandise</a>
-                    </div>
-                    <div class="mobile-dropdown-section">
-                        <span class="mobile-dropdown-section-title">Careers</span>
-                        <a href="{{ route('staff') }}">Staff</a>
-                        <a href="{{ route('careers.index') }}">Careers</a>
-                    </div>
-                </div>
+                 <div class="mobile-more-menu" id="mobileMoreMenu">
+                     <div class="mobile-dropdown-section">
+                         <span class="mobile-dropdown-section-title">Community</span>
+                         <a href="{{ route('contact') }}">Contact</a>
+                         <a href="{{ route('donate') }}">Donate</a>
+                     </div>
+                     <div class="mobile-dropdown-section">
+                         <span class="mobile-dropdown-section-title">Resources</span>
+                         <a href="{{ route('blog') }}">Blog</a>
+                         <a href="{{ route('merchandise') }}">Merchandise</a>
+                     </div>
+                     <div class="mobile-dropdown-section">
+                         <span class="mobile-dropdown-section-title">Careers</span>
+                         <a href="{{ route('staff') }}">Staff</a>
+                         <a href="{{ route('careers.index') }}">Careers</a>
+                     </div>
+                 </div>
             </li>
             <li><a href="{{ route('login') }}" class="mobile-signin {{ request()->routeIs('login*') ? 'active' : '' }}">Sign In</a></li>
         </ul>
