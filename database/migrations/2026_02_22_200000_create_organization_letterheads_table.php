@@ -31,24 +31,7 @@ return new class extends Migration
             $table->index('organization_id');
         });
 
-        Schema::create('organization_documents', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('organization_id');
-            $table->unsignedBigInteger('letterhead_id')->nullable();
-            $table->unsignedBigInteger('created_by')->nullable();
-            $table->string('title');
-            $table->text('content')->nullable(); // HTML content from WYSIWYG editor
-            $table->string('status')->default('draft'); // draft, published
-            $table->integer('page_count')->default(1);
-            $table->unsignedInteger('views')->default(0);
-            $table->timestamps();
 
-            $table->foreign('organization_id')->references('id')->on('organizations')->onDelete('cascade');
-            $table->foreign('letterhead_id')->references('id')->on('organization_letterheads')->onDelete('set null');
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
-            $table->index('organization_id');
-            $table->index('status');
-        });
     }
 
     /**
