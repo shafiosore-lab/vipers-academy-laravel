@@ -225,6 +225,7 @@
                         <button class="btn btn-outline-info btn-sm">Sign</button>
                     </div>
 
+                    @if(auth()->check() && auth()->user()->hasPermission('players.resources.view'))
                     <div class="action-item normal">
                         <div class="action-indicator"></div>
                         <div class="action-icon">
@@ -237,6 +238,7 @@
                         </div>
                         <a href="{{ route('player.portal.resources') }}" class="btn btn-outline-success btn-sm">Practice</a>
                     </div>
+                    @endif
                 </div>
             </div>
 
@@ -244,7 +246,9 @@
             <div class="schedule-card" data-aos="fade-left" data-aos-delay="100">
                 <div class="section-header">
                     <h3><i class="fas fa-calendar-alt"></i> Upcoming Schedule</h3>
+                    @if(auth()->check() && auth()->user()->hasPermission('players.schedule.view'))
                     <a href="{{ route('player.portal.schedule') }}" class="view-all">View All</a>
+                    @endif
                 </div>
 
                 <div class="schedule-list">
@@ -307,18 +311,21 @@
                             </button>
                         </div>
                     </div>
-                </div>
-
-                <a href="{{ route('player.portal.schedule') }}" class="btn btn-outline-primary btn-sm w-100 mt-3">
-                    <i class="fas fa-calendar-alt me-2"></i>View Full Calendar
-                </a>
-            </div>
+                 </div>
+                 @if(auth()->check() && auth()->user()->hasPermission('players.schedule.view'))
+                 <a href="{{ route('player.portal.schedule') }}" class="btn btn-outline-primary btn-sm w-100 mt-3">
+                     <i class="fas fa-calendar-alt me-2"></i>View Full Calendar
+                 </a>
+                 @endif
+             </div>
 
             <!-- Recent Orders -->
             <div class="orders-card" data-aos="fade-left" data-aos-delay="200">
                 <div class="section-header">
                     <h3><i class="fas fa-shopping-bag"></i> Recent Orders</h3>
+                    @if(auth()->check() && auth()->user()->hasPermission('players.orders.view'))
                     <a href="{{ route('player.portal.orders') }}" class="view-all">View All</a>
+                    @endif
                 </div>
 
                 <div class="orders-list">
