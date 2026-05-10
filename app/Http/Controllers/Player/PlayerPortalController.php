@@ -77,7 +77,7 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
      */
     public function programs()
     {
-        if (!auth()->user()->can('players.programs.view')) {
+        if (!auth()->user()->hasPermission('players.programs.view')) {
             abort(403, 'Access denied. Insufficient permissions.');
         }
 
@@ -104,7 +104,7 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
      */
     public function training()
     {
-        if (!auth()->user()->can('players.training.view')) {
+        if (!auth()->user()->hasPermission('players.training.view')) {
             abort(403, 'Access denied. Insufficient permissions.');
         }
 
@@ -131,7 +131,7 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
      */
     public function schedule()
     {
-        if (!auth()->user()->can('players.schedule.view')) {
+        if (!auth()->user()->hasPermission('players.schedule.view')) {
             abort(403, 'Access denied. Insufficient permissions.');
         }
 
@@ -154,7 +154,7 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
      */
     public function resources()
     {
-        if (!auth()->user()->can('players.resources.view')) {
+        if (!auth()->user()->hasPermission('players.resources.view')) {
             abort(403, 'Access denied. Insufficient permissions.');
         }
 
@@ -179,7 +179,7 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
      */
     public function communication()
     {
-        if (!auth()->user()->can('players.communication.view')) {
+        if (!auth()->user()->hasPermission('players.communication.view')) {
             abort(403, 'Access denied. Insufficient permissions.');
         }
 
@@ -204,7 +204,7 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
      */
     public function orders()
     {
-        if (!auth()->user()->can('players.orders.view')) {
+        if (!auth()->user()->hasPermission('players.orders.view')) {
             abort(403, 'Access denied. Insufficient permissions.');
         }
 
@@ -241,7 +241,7 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
      */
     public function profile()
     {
-        if (!auth()->user()->can('players.profile.update')) {
+        if (!auth()->user()->hasPermission('players.profile.update')) {
             abort(403, 'Access denied. Insufficient permissions.');
         }
 
@@ -264,7 +264,7 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
      */
     public function support()
     {
-        if (!auth()->user()->can('players.support.view')) {
+        if (!auth()->user()->hasPermission('players.support.view')) {
             abort(403, 'Access denied. Insufficient permissions.');
         }
 

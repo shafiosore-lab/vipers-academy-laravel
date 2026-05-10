@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -81,6 +82,23 @@ class RegisteredUserController extends Controller
         }
 
         $user = User::create($userData);
+
+        // Assign default role based on account type
+        $roleSlug = match($accountType) {
+            'player' => 'player',
+            'coach' => 'coach',
+            'team_manager' => 'team-manager',
+            'organization' => null, // org admins get roles later
+            'partner' => null, // partners get roles later
+            'general' => null,
+        };
+
+        if ($roleSlug) {
+            $role = Role::where('slug', $roleSlug)->first();
+            if ($role) {
+                $user->assignRole($role);
+            }
+        }
 
         event(new Registered($user));
 

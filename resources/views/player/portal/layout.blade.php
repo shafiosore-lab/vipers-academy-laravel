@@ -915,9 +915,11 @@
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <ul class="dropdown-menu dropdown-menu-end" style="margin-top: 8px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);">
+                        @if(auth()->check() && auth()->user()->hasPermission('players.profile.update'))
                         <li><a class="dropdown-item" href="{{ route('player.portal.profile') }}">
                             <i class="fas fa-user me-2"></i>My Profile
                         </a></li>
+                        @endif
                         <li><a class="dropdown-item" href="{{ route('profile.edit') }}">
                             <i class="fas fa-cog me-2"></i>Account Settings
                         </a></li>
@@ -950,54 +952,54 @@
                     <i class="fas fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a></li>
-                @can('players.programs.view')
+                @if(auth()->check() && auth()->user()->hasPermission('players.programs.view'))
                 <li><a href="{{ route('player.portal.programs') }}" class="mobile-nav-link{{ request()->routeIs('player.portal.programs') ? ' active' : '' }}">
                     <i class="fas fa-graduation-cap"></i>
                     <span>My Programs</span>
                 </a></li>
-                @endcan
-                @can('players.training.view')
+                @endif
+                @if(auth()->check() && auth()->user()->hasPermission('players.training.view'))
                 <li><a href="{{ route('player.portal.training') }}" class="mobile-nav-link{{ request()->routeIs('player.portal.training') ? ' active' : '' }}">
                     <i class="fas fa-chart-line"></i>
                     <span>Training & Progress</span>
                 </a></li>
-                @endcan
-                @can('players.schedule.view')
+                @endif
+                @if(auth()->check() && auth()->user()->hasPermission('players.schedule.view'))
                 <li><a href="{{ route('player.portal.schedule') }}" class="mobile-nav-link{{ request()->routeIs('player.portal.schedule') ? ' active' : '' }}">
                     <i class="fas fa-calendar-check"></i>
                     <span>Schedule & Attendance</span>
                 </a></li>
-                @endcan
-                @can('players.resources.view')
+                @endif
+                @if(auth()->check() && auth()->user()->hasPermission('players.resources.view'))
                 <li><a href="{{ route('player.portal.resources') }}" class="mobile-nav-link{{ request()->routeIs('player.portal.resources') ? ' active' : '' }}">
                     <i class="fas fa-book-open"></i>
                     <span>Resources & Learning</span>
                 </a></li>
-                @endcan
-                @can('players.orders.view')
+                @endif
+                @if(auth()->check() && auth()->user()->hasPermission('players.orders.view'))
                 <li><a href="{{ route('player.portal.orders') }}" class="mobile-nav-link{{ request()->routeIs('player.portal.orders') ? ' active' : '' }}">
                     <i class="fas fa-shopping-bag"></i>
                     <span>Order History</span>
                 </a></li>
-                @endcan
-                @can('players.communication.view')
+                @endif
+                @if(auth()->check() && auth()->user()->hasPermission('players.communication.view'))
                 <li><a href="{{ route('player.portal.communication') }}" class="mobile-nav-link{{ request()->routeIs('player.portal.communication') ? ' active' : '' }}">
                     <i class="fas fa-comments"></i>
                     <span>Communication</span>
                 </a></li>
-                @endcan
-                @can('players.profile.update')
+                @endif
+                @if(auth()->check() && auth()->user()->hasPermission('players.profile.update'))
                 <li><a href="{{ route('player.portal.profile') }}" class="mobile-nav-link{{ request()->routeIs('player.portal.profile') ? ' active' : '' }}">
                     <i class="fas fa-user"></i>
                     <span>Profile & Settings</span>
                 </a></li>
-                @endcan
-                @can('players.support.view')
+                @endif
+                @if(auth()->check() && auth()->user()->hasPermission('players.support.view'))
                 <li><a href="{{ route('player.portal.support') }}" class="mobile-nav-link{{ request()->routeIs('player.portal.support') ? ' active' : '' }}">
                     <i class="fas fa-life-ring"></i>
                     <span>Support & Help</span>
                 </a></li>
-                @endcan
+                @endif
             </ul>
         </div>
     </div>
@@ -1018,48 +1020,48 @@
                     <i class="fas fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
-                @can('players.programs.view')
+                @if(auth()->check() && auth()->user()->hasPermission('players.programs.view'))
                 <a href="{{ route('player.portal.programs') }}" class="sidebar-nav-item{{ request()->routeIs('player.portal.programs') ? ' active' : '' }}">
                     <i class="fas fa-graduation-cap"></i>
                     <span>Programs</span>
                 </a>
-                @endcan
-                @can('players.training.view')
+                @endif
+                @if(auth()->check() && auth()->user()->hasPermission('players.training.view'))
                 <a href="{{ route('player.portal.training') }}" class="sidebar-nav-item{{ request()->routeIs('player.portal.training') ? ' active' : '' }}">
                     <i class="fas fa-chart-line"></i>
                     <span>Training</span>
                 </a>
-                @endcan
-                @can('players.schedule.view')
+                @endif
+                @if(auth()->check() && auth()->user()->hasPermission('players.schedule.view'))
                 <a href="{{ route('player.portal.schedule') }}" class="sidebar-nav-item{{ request()->routeIs('player.portal.schedule') ? ' active' : '' }}">
                     <i class="fas fa-calendar-check"></i>
                     <span>Schedule</span>
                 </a>
-                @endcan
-                @can('players.resources.view')
+                @endif
+                @if(auth()->check() && auth()->user()->hasPermission('players.resources.view'))
                 <a href="{{ route('player.portal.resources') }}" class="sidebar-nav-item{{ request()->routeIs('player.portal.resources') ? ' active' : '' }}">
                     <i class="fas fa-book-open"></i>
                     <span>Resources</span>
                 </a>
-                @endcan
-                @can('players.orders.view')
+                @endif
+                @if(auth()->check() && auth()->user()->hasPermission('players.orders.view'))
                 <a href="{{ route('player.portal.orders') }}" class="sidebar-nav-item{{ request()->routeIs('player.portal.orders') ? ' active' : '' }}">
                     <i class="fas fa-shopping-bag"></i>
                     <span>Orders</span>
                 </a>
-                @endcan
-                @can('players.communication.view')
+                @endif
+                @if(auth()->check() && auth()->user()->hasPermission('players.communication.view'))
                 <a href="{{ route('player.portal.communication') }}" class="sidebar-nav-item{{ request()->routeIs('player.portal.communication') ? ' active' : '' }}">
                     <i class="fas fa-comments"></i>
                     <span>Messages</span>
                 </a>
-                @endcan
-                @can('players.support.view')
+                @endif
+                @if(auth()->check() && auth()->user()->hasPermission('players.support.view'))
                 <a href="{{ route('player.portal.support') }}" class="sidebar-nav-item{{ request()->routeIs('player.portal.support') ? ' active' : '' }}">
                     <i class="fas fa-life-ring"></i>
                     <span>Support</span>
                 </a>
-                @endcan
+                @endif
             </nav>
         </div>
     </aside>
