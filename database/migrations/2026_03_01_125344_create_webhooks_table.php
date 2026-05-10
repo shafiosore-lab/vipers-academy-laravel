@@ -26,7 +26,7 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->index(['organization_id', 'enabled']);
-            $table->index('events');
+
         });
     }
 
