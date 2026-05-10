@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->json('content')->nullable();
             $table->enum('document_type', array_keys(\App\Models\OrganizationDocument::getDocumentTypes()))
-                ->default('document');
+                ->default('report');
             $table->string('version')->default('1.0');
             $table->enum('status', array_keys(\App\Models\OrganizationDocument::getStatuses()))
                 ->default('draft');
