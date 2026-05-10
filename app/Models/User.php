@@ -511,6 +511,22 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if user has trial access for partner dashboard.
+     */
+    public function hasPartnerTrialAccess(): bool
+    {
+        return $this->isOnTrial() && $this->trial_type === 'partner';
+    }
+
+    /**
+     * Check if user has trial access for player dashboard.
+     */
+    public function hasPlayerTrialAccess(): bool
+    {
+        return $this->isOnTrial() && $this->trial_type === 'player';
+    }
+
+    /**
      * Activate trial period for the user.
      */
     public function activateTrial(string $trialType, int $days = 10): void
@@ -556,6 +572,8 @@ class User extends Authenticatable
             'organization' => 'Organization Dashboard',
             'coach' => 'Coach Dashboard',
             'team_manager' => 'Team Manager Dashboard',
+            'partner' => 'Partner Dashboard',
+            'player' => 'Player Dashboard',
             default => 'Full Access',
         };
 

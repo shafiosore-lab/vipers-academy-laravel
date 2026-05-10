@@ -104,8 +104,14 @@ class PermissionSeeder extends Seeder
             ['name' => 'Delete Players', 'slug' => 'players.delete'],
             ['name' => 'Approve Players', 'slug' => 'players.approve'],
             ['name' => 'View Player Portal', 'slug' => 'players.portal.view'],
+            ['name' => 'View Player Programs', 'slug' => 'players.programs.view'],
+            ['name' => 'View Player Training', 'slug' => 'players.training.view'],
+            ['name' => 'View Player Schedule', 'slug' => 'players.schedule.view'],
+            ['name' => 'View Player Resources', 'slug' => 'players.resources.view'],
+            ['name' => 'View Player Orders', 'slug' => 'players.orders.view'],
+            ['name' => 'View Player Communication', 'slug' => 'players.communication.view'],
+            ['name' => 'View Player Support', 'slug' => 'players.support.view'],
             ['name' => 'Update Player Profile', 'slug' => 'players.profile.update'],
-            ['name' => 'View Training Data', 'slug' => 'players.training.view'],
         ];
 
         // =====================================================================

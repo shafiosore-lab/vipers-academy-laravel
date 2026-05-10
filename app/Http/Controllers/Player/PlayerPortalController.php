@@ -77,6 +77,10 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
      */
     public function programs()
     {
+        if (!auth()->user()->can('players.programs.view')) {
+            abort(403, 'Access denied. Insufficient permissions.');
+        }
+
         $accessCheck = $this->checkPlayerAccess();
         if ($accessCheck instanceof \Illuminate\Http\RedirectResponse) {
             return $accessCheck;
@@ -100,6 +104,10 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
      */
     public function training()
     {
+        if (!auth()->user()->can('players.training.view')) {
+            abort(403, 'Access denied. Insufficient permissions.');
+        }
+
         $accessCheck = $this->checkPlayerAccess();
         if ($accessCheck instanceof \Illuminate\Http\RedirectResponse) {
             return $accessCheck;
@@ -123,6 +131,10 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
      */
     public function schedule()
     {
+        if (!auth()->user()->can('players.schedule.view')) {
+            abort(403, 'Access denied. Insufficient permissions.');
+        }
+
         $accessCheck = $this->checkPlayerAccess();
         if ($accessCheck instanceof \Illuminate\Http\RedirectResponse) {
             return $accessCheck;
@@ -142,6 +154,10 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
      */
     public function resources()
     {
+        if (!auth()->user()->can('players.resources.view')) {
+            abort(403, 'Access denied. Insufficient permissions.');
+        }
+
         $accessCheck = $this->checkPlayerAccess();
         if ($accessCheck instanceof \Illuminate\Http\RedirectResponse) {
             return $accessCheck;
@@ -163,6 +179,10 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
      */
     public function communication()
     {
+        if (!auth()->user()->can('players.communication.view')) {
+            abort(403, 'Access denied. Insufficient permissions.');
+        }
+
         $accessCheck = $this->checkPlayerAccess();
         if ($accessCheck instanceof \Illuminate\Http\RedirectResponse) {
             return $accessCheck;
@@ -184,6 +204,10 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
      */
     public function orders()
     {
+        if (!auth()->user()->can('players.orders.view')) {
+            abort(403, 'Access denied. Insufficient permissions.');
+        }
+
         $accessCheck = $this->checkPlayerAccess();
         if ($accessCheck instanceof \Illuminate\Http\RedirectResponse) {
             return $accessCheck;
@@ -217,6 +241,10 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
      */
     public function profile()
     {
+        if (!auth()->user()->can('players.profile.update')) {
+            abort(403, 'Access denied. Insufficient permissions.');
+        }
+
         $accessCheck = $this->checkPlayerAccess();
         if ($accessCheck instanceof \Illuminate\Http\RedirectResponse) {
             return $accessCheck;
@@ -236,6 +264,10 @@ class PlayerPortalController extends \App\Http\Controllers\Controller
      */
     public function support()
     {
+        if (!auth()->user()->can('players.support.view')) {
+            abort(403, 'Access denied. Insufficient permissions.');
+        }
+
         $accessCheck = $this->checkPlayerAccess();
         if ($accessCheck instanceof \Illuminate\Http\RedirectResponse) {
             return $accessCheck;

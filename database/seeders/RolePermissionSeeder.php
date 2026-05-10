@@ -213,14 +213,11 @@ class RolePermissionSeeder extends Seeder
             $parent->permissions()->attach($permissions->pluck('id'));
         }
 
-        // 10. Player - Self-view
+        // 10. Player - Self-view (Dashboard only)
         $player = Role::where('slug', 'player')->first();
         if ($player) {
             $permissions = Permission::whereIn('slug', [
-                'view-player-portal',
-                'update-player-profile',
-                'view-training-data',
-                'upload-documents',
+                'players.portal.view', // Portal access (dashboard)
             ])->get();
             $player->permissions()->attach($permissions->pluck('id'));
         }
