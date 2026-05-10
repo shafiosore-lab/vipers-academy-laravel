@@ -65,6 +65,14 @@
     --spacing-3xl: 4rem;      /* 64px */
     --spacing-4xl: 6rem;      /* 96px */
 
+    /* Breakpoints (for reference) */
+    --breakpoint-xs: 0;
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+    --breakpoint-xxl: 1400px;
+
     /* Component Spacing */
     --card-padding-xs: 0.5rem;    /* 8px */
     --card-padding-sm: 0.75rem;   /* 12px */
@@ -81,15 +89,17 @@
     --header-height: 60px;
     --content-padding: 20px;
 
-    /* Typography */
+    /* Typography - Fluid with clamp() */
     --font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    --font-size-xs: 0.75rem;
-    --font-size-sm: 0.875rem;
-    --font-size-base: 1rem;
-    --font-size-lg: 1.125rem;
-    --font-size-xl: 1.25rem;
-    --font-size-2xl: 1.5rem;
-    --font-size-3xl: 1.875rem;
+    --font-size-xs: clamp(0.65rem, 0.6vw + 0.5rem, 0.75rem);
+    --font-size-sm: clamp(0.75rem, 0.7vw + 0.6rem, 0.875rem);
+    --font-size-base: clamp(0.875rem, 0.8vw + 0.7rem, 1rem);
+    --font-size-lg: clamp(1rem, 1vw + 0.8rem, 1.125rem);
+    --font-size-xl: clamp(1.125rem, 1.2vw + 0.9rem, 1.25rem);
+    --font-size-2xl: clamp(1.25rem, 1.5vw + 1rem, 1.5rem);
+    --font-size-3xl: clamp(1.5rem, 2vw + 1rem, 1.875rem);
+    --font-size-4xl: clamp(1.875rem, 3vw + 1.2rem, 2.25rem);
+    --font-size-5xl: clamp(2.25rem, 4vw + 1.5rem, 3rem);
 
     /* Border Radius */
     --radius-sm: 4px;
@@ -140,16 +150,28 @@
 }
 
 .dashboard-body h1 {
-    font-size: var(--font-size-3xl);
+    font-size: clamp(1.5rem, 4vw, var(--font-size-3xl));
     color: var(--primary);
 }
 
 .dashboard-body h2 {
-    font-size: var(--font-size-xl);
+    font-size: clamp(1.25rem, 3vw, var(--font-size-2xl));
 }
 
 .dashboard-body h3 {
-    font-size: var(--font-size-lg);
+    font-size: clamp(1.125rem, 2.5vw, var(--font-size-xl));
+}
+
+.dashboard-body h4 {
+    font-size: clamp(1rem, 2vw, var(--font-size-lg));
+}
+
+.dashboard-body h5 {
+    font-size: clamp(0.875rem, 1.5vw, var(--font-size-base));
+}
+
+.dashboard-body h6 {
+    font-size: clamp(0.75rem, 1.2vw, var(--font-size-sm));
 }
 
 /* ========================================

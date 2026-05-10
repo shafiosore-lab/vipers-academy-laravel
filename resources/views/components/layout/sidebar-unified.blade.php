@@ -17,7 +17,8 @@
 @props([
     'mode' => 'simple', // 'simple' or 'accordion'
     'sidebarId' => 'sidebar',
-    'accordionMode' => true
+    'accordionMode' => true,
+    'baseClass' => 'dashboard' // base class prefix: 'dashboard', 'admin', 'staff', etc.
 ])
 
 @php
@@ -359,8 +360,16 @@
     }
 @endphp
 
-<aside class="dashboard-sidebar" id="{{ $sidebarId }}" role="navigation" aria-label="{{ __('Main navigation') }}">
-    <nav class="dashboard-sidebar-nav">
+<aside class="{{ $baseClass }}-sidebar" id="{{ $sidebarId }}" role="navigation" aria-label="{{ __('Main navigation') }}">
+    {{-- Mobile Close Button --}}
+    <button class="sidebar-close-btn"
+            type="button"
+            aria-label="{{ __('Close navigation menu') }}"
+            onclick="toggleSidebar()">
+        <i class="fas fa-times" aria-hidden="true"></i>
+    </button>
+
+    <nav class="{{ $baseClass }}-sidebar-nav">
         {{-- Accordion Mode Setting (Admin style) --}}
         @if($mode === 'accordion')
         <div class="accordion-settings">

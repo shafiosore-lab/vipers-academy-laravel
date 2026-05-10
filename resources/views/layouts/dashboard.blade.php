@@ -60,6 +60,9 @@
         'sidebarId' => 'dashboardSidebar'
     ])
 
+    {{-- Mobile Sidebar Overlay --}}
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true" onclick="toggleSidebar()"></div>
+
     {{-- Main Content --}}
     <main class="dashboard-content" id="mainContent">
         {{-- Flash Messages --}}
@@ -122,8 +125,19 @@
     // =====================
     function toggleSidebar() {
         const sidebar = document.getElementById('dashboardSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const toggleBtn = document.querySelector('.dashboard-mobile-toggle');
+
         if (sidebar) {
             sidebar.classList.toggle('show');
+            if (overlay) {
+                overlay.classList.toggle('show');
+                overlay.classList.toggle('active');
+            }
+            if (toggleBtn) {
+                const isExpanded = sidebar.classList.contains('show');
+                toggleBtn.setAttribute('aria-expanded', isExpanded);
+            }
         }
     }
 
@@ -223,18 +237,29 @@
         // Mobile sidebar toggle
         const mobileToggle = document.querySelector('.dashboard-mobile-toggle');
         const sidebar = document.getElementById('dashboardSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
 
         if (mobileToggle && sidebar) {
             mobileToggle.addEventListener('click', function() {
-                const isExpanded = sidebar.classList.contains('show');
-                sidebar.classList.toggle('show');
-                this.setAttribute('aria-expanded', !isExpanded);
+                toggleSidebar();
             });
+
+            // Close sidebar when clicking overlay
+            if (overlay) {
+                overlay.addEventListener('click', function() {
+                    sidebar.classList.remove('show');
+                    overlay.classList.remove('show', 'active');
+                    mobileToggle.setAttribute('aria-expanded', 'false');
+                });
+            }
 
             // Close sidebar when clicking outside
             document.addEventListener('click', function(e) {
-                if (!sidebar.contains(e.target) && !mobileToggle.contains(e.target)) {
+                if (!sidebar.contains(e.target) && !mobileToggle.contains(e.target) && !overlay?.contains(e.target)) {
                     sidebar.classList.remove('show');
+                    if (overlay) {
+                        overlay.classList.remove('show', 'active');
+                    }
                     mobileToggle.setAttribute('aria-expanded', 'false');
                 }
             });
@@ -243,6 +268,9 @@
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape' && sidebar.classList.contains('show')) {
                     sidebar.classList.remove('show');
+                    if (overlay) {
+                        overlay.classList.remove('show', 'active');
+                    }
                     mobileToggle.setAttribute('aria-expanded', 'false');
                     mobileToggle.focus();
                 }
