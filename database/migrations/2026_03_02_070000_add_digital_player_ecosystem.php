@@ -20,37 +20,53 @@ return new class extends Migration
         // =============================================
 
         // Create player_injuries table
-        Schema::create('player_injuries', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('player_id')->constrained()->onDelete('cascade');
-            $table->index(['organization_id', 'availability_date', 'status'],'pa_org_date_status_idx');
+       Schema::create('player_injuries', function (Blueprint $table) {
+    $table->id();
 
-            // Injury details
-            $table->string('injury_type'); // muscle, ligament, fracture, concussion, etc.
-            $table->string('body_part'); // hamstring, knee, ankle, etc.
-            $table->string('severity'); // mild, moderate, severe
-            $table->text('description')->nullable();
+    $table->foreignId('player_id')
+        ->constrained()
+        ->onDelete('cascade');
 
-            // Dates
-            $table->date('injury_date');
-            $table->date('expected_recovery_date')->nullable();
-            $table->date('actual_recovery_date')->nullable();
+    // Injury details
+    $table->string('injury_type');
+    $table->string('body_part');
+    $table->string('severity');
+    $table->text('description')->nullable();
 
-            // Status
-            $table->string('status'); // active, recovering, recovered, recurrent
-            $table->text('treatment_notes')->nullable();
-            $table->string('treating_physician')->nullable();
+    // Dates
+    $table->date('injury_date');
+    $table->date('expected_recovery_date')->nullable();
+    $table->date('actual_recovery_date')->nullable();
 
-            // Tracking
-            $table->foreignId('reported_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->timestamps();
+    // Status
+    $table->string('status');
+    $table->text('treatment_notes')->nullable();
+    $table->string('treating_physician')->nullable();
 
-            $table->index(['player_id', 'status']);
-            $table->index(['organization_id', 'status']);
-            $table->index(['expected_recovery_date', 'status']);
-        });
+    // Tracking
+    $table->foreignId('reported_by')
+        ->nullable()
+        ->constrained('users')
+        ->nullOnDelete();
 
+    $table->foreignId('updated_by')
+        ->nullable()
+        ->constrained('users')
+        ->nullOnDelete();
+
+    $table->timestamps();
+
+    // Optimized indexes
+    $table->index(
+        ['player_id', 'status'],
+        'pi_player_status_idx'
+    );
+
+    $table->index(
+        ['expected_recovery_date', 'status'],
+        'pi_recovery_status_idx'
+    );
+});
         // Create player_availability table
         Schema::create('player_availability', function (Blueprint $table) {
             $table->id();
