@@ -12,8 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tournaments', function (Blueprint $table) {
-            // Add missing estimated_matches column that the form expects
-            $table->integer('estimated_matches')->nullable()->after('competition_format');
+
+            if (!Schema::hasColumn('tournaments', 'estimated_matches')) {
+                $table->integer('estimated_matches')
+                    ->nullable()
+                    ->after('competition_format');
+            }
+
         });
     }
 
@@ -23,7 +28,11 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('tournaments', function (Blueprint $table) {
-            $table->dropColumn('estimated_matches');
+
+            if (Schema::hasColumn('tournaments', 'estimated_matches')) {
+                $table->dropColumn('estimated_matches');
+            }
+
         });
     }
 };
