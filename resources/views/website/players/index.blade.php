@@ -34,6 +34,18 @@
         font-family: system-ui, -apple-system, sans-serif;
     }
 
+    @media (min-width: 480px) {
+        .p-container {
+            padding: 14px;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .p-container {
+            padding: 20px;
+        }
+    }
+
     /* ── Search bar row ─────────────────────────────────── */
     .search-row {
         display: flex;
@@ -52,7 +64,7 @@
     .search-wrapper {
         position: relative;
         flex-shrink: 0;
-        width: 110px;                   /* compact fixed width on mobile */
+        width: 140px;                   /* wider on mobile for easier typing */
     }
 
     .search-wrapper input {
@@ -123,11 +135,18 @@
         flex-shrink: 0;
     }
 
-    /* ── Players grid — 4 col mobile, 6 col desktop ─────── */
+    /* ── Players grid — 3 col on tiny, 4 col mobile, 6 col desktop ── */
     .players-grid {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 6px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    @media (min-width: 480px) {
+        .players-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
     }
 
     @media (min-width: 768px) {
@@ -137,7 +156,7 @@
         }
 
         .search-wrapper {
-            width: 160px;
+            width: 180px;
         }
     }
 
@@ -156,6 +175,22 @@
         transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
         cursor: pointer;
         min-width: 0;                   /* prevent grid blowout */
+        min-height: 140px;
+        box-sizing: border-box;
+    }
+
+    @media (min-width: 480px) {
+        .player-card {
+            padding: 10px 8px;
+            min-height: 150px;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .player-card {
+            padding: 12px 10px;
+            min-height: 170px;
+        }
     }
 
     .player-card:hover {
@@ -172,6 +207,13 @@
         overflow: hidden;
         flex-shrink: 0;
         border: 2px solid var(--primary-red);
+    }
+
+    @media (min-width: 480px) {
+        .player-avatar {
+            width: 50px;
+            height: 50px;
+        }
     }
 
     @media (min-width: 768px) {
@@ -200,6 +242,12 @@
         font-size: 16px;
     }
 
+    @media (min-width: 480px) {
+        .avatar-placeholder {
+            font-size: 18px;
+        }
+    }
+
     @media (min-width: 768px) {
         .avatar-placeholder {
             font-size: 20px;
@@ -211,6 +259,10 @@
         text-align: center;
         width: 100%;
         min-width: 0;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
     .player-name {
@@ -224,6 +276,12 @@
         white-space: nowrap;
     }
 
+    @media (min-width: 480px) {
+        .player-name {
+            font-size: 12px;
+        }
+    }
+
     @media (min-width: 768px) {
         .player-name {
             font-size: 13px;
@@ -233,7 +291,7 @@
     .player-meta {
         display: flex;
         flex-wrap: wrap;
-        gap: 2px;
+        gap: 3px;
         justify-content: center;
         font-size: 10px;
         color: #666;
@@ -248,7 +306,7 @@
 
     .player-meta span {
         background: #f1efe8;
-        padding: 1px 5px;
+        padding: 2px 6px;
         border-radius: 99px;
         white-space: nowrap;
     }
@@ -499,10 +557,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function escapeHtml(text) {
         if (text === null || text === undefined) return '';
         return String(text)
-            .replace(/&/g,  '&amp;')
-            .replace(/</g,  '&lt;')
-            .replace(/>/g,  '&gt;')
-            .replace(/"/g,  '&quot;')
+            .replace(/&/g,  '&')
+            .replace(/</g,  '<')
+            .replace(/>/g,  '>')
+            .replace(/"/g,  '"')
             .replace(/'/g,  '&#039;');
     }
 
