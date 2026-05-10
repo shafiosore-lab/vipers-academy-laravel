@@ -9,34 +9,74 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::table('roles', function (Blueprint $table) {
-            // System and template flags
-            $table->boolean('is_system')->default(false)->after('type');
-            $table->boolean('is_template')->default(false)->after('is_system');
-            $table->boolean('is_active')->default(true)->after('is_template');
+        public function up(): void
+        {
+            Schema::table('roles', function (Blueprint $table) {
 
-            // Organization scoping
-            $table->unsignedBigInteger('organization_id')->nullable()->after('is_active');
-            $table->foreign('organization_id')->references('id')->on('organizations')->onDelete('cascade');
+                // System and template flags
+                if (!Schema::hasColumn('roles', 'is_system')) {
+                    $table->boolean('is_system')->default(false)->after('type');
+                }
 
-            // Role hierarchy and inheritance
-            $table->unsignedBigInteger('parent_role_id')->nullable()->after('organization_id');
-            $table->foreign('parent_role_id')->references('id')->on('roles')->onDelete('set null');
-            $table->boolean('inherit_permissions')->default(true)->after('parent_role_id');
+                if (!Schema::hasColumn('roles', 'is_template')) {
+                    $table->boolean('is_template')->default(false);
+                }
 
-            // Department and module
-            $table->string('department')->nullable()->after('inherit_permissions');
-            $table->string('module')->nullable()->after('department');
+                if (!Schema::hasColumn('roles', 'is_active')) {
+                    $table->boolean('is_active')->default(true);
+                }
 
-            // Additional fields
-            $table->string('name_key')->nullable()->after('module');
-            $table->string('description_key')->nullable()->after('name_key');
-            $table->string('combined_role_ids')->nullable()->after('description_key');
-            $table->json('metadata')->nullable()->after('combined_role_ids');
-        });
-    }
+                // Organization scoping
+                if (!Schema::hasColumn('roles', 'organization_id')) {
+                    $table->unsignedBigInteger('organization_id')->nullable();
+
+                    $table->foreign('organization_id')
+                        ->references('id')
+                        ->on('organizations')
+                        ->onDelete('cascade');
+                }
+
+                // Role hierarchy
+                if (!Schema::hasColumn('roles', 'parent_role_id')) {
+                    $table->unsignedBigInteger('parent_role_id')->nullable();
+
+                    $table->foreign('parent_role_id')
+                        ->references('id')
+                        ->on('roles')
+                        ->onDelete('set null');
+                }
+
+                if (!Schema::hasColumn('roles', 'inherit_permissions')) {
+                    $table->boolean('inherit_permissions')->default(true);
+                }
+
+                // Department and module
+                if (!Schema::hasColumn('roles', 'department')) {
+                    $table->string('department')->nullable();
+                }
+
+                if (!Schema::hasColumn('roles', 'module')) {
+                    $table->string('module')->nullable();
+                }
+
+                // Additional fields
+                if (!Schema::hasColumn('roles', 'name_key')) {
+                    $table->string('name_key')->nullable();
+                }
+
+                if (!Schema::hasColumn('roles', 'description_key')) {
+                    $table->string('description_key')->nullable();
+                }
+
+                if (!Schema::hasColumn('roles', 'combined_role_ids')) {
+                    $table->text('combined_role_ids')->nullable();
+                }
+
+                if (!Schema::hasColumn('roles', 'metadata')) {
+                    $table->json('metadata')->nullable();
+                }
+            });
+        }
 
     /**
      * Reverse the migrations.
