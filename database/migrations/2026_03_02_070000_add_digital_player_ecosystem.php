@@ -23,7 +23,7 @@ return new class extends Migration
         Schema::create('player_injuries', function (Blueprint $table) {
             $table->id();
             $table->foreignId('player_id')->constrained()->onDelete('cascade');
-            $table->foreignId('organization_id')->constrained()->onDelete('cascade');
+            $table->index(['organization_id', 'availability_date', 'status'],'pa_org_date_status_idx');
 
             // Injury details
             $table->string('injury_type'); // muscle, ligament, fracture, concussion, etc.
