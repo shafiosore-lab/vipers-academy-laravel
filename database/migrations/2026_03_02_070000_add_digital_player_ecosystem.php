@@ -84,7 +84,10 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index(['player_id', 'availability_date']);
-            $table->index(['organization_id', 'availability_date', 'status']);
+            $table->index(
+                ['organization_id', 'availability_date', 'status'],
+                'pa_org_date_status_idx'
+            );
             $table->unique(['player_id', 'availability_date']);
         });
 
