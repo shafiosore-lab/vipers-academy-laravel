@@ -18,7 +18,7 @@ class RolePermissionSeeder extends Seeder
         $superAdmin = Role::where('slug', 'super-admin')->first();
         if ($superAdmin) {
             $allPermissions = Permission::all();
-            $superAdmin->permissions()->attach($allPermissions->pluck('id'));
+            $superAdmin->permissions()->sync($allPermissions->pluck('id'));
         }
 
         // Marketing Admin
@@ -28,7 +28,7 @@ class RolePermissionSeeder extends Seeder
                 'view-blogs', 'create-blogs', 'edit-blogs',
                 'view-jobs', 'create-jobs', 'edit-jobs', 'delete-jobs',
             ])->get();
-            $marketingAdmin->permissions()->attach($permissions->pluck('id'));
+            $marketingAdmin->permissions()->sync($permissions->pluck('id'));
         }
 
         // Scouting Admin
@@ -39,7 +39,7 @@ class RolePermissionSeeder extends Seeder
                 'view-statistics', 'create-statistics', 'edit-statistics',
                 'view-matches', 'create-matches', 'edit-matches',
             ])->get();
-            $scoutingAdmin->permissions()->attach($permissions->pluck('id'));
+            $scoutingAdmin->permissions()->sync($permissions->pluck('id'));
         }
 
         // Operations Admin
@@ -51,7 +51,7 @@ class RolePermissionSeeder extends Seeder
                 'view-documents', 'approve-documents',
                 'view-orders', 'process-orders', 'manage-order-status',
             ])->get();
-            $operationsAdmin->permissions()->attach($permissions->pluck('id'));
+            $operationsAdmin->permissions()->sync($permissions->pluck('id'));
         }
 
         // Coaching Admin
@@ -63,7 +63,7 @@ class RolePermissionSeeder extends Seeder
                 'view-programs', 'edit-programs',
                 'view-training-data',
             ])->get();
-            $coachingAdmin->permissions()->attach($permissions->pluck('id'));
+            $coachingAdmin->permissions()->sync($permissions->pluck('id'));
         }
 
         // Finance Admin
@@ -73,7 +73,7 @@ class RolePermissionSeeder extends Seeder
                 'view-payments', 'process-payments', 'view-financial-reports',
                 'view-orders', 'manage-order-status',
             ])->get();
-            $financeAdmin->permissions()->attach($permissions->pluck('id'));
+            $financeAdmin->permissions()->sync($permissions->pluck('id'));
         }
 
         // Partner Staff Roles
@@ -83,7 +83,7 @@ class RolePermissionSeeder extends Seeder
                 'view-blogs', 'create-blogs', 'edit-blogs',
                 'view-partner-analytics',
             ])->get();
-            $partnerMarketing->permissions()->attach($permissions->pluck('id'));
+            $partnerMarketing->permissions()->sync($permissions->pluck('id'));
         }
 
         $partnerScouting = Role::where('slug', 'partner-scouting')->first();
@@ -93,7 +93,7 @@ class RolePermissionSeeder extends Seeder
                 'view-statistics', 'create-statistics',
                 'view-partner-analytics',
             ])->get();
-            $partnerScouting->permissions()->attach($permissions->pluck('id'));
+            $partnerScouting->permissions()->sync($permissions->pluck('id'));
         }
 
         $partnerOperations = Role::where('slug', 'partner-operations')->first();
@@ -105,7 +105,7 @@ class RolePermissionSeeder extends Seeder
                 'create-staff-accounts', 'manage-staff-roles',
                 'view-partner-analytics',
             ])->get();
-            $partnerOperations->permissions()->attach($permissions->pluck('id'));
+            $partnerOperations->permissions()->sync($permissions->pluck('id'));
         }
 
         // 10-Tier Role System Implementation
@@ -122,7 +122,7 @@ class RolePermissionSeeder extends Seeder
                 'view-system-logs', 'manage-system-settings',
                 // No delete permissions
             ])->get();
-            $adminOps->permissions()->attach($permissions->pluck('id'));
+            $adminOps->permissions()->sync($permissions->pluck('id'));
         }
 
         // 3. Head Coach - Team-wide management
@@ -139,7 +139,7 @@ class RolePermissionSeeder extends Seeder
                 'create_team', 'edit_team', 'assign_players_to_team',
                 'view-training-data',
             ])->get();
-            $headCoach->permissions()->attach($permissions->pluck('id'));
+            $headCoach->permissions()->sync($permissions->pluck('id'));
         }
 
         // 4. Assistant Coach - Session-based operations (PRIMARY USE CASE)
@@ -153,7 +153,7 @@ class RolePermissionSeeder extends Seeder
                 'view-training-data',
                 // Cannot edit players, create teams, etc.
             ])->get();
-            $assistantCoach->permissions()->attach($permissions->pluck('id'));
+            $assistantCoach->permissions()->sync($permissions->pluck('id'));
         }
 
         // 5. Team Manager - Logistics & coordination
@@ -167,7 +167,7 @@ class RolePermissionSeeder extends Seeder
                 'send_team_messages',
                 'generate_reports', 'export_reports',
             ])->get();
-            $teamManager->permissions()->attach($permissions->pluck('id'));
+            $teamManager->permissions()->sync($permissions->pluck('id'));
         }
 
         // 6. Safeguarding/Welfare Officer - Welfare-focused
@@ -179,7 +179,7 @@ class RolePermissionSeeder extends Seeder
                 'view-system-logs', // For monitoring
                 'send_bulk_messages', 'approve_announcements',
             ])->get();
-            $safeguarding->permissions()->attach($permissions->pluck('id'));
+            $safeguarding->permissions()->sync($permissions->pluck('id'));
         }
 
         // 7. Finance Officer - Financial only
@@ -190,7 +190,7 @@ class RolePermissionSeeder extends Seeder
                 'view-orders', 'manage-order-status',
                 'generate_reports', 'export_reports',
             ])->get();
-            $financeOfficer->permissions()->attach($permissions->pluck('id'));
+            $financeOfficer->permissions()->sync($permissions->pluck('id'));
         }
 
         // 8. Media & Communications Officer - Content only
@@ -200,7 +200,7 @@ class RolePermissionSeeder extends Seeder
                 'view-blogs', 'create-blogs', 'edit-blogs',
                 'send_bulk_messages', 'send_team_messages', 'approve-announcements',
             ])->get();
-            $mediaOfficer->permissions()->attach($permissions->pluck('id'));
+            $mediaOfficer->permissions()->sync($permissions->pluck('id'));
         }
 
         // 9. Parent - Own child only
@@ -210,7 +210,7 @@ class RolePermissionSeeder extends Seeder
                 'view-player-portal', // Limited to own child
                 'view-training-data', // Limited to own child
             ])->get();
-            $parent->permissions()->attach($permissions->pluck('id'));
+            $parent->permissions()->sync($permissions->pluck('id'));
         }
 
         // 10. Player - Self-view (Dashboard only)
@@ -219,7 +219,7 @@ class RolePermissionSeeder extends Seeder
             $permissions = Permission::whereIn('slug', [
                 'players.portal.view', // Portal access (dashboard)
             ])->get();
-            $player->permissions()->attach($permissions->pluck('id'));
+            $player->permissions()->sync($permissions->pluck('id'));
         }
     }
 }
