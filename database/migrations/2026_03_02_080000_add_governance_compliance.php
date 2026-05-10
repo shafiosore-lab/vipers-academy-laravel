@@ -79,10 +79,23 @@ return new class extends Migration
         });
 
         // Add age verification status to players
-        Schema::table('players', function (Blueprint $table) {
-            $table->string('age_verification_status')->default('unverified')->after('documents_completed');
-            $table->date('last_age_verification_date')->nullable()->after('age_verification_status');
-            $table->integer('age_discrepancy_count')->default(0)->after('last_age_verification_date');
+            Schema::table('players', function (Blueprint $table) {
+
+            if (!Schema::hasColumn('players', 'age_verification_status')) {
+                $table->enum(
+                    'age_verification_status',
+                    ['unverified', 'pending', 'verified', 'flagged']
+                )->default('unverified');
+            }
+
+            if (!Schema::hasColumn('players', 'last_age_verification_date')) {
+                $table->date('last_age_verification_date')->nullable();
+            }
+
+            if (!Schema::hasColumn('players', 'age_discrepancy_count')) {
+                $table->unsignedTinyInteger('age_discrepancy_count')->default(0);
+            }
+
         });
 
         // =============================================
