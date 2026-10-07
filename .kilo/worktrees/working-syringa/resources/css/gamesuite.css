@@ -1,0 +1,421 @@
+/* ============================================
+   GAMESUITE STYLING - COMPACT & OPTIMIZED
+   ============================================ */
+
+/* CSS Variables - Gamesuite Specific */
+:root {
+    /* Brand Colors */
+    --gs-primary: #ffd700;
+    --gs-primary-dark: #ffb700;
+    --gs-primary-subtle: rgba(255, 215, 0, 0.15);
+    --gs-primary-glow: rgba(255, 215, 0, 0.3);
+    --gs-accent: #6366f1;
+    --gs-accent-light: #818cf8;
+    --gs-success: #10b981;
+    --gs-success-light: #34d399;
+    --gs-warning: #f59e0b;
+    --gs-warning-light: #fbbf24;
+    --gs-info: #06b6d4;
+    --gs-danger: #ef4444;
+
+    /* Neutral Colors */
+    --gs-gray-50: #f9fafb;
+    --gs-gray-100: #f3f4f6;
+    --gs-gray-200: #e5e7eb;
+    --gs-gray-300: #d1d5db;
+    --gs-gray-400: #9ca3af;
+    --gs-gray-500: #6b7280;
+    --gs-gray-600: #4b5563;
+    --gs-gray-700: #374151;
+    --gs-gray-800: #1f2937;
+    --gs-gray-900: #111827;
+    --gs-white: #ffffff;
+
+    /* Compact Spacing */
+    --gs-space-xs: 0.25rem;
+    --gs-space-sm: 0.5rem;
+    --gs-space-md: 0.75rem;
+    --gs-space-lg: 1rem;
+    --gs-space-xl: 1.25rem;
+    --gs-space-2xl: 1.5rem;
+    --gs-space-3xl: 2rem;
+    --gs-space-4xl: 2.5rem;
+    --gs-space-5xl: 3rem;
+
+    /* Compact Border Radius */
+    --gs-radius-sm: 6px;
+    --gs-radius-md: 8px;
+    --gs-radius-lg: 12px;
+    --gs-radius-xl: 16px;
+
+    /* Compact Transitions */
+    --gs-transition-fast: 0.15s ease;
+    --gs-transition-normal: 0.25s ease;
+    --gs-transition-slow: 0.35s ease;
+
+    /* Hero Section Height Control */
+    --gs-hero-height: 70vh; /* 40% reduction from 100vh */
+    --gs-hero-min-height: 500px; /* Minimum height for smaller screens */
+}
+
+/* Base Styles */
+.gamesuite-page {
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.6;
+    color: var(--gs-gray-800);
+    background: var(--gs-gray-50);
+}
+
+/* ============================================
+   HERO SECTION - COMPACT & OPTIMIZED
+   ============================================ */
+.hero-section {
+    min-height: var(--gs-hero-height);
+    max-height: 800px; /* Cap maximum height */
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--gs-gray-900) 0%, var(--gs-gray-800) 50%, var(--gs-gray-900) 100%);
+}
+
+/* Remove excessive padding from hero */
+.hero-section .container {
+    padding-top: var(--gs-space-4xl);
+    padding-bottom: var(--gs-space-4xl);
+}
+
+/* Compact hero content */
+.hero-content {
+    max-width: 600px;
+}
+
+.hero-content h1 {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.1;
+    margin-bottom: var(--gs-space-lg);
+}
+
+.hero-content p {
+    font-size: 1rem;
+    margin-bottom: var(--gs-space-lg);
+    line-height: 1.6;
+}
+
+.hero-content ul {
+    margin-bottom: var(--gs-space-lg);
+}
+
+.hero-content li {
+    font-size: 0.9rem;
+    margin-bottom: var(--gs-space-xs);
+}
+
+/* Compact dashboard preview */
+.dashboard-preview .card {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.metric-card {
+    padding: var(--gs-space-md);
+    margin-bottom: var(--gs-space-sm);
+}
+
+.metric-card .h4 {
+    font-size: 1.25rem;
+    margin-bottom: var(--gs-space-xs);
+}
+
+.metric-card .small {
+    font-size: 0.75rem;
+}
+
+/* ============================================
+   FEATURE CARDS - COMPACT
+   ============================================ */
+.feature-card {
+    height: 100%;
+    padding: var(--gs-space-lg);
+    border: 1px solid var(--gs-gray-200);
+    transition: all var(--gs-transition-normal);
+}
+
+.feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.feature-icon {
+    width: 48px;
+    height: 48px;
+}
+
+.feature-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: var(--gs-space-sm);
+}
+
+.feature-card p {
+    font-size: 0.9rem;
+    color: var(--gs-gray-600);
+}
+
+.feature-list .col-12 {
+    margin-bottom: var(--gs-space-xs);
+}
+
+.feature-list .d-flex {
+    font-size: 0.85rem;
+}
+
+/* ============================================
+   CARD STYLES - COMPACT
+   ============================================ */
+.blog-card {
+    height: 100%;
+    padding: var(--gs-space-lg);
+    border: 1px solid var(--gs-gray-200);
+    transition: all var(--gs-transition-normal);
+}
+
+.blog-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.blog-image {
+    height: 180px; /* Reduced from 240px */
+    overflow: hidden;
+}
+
+.blog-image img {
+    height: 100%;
+    object-fit: cover;
+}
+
+.blog-content h3 {
+    font-size: 1.1rem; /* Reduced from 1.25rem */
+    margin-bottom: var(--gs-space-sm);
+}
+
+.blog-content p {
+    font-size: 0.9rem; /* Reduced from 1rem */
+    margin-bottom: var(--gs-space-md);
+}
+
+.blog-meta {
+    font-size: 0.8rem; /* Reduced from 0.875rem */
+}
+
+/* ============================================
+   PRICING CARDS - COMPACT
+   ============================================ */
+.pricing-card {
+    padding: var(--gs-space-lg);
+    border: 1px solid var(--gs-gray-200);
+    transition: all var(--gs-transition-normal);
+}
+
+.pricing-card h5 {
+    font-size: 1.1rem;
+    margin-bottom: var(--gs-space-md);
+}
+
+.pricing-card .display-4 {
+    font-size: 2.5rem; /* Reduced from 3rem */
+}
+
+.pricing-card .list-unstyled li {
+    font-size: 0.9rem;
+    margin-bottom: var(--gs-space-sm);
+}
+
+/* ============================================
+   BUTTONS - COMPACT
+   ============================================ */
+.btn {
+    padding: var(--gs-space-sm) var(--gs-space-lg);
+    font-size: 0.95rem;
+    border-radius: var(--gs-radius-md);
+    transition: all var(--gs-transition-fast);
+}
+
+.btn-lg {
+    padding: var(--gs-space-md) var(--gs-space-xl);
+    font-size: 1rem;
+}
+
+.btn-sm {
+    padding: var(--gs-space-xs) var(--gs-space-md);
+    font-size: 0.85rem;
+}
+
+/* ============================================
+   TYPOGRAPHY - COMPACT
+   ============================================ */
+.display-2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.display-3 {
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+}
+
+.display-4 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.fs-5 {
+    font-size: 1rem;
+}
+
+.fs-4 {
+    font-size: 1.125rem;
+}
+
+/* ============================================
+   SPACING - COMPACT
+   ============================================ */
+.py-6 {
+    padding-top: var(--gs-space-4xl);
+    padding-bottom: var(--gs-space-4xl);
+}
+
+.py-5 {
+    padding-top: var(--gs-space-3xl);
+    padding-bottom: var(--gs-space-3xl);
+}
+
+.py-4 {
+    padding-top: var(--gs-space-2xl);
+    padding-bottom: var(--gs-space-2xl);
+}
+
+.py-3 {
+    padding-top: var(--gs-space-xl);
+    padding-bottom: var(--gs-space-xl);
+}
+
+.py-2 {
+    padding-top: var(--gs-space-lg);
+    padding-bottom: var(--gs-space-lg);
+}
+
+.py-1 {
+    padding-top: var(--gs-space-md);
+    padding-bottom: var(--gs-space-md);
+}
+
+/* ============================================
+   RESPONSIVE - MOBILE OPTIMIZED
+   ============================================ */
+@media (max-width: 768px) {
+    :root {
+        --gs-hero-height: 60vh; /* Further reduce on mobile */
+        --gs-hero-min-height: 400px;
+    }
+
+    .hero-section .container {
+        padding-top: var(--gs-space-3xl);
+        padding-bottom: var(--gs-space-3xl);
+    }
+
+    .hero-content h1 {
+        font-size: clamp(1.5rem, 6vw, 2.5rem);
+    }
+
+    .blog-card {
+        padding: var(--gs-space-md);
+    }
+
+    .blog-image {
+        height: 160px; /* Further reduce on mobile */
+    }
+
+    .feature-card {
+        padding: var(--gs-space-md);
+    }
+
+    .pricing-card {
+        padding: var(--gs-space-md);
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --gs-hero-height: 50vh;
+        --gs-hero-min-height: 350px;
+    }
+
+    .hero-section .container {
+        padding-top: var(--gs-space-2xl);
+        padding-bottom: var(--gs-space-2xl);
+    }
+
+    .hero-content h1 {
+        font-size: clamp(1.25rem, 8vw, 2rem);
+    }
+
+    .blog-card {
+        padding: var(--gs-space-sm);
+    }
+
+    .blog-image {
+        height: 140px;
+    }
+}
+
+/* ============================================
+   REMOVE CONFLICTING STYLES
+   ============================================ */
+/* Remove blog page styles that conflict */
+.blog-page {
+    display: none !important;
+}
+
+/* Remove dashboard styles that conflict */
+.dashboard-body {
+    display: none !important;
+}
+
+/* Remove excessive animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px); /* Reduced from 50px */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================ */
+/* Optimize hero video */
+.hero-video-container video {
+    opacity: 0.1; /* Reduced from 0.15 */
+    transition: opacity var(--gs-transition-normal);
+}
+
+.hero-section:hover .hero-video-container video {
+    opacity: 0.15;
+}
+
+/* Reduce shadow intensity */
+.shadow-card {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* Reduced intensity */
+}
+
+.shadow-card-hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12); /* Reduced intensity */
+}
+
+/* Optimize gradients */
+.gradient-primary {
+    background: linear-gradient(135deg, #ffd700 0%, #ffb700 100%);
+}
+
+.gradient-accent {
+    background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+}

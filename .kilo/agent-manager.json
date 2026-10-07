@@ -1,0 +1,49 @@
+{
+  "worktrees": {
+    "wt-1778318816077-1": {
+      "branch": "stream-department",
+      "path": "c:\\xampp\\htdocs\\webviper\\.kilo\\worktrees\\stream-department",
+      "parentBranch": "master",
+      "createdAt": "2026-05-09T09:26:56.077Z",
+      "remote": "origin"
+    },
+    "wt-1778416705484-1": {
+      "branch": "working-syringa",
+      "path": "c:\\xampp\\htdocs\\webviper\\.kilo\\worktrees\\working-syringa",
+      "parentBranch": "master",
+      "createdAt": "2026-05-10T12:38:25.484Z",
+      "remote": "origin"
+    },
+    "wt-1781460693960-1": {
+      "branch": "ribbon-daughter",
+      "path": "c:\\xampp\\htdocs\\webviper\\.kilo\\worktrees\\ribbon-daughter",
+      "parentBranch": "master",
+      "createdAt": "2026-06-14T18:11:33.960Z",
+      "remote": "origin"
+    }
+  },
+  "sessions": {
+    "ses_1f3f04a2cffevrUVXFiWu6zSiP": {
+      "worktreeId": "wt-1778318816077-1",
+      "createdAt": "2026-05-09T09:26:56.772Z"
+    },
+    "ses_1ee1a9d85ffedfZxNkd6pxygBx": {
+      "worktreeId": "wt-1778416705484-1",
+      "createdAt": "2026-05-10T12:38:26.185Z"
+    },
+    "ses_138ab0a55ffeT6iMINDMCmZjiE": {
+      "worktreeId": "wt-1781460693960-1",
+      "createdAt": "2026-06-14T18:11:34.501Z"
+    }
+  },
+  "tabOrder": {
+    "local": [
+      "pending:1"
+    ]
+  },
+  "worktreeOrder": [
+    "wt-1778318816077-1",
+    "wt-1778416705484-1",
+    "wt-1781460693960-1"
+  ]
+}

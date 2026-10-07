@@ -1,0 +1,382 @@
+/* ============================================
+   UNIFIED HERO SECTIONS - CSS CONFLICT RESOLUTION
+   ============================================ */
+
+/* ==================== UNIFIED CSS VARIABLES ==================== */
+:root {
+    /* Hero Section Variables - Standardized */
+    --hero-height-desktop: 70vh;
+    --hero-height-tablet: 65vh;
+    --hero-height-mobile: 60vh;
+    --hero-height-xs: 50vh;
+
+    /* Minimum Heights */
+    --hero-min-height-desktop: 500px;
+    --hero-min-height-tablet: 450px;
+    --hero-min-height-mobile: 400px;
+    --hero-min-height-xs: 350px;
+
+    /* Overlay Variables */
+    --hero-overlay-dark: rgba(0, 0, 0, 0.8);
+    --hero-overlay-medium: rgba(0, 0, 0, 0.7);
+    --hero-overlay-light: rgba(0, 0, 0, 0.6);
+    --hero-overlay-subtle: rgba(0, 0, 0, 0.5);
+
+    /* Z-Index Hierarchy */
+    --z-hero: 10;
+    --z-hero-overlay: 20;
+    --z-hero-content: 30;
+    --z-dropdown: 100;
+    --z-sticky: 200;
+    --z-modal: 300;
+
+    /* Spacing - Unified */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 0.75rem;
+    --space-lg: 1rem;
+    --space-xl: 1.25rem;
+    --space-2xl: 1.5rem;
+    --space-3xl: 2rem;
+    --space-4xl: 2.5rem;
+    --space-5xl: 3rem;
+
+    /* Border Radius - Unified */
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-full: 9999px;
+
+    /* Transitions - Unified */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.25s ease;
+    --transition-slow: 0.35s ease;
+    --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ==================== BASE HERO SECTION STYLES ==================== */
+.hero-section {
+    position: relative;
+    overflow: hidden;
+    min-height: var(--hero-height-desktop);
+    max-height: 800px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: var(--z-hero);
+}
+
+/* Remove conflicting inline styles by using !important */
+.hero-section[style*="min-height"] {
+    min-height: var(--hero-height-desktop) !important;
+}
+
+/* ==================== HERO OVERLAY STYLES ==================== */
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, var(--hero-overlay-dark) 0%, var(--hero-overlay-medium) 70%);
+    z-index: var(--z-hero-overlay);
+    pointer-events: none;
+}
+
+/* Specific overlay variants */
+.hero-overlay-light {
+    background: linear-gradient(135deg, var(--hero-overlay-medium) 0%, var(--hero-overlay-subtle) 100%);
+}
+
+.hero-overlay-dark {
+    background: linear-gradient(135deg, var(--hero-overlay-dark) 0%, var(--hero-overlay-light) 100%);
+}
+
+.hero-overlay-transparent {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.1) 100%);
+}
+
+/* ==================== HERO CONTENT STYLES ==================== */
+.hero-content {
+    position: relative;
+    z-index: var(--z-hero-content);
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--space-4xl) var(--space-lg);
+    text-align: center;
+}
+
+.hero-content h1 {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.1;
+    margin-bottom: var(--space-lg);
+    color: var(--white);
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.hero-content p {
+    font-size: 1rem;
+    margin-bottom: var(--space-lg);
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.hero-content .btn {
+    margin-top: var(--space-lg);
+    padding: var(--space-md) var(--space-xl);
+    font-size: 1rem;
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-normal);
+}
+
+/* ==================== RESPONSIVE HERO STYLES ==================== */
+@media (max-width: 1199px) {
+    .hero-section {
+        min-height: var(--hero-height-desktop);
+        max-height: 700px;
+    }
+}
+
+@media (max-width: 991px) {
+    .hero-section {
+        min-height: var(--hero-height-tablet);
+        max-height: 600px;
+    }
+
+    .hero-content {
+        padding: var(--space-3xl) var(--space-md);
+    }
+
+    .hero-content h1 {
+        font-size: clamp(1.75rem, 5vw, 3rem);
+    }
+}
+
+@media (max-width: 767px) {
+    .hero-section {
+        min-height: var(--hero-height-mobile);
+        max-height: 500px;
+    }
+
+    .hero-content {
+        padding: var(--space-2xl) var(--space-md);
+    }
+
+    .hero-content h1 {
+        font-size: clamp(1.5rem, 6vw, 2.5rem);
+    }
+
+    .hero-content p {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 575px) {
+    .hero-section {
+        min-height: var(--hero-height-xs);
+        max-height: 450px;
+    }
+
+    .hero-content {
+        padding: var(--space-xl) var(--space-sm);
+    }
+
+    .hero-content h1 {
+        font-size: clamp(1.25rem, 8vw, 2rem);
+    }
+
+    .hero-content p {
+        font-size: 0.85rem;
+    }
+
+    .hero-content .btn {
+        width: 100%;
+        margin-top: var(--space-md);
+    }
+}
+
+@media (max-width: 375px) {
+    .hero-section {
+        min-height: var(--hero-height-xs);
+        max-height: 400px;
+    }
+
+    .hero-content {
+        padding: var(--space-lg) var(--space-xs);
+    }
+
+    .hero-content h1 {
+        font-size: clamp(1.1rem, 9vw, 1.8rem);
+    }
+}
+
+/* ==================== SPECIFIC HERO VARIANTS ==================== */
+
+/* Home Page Hero */
+.home-hero-section {
+    background-image: url('/assets/img/home/teamb.jpg');
+}
+
+/* Donate Page Hero */
+.donate-hero-section {
+    background-image: url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+}
+
+/* Careers Page Hero */
+.careers-hero-section {
+    background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+}
+
+/* Gamesuite Hero */
+.gs-hero-section {
+    min-height: 90vh;
+    max-height: 900px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 30%, #334155 70%, #6366f1 100%);
+}
+
+.gs-hero-section .hero-overlay {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 64, 0.8) 50%, rgba(51, 65, 85, 0.7) 100%);
+}
+
+/* ==================== CONFLICT RESOLUTION STYLES ==================== */
+
+/* Override conflicting inline styles */
+.hero-section[style*="background-image"] {
+    background-image: inherit !important;
+}
+
+.hero-section[style*="min-height"] {
+    min-height: var(--hero-height-desktop) !important;
+}
+
+.hero-section[style*="background-size"] {
+    background-size: cover !important;
+}
+
+.hero-section[style*="background-position"] {
+    background-position: center !important;
+}
+
+/* Remove conflicting z-index declarations */
+.hero-section[style*="z-index"] {
+    z-index: var(--z-hero) !important;
+}
+
+/* Override conflicting hero overlay styles */
+.hero-overlay[style*="background"] {
+    background: linear-gradient(135deg, var(--hero-overlay-dark) 0%, var(--hero-overlay-medium) 70%) !important;
+}
+
+/* ==================== ANIMATION OPTIMIZATIONS ==================== */
+@keyframes heroFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-section {
+    animation: heroFadeIn var(--transition-slow);
+}
+
+/* ==================== PERFORMANCE OPTIMIZATIONS ==================== */
+
+/* Optimize background rendering */
+.hero-section {
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translate3d(0, 0, 0);
+}
+
+/* Optimize overlay rendering */
+.hero-overlay {
+    will-change: opacity;
+    background-blend-mode: multiply;
+}
+
+/* ==================== ACCESSIBILITY ENHANCEMENTS ==================== */
+
+/* High contrast support */
+@media (prefers-contrast: high) {
+    .hero-overlay {
+        background: rgba(0, 0, 0, 0.9) !important;
+    }
+
+    .hero-content h1 {
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .hero-section {
+        animation: none;
+    }
+
+    .hero-content .btn {
+        transition: none;
+    }
+}
+
+/* Focus management */
+.hero-content .btn:focus {
+    outline: 3px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 4px;
+}
+
+/* ==================== PRINT STYLES ==================== */
+@media print {
+    .hero-section {
+        min-height: auto !important;
+        height: 200px !important;
+        background-color: #f3f4f6;
+        border-bottom: 2px solid #000;
+    }
+
+    .hero-overlay {
+        display: none !important;
+    }
+
+    .hero-content {
+        position: static;
+        z-index: auto;
+        padding: 20px;
+        text-align: left;
+        color: #000;
+    }
+
+    .hero-content h1 {
+        color: #000;
+        text-shadow: none;
+    }
+}
+
+/* ==================== DARK MODE SUPPORT ==================== */
+@media (prefers-color-scheme: dark) {
+    .hero-content p {
+        color: rgba(255, 255, 255, 0.8);
+    }
+}
+
+/* ==================== FALLBACK STYLES ==================== */
+
+/* Fallback for unsupported CSS variables */
+.hero-section {
+    min-height: 70vh;
+}
+
+.hero-overlay {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.6) 70%);
+}
+
+/* Fallback for older browsers */
+@supports not (background: linear-gradient(135deg, #000, #fff)) {
+    .hero-overlay {
+        background: rgba(0, 0, 0, 0.7);
+    }
+}

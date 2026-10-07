@@ -1,0 +1,14 @@
+{
+    "$schema": "https://json.schemastore.org/package.json",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite"
+    },
+    "comment": "The public CBO site ships a hand-written stylesheet (resources/css/site.css) and a dependency-free script (resources/js/site.js). Bootstrap, Tailwind, Alpine, Chart.js and the other packages below were only used by the removed SaaS dashboards, so they are no longer listed here.",
+    "devDependencies": {
+        "laravel-vite-plugin": "^2.0.0",
+        "vite": "^7.0.7"
+    }
+}

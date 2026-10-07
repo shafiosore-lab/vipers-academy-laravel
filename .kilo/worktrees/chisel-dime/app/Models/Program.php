@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Program extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'title',
+        'description',
+        'age_group',
+        'schedule',
+        'duration',
+        'regular_fee',
+        'mumias_fee',
+        'mumias_discount_percentage',
+        'image',
+        'category',
+        'fees',
+        'status',
+        'start_date',
+        'end_date',
+        'fee_display',
+        'schedule_display',
+        'age_range',
+    ];
+
+    protected $casts = [
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+        'fees' => 'decimal:2',
+    ];
+
+    /**
+     * Get the players enrolled in this program
+     */
+    public function players()
+    {
+        return $this->hasMany(Player::class);
+    }
+
+
+}

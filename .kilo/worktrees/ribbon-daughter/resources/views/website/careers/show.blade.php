@@ -1,0 +1,227 @@
+@extends('layouts.academy')
+
+@section('title', $job->title . ' - Career Opportunity at Mumias Vipers Academy')
+
+@section('meta_description', 'Apply for ' . $job->title . ' position at Mumias Vipers Academy. ' . Str::limit($job->description, 150))
+
+<p class="mb-3">Ready to join our team? Apply now and start your journey with Mumias Vipers Academy!</p>
+                        <div class="d-grid">
+                            <a href="#apply" class="btn btn-lg" style="background: var(--accent); border-color: var(--accent); color: #1a1a1a;">
+                                <i class="fas fa-paper-plane me-2"></i>Apply Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Why Join Us -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="fas fa-star me-2" style="color: var(--highlight);"></i>Why Join Mumias Vipers Academy?</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-check me-2" style="color: var(--accent);"></i>Work with passionate professionals</li>
+                            <li class="mb-2"><i class="fas fa-check me-2" style="color: var(--accent);"></i>Make a real impact on young lives</li>
+                            <li class="mb-2"><i class="fas fa-check me-2" style="color: var(--accent);"></i>Competitive compensation package</li>
+                            <li class="mb-2"><i class="fas fa-check me-2" style="color: var(--accent);"></i>Professional development opportunities</li>
+                            <li class="mb-2"><i class="fas fa-check me-2" style="color: var(--accent);"></i>Modern facilities and equipment</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="fas fa-envelope me-2" style="color: var(--info);"></i>Questions?</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-2">Have questions about this position?</p>
+                        <a href="{{ route('contact') }}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-envelope me-1"></i>Contact HR
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Application Form Section -->
+<section id="apply" class="application-section py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-header text-white text-center" style="background: var(--accent);">
+                        <h3 class="mb-0"><i class="fas fa-paper-plane me-2"></i>Apply for {{ $job->title }}</h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <form action="{{ route('careers.apply', $job) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="applicant_name" class="form-label">Full Name *</label>
+                                    <input type="text" class="form-control @error('applicant_name') is-invalid @enderror"
+                                           id="applicant_name" name="applicant_name" value="{{ old('applicant_name') }}" required>
+                                    @error('applicant_name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Email Address *</label>
+                                    <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                           id="email" name="email" value="{{ old('email') }}" required>
+                                    @error('email')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone Number *</label>
+                                <input type="tel" class="form-control @error('phone') is-invalid @enderror"
+                                       id="phone" name="phone" value="{{ old('phone') }}" required>
+                                @error('phone')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="resume" class="form-label">Resume/CV *</label>
+                                <input type="file" class="form-control @error('resume') is-invalid @enderror"
+                                       id="resume" name="resume" accept=".pdf,.doc,.docx" required>
+                                @error('resume')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <div class="form-text">Accepted formats: PDF, DOC, DOCX (Max 5MB)</div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="cover_letter" class="form-label">Cover Letter</label>
+                                <textarea class="form-control @error('cover_letter') is-invalid @enderror"
+                                          id="cover_letter" name="cover_letter" rows="5" placeholder="Tell us why you're interested in this position...">{{ old('cover_letter') }}</textarea>
+                                @error('cover_letter')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <div class="form-text">Optional but recommended</div>
+                            </div>
+
+                            <div class="alert alert-info">
+                                By submitting this application, you agree to our terms and conditions.
+                                We will process your application and contact you if there's a potential match.
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-lg px-5 py-3" style="background: var(--accent); border-color: var(--accent); color: #1a1a1a;">
+                                    <i class="fas fa-paper-plane me-2"></i>Submit Application
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@endsection
+
+<style>
+/* Hero Section - Account for fixed navbar */
+.hero-section {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.5) 100%), url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+}
+
+/* Desktop - Account for 80px navbar + 40px topbar */
+@media (min-width: 1024px) {
+    .hero-section {
+        padding-top: 120px;
+    }
+}
+
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .hero-section {
+        padding-top: 100px;
+    }
+}
+
+/* Mobile - Topbar hidden, navbar is 60px */
+@media (max-width: 767px) {
+    .hero-section {
+        padding-top: 70px;
+    }
+}
+
+.job-description, .job-requirements {
+    line-height: 1.6;
+}
+
+.card {
+    border-radius: 15px;
+}
+
+.card-header {
+    border-radius: 15px 15px 0 0 !important;
+}
+
+.application-section .card {
+    border-radius: 20px;
+}
+
+.application-section .card-header {
+    border-radius: 20px 20px 0 0 !important;
+}
+
+.form-control:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 0.2rem rgba(101, 193, 110, 0.25);
+}
+</style>
+
+<script>
+// File validation
+document.getElementById('resume').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+
+    if (file) {
+        if (!allowedTypes.includes(file.type)) {
+            alert('Please select a valid file type (PDF, DOC, or DOCX).');
+            e.target.value = '';
+            return;
+        }
+
+        if (file.size > maxSize) {
+            alert('File size must be less than 5MB.');
+            e.target.value = '';
+            return;
+        }
+    }
+});
+
+// Form validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const requiredFields = this.querySelectorAll('[required]');
+    let isValid = true;
+
+    requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+            field.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            field.classList.remove('is-invalid');
+            field.classList.add('is-valid');
+        }
+    });
+
+    if (!isValid) {
+        e.preventDefault();
+        alert('Please fill in all required fields.');
+    }
+});
+</script>
